@@ -1,9 +1,9 @@
 {
   "contract_version": "domainry-official-connector-catalog-v1",
   "sdk": {
-    "version": "v0.1.0-dev.2",
-    "contract_version": "connector-contract-v2",
-    "contract_sha256": "7c0840aba1388add0ec482254f144349e1ee309b5480f368f9d32a0218903d1d"
+    "version": "v0.1.0-dev.3",
+    "contract_version": "connector-contract-v3",
+    "contract_sha256": "129494b793676175f1d67814fa8be1507034e868ec6b733c36b08020f5a2771e"
   },
   "providers": [
     {
@@ -30,6 +30,22 @@
       "package_name": "authorizedcarriergateway",
       "constructor": "New",
       "descriptor_sha256": "5382b3fd1b016f1a984cf318323d0347401915a4b2de7bd78bbc887349995779",
+      "operations": [
+        {
+          "key": "quote_rates",
+          "mode": "call",
+          "contract_sha256": "a6627675c6255587f553fc126f777f470f464b92d8b48514f211c2f01ba8eee5"
+        }
+      ]
+    },
+    {
+      "connector_key": "logistics",
+      "provider_key": "freightos",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/logistics/freightos",
+      "package_name": "freightos",
+      "constructor": "New",
+      "descriptor_sha256": "5ad4fb10968f6052bdb3fc9bb45cba26f6370b184f51ae36b5b7ca3e2daebfe1",
       "operations": [
         {
           "key": "quote_rates",
