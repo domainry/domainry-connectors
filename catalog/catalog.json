@@ -152,6 +152,42 @@
       ]
     },
     {
+      "connector_key": "appointment_scheduling",
+      "provider_key": "calendly",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/appointment_scheduling/calendly",
+      "package_name": "calendly",
+      "constructor": "New",
+      "descriptor_sha256": "7c1e928af672eab204e50a5002ba3a6ba4eb0b9f531cf7f8104241e35d9f99de",
+      "operations": [
+        {
+          "key": "cancel_scheduled_event",
+          "mode": "call",
+          "contract_sha256": "5bda3d58d0b1996439bfd85bd778e4e598a721b70f585cd0b06e42a8cbc5360f"
+        },
+        {
+          "key": "create_scheduling_link",
+          "mode": "call",
+          "contract_sha256": "6bf835923d29858351a34ef988ed3697664743ae497ec783bd0598a68133571d"
+        },
+        {
+          "key": "list_event_types",
+          "mode": "call",
+          "contract_sha256": "5cc6e50948aa95cf6c9acbe02050ba4ef273f59b19fb67771fe5c00542bbc02b"
+        },
+        {
+          "key": "list_scheduled_events",
+          "mode": "call",
+          "contract_sha256": "03718b1dd1f9c62875e87ab34f8c29d7b15ae3ec62aebe8d10ddf1748a8a6e94"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "7fb4c29cab409b99b675ce439ae7c376287217e18c25d5466e6c4cbd4c45b891"
+        }
+      ]
+    },
+    {
       "connector_key": "bank_reconciliation",
       "provider_key": "plaid",
       "provider_revision": "1.0.0",
