@@ -26,6 +26,7 @@ import (
 	collaboration_line "github.com/domainry/domainry-connectors/providers/collaboration/line"
 	collaboration_line_works "github.com/domainry/domainry-connectors/providers/collaboration/line_works"
 	collaboration_microsoft_365 "github.com/domainry/domainry-connectors/providers/collaboration/microsoft_365"
+	collaboration_slack "github.com/domainry/domainry-connectors/providers/collaboration/slack"
 	collaboration_teams "github.com/domainry/domainry-connectors/providers/collaboration/teams"
 	customer_feedback_delighted "github.com/domainry/domainry-connectors/providers/customer_feedback/delighted"
 	customer_feedback_surveymonkey "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey"
@@ -85,6 +86,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/collaboration/line", packageName: "line", constructor: providerConstructor(collaboration_line.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/collaboration/line_works", packageName: "lineworks", constructor: providerConstructor(collaboration_line_works.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/collaboration/microsoft_365", packageName: "microsoft365", constructor: providerConstructor(collaboration_microsoft_365.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/collaboration/slack", packageName: "slack", constructor: providerConstructor(collaboration_slack.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/collaboration/teams", packageName: "teams", constructor: providerConstructor(collaboration_teams.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/delighted", packageName: "delighted", constructor: providerConstructor(customer_feedback_delighted.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey", packageName: "surveymonkey", constructor: providerConstructor(customer_feedback_surveymonkey.New)},

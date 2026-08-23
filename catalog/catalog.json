@@ -600,6 +600,27 @@
     },
     {
       "connector_key": "collaboration",
+      "provider_key": "slack",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/slack",
+      "package_name": "slack",
+      "constructor": "New",
+      "descriptor_sha256": "faca1e7e36211359aa681dc00f9ebb5d9a335c5d4f890ccb4256763ed9748192",
+      "operations": [
+        {
+          "key": "send_message",
+          "mode": "enqueue",
+          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "a354f65a655c7afc141199c44f831137989741466e5c064d4a872fdb8dec4916"
+        }
+      ]
+    },
+    {
+      "connector_key": "collaboration",
       "provider_key": "teams",
       "provider_revision": "1.0.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/teams",
