@@ -1233,6 +1233,37 @@
       ]
     },
     {
+      "connector_key": "event_webinar",
+      "provider_key": "zoom_webinar",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/event_webinar/zoom_webinar",
+      "package_name": "zoomwebinar",
+      "constructor": "New",
+      "descriptor_sha256": "f3c2569f0d2bd02cea21f17d9aa20b68d40729fa774ff40685115ecb97b182b0",
+      "operations": [
+        {
+          "key": "get_webinar",
+          "mode": "call",
+          "contract_sha256": "da36b84d0419c549c0e6f46e634d22b759404a68bbad21da2511cc3a80234969"
+        },
+        {
+          "key": "list_registrants",
+          "mode": "call",
+          "contract_sha256": "abfb0c88ce7cc1304cb070a7e322c431a1f4733e58e7e2a1bcffa60d2bae9480"
+        },
+        {
+          "key": "list_webinars",
+          "mode": "call",
+          "contract_sha256": "2294b19886fd4558fe4e93799db4658e6627d2e2bbc07c9dcce34513501b8f3d"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "716ab5c39dae386ae28b7895342303b1beb226176127e3c730bc2322ca5cbf6f"
+        }
+      ]
+    },
+    {
       "connector_key": "external_database",
       "provider_key": "bigquery",
       "provider_revision": "1.0.0",

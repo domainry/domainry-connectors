@@ -45,6 +45,7 @@ import (
 	esign_docusign "github.com/domainry/domainry-connectors/providers/esign/docusign"
 	esign_fadada "github.com/domainry/domainry-connectors/providers/esign/fadada"
 	esign_signnow "github.com/domainry/domainry-connectors/providers/esign/signnow"
+	event_webinar_zoom_webinar "github.com/domainry/domainry-connectors/providers/event_webinar/zoom_webinar"
 	external_database_bigquery "github.com/domainry/domainry-connectors/providers/external_database/bigquery"
 	external_database_snowflake "github.com/domainry/domainry-connectors/providers/external_database/snowflake"
 	feishu_collaboration_feishu "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu"
@@ -119,6 +120,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/esign/docusign", packageName: "docusign", constructor: providerConstructor(esign_docusign.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/esign/fadada", packageName: "fadada", constructor: providerConstructor(esign_fadada.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/esign/signnow", packageName: "signnow", constructor: providerConstructor(esign_signnow.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/event_webinar/zoom_webinar", packageName: "zoomwebinar", constructor: providerConstructor(event_webinar_zoom_webinar.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/bigquery", packageName: "bigquery", constructor: providerConstructor(external_database_bigquery.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/snowflake", packageName: "snowflake", constructor: providerConstructor(external_database_snowflake.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu", packageName: "feishu", constructor: providerConstructor(feishu_collaboration_feishu.New)},
