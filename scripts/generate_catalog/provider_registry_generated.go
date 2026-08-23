@@ -43,6 +43,7 @@ import (
 	email_smtp "github.com/domainry/domainry-connectors/providers/email/smtp"
 	esign_adobe_sign "github.com/domainry/domainry-connectors/providers/esign/adobe_sign"
 	esign_docusign "github.com/domainry/domainry-connectors/providers/esign/docusign"
+	esign_fadada "github.com/domainry/domainry-connectors/providers/esign/fadada"
 	external_database_bigquery "github.com/domainry/domainry-connectors/providers/external_database/bigquery"
 	external_database_snowflake "github.com/domainry/domainry-connectors/providers/external_database/snowflake"
 	feishu_collaboration_feishu "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu"
@@ -115,6 +116,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/email/smtp", packageName: "smtp", constructor: providerConstructor(email_smtp.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/esign/adobe_sign", packageName: "adobesign", constructor: providerConstructor(esign_adobe_sign.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/esign/docusign", packageName: "docusign", constructor: providerConstructor(esign_docusign.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/esign/fadada", packageName: "fadada", constructor: providerConstructor(esign_fadada.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/bigquery", packageName: "bigquery", constructor: providerConstructor(external_database_bigquery.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/snowflake", packageName: "snowflake", constructor: providerConstructor(external_database_snowflake.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu", packageName: "feishu", constructor: providerConstructor(feishu_collaboration_feishu.New)},
