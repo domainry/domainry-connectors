@@ -1,9 +1,9 @@
 {
   "contract_version": "domainry-official-connector-catalog-v1",
   "sdk": {
-    "version": "v0.1.0-dev.3",
-    "contract_version": "connector-contract-v3",
-    "contract_sha256": "129494b793676175f1d67814fa8be1507034e868ec6b733c36b08020f5a2771e"
+    "version": "v0.1.0-dev.4",
+    "contract_version": "connector-contract-v4",
+    "contract_sha256": "e601024f36d4d863a73abc792a2f7a7b488b91ddf2c032e53fbd0702df6373ea"
   },
   "providers": [
     {
