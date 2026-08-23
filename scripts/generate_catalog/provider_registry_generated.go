@@ -8,6 +8,7 @@ import (
 	accounting_money_forward "github.com/domainry/domainry-connectors/providers/accounting/money_forward"
 	ads_audience_meta_ads "github.com/domainry/domainry-connectors/providers/ads_audience/meta_ads"
 	calendar_holidays_jp "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp"
+	customer_feedback_surveymonkey "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey"
 	customer_feedback_trustpilot "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot"
 	logistics_authorized_carrier_gateway "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway"
 	logistics_freightos "github.com/domainry/domainry-connectors/providers/logistics/freightos"
@@ -25,6 +26,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/accounting/money_forward", packageName: "moneyforward", constructor: providerConstructor(accounting_money_forward.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/ads_audience/meta_ads", packageName: "metaads", constructor: providerConstructor(ads_audience_meta_ads.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp", packageName: "holidaysjp", constructor: providerConstructor(calendar_holidays_jp.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey", packageName: "surveymonkey", constructor: providerConstructor(customer_feedback_surveymonkey.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot", packageName: "trustpilot", constructor: providerConstructor(customer_feedback_trustpilot.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway", packageName: "authorizedcarriergateway", constructor: providerConstructor(logistics_authorized_carrier_gateway.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/freightos", packageName: "freightos", constructor: providerConstructor(logistics_freightos.New)},

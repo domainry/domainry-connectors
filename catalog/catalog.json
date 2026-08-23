@@ -72,6 +72,27 @@
     },
     {
       "connector_key": "customer_feedback",
+      "provider_key": "surveymonkey",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey",
+      "package_name": "surveymonkey",
+      "constructor": "New",
+      "descriptor_sha256": "e6ac5e5e1b2790714475311a293fe4b7e9c3b71193c2453158946260af85cc4d",
+      "operations": [
+        {
+          "key": "get_form",
+          "mode": "call",
+          "contract_sha256": "7adc05c1b448a5c935e78c0c50a8d20fea52ea1b541e250c75c33de841af0cf9"
+        },
+        {
+          "key": "list_responses",
+          "mode": "call",
+          "contract_sha256": "4a91cb108284b0275c4e5b2980a3492b766f207dc5b8891b0ead4aae66fec922"
+        }
+      ]
+    },
+    {
+      "connector_key": "customer_feedback",
       "provider_key": "trustpilot",
       "provider_revision": "1.0.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot",
