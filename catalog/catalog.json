@@ -243,6 +243,47 @@
       ]
     },
     {
+      "connector_key": "help_center",
+      "provider_key": "intercom_articles",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/help_center/intercom_articles",
+      "package_name": "intercomarticles",
+      "constructor": "New",
+      "descriptor_sha256": "410b9e4180b8a52ef18519dc5057195fe264274c714cf0d31099431c9243733f",
+      "operations": [
+        {
+          "key": "create_article",
+          "mode": "call",
+          "contract_sha256": "cce53c916d333a914c28902f4c8360abbf20a76e06147d95fb891fecc2425f2d"
+        },
+        {
+          "key": "get_article",
+          "mode": "call",
+          "contract_sha256": "1916ca191c9366feba71009db3bbf3cdb2290f1ddc3bdd469f4231abe177198d"
+        },
+        {
+          "key": "list_articles",
+          "mode": "call",
+          "contract_sha256": "a45fa9b5ee9c273cd8046e83b34b67be26b4098f018644e956d25c06cb225dd6"
+        },
+        {
+          "key": "list_collections",
+          "mode": "call",
+          "contract_sha256": "ffddef53d4878282741447a24b469090a75b893e4033fe7dd933f719c7c14374"
+        },
+        {
+          "key": "search_articles",
+          "mode": "call",
+          "contract_sha256": "79a5f5f9af7b0ad49508900a3a7f38fb0fbabe138bf399eb89358271a2452f36"
+        },
+        {
+          "key": "update_article",
+          "mode": "call",
+          "contract_sha256": "b9057eb433a9bd4e5511b80365d769bd88ed8c3355736c1a2a909ba068eacc95"
+        }
+      ]
+    },
+    {
       "connector_key": "iot_telemetry",
       "provider_key": "datadog_metrics",
       "provider_revision": "1.0.0",
