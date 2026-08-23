@@ -557,6 +557,27 @@
       ]
     },
     {
+      "connector_key": "collaboration",
+      "provider_key": "line_works",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/line_works",
+      "package_name": "lineworks",
+      "constructor": "New",
+      "descriptor_sha256": "26fac23574788edd31cbc7e09f256e06a2f51d6695625b8d31315339f645b48d",
+      "operations": [
+        {
+          "key": "send_message",
+          "mode": "enqueue",
+          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "a354f65a655c7afc141199c44f831137989741466e5c064d4a872fdb8dec4916"
+        }
+      ]
+    },
+    {
       "connector_key": "customer_feedback",
       "provider_key": "delighted",
       "provider_revision": "1.0.0",
