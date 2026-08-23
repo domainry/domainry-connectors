@@ -7,6 +7,27 @@
   },
   "providers": [
     {
+      "connector_key": "map_address",
+      "provider_key": "nominatim",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/map_address/nominatim",
+      "package_name": "nominatim",
+      "constructor": "New",
+      "descriptor_sha256": "98198a81af8afcd22576784b0ab66553c3cac77d0b5b63cf0ba43935bb845a0d",
+      "operations": [
+        {
+          "key": "reverse_geocode",
+          "mode": "call",
+          "contract_sha256": "9c4b5701bd8e698437d72f1788fa480214a121d70b6907cd695f7c87bac38600"
+        },
+        {
+          "key": "search_address",
+          "mode": "call",
+          "contract_sha256": "574d53285e7ad9f9af2ac2ee3a9288b8e032ab3db54885d8bbf6bd654e52cfb2"
+        }
+      ]
+    },
+    {
       "connector_key": "payment",
       "provider_key": "stripe",
       "provider_revision": "0.1.0",
