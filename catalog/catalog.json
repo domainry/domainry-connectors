@@ -2603,6 +2603,27 @@
       ]
     },
     {
+      "connector_key": "sso",
+      "provider_key": "oidc",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/sso/oidc",
+      "package_name": "oidc",
+      "constructor": "New",
+      "descriptor_sha256": "2a14eb52af8ccd84816b137800d5b11c4c602d031c13c9a8e525a773b5856ed8",
+      "operations": [
+        {
+          "key": "list_users",
+          "mode": "call",
+          "contract_sha256": "66b1c57c2f4d62ed19a5f4f99f6b8f5fcec849358864e77f3e4d42b909b1246f"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "8b4f574c082bb27e303f29179aefd5329fd2b63d33163d5f41f2f0397057c6b4"
+        }
+      ]
+    },
+    {
       "connector_key": "support",
       "provider_key": "zendesk",
       "provider_revision": "1.0.0",
