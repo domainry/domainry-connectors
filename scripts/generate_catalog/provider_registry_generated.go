@@ -21,6 +21,7 @@ import (
 	help_center_readme "github.com/domainry/domainry-connectors/providers/help_center/readme"
 	help_center_zendesk_guide "github.com/domainry/domainry-connectors/providers/help_center/zendesk_guide"
 	iot_telemetry_datadog_metrics "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics"
+	lead_source_tally "github.com/domainry/domainry-connectors/providers/lead_source/tally"
 	lms_moodle "github.com/domainry/domainry-connectors/providers/lms/moodle"
 	lms_talentlms "github.com/domainry/domainry-connectors/providers/lms/talentlms"
 	logistics_authorized_carrier_gateway "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway"
@@ -33,6 +34,7 @@ import (
 	tariff_classification_china_hs_bianma "github.com/domainry/domainry-connectors/providers/tariff_classification/china_hs_bianma"
 	trade_statistics_comex_stat "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat"
 	weather_open_meteo "github.com/domainry/domainry-connectors/providers/weather/open_meteo"
+	website_form_tally "github.com/domainry/domainry-connectors/providers/website_form/tally"
 )
 
 func providerSpecifications() []providerSpec {
@@ -54,6 +56,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/readme", packageName: "readme", constructor: providerConstructor(help_center_readme.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/zendesk_guide", packageName: "zendeskguide", constructor: providerConstructor(help_center_zendesk_guide.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics", packageName: "datadogmetrics", constructor: providerConstructor(iot_telemetry_datadog_metrics.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/lead_source/tally", packageName: "tally", constructor: providerConstructor(lead_source_tally.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/moodle", packageName: "moodle", constructor: providerConstructor(lms_moodle.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/talentlms", packageName: "talentlms", constructor: providerConstructor(lms_talentlms.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway", packageName: "authorizedcarriergateway", constructor: providerConstructor(logistics_authorized_carrier_gateway.New)},
@@ -66,6 +69,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/tariff_classification/china_hs_bianma", packageName: "chinahsbianma", constructor: providerConstructor(tariff_classification_china_hs_bianma.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat", packageName: "comexstat", constructor: providerConstructor(trade_statistics_comex_stat.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/weather/open_meteo", packageName: "openmeteo", constructor: providerConstructor(weather_open_meteo.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/website_form/tally", packageName: "tally", constructor: providerConstructor(website_form_tally.New)},
 	}
 }
 

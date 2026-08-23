@@ -464,6 +464,22 @@
       ]
     },
     {
+      "connector_key": "lead_source",
+      "provider_key": "tally",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/lead_source/tally",
+      "package_name": "tally",
+      "constructor": "New",
+      "descriptor_sha256": "bf214cd250a98d6616eed76ac869a268d23fbf3ea63f3e94b6f9a3b7c93271d8",
+      "operations": [
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "6f96577a2f01dc10aac94035a8d3c511677014e6443cd099c176017da1edac5f"
+        }
+      ]
+    },
+    {
       "connector_key": "lms",
       "provider_key": "moodle",
       "provider_revision": "1.0.0",
@@ -832,6 +848,22 @@
           "key": "get_daily",
           "mode": "call",
           "contract_sha256": "65073ca1eb88e5161ba84d107734b1c611cae21cd0ea487290fb4cdc539b9378"
+        }
+      ]
+    },
+    {
+      "connector_key": "website_form",
+      "provider_key": "tally",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/website_form/tally",
+      "package_name": "tally",
+      "constructor": "New",
+      "descriptor_sha256": "acf8c40e3b830db57a4bb6a5835b7695540b65aa6ed837e73feda5399243e75a",
+      "operations": [
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "3ce97fb19f44f28519ade0d333a952105df3dc4c33c444ce358f64a9bd8cc53b"
         }
       ]
     }
