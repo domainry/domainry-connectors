@@ -1896,6 +1896,47 @@
     },
     {
       "connector_key": "logistics",
+      "provider_key": "fedex",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/logistics/fedex",
+      "package_name": "fedex",
+      "constructor": "New",
+      "descriptor_sha256": "2a3d72ab218020f662361fd179cb0bed12e4d211609cef985756567a358588cd",
+      "operations": [
+        {
+          "key": "cancel_pickup",
+          "mode": "call",
+          "contract_sha256": "17d2b2701de1e7671dd1423881e4b8ea75012bc029b37a9bc5cfd6c658191251"
+        },
+        {
+          "key": "create_pickup",
+          "mode": "call",
+          "contract_sha256": "7c0941e68c3960504e16c80709fe8141a8f4b7362b8f0282b055e098b519aa3c"
+        },
+        {
+          "key": "create_shipment",
+          "mode": "call",
+          "contract_sha256": "8f1c2297627d8f3654725508a02f3b796fd5a90efe178bffe8587316abbb062a"
+        },
+        {
+          "key": "quote_rates",
+          "mode": "call",
+          "contract_sha256": "a6627675c6255587f553fc126f777f470f464b92d8b48514f211c2f01ba8eee5"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "a2879c297028e5fee189b49203b9a3f9c4c96182c7b68f928006edc6bd93408d"
+        },
+        {
+          "key": "track_shipment",
+          "mode": "call",
+          "contract_sha256": "bfe77eb2a7601443a0c0f731a79fbfcf490315105b98c084adf77f312ef4f24e"
+        }
+      ]
+    },
+    {
+      "connector_key": "logistics",
       "provider_key": "freightos",
       "provider_revision": "1.0.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/logistics/freightos",

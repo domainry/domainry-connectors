@@ -67,6 +67,7 @@ import (
 	lms_talentlms "github.com/domainry/domainry-connectors/providers/lms/talentlms"
 	logistics_authorized_carrier_gateway "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway"
 	logistics_dhl "github.com/domainry/domainry-connectors/providers/logistics/dhl"
+	logistics_fedex "github.com/domainry/domainry-connectors/providers/logistics/fedex"
 	logistics_freightos "github.com/domainry/domainry-connectors/providers/logistics/freightos"
 	logistics_shopify_fulfillment "github.com/domainry/domainry-connectors/providers/logistics/shopify_fulfillment"
 	map_address_nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
@@ -147,6 +148,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/talentlms", packageName: "talentlms", constructor: providerConstructor(lms_talentlms.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway", packageName: "authorizedcarriergateway", constructor: providerConstructor(logistics_authorized_carrier_gateway.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/dhl", packageName: "dhl", constructor: providerConstructor(logistics_dhl.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/fedex", packageName: "fedex", constructor: providerConstructor(logistics_fedex.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/freightos", packageName: "freightos", constructor: providerConstructor(logistics_freightos.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/shopify_fulfillment", packageName: "shopifyfulfillment", constructor: providerConstructor(logistics_shopify_fulfillment.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: providerConstructor(map_address_nominatim.New)},
