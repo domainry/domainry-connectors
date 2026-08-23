@@ -1,4 +1,4 @@
-.PHONY: test fmt-check vet boundary
+.PHONY: test fmt-check vet boundary catalog-check
 
 test:
 	go test ./...
@@ -27,3 +27,6 @@ boundary:
 		printf 'uncontrolled Provider capability detected\n' >&2; \
 		exit 1; \
 	fi
+
+catalog-check:
+	go run ./scripts/generate_catalog --check

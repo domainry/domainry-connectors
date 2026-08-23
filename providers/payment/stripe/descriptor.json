@@ -1,0 +1,625 @@
+{
+  "connector_key": "payment",
+  "provider_key": "stripe",
+  "provider_revision": "0.1.0",
+  "config_fields": [
+    {
+      "key": "base_url",
+      "name": "Stripe API base URL",
+      "type": "text",
+      "required": true,
+      "default": "https://api.stripe.com",
+      "validation": {}
+    },
+    {
+      "key": "currency",
+      "name": "Default currency",
+      "type": "text",
+      "required": false,
+      "default": "USD",
+      "validation": {}
+    },
+    {
+      "key": "success_url",
+      "name": "Success URL",
+      "type": "text",
+      "required": false,
+      "validation": {}
+    },
+    {
+      "key": "cancel_url",
+      "name": "Cancel URL",
+      "type": "text",
+      "required": false,
+      "validation": {}
+    },
+    {
+      "key": "webhook_tolerance_seconds",
+      "name": "Webhook tolerance seconds",
+      "type": "integer",
+      "required": false,
+      "default": 300,
+      "validation": {}
+    },
+    {
+      "key": "writeback_object_key",
+      "name": "Writeback object key",
+      "type": "text",
+      "required": false,
+      "validation": {}
+    },
+    {
+      "key": "writeback_status_field",
+      "name": "Writeback status field",
+      "type": "text",
+      "required": false,
+      "validation": {}
+    },
+    {
+      "key": "reconciliation_workflow_key",
+      "name": "Reconciliation workflow key",
+      "type": "text",
+      "required": false,
+      "validation": {}
+    },
+    {
+      "key": "status_apply_policy",
+      "name": "Status apply policy",
+      "type": "text",
+      "required": false,
+      "validation": {}
+    },
+    {
+      "key": "approval_required_statuses",
+      "name": "Approval required statuses",
+      "type": "text",
+      "required": false,
+      "validation": {}
+    },
+    {
+      "key": "timeout_seconds",
+      "name": "Timeout seconds",
+      "type": "integer",
+      "required": false,
+      "default": 30,
+      "validation": {
+        "min": 1,
+        "max": 120
+      }
+    }
+  ],
+  "secret_fields": [
+    {
+      "key": "api_key",
+      "name": "Secret API key",
+      "required": true,
+      "credential_kind": "api_key",
+      "material_format": "opaque",
+      "rotation_policy": "manual",
+      "expiry_policy": "optional",
+      "test_requirement": "when_bound"
+    },
+    {
+      "key": "webhook_secret",
+      "name": "Webhook signing secret",
+      "required": false,
+      "credential_kind": "signing_secret",
+      "material_format": "opaque",
+      "rotation_policy": "manual",
+      "expiry_policy": "optional",
+      "test_requirement": "when_bound"
+    }
+  ],
+  "operations": [
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "attach_payment_method",
+      "mode": "call",
+      "contract_sha256": "e2f444ffef727ce6f240273256be220ffd0fe223b73b6815b4e43ea2f9028f7c",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "cancel_payment_intent",
+      "mode": "call",
+      "contract_sha256": "109f962189a9963ef9b6e09aa814b28a48bcd445208bec3d4c74fe2aa23338aa",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "cancel_subscription",
+      "mode": "call",
+      "contract_sha256": "720ece628b9c75636a6c7fe1a44dc568b5d016eec32e631e034843fe56f374eb",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "capture_payment_intent",
+      "mode": "call",
+      "contract_sha256": "571ef8f119a72f85f2b4f1b2d21b5d0153e810ccb4716b48182f8ce66f3e834c",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "confirm_payment_intent",
+      "mode": "call",
+      "contract_sha256": "e36aaeaee4d17c5857e08d23fdf64d0c8d4de3e80f6642e8916e370e0750559f",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "create_checkout_session",
+      "mode": "call",
+      "contract_sha256": "c738a8d163f36f9ae08a0371c1eadd6b0c842a09865347f5234584a7396a8915",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "create_connect_account_link",
+      "mode": "call",
+      "contract_sha256": "cd7c83a3c514ca2f11a8853c55a0586b0fa8529c9bc23f57ed73c6f518563282",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "create_customer",
+      "mode": "call",
+      "contract_sha256": "6e0b42eba190200293ab73cf935ef8641273e690cd28c04b2e67bbf2f74599d1",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "create_invoice",
+      "mode": "call",
+      "contract_sha256": "34d47730401eae489e75d9e14d30008b241695ae6a5cc2a6fb203d236f6ebc99",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "create_invoice_item",
+      "mode": "call",
+      "contract_sha256": "836f6b25c381606f7f60496c7532beecf8dc56de0272410dbcf58b3d22d978ca",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "create_payment_intent",
+      "mode": "call",
+      "contract_sha256": "2ca92145bda3cfb9d6f9647c3e3fc87606408940fbc12a4ba0fa18fb87cf2239",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "create_payout",
+      "mode": "call",
+      "contract_sha256": "f82f8611689689b6003c309c7cb654f0438f3edee103a48e1a629864eba3201d",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "create_refund",
+      "mode": "call",
+      "contract_sha256": "40ca0548c411f14e528a89d01e485b998b9721eab6295d195f4ba14da5b35545",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "create_subscription",
+      "mode": "call",
+      "contract_sha256": "94e264279d7df49982a778fd3fbcb511584e50009d125a7b1ecc4ef9c91d157c",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "detach_payment_method",
+      "mode": "call",
+      "contract_sha256": "78403a1273f0a23991b6054f918a619a1392190a2c2489cffda06aea6e336a7c",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "expire_checkout_session",
+      "mode": "call",
+      "contract_sha256": "4c108dc3a6df07b2666141f062abb3836f08ccc67805a0cc2a03f662079cd4c2",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "finalize_invoice",
+      "mode": "call",
+      "contract_sha256": "b7abcdde69c132dacda6b2c31b24b2bbd829d8c9a835f9b9f2912987aaf70f92",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "list_balance_transactions",
+      "mode": "call",
+      "contract_sha256": "fb1fc8262823e43a8f912007767b682e362f787603a1a3dfbb93f1efcd71ad22",
+      "reliability": {
+        "effect": "read",
+        "idempotency": {
+          "strategy": "natural"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "list_disputes",
+      "mode": "call",
+      "contract_sha256": "208b0c9ac9b019bc8dbcebcc199e0e49db6f11ac09391cc122583843ba8a0842",
+      "reliability": {
+        "effect": "read",
+        "idempotency": {
+          "strategy": "natural"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "list_payouts",
+      "mode": "call",
+      "contract_sha256": "b1d4cfb4e95d9c4290f033344bf236712983c98c3a964b574fdfc01218dea383",
+      "reliability": {
+        "effect": "read",
+        "idempotency": {
+          "strategy": "natural"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "list_refunds",
+      "mode": "call",
+      "contract_sha256": "ff61675f12c7f7dbe32ed795a76dd5c1f419890ae0990a3d2996a2d0e2a097b7",
+      "reliability": {
+        "effect": "read",
+        "idempotency": {
+          "strategy": "natural"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "pay_invoice",
+      "mode": "call",
+      "contract_sha256": "624eaf9dbd7d388d3076e43bd0dc852603c7defd6cf295b1ccf0ae8c586af5b3",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "process_card_payment",
+      "mode": "start_operation",
+      "contract_sha256": "ec6b87d9409c8d1d36d7e0feea410ad1971718a96331a7d5ec259401772a2262",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "retrieve_connect_account",
+      "mode": "call",
+      "contract_sha256": "81b9bb9fee0ba7e97ab004482c5fe0edac56f845b3d7452dbf634cecbfeced0d",
+      "reliability": {
+        "effect": "read",
+        "idempotency": {
+          "strategy": "natural"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "retrieve_payment_intent",
+      "mode": "call",
+      "contract_sha256": "4beb8120d056009700e5b51d618ce1d1f6bc0dd65b0e24055fe561552a3576ec",
+      "reliability": {
+        "effect": "read",
+        "idempotency": {
+          "strategy": "natural"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "test_connection",
+      "mode": "call",
+      "contract_sha256": "73084e236e350007d31eaf5ce0a27fbd7d2f5813ad8b779ff01d0f3af43c2d3c",
+      "reliability": {
+        "effect": "read",
+        "idempotency": {
+          "strategy": "natural"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "update_customer",
+      "mode": "call",
+      "contract_sha256": "ab15ce72a3dccbfb2791e1ecbb0319b011cb99083de2a340c32755552d1b7a19",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "update_dispute",
+      "mode": "call",
+      "contract_sha256": "db960b550f914f7783fbf28d908a985df7b3400a0945a8c2b2738a9bc08a512b",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "update_subscription",
+      "mode": "call",
+      "contract_sha256": "a289ab0708829363d3fa16c1c0b92a14ddac845e03f2d0a3209a62efd662925e",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "connector_key": "payment",
+      "provider_key": "stripe",
+      "key": "void_invoice",
+      "mode": "call",
+      "contract_sha256": "e9d93da08066c1ea759bbcd86226c8c92beac08735974835df74319c8ce9903e",
+      "reliability": {
+        "effect": "write",
+        "idempotency": {
+          "strategy": "none"
+        },
+        "reconciliation": "none",
+        "compensation": {
+          "mode": "none"
+        }
+      }
+    }
+  ]
+}

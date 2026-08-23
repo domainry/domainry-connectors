@@ -23,6 +23,7 @@ make fmt-check
 make test
 make vet
 make boundary
+make catalog-check
 ```
 
 Provider extraction begins only after the independent SDK contract is ready.

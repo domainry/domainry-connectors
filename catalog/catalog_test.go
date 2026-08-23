@@ -3,6 +3,9 @@ package catalog
 import (
 	"bytes"
 	"encoding/json"
+	"io/fs"
+	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 	"testing"
@@ -46,5 +49,45 @@ func TestCatalogIsCanonicalAndHasUniqueIdentities(t *testing.T) {
 	canonical.WriteByte('\n')
 	if !bytes.Equal(canonical.Bytes(), Bytes()) {
 		t.Fatal("catalog.json is not canonical two-space-indented JSON")
+	}
+}
+
+func TestCatalogCoversEveryProviderPackage(t *testing.T) {
+	document, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogPaths := make(map[string]bool, len(document.Providers))
+	for _, provider := range document.Providers {
+		catalogPaths[provider.ImportPath] = true
+	}
+
+	providerRoot := filepath.Join("..", "providers")
+	err = filepath.WalkDir(providerRoot, func(path string, entry fs.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if !entry.IsDir() || path == providerRoot {
+			return nil
+		}
+		relative, err := filepath.Rel(providerRoot, path)
+		if err != nil {
+			return err
+		}
+		segments := strings.Split(filepath.ToSlash(relative), "/")
+		if len(segments) != 2 {
+			return nil
+		}
+		if _, err := os.Stat(filepath.Join(path, "provider.go")); err != nil {
+			return nil
+		}
+		importPath := "github.com/domainry/domainry-connectors/providers/" + strings.Join(segments, "/")
+		if !catalogPaths[importPath] {
+			t.Errorf("Provider package %s is missing from the official Catalog generator", importPath)
+		}
+		return filepath.SkipDir
+	})
+	if err != nil {
+		t.Fatal(err)
 	}
 }
