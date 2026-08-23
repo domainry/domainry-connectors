@@ -1,9 +1,9 @@
 {
   "contract_version": "domainry-official-connector-catalog-v1",
   "sdk": {
-    "version": "v0.1.0-dev.7",
-    "contract_version": "connector-contract-v7",
-    "contract_sha256": "7f2f6bb06bab4143faf75ebffa76f44cc1f06de6ecdbcfeb88ca6604a5b35274"
+    "version": "v0.1.0-dev.8",
+    "contract_version": "connector-contract-v8",
+    "contract_sha256": "c0934e9e6d5ce24f8be0cfe1df1a3bd32bbd818924bf818706943792c04fe33e"
   },
   "providers": [
     {
@@ -1432,6 +1432,37 @@
           "key": "test_connection",
           "mode": "call",
           "contract_sha256": "0d6f0301c181a15f6994dc2a94f7dc0fbe56ee80ced619b4e1c1e1b83ddee318"
+        }
+      ]
+    },
+    {
+      "connector_key": "file_storage",
+      "provider_key": "local",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/file_storage/local",
+      "package_name": "local",
+      "constructor": "New",
+      "descriptor_sha256": "097d49c2860b06efe826a6439cffcace8a6d9040f73a1f303785b2e37853b147",
+      "operations": [
+        {
+          "key": "delete",
+          "mode": "call",
+          "contract_sha256": "6a170bdbf602291c72d9f37fd2dfbf3591f0c32cf8ce3b751062e3fcd20dbbb8"
+        },
+        {
+          "key": "get_text",
+          "mode": "call",
+          "contract_sha256": "37a7acbfb6ba0e7382a9e39668290cc2d62e0d74567e5029a240712b799210dc"
+        },
+        {
+          "key": "put_text",
+          "mode": "call",
+          "contract_sha256": "98623acc286f328d5bb9208fd741e85c0b147fa24eb685e602982d83760750ec"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "e1d1443180eb710663214176b0c6987a8086f9260203b88b57bdcaf3fbcb6964"
         }
       ]
     },

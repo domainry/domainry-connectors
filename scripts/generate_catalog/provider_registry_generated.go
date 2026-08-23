@@ -53,6 +53,7 @@ import (
 	external_database_snowflake "github.com/domainry/domainry-connectors/providers/external_database/snowflake"
 	external_database_sqlserver "github.com/domainry/domainry-connectors/providers/external_database/sqlserver"
 	feishu_collaboration_feishu "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu"
+	file_storage_local "github.com/domainry/domainry-connectors/providers/file_storage/local"
 	file_storage_s3 "github.com/domainry/domainry-connectors/providers/file_storage/s3"
 	google_workspace_google "github.com/domainry/domainry-connectors/providers/google_workspace/google"
 	help_center_confluence "github.com/domainry/domainry-connectors/providers/help_center/confluence"
@@ -149,6 +150,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/snowflake", packageName: "snowflake", constructor: providerConstructor(external_database_snowflake.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/sqlserver", packageName: "sqlserver", constructor: providerConstructor(external_database_sqlserver.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu", packageName: "feishu", constructor: providerConstructor(feishu_collaboration_feishu.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/file_storage/local", packageName: "local", constructor: providerConstructor(file_storage_local.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/file_storage/s3", packageName: "s3", constructor: providerConstructor(file_storage_s3.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/google_workspace/google", packageName: "google", constructor: providerConstructor(google_workspace_google.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/confluence", packageName: "confluence", constructor: providerConstructor(help_center_confluence.New)},

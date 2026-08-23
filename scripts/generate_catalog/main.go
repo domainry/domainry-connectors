@@ -91,6 +91,10 @@ func (noopTransport) SendSMTP(context.Context, connector.SMTPRequest) (connector
 	return connector.SMTPResult{}, fmt.Errorf("Catalog generation transport cannot perform SMTP")
 }
 
+func (noopTransport) ExecuteFilesystem(context.Context, connector.FilesystemRequest) (connector.FilesystemResult, error) {
+	return connector.FilesystemResult{}, fmt.Errorf("Catalog generation transport cannot access the filesystem")
+}
+
 func fatal(err error) {
 	fmt.Fprintln(os.Stderr, err)
 	os.Exit(1)
