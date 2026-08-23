@@ -22,6 +22,7 @@ import (
 	collaboration_discord "github.com/domainry/domainry-connectors/providers/collaboration/discord"
 	collaboration_enterprise_wechat "github.com/domainry/domainry-connectors/providers/collaboration/enterprise_wechat"
 	collaboration_feishu "github.com/domainry/domainry-connectors/providers/collaboration/feishu"
+	collaboration_google_workspace "github.com/domainry/domainry-connectors/providers/collaboration/google_workspace"
 	customer_feedback_delighted "github.com/domainry/domainry-connectors/providers/customer_feedback/delighted"
 	customer_feedback_surveymonkey "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey"
 	customer_feedback_trustpilot "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot"
@@ -76,6 +77,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/collaboration/discord", packageName: "discord", constructor: providerConstructor(collaboration_discord.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/collaboration/enterprise_wechat", packageName: "enterprisewechat", constructor: providerConstructor(collaboration_enterprise_wechat.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/collaboration/feishu", packageName: "feishu", constructor: providerConstructor(collaboration_feishu.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/collaboration/google_workspace", packageName: "googleworkspace", constructor: providerConstructor(collaboration_google_workspace.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/delighted", packageName: "delighted", constructor: providerConstructor(customer_feedback_delighted.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey", packageName: "surveymonkey", constructor: providerConstructor(customer_feedback_surveymonkey.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot", packageName: "trustpilot", constructor: providerConstructor(customer_feedback_trustpilot.New)},
