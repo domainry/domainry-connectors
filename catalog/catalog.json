@@ -2745,6 +2745,27 @@
       ]
     },
     {
+      "connector_key": "webhook",
+      "provider_key": "http",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/webhook/http",
+      "package_name": "http",
+      "constructor": "New",
+      "descriptor_sha256": "c99211116a23249d4cf3b438c677f935adf9507f0c49f726ed07dda61a58ea67",
+      "operations": [
+        {
+          "key": "send",
+          "mode": "enqueue",
+          "contract_sha256": "824c3f35b0f8917ba4fd37f5cd4a7269704676172d9cb3c83d89de6daccb3e18"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "f22bc1f275ee012047c0bccc20745051a0eeafb7e73f3c496772d1f3fc07bbed"
+        }
+      ]
+    },
+    {
       "connector_key": "website_form",
       "provider_key": "tally",
       "provider_revision": "1.0.0",
