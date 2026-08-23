@@ -1446,6 +1446,102 @@
       ]
     },
     {
+      "connector_key": "google_workspace",
+      "provider_key": "google",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/google_workspace/google",
+      "package_name": "google",
+      "constructor": "New",
+      "descriptor_sha256": "fc81848d0a03844374d59e5ee28e6f280c81a187ad5046b1631e5758955ac396",
+      "operations": [
+        {
+          "key": "gmail_get_message",
+          "mode": "call",
+          "contract_sha256": "fd63131ba3621a277bad6d12cae583c3b7dbb8d6160efb9ff9ecc497bf199bbc"
+        },
+        {
+          "key": "gmail_get_profile",
+          "mode": "call",
+          "contract_sha256": "d7a362cc7bc11aaa5eb1d7e84e45ddff284a177eeb295238fb11070f6c9dec26"
+        },
+        {
+          "key": "gmail_list_messages",
+          "mode": "call",
+          "contract_sha256": "f696580b2823fe0924ece61a97fb667bfe9127c6ee7bc39d159757ab81df2d92"
+        },
+        {
+          "key": "gmail_send_message",
+          "mode": "enqueue",
+          "contract_sha256": "9f76169c0993f9abc01a70f4a27b0e04e49a2ab318bd23a6ee3cbe8c9b2ff649"
+        },
+        {
+          "key": "gmail_stop",
+          "mode": "call",
+          "contract_sha256": "c4503fac2720b68a86dfe33a4e6f4e82fa2d00e67968af62e55d2f5a93f7df38"
+        },
+        {
+          "key": "gmail_watch",
+          "mode": "call",
+          "contract_sha256": "45250915092fe46cc248ff760cb8456526cc4733f32813008d35a3fb6e0f746d"
+        },
+        {
+          "key": "pubsub_acknowledge",
+          "mode": "call",
+          "contract_sha256": "bc3fcb26ff6a343ed9b80209d039bb4b8c06288f8cc9fcfe11f3ee31fb0c9bfd"
+        },
+        {
+          "key": "pubsub_delete_subscription",
+          "mode": "call",
+          "contract_sha256": "55bd9833c49c013c0859bf924214fae535c675f2f668f4fcd529ce0c2d4deaa1"
+        },
+        {
+          "key": "pubsub_ensure_subscription",
+          "mode": "call",
+          "contract_sha256": "a27eaa2ee1147c0a2f875e75490650754f62225e467db833bbe764469e43f69d"
+        },
+        {
+          "key": "pubsub_ensure_topic",
+          "mode": "call",
+          "contract_sha256": "eb5762e09843dba2872b999b4a0fc8565e43c8bcf456c035e7729f8bf788d213"
+        },
+        {
+          "key": "pubsub_get_topic_policy",
+          "mode": "call",
+          "contract_sha256": "ba762cbb3149c394b412928911be1f36213296fa81b3507681a2bb69475a3651"
+        },
+        {
+          "key": "pubsub_pull",
+          "mode": "call",
+          "contract_sha256": "5f0be78aa9e49fc990b4200de0c7fe9331c6ae9dc0c170a93f658286bce56ccf"
+        },
+        {
+          "key": "pubsub_set_topic_policy",
+          "mode": "call",
+          "contract_sha256": "5b857ff9a6e6d73a87abc3256d46329c33fd883f4a41ab9b7b0098a0e6d16c2f"
+        },
+        {
+          "key": "sync_calendar",
+          "mode": "call",
+          "contract_sha256": "99bf434b3985bb7b3257936be1be59af60caebcf287ecf06ef8daaacb047989a"
+        },
+        {
+          "key": "sync_drive_file_refs",
+          "mode": "call",
+          "contract_sha256": "2101dde3285ca7a4e53983bd2c9bb5ed52792c3fb556103585658f4cbb7f93bc"
+        },
+        {
+          "key": "sync_email_history",
+          "mode": "call",
+          "contract_sha256": "44e4ad5abfa1a37448d571030b9cb5a0e550ce3012f0baccf69084ab345bbfa1"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "b5024bf0fdfcd11b45b9f7a7bfe304582c76ba5a1119246a7e66184035d43371"
+        }
+      ]
+    },
+    {
       "connector_key": "help_center",
       "provider_key": "confluence",
       "provider_revision": "1.0.0",
