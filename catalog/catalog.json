@@ -229,6 +229,52 @@
       ]
     },
     {
+      "connector_key": "appointment_scheduling",
+      "provider_key": "google_calendar",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/appointment_scheduling/google_calendar",
+      "package_name": "googlecalendar",
+      "constructor": "New",
+      "descriptor_sha256": "fd03ee5cbe2141a7ee6f4f13465e3c0c07d833deb88c515aaab2b33912ef37b9",
+      "operations": [
+        {
+          "key": "cancel_scheduled_event",
+          "mode": "call",
+          "contract_sha256": "09d521d641dcd334b09676d0c9d2f8bc1771ed648206cef4c5fdc231d32fa082"
+        },
+        {
+          "key": "create_booking",
+          "mode": "call",
+          "contract_sha256": "928778cc82cac4f36f946f071d8b588e37eb555170f9878281aca249e29c66e1"
+        },
+        {
+          "key": "enqueue_booking",
+          "mode": "enqueue",
+          "contract_sha256": "425b4b8fdc9a5865424285463c073951321d757d50dfbf1dc01b6f05eb507146"
+        },
+        {
+          "key": "list_scheduled_events",
+          "mode": "call",
+          "contract_sha256": "03718b1dd1f9c62875e87ab34f8c29d7b15ae3ec62aebe8d10ddf1748a8a6e94"
+        },
+        {
+          "key": "reschedule_scheduled_event",
+          "mode": "call",
+          "contract_sha256": "4a086743e91ae464065a1075fa4493efeb5c94fda5d60b1446bd1033b81a0b76"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "7fb4c29cab409b99b675ce439ae7c376287217e18c25d5466e6c4cbd4c45b891"
+        },
+        {
+          "key": "watch_scheduled_events",
+          "mode": "call",
+          "contract_sha256": "19cd60e96e5ac3aa0b44eeb5a6329d19cf2416233256f9ffd1f5b0ee943ce25a"
+        }
+      ]
+    },
+    {
       "connector_key": "bank_reconciliation",
       "provider_key": "plaid",
       "provider_revision": "1.0.0",
