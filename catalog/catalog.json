@@ -713,6 +713,32 @@
       ]
     },
     {
+      "connector_key": "marketplace",
+      "provider_key": "etsy",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/marketplace/etsy",
+      "package_name": "etsy",
+      "constructor": "New",
+      "descriptor_sha256": "acfd53ce678bf6a2155210c1d23e2227dea8838cca26a627d1c059fa00786ab8",
+      "operations": [
+        {
+          "key": "list_listings",
+          "mode": "call",
+          "contract_sha256": "df992b4774ae6237cb3bf7a64771bedfed46ed88d00ac92b13781e064c903327"
+        },
+        {
+          "key": "list_orders",
+          "mode": "call",
+          "contract_sha256": "7786ead8684eac7098bbd8352cacb464897691aee8fc02fc7db7b02668797f9c"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "b098b0312858c224a55e668d19d9c71b77489b4f868c9dada7b9d6939cb6668d"
+        }
+      ]
+    },
+    {
       "connector_key": "observability_compliance",
       "provider_key": "prometheus",
       "provider_revision": "1.0.0",

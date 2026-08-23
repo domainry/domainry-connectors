@@ -30,6 +30,7 @@ import (
 	logistics_authorized_carrier_gateway "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway"
 	logistics_freightos "github.com/domainry/domainry-connectors/providers/logistics/freightos"
 	map_address_nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
+	marketplace_etsy "github.com/domainry/domainry-connectors/providers/marketplace/etsy"
 	observability_compliance_prometheus "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus"
 	openai_openai "github.com/domainry/domainry-connectors/providers/openai/openai"
 	payment_stripe "github.com/domainry/domainry-connectors/providers/payment/stripe"
@@ -69,6 +70,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway", packageName: "authorizedcarriergateway", constructor: providerConstructor(logistics_authorized_carrier_gateway.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/freightos", packageName: "freightos", constructor: providerConstructor(logistics_freightos.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: providerConstructor(map_address_nominatim.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/marketplace/etsy", packageName: "etsy", constructor: providerConstructor(marketplace_etsy.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus", packageName: "prometheus", constructor: providerConstructor(observability_compliance_prometheus.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/openai/openai", packageName: "openai", constructor: providerConstructor(openai_openai.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/payment/stripe", packageName: "stripe", constructor: providerConstructor(payment_stripe.New)},
