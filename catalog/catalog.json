@@ -205,6 +205,22 @@
       ]
     },
     {
+      "connector_key": "trade_statistics",
+      "provider_key": "comex_stat",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat",
+      "package_name": "comexstat",
+      "constructor": "New",
+      "descriptor_sha256": "16f31782ce807e0381a6bcea687db2f75affc4083e783adafd3e70fde458efd0",
+      "operations": [
+        {
+          "key": "query_import_statistics",
+          "mode": "call",
+          "contract_sha256": "9b4f3fc0f5f205ae880eb1fa360561c594617a3bb5c725edcf26b2a603c06501"
+        }
+      ]
+    },
+    {
       "connector_key": "weather",
       "provider_key": "open_meteo",
       "provider_revision": "1.0.0",

@@ -7,6 +7,7 @@ import (
 	calendar_holidays_jp "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp"
 	map_address_nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
 	payment_stripe "github.com/domainry/domainry-connectors/providers/payment/stripe"
+	trade_statistics_comex_stat "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat"
 	weather_open_meteo "github.com/domainry/domainry-connectors/providers/weather/open_meteo"
 )
 
@@ -15,6 +16,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp", packageName: "holidaysjp", constructor: providerConstructor(calendar_holidays_jp.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: providerConstructor(map_address_nominatim.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/payment/stripe", packageName: "stripe", constructor: providerConstructor(payment_stripe.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat", packageName: "comexstat", constructor: providerConstructor(trade_statistics_comex_stat.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/weather/open_meteo", packageName: "openmeteo", constructor: providerConstructor(weather_open_meteo.New)},
 	}
 }
