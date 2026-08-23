@@ -50,6 +50,7 @@ import (
 	external_database_mysql "github.com/domainry/domainry-connectors/providers/external_database/mysql"
 	external_database_postgres "github.com/domainry/domainry-connectors/providers/external_database/postgres"
 	external_database_snowflake "github.com/domainry/domainry-connectors/providers/external_database/snowflake"
+	external_database_sqlserver "github.com/domainry/domainry-connectors/providers/external_database/sqlserver"
 	feishu_collaboration_feishu "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu"
 	help_center_confluence "github.com/domainry/domainry-connectors/providers/help_center/confluence"
 	help_center_gitbook "github.com/domainry/domainry-connectors/providers/help_center/gitbook"
@@ -127,6 +128,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/mysql", packageName: "mysql", constructor: providerConstructor(external_database_mysql.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/postgres", packageName: "postgres", constructor: providerConstructor(external_database_postgres.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/snowflake", packageName: "snowflake", constructor: providerConstructor(external_database_snowflake.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/sqlserver", packageName: "sqlserver", constructor: providerConstructor(external_database_sqlserver.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu", packageName: "feishu", constructor: providerConstructor(feishu_collaboration_feishu.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/confluence", packageName: "confluence", constructor: providerConstructor(help_center_confluence.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/gitbook", packageName: "gitbook", constructor: providerConstructor(help_center_gitbook.New)},
