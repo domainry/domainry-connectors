@@ -23,6 +23,22 @@
       ]
     },
     {
+      "connector_key": "logistics",
+      "provider_key": "authorized_carrier_gateway",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway",
+      "package_name": "authorizedcarriergateway",
+      "constructor": "New",
+      "descriptor_sha256": "5382b3fd1b016f1a984cf318323d0347401915a4b2de7bd78bbc887349995779",
+      "operations": [
+        {
+          "key": "quote_rates",
+          "mode": "call",
+          "contract_sha256": "a6627675c6255587f553fc126f777f470f464b92d8b48514f211c2f01ba8eee5"
+        }
+      ]
+    },
+    {
       "connector_key": "map_address",
       "provider_key": "nominatim",
       "provider_revision": "1.0.0",
