@@ -14,6 +14,7 @@ import (
 	customer_feedback_trustpilot "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot"
 	customer_feedback_typeform "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform"
 	lms_moodle "github.com/domainry/domainry-connectors/providers/lms/moodle"
+	lms_talentlms "github.com/domainry/domainry-connectors/providers/lms/talentlms"
 	logistics_authorized_carrier_gateway "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway"
 	logistics_freightos "github.com/domainry/domainry-connectors/providers/logistics/freightos"
 	map_address_nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
@@ -37,6 +38,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot", packageName: "trustpilot", constructor: providerConstructor(customer_feedback_trustpilot.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform", packageName: "typeform", constructor: providerConstructor(customer_feedback_typeform.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/moodle", packageName: "moodle", constructor: providerConstructor(lms_moodle.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/lms/talentlms", packageName: "talentlms", constructor: providerConstructor(lms_talentlms.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway", packageName: "authorizedcarriergateway", constructor: providerConstructor(logistics_authorized_carrier_gateway.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/freightos", packageName: "freightos", constructor: providerConstructor(logistics_freightos.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: providerConstructor(map_address_nominatim.New)},
