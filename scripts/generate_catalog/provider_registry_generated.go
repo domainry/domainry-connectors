@@ -13,6 +13,7 @@ import (
 	customer_feedback_surveymonkey "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey"
 	customer_feedback_trustpilot "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot"
 	customer_feedback_typeform "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform"
+	help_center_confluence "github.com/domainry/domainry-connectors/providers/help_center/confluence"
 	help_center_gitbook "github.com/domainry/domainry-connectors/providers/help_center/gitbook"
 	help_center_help_scout_docs "github.com/domainry/domainry-connectors/providers/help_center/help_scout_docs"
 	help_center_intercom_articles "github.com/domainry/domainry-connectors/providers/help_center/intercom_articles"
@@ -45,6 +46,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey", packageName: "surveymonkey", constructor: providerConstructor(customer_feedback_surveymonkey.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot", packageName: "trustpilot", constructor: providerConstructor(customer_feedback_trustpilot.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform", packageName: "typeform", constructor: providerConstructor(customer_feedback_typeform.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/confluence", packageName: "confluence", constructor: providerConstructor(help_center_confluence.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/gitbook", packageName: "gitbook", constructor: providerConstructor(help_center_gitbook.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/help_scout_docs", packageName: "helpscoutdocs", constructor: providerConstructor(help_center_help_scout_docs.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/intercom_articles", packageName: "intercomarticles", constructor: providerConstructor(help_center_intercom_articles.New)},
