@@ -60,8 +60,8 @@ type Response map[string]any
 var (
 	ListEventTypes       = connector.CallOperation[ListEventTypesInput, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "list_event_types", ContractSHA256: "5cc6e50948aa95cf6c9acbe02050ba4ef273f59b19fb67771fe5c00542bbc02b", Reliability: readReliability()}
 	ListScheduledEvents  = connector.CallOperation[ListScheduledEventsInput, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "list_scheduled_events", ContractSHA256: "03718b1dd1f9c62875e87ab34f8c29d7b15ae3ec62aebe8d10ddf1748a8a6e94", Reliability: readReliability()}
-	CreateSchedulingLink = connector.CallOperation[CreateSchedulingLinkInput, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "create_scheduling_link", ContractSHA256: "6bf835923d29858351a34ef988ed3697664743ae497ec783bd0598a68133571d", Reliability: writeReliability()}
-	CancelScheduledEvent = connector.CallOperation[CancelScheduledEventInput, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "cancel_scheduled_event", ContractSHA256: "5bda3d58d0b1996439bfd85bd778e4e598a721b70f585cd0b06e42a8cbc5360f", Reliability: writeReliability()}
+	CreateSchedulingLink = connector.CallOperation[CreateSchedulingLinkInput, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "create_scheduling_link", ContractSHA256: "fa4ab81794652f4e3ce2492ff356b9f2541d8d322e3b85fff29a6aa6a36524fc", Reliability: writeReliability()}
+	CancelScheduledEvent = connector.CallOperation[CancelScheduledEventInput, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "cancel_scheduled_event", ContractSHA256: "09d521d641dcd334b09676d0c9d2f8bc1771ed648206cef4c5fdc231d32fa082", Reliability: writeReliability()}
 	TestConnection       = connector.CallOperation[struct{}, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "test_connection", ContractSHA256: "7fb4c29cab409b99b675ce439ae7c376287217e18c25d5466e6c4cbd4c45b891", Reliability: readReliability()}
 )
 

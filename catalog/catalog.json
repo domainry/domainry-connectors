@@ -158,17 +158,17 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/appointment_scheduling/calendly",
       "package_name": "calendly",
       "constructor": "New",
-      "descriptor_sha256": "7c1e928af672eab204e50a5002ba3a6ba4eb0b9f531cf7f8104241e35d9f99de",
+      "descriptor_sha256": "0aaa79890f54e272610e7ecbc4a1026ac63505a6674b5a7824438067b3c5fa7f",
       "operations": [
         {
           "key": "cancel_scheduled_event",
           "mode": "call",
-          "contract_sha256": "5bda3d58d0b1996439bfd85bd778e4e598a721b70f585cd0b06e42a8cbc5360f"
+          "contract_sha256": "09d521d641dcd334b09676d0c9d2f8bc1771ed648206cef4c5fdc231d32fa082"
         },
         {
           "key": "create_scheduling_link",
           "mode": "call",
-          "contract_sha256": "6bf835923d29858351a34ef988ed3697664743ae497ec783bd0598a68133571d"
+          "contract_sha256": "fa4ab81794652f4e3ce2492ff356b9f2541d8d322e3b85fff29a6aa6a36524fc"
         },
         {
           "key": "list_event_types",
