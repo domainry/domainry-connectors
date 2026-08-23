@@ -12,10 +12,6 @@ import (
 
 	connector "github.com/domainry/domainry-connector-sdk"
 	"github.com/domainry/domainry-connectors/catalog"
-	holidaysjp "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp"
-	nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
-	stripe "github.com/domainry/domainry-connectors/providers/payment/stripe"
-	openmeteo "github.com/domainry/domainry-connectors/providers/weather/open_meteo"
 )
 
 const outputPath = "catalog/catalog.json"
@@ -29,12 +25,7 @@ type providerSpec struct {
 func main() {
 	check := flag.Bool("check", false, "fail when catalog/catalog.json is stale")
 	flag.Parse()
-	specifications := []providerSpec{
-		{importPath: "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp", packageName: "holidaysjp", constructor: holidaysjp.New},
-		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: nominatim.New},
-		{importPath: "github.com/domainry/domainry-connectors/providers/payment/stripe", packageName: "stripe", constructor: stripe.New},
-		{importPath: "github.com/domainry/domainry-connectors/providers/weather/open_meteo", packageName: "openmeteo", constructor: openmeteo.New},
-	}
+	specifications := providerSpecifications()
 	document := catalog.Document{ContractVersion: catalog.ContractVersion}
 	identity := connector.CurrentIdentity()
 	document.SDK = catalog.SDKIdentity{Version: identity.SDKVersion, ContractVersion: identity.ContractVersion, ContractSHA256: identity.ContractSHA256}
