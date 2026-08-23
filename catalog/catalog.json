@@ -473,6 +473,27 @@
       ]
     },
     {
+      "connector_key": "collaboration",
+      "provider_key": "enterprise_wechat",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/enterprise_wechat",
+      "package_name": "enterprisewechat",
+      "constructor": "New",
+      "descriptor_sha256": "2f0dc187a721eb8fe0c3b8224d49c6fd3e65d1c6490a5c45ef37079a40278cf3",
+      "operations": [
+        {
+          "key": "send_message",
+          "mode": "enqueue",
+          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "a354f65a655c7afc141199c44f831137989741466e5c064d4a872fdb8dec4916"
+        }
+      ]
+    },
+    {
       "connector_key": "customer_feedback",
       "provider_key": "delighted",
       "provider_revision": "1.0.0",
