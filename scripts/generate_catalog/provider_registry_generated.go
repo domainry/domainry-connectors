@@ -18,6 +18,7 @@ import (
 	appointment_scheduling_microsoft_booking "github.com/domainry/domainry-connectors/providers/appointment_scheduling/microsoft_booking"
 	bank_reconciliation_plaid "github.com/domainry/domainry-connectors/providers/bank_reconciliation/plaid"
 	calendar_holidays_jp "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp"
+	collaboration_dingtalk "github.com/domainry/domainry-connectors/providers/collaboration/dingtalk"
 	customer_feedback_delighted "github.com/domainry/domainry-connectors/providers/customer_feedback/delighted"
 	customer_feedback_surveymonkey "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey"
 	customer_feedback_trustpilot "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot"
@@ -67,6 +68,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/appointment_scheduling/microsoft_booking", packageName: "microsoftbooking", constructor: providerConstructor(appointment_scheduling_microsoft_booking.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/bank_reconciliation/plaid", packageName: "plaid", constructor: providerConstructor(bank_reconciliation_plaid.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp", packageName: "holidaysjp", constructor: providerConstructor(calendar_holidays_jp.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/collaboration/dingtalk", packageName: "dingtalk", constructor: providerConstructor(collaboration_dingtalk.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/delighted", packageName: "delighted", constructor: providerConstructor(customer_feedback_delighted.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey", packageName: "surveymonkey", constructor: providerConstructor(customer_feedback_surveymonkey.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot", packageName: "trustpilot", constructor: providerConstructor(customer_feedback_trustpilot.New)},
