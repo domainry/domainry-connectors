@@ -69,6 +69,7 @@ import (
 	logistics_dhl "github.com/domainry/domainry-connectors/providers/logistics/dhl"
 	logistics_fedex "github.com/domainry/domainry-connectors/providers/logistics/fedex"
 	logistics_freightos "github.com/domainry/domainry-connectors/providers/logistics/freightos"
+	logistics_sf_express "github.com/domainry/domainry-connectors/providers/logistics/sf_express"
 	logistics_shopify_fulfillment "github.com/domainry/domainry-connectors/providers/logistics/shopify_fulfillment"
 	map_address_nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
 	marketplace_etsy "github.com/domainry/domainry-connectors/providers/marketplace/etsy"
@@ -150,6 +151,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/dhl", packageName: "dhl", constructor: providerConstructor(logistics_dhl.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/fedex", packageName: "fedex", constructor: providerConstructor(logistics_fedex.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/freightos", packageName: "freightos", constructor: providerConstructor(logistics_freightos.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/sf_express", packageName: "sfexpress", constructor: providerConstructor(logistics_sf_express.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/shopify_fulfillment", packageName: "shopifyfulfillment", constructor: providerConstructor(logistics_shopify_fulfillment.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: providerConstructor(map_address_nominatim.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/marketplace/etsy", packageName: "etsy", constructor: providerConstructor(marketplace_etsy.New)},

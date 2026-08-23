@@ -1953,6 +1953,37 @@
     },
     {
       "connector_key": "logistics",
+      "provider_key": "sf_express",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/logistics/sf_express",
+      "package_name": "sfexpress",
+      "constructor": "New",
+      "descriptor_sha256": "03926a44bb73d59cb309a85405d739e8dba27078f535ee7746d82b903d7681e3",
+      "operations": [
+        {
+          "key": "create_shipment",
+          "mode": "call",
+          "contract_sha256": "8f1c2297627d8f3654725508a02f3b796fd5a90efe178bffe8587316abbb062a"
+        },
+        {
+          "key": "create_shipment_operation",
+          "mode": "start_operation",
+          "contract_sha256": "bb880e48d6809395f2383c10ead2d2b2a411bcc1542b8996ee957e11ad057f4e"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "a2879c297028e5fee189b49203b9a3f9c4c96182c7b68f928006edc6bd93408d"
+        },
+        {
+          "key": "track_shipment",
+          "mode": "call",
+          "contract_sha256": "bfe77eb2a7601443a0c0f731a79fbfcf490315105b98c084adf77f312ef4f24e"
+        }
+      ]
+    },
+    {
+      "connector_key": "logistics",
       "provider_key": "shopify_fulfillment",
       "provider_revision": "1.0.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/logistics/shopify_fulfillment",
