@@ -3,7 +3,7 @@
   "sdk": {
     "version": "v0.1.0-dev.5",
     "contract_version": "connector-contract-v5",
-    "contract_sha256": "ed0e5dc7db5c8d89b3d6d8f7689ade7fde1afb0ad7722431c275430be7bc6499"
+    "contract_sha256": "916f09dda181c978735eadf1df35cef251a07fe4556b033e207181ba9ce319da"
   },
   "providers": [
     {
@@ -1034,6 +1034,32 @@
           "key": "test_connection",
           "mode": "call",
           "contract_sha256": "4149001f97eb3c94cc8f349e8b595521d0b50f769c8a6cc8cb0571925a07a219"
+        }
+      ]
+    },
+    {
+      "connector_key": "email",
+      "provider_key": "smtp",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/email/smtp",
+      "package_name": "smtp",
+      "constructor": "New",
+      "descriptor_sha256": "6514ab20a848355f5b1333b13c62d8eae9850fe82afdcef6e4a362af7ca0ba54",
+      "operations": [
+        {
+          "key": "send_email",
+          "mode": "enqueue",
+          "contract_sha256": "ce81e72365b4f16b75a26909f2e30d8325a88ec305adb11f81d9247714c4968c"
+        },
+        {
+          "key": "send_file_email",
+          "mode": "enqueue",
+          "contract_sha256": "3c91521147ec9c087a6c04612ba0ecd63a30248f3afa6691850437f0ad154483"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "6f25b4a2fc713dbb566f56a7a1ae5121ea5a3740710f4cdf3618da0492c6eb34"
         }
       ]
     },

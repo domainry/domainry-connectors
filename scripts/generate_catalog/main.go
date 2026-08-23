@@ -87,6 +87,10 @@ func (noopTransport) ExecuteSQL(context.Context, connector.SQLRequest) (connecto
 	return connector.SQLResult{}, fmt.Errorf("Catalog generation transport cannot perform SQL")
 }
 
+func (noopTransport) SendSMTP(context.Context, connector.SMTPRequest) (connector.SMTPResult, error) {
+	return connector.SMTPResult{}, fmt.Errorf("Catalog generation transport cannot perform SMTP")
+}
+
 func fatal(err error) {
 	fmt.Fprintln(os.Stderr, err)
 	os.Exit(1)
