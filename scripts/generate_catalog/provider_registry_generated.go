@@ -39,6 +39,7 @@ import (
 	delivery_operations_netsuite "github.com/domainry/domainry-connectors/providers/delivery_operations/netsuite"
 	delivery_operations_odoo "github.com/domainry/domainry-connectors/providers/delivery_operations/odoo"
 	delivery_operations_sap_business_one "github.com/domainry/domainry-connectors/providers/delivery_operations/sap_business_one"
+	document_generation_pdf "github.com/domainry/domainry-connectors/providers/document_generation/pdf"
 	ecommerce_shopify "github.com/domainry/domainry-connectors/providers/ecommerce/shopify"
 	email_smtp "github.com/domainry/domainry-connectors/providers/email/smtp"
 	esign_adobe_sign "github.com/domainry/domainry-connectors/providers/esign/adobe_sign"
@@ -134,6 +135,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/netsuite", packageName: "netsuite", constructor: providerConstructor(delivery_operations_netsuite.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/odoo", packageName: "odoo", constructor: providerConstructor(delivery_operations_odoo.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/sap_business_one", packageName: "sapbusinessone", constructor: providerConstructor(delivery_operations_sap_business_one.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/document_generation/pdf", packageName: "pdf", constructor: providerConstructor(document_generation_pdf.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/ecommerce/shopify", packageName: "shopify", constructor: providerConstructor(ecommerce_shopify.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/email/smtp", packageName: "smtp", constructor: providerConstructor(email_smtp.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/esign/adobe_sign", packageName: "adobesign", constructor: providerConstructor(esign_adobe_sign.New)},

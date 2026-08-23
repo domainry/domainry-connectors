@@ -1007,6 +1007,27 @@
       ]
     },
     {
+      "connector_key": "document_generation",
+      "provider_key": "pdf",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/document_generation/pdf",
+      "package_name": "pdf",
+      "constructor": "New",
+      "descriptor_sha256": "38429d879dc7d5855ce23e73180e4e9262f1363003e9196d50c3c95622333fe3",
+      "operations": [
+        {
+          "key": "render_pdf",
+          "mode": "call",
+          "contract_sha256": "d11160b6a449ea92590653e020ca9c5f190dc827294d657e8f039ded32c9f5d9"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "43d62754d16693942e4c9a1db92adc684a59f3e194a46de790c3be96cc0b1039"
+        }
+      ]
+    },
+    {
       "connector_key": "ecommerce",
       "provider_key": "shopify",
       "provider_revision": "1.0.0",
