@@ -2582,6 +2582,27 @@
       ]
     },
     {
+      "connector_key": "social_message",
+      "provider_key": "facebook_messenger",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/social_message/facebook_messenger",
+      "package_name": "facebookmessenger",
+      "constructor": "New",
+      "descriptor_sha256": "fadec660b4e0517039c22691d76505c6a549be3639f7226fb942e3139def1855",
+      "operations": [
+        {
+          "key": "send_message",
+          "mode": "call",
+          "contract_sha256": "a9b43aa09225808ca109a1772ce1dd9d99db3ef9759209a87e08e34126373d3c"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "eb6666daf4e750a585c727c6805da45c2978f4f59ea8ec57a385445d939d2ac2"
+        }
+      ]
+    },
+    {
       "connector_key": "tariff_classification",
       "provider_key": "brazil_portal_unico_classif",
       "provider_revision": "1.0.0",

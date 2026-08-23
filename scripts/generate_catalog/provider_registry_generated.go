@@ -84,6 +84,7 @@ import (
 	payment_stripe "github.com/domainry/domainry-connectors/providers/payment/stripe"
 	payment_wechat_pay "github.com/domainry/domainry-connectors/providers/payment/wechat_pay"
 	product_event_posthog "github.com/domainry/domainry-connectors/providers/product_event/posthog"
+	social_message_facebook_messenger "github.com/domainry/domainry-connectors/providers/social_message/facebook_messenger"
 	tariff_classification_brazil_portal_unico_classif "github.com/domainry/domainry-connectors/providers/tariff_classification/brazil_portal_unico_classif"
 	tariff_classification_china_hs_bianma "github.com/domainry/domainry-connectors/providers/tariff_classification/china_hs_bianma"
 	trade_statistics_comex_stat "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat"
@@ -173,6 +174,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/payment/stripe", packageName: "stripe", constructor: providerConstructor(payment_stripe.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/payment/wechat_pay", packageName: "wechatpay", constructor: providerConstructor(payment_wechat_pay.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/product_event/posthog", packageName: "posthog", constructor: providerConstructor(product_event_posthog.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/social_message/facebook_messenger", packageName: "facebookmessenger", constructor: providerConstructor(social_message_facebook_messenger.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/tariff_classification/brazil_portal_unico_classif", packageName: "brazilportalunicoclassif", constructor: providerConstructor(tariff_classification_brazil_portal_unico_classif.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/tariff_classification/china_hs_bianma", packageName: "chinahsbianma", constructor: providerConstructor(tariff_classification_china_hs_bianma.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat", packageName: "comexstat", constructor: providerConstructor(trade_statistics_comex_stat.New)},
