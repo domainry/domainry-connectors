@@ -1007,6 +1007,37 @@
       ]
     },
     {
+      "connector_key": "ecommerce",
+      "provider_key": "shopify",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/ecommerce/shopify",
+      "package_name": "shopify",
+      "constructor": "New",
+      "descriptor_sha256": "f636671bb3a4614418a8f277e8270fe65bc80a74b8cc4cc094607f4c115ea0af",
+      "operations": [
+        {
+          "key": "list_customers",
+          "mode": "call",
+          "contract_sha256": "ea5f5eb3f5d3bcb52c0005a2a9db6ed52ee6cbfc7c3b2b26ec92dde74bc1f1e2"
+        },
+        {
+          "key": "list_orders",
+          "mode": "call",
+          "contract_sha256": "3a475ad243535c09802fe152f355871eafda77f644accfde7f8ac970f9e15be5"
+        },
+        {
+          "key": "list_products",
+          "mode": "call",
+          "contract_sha256": "0d934939ee4152ac74aafce69825c9154a744b8856338ee02169ab0599c1c666"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "4149001f97eb3c94cc8f349e8b595521d0b50f769c8a6cc8cb0571925a07a219"
+        }
+      ]
+    },
+    {
       "connector_key": "external_database",
       "provider_key": "bigquery",
       "provider_revision": "1.0.0",
@@ -1495,6 +1526,42 @@
           "key": "quote_rates",
           "mode": "call",
           "contract_sha256": "a6627675c6255587f553fc126f777f470f464b92d8b48514f211c2f01ba8eee5"
+        }
+      ]
+    },
+    {
+      "connector_key": "logistics",
+      "provider_key": "shopify_fulfillment",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/logistics/shopify_fulfillment",
+      "package_name": "shopifyfulfillment",
+      "constructor": "New",
+      "descriptor_sha256": "9fc8b54c87f923bbdc15b061cf932d041db33b5245539f990895a0ffb28ecf90",
+      "operations": [
+        {
+          "key": "cancel_fulfillment",
+          "mode": "call",
+          "contract_sha256": "9415831e72591b5b6221b5aebc00decc85d45195eb3c6e6f071c0dba845e37d3"
+        },
+        {
+          "key": "create_fulfillment",
+          "mode": "call",
+          "contract_sha256": "7f0c7a1c961f6ddeb87cc0fb7509173c80ef3d9ce9881d09ac05a91fa63a4309"
+        },
+        {
+          "key": "list_fulfillment_orders",
+          "mode": "call",
+          "contract_sha256": "c796a62c2a0968d432d629c8e0dd2b4624e8422d2c47b20fca61f31e31261dbf"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "a2879c297028e5fee189b49203b9a3f9c4c96182c7b68f928006edc6bd93408d"
+        },
+        {
+          "key": "update_fulfillment_tracking",
+          "mode": "call",
+          "contract_sha256": "7a0b2011f77672ad8e615bb50062e853179ad4650383fc625d44bbf59a1794c7"
         }
       ]
     },

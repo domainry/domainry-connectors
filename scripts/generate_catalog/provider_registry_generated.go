@@ -39,6 +39,7 @@ import (
 	delivery_operations_netsuite "github.com/domainry/domainry-connectors/providers/delivery_operations/netsuite"
 	delivery_operations_odoo "github.com/domainry/domainry-connectors/providers/delivery_operations/odoo"
 	delivery_operations_sap_business_one "github.com/domainry/domainry-connectors/providers/delivery_operations/sap_business_one"
+	ecommerce_shopify "github.com/domainry/domainry-connectors/providers/ecommerce/shopify"
 	external_database_bigquery "github.com/domainry/domainry-connectors/providers/external_database/bigquery"
 	external_database_snowflake "github.com/domainry/domainry-connectors/providers/external_database/snowflake"
 	feishu_collaboration_feishu "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu"
@@ -56,6 +57,7 @@ import (
 	lms_talentlms "github.com/domainry/domainry-connectors/providers/lms/talentlms"
 	logistics_authorized_carrier_gateway "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway"
 	logistics_freightos "github.com/domainry/domainry-connectors/providers/logistics/freightos"
+	logistics_shopify_fulfillment "github.com/domainry/domainry-connectors/providers/logistics/shopify_fulfillment"
 	map_address_nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
 	marketplace_etsy "github.com/domainry/domainry-connectors/providers/marketplace/etsy"
 	observability_compliance_prometheus "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus"
@@ -106,6 +108,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/netsuite", packageName: "netsuite", constructor: providerConstructor(delivery_operations_netsuite.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/odoo", packageName: "odoo", constructor: providerConstructor(delivery_operations_odoo.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/sap_business_one", packageName: "sapbusinessone", constructor: providerConstructor(delivery_operations_sap_business_one.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/ecommerce/shopify", packageName: "shopify", constructor: providerConstructor(ecommerce_shopify.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/bigquery", packageName: "bigquery", constructor: providerConstructor(external_database_bigquery.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/snowflake", packageName: "snowflake", constructor: providerConstructor(external_database_snowflake.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu", packageName: "feishu", constructor: providerConstructor(feishu_collaboration_feishu.New)},
@@ -123,6 +126,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/talentlms", packageName: "talentlms", constructor: providerConstructor(lms_talentlms.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway", packageName: "authorizedcarriergateway", constructor: providerConstructor(logistics_authorized_carrier_gateway.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/freightos", packageName: "freightos", constructor: providerConstructor(logistics_freightos.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/shopify_fulfillment", packageName: "shopifyfulfillment", constructor: providerConstructor(logistics_shopify_fulfillment.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: providerConstructor(map_address_nominatim.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/marketplace/etsy", packageName: "etsy", constructor: providerConstructor(marketplace_etsy.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus", packageName: "prometheus", constructor: providerConstructor(observability_compliance_prometheus.New)},
