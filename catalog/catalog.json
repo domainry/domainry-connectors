@@ -458,6 +458,27 @@
       ]
     },
     {
+      "connector_key": "product_event",
+      "provider_key": "posthog",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/product_event/posthog",
+      "package_name": "posthog",
+      "constructor": "New",
+      "descriptor_sha256": "072db1c3d6898c95319ca08b23b188b10f8a49fad9d0002e624c458da0cb4342",
+      "operations": [
+        {
+          "key": "capture_event",
+          "mode": "call",
+          "contract_sha256": "c98ecb5bf19cd010568f071d804037182eb62ca757de71dd91452aed9f9e01af"
+        },
+        {
+          "key": "list_events",
+          "mode": "call",
+          "contract_sha256": "5d6ca4a461d8943d579c3f55599892a5eb2d1023f3b2862aec3029df8a1da588"
+        }
+      ]
+    },
+    {
       "connector_key": "tariff_classification",
       "provider_key": "brazil_portal_unico_classif",
       "provider_revision": "1.0.0",
