@@ -1291,6 +1291,32 @@
     },
     {
       "connector_key": "external_database",
+      "provider_key": "mysql",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/external_database/mysql",
+      "package_name": "mysql",
+      "constructor": "New",
+      "descriptor_sha256": "fcfa523811d3cc08e0d6a165e46b0b6556a5b31d88aedac09d235598070abf17",
+      "operations": [
+        {
+          "key": "list_tables",
+          "mode": "call",
+          "contract_sha256": "d03d37a2abbe4b3ee52533969701dfe6cab3521c59307580d31363ef702a14fe"
+        },
+        {
+          "key": "sample_query",
+          "mode": "call",
+          "contract_sha256": "8cdaa65782d29c2bff21b1c26d6f895440443c2c280f9107180f9c1ffc9b2ba2"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "52de68ed6a73aefa755d209a067f2d0e9697d6840e1fda86cdf9be4ed764b853"
+        }
+      ]
+    },
+    {
+      "connector_key": "external_database",
       "provider_key": "snowflake",
       "provider_revision": "1.0.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/external_database/snowflake",
