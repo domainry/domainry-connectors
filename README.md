@@ -24,6 +24,16 @@ make test
 make vet
 make boundary
 make catalog-check
+make license-check
+make dependency-license-check
+make vulnerability-check
 ```
 
-Provider extraction begins only after the independent SDK contract is ready.
+`make release-check` runs every required release gate. Releases depend on an
+immutable tagged SDK version and publish a deterministic Catalog identity.
+
+## License
+
+This repository is proprietary and closed source. No public license is
+granted; see [LICENSE](LICENSE) for the governing terms. Third-party dependency
+licenses are audited separately by `make dependency-license-check`.
