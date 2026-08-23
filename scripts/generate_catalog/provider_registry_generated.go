@@ -13,6 +13,7 @@ import (
 	customer_feedback_surveymonkey "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey"
 	customer_feedback_trustpilot "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot"
 	customer_feedback_typeform "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform"
+	help_center_gitbook "github.com/domainry/domainry-connectors/providers/help_center/gitbook"
 	iot_telemetry_datadog_metrics "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics"
 	lms_moodle "github.com/domainry/domainry-connectors/providers/lms/moodle"
 	lms_talentlms "github.com/domainry/domainry-connectors/providers/lms/talentlms"
@@ -39,6 +40,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey", packageName: "surveymonkey", constructor: providerConstructor(customer_feedback_surveymonkey.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot", packageName: "trustpilot", constructor: providerConstructor(customer_feedback_trustpilot.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform", packageName: "typeform", constructor: providerConstructor(customer_feedback_typeform.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/gitbook", packageName: "gitbook", constructor: providerConstructor(help_center_gitbook.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics", packageName: "datadogmetrics", constructor: providerConstructor(iot_telemetry_datadog_metrics.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/moodle", packageName: "moodle", constructor: providerConstructor(lms_moodle.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/talentlms", packageName: "talentlms", constructor: providerConstructor(lms_talentlms.New)},
