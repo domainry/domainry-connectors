@@ -606,6 +606,32 @@
       ]
     },
     {
+      "connector_key": "openai",
+      "provider_key": "openai",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/openai/openai",
+      "package_name": "openai",
+      "constructor": "New",
+      "descriptor_sha256": "e17306c95cb0789206c297c86372f619074205753dbed052d3833e458ea4b67b",
+      "operations": [
+        {
+          "key": "create_response",
+          "mode": "enqueue",
+          "contract_sha256": "3029fbc7e63e1f906495eae0f4ce7447c997da3191ea54cb4c0493c5d043fd98"
+        },
+        {
+          "key": "generate_response",
+          "mode": "call",
+          "contract_sha256": "bd206eb4f1c36de448f30a0d50b5793558740a475b67227d0241b9acc63f7182"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "c32f989f227d070a59b68d587a1f8d4ac99c48a56fc79cdc08b4acba23955b26"
+        }
+      ]
+    },
+    {
       "connector_key": "payment",
       "provider_key": "stripe",
       "provider_revision": "0.1.0",

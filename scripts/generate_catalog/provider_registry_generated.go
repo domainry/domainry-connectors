@@ -28,6 +28,7 @@ import (
 	logistics_freightos "github.com/domainry/domainry-connectors/providers/logistics/freightos"
 	map_address_nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
 	observability_compliance_prometheus "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus"
+	openai_openai "github.com/domainry/domainry-connectors/providers/openai/openai"
 	payment_stripe "github.com/domainry/domainry-connectors/providers/payment/stripe"
 	product_event_posthog "github.com/domainry/domainry-connectors/providers/product_event/posthog"
 	tariff_classification_brazil_portal_unico_classif "github.com/domainry/domainry-connectors/providers/tariff_classification/brazil_portal_unico_classif"
@@ -63,6 +64,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/freightos", packageName: "freightos", constructor: providerConstructor(logistics_freightos.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: providerConstructor(map_address_nominatim.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus", packageName: "prometheus", constructor: providerConstructor(observability_compliance_prometheus.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/openai/openai", packageName: "openai", constructor: providerConstructor(openai_openai.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/payment/stripe", packageName: "stripe", constructor: providerConstructor(payment_stripe.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/product_event/posthog", packageName: "posthog", constructor: providerConstructor(product_event_posthog.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/tariff_classification/brazil_portal_unico_classif", packageName: "brazilportalunicoclassif", constructor: providerConstructor(tariff_classification_brazil_portal_unico_classif.New)},
