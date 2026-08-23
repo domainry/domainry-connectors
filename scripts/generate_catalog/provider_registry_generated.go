@@ -28,6 +28,7 @@ import (
 	customer_feedback_typeform "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform"
 	external_database_bigquery "github.com/domainry/domainry-connectors/providers/external_database/bigquery"
 	external_database_snowflake "github.com/domainry/domainry-connectors/providers/external_database/snowflake"
+	feishu_collaboration_feishu "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu"
 	help_center_confluence "github.com/domainry/domainry-connectors/providers/help_center/confluence"
 	help_center_gitbook "github.com/domainry/domainry-connectors/providers/help_center/gitbook"
 	help_center_help_scout_docs "github.com/domainry/domainry-connectors/providers/help_center/help_scout_docs"
@@ -81,6 +82,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform", packageName: "typeform", constructor: providerConstructor(customer_feedback_typeform.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/bigquery", packageName: "bigquery", constructor: providerConstructor(external_database_bigquery.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/snowflake", packageName: "snowflake", constructor: providerConstructor(external_database_snowflake.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu", packageName: "feishu", constructor: providerConstructor(feishu_collaboration_feishu.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/confluence", packageName: "confluence", constructor: providerConstructor(help_center_confluence.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/gitbook", packageName: "gitbook", constructor: providerConstructor(help_center_gitbook.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/help_scout_docs", packageName: "helpscoutdocs", constructor: providerConstructor(help_center_help_scout_docs.New)},

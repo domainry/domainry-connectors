@@ -646,6 +646,27 @@
       ]
     },
     {
+      "connector_key": "feishu_collaboration",
+      "provider_key": "feishu",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu",
+      "package_name": "feishu",
+      "constructor": "New",
+      "descriptor_sha256": "fbf4c6e6ed6704dd9bc329c78ca69a9e867562bb49609ffffa1e9986e77da670",
+      "operations": [
+        {
+          "key": "send_message",
+          "mode": "enqueue",
+          "contract_sha256": "c9cbe7e05fdcf6c9df5735a92cf2f8db3631e79068652516a808982ed423e34f"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "0d6f0301c181a15f6994dc2a94f7dc0fbe56ee80ced619b4e1c1e1b83ddee318"
+        }
+      ]
+    },
+    {
       "connector_key": "help_center",
       "provider_key": "confluence",
       "provider_revision": "1.0.0",
