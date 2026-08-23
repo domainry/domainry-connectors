@@ -566,6 +566,32 @@
       ]
     },
     {
+      "connector_key": "kyc_risk",
+      "provider_key": "persona",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/kyc_risk/persona",
+      "package_name": "persona",
+      "constructor": "New",
+      "descriptor_sha256": "b1b8480e1835b0e99832f523ddcf38256e008c0d0b24e0d749e7764a4081db9e",
+      "operations": [
+        {
+          "key": "create_inquiry",
+          "mode": "call",
+          "contract_sha256": "e395f4963677a5611366b70a74d1b6e55697b0739b681a1457f926338ac6cad9"
+        },
+        {
+          "key": "get_inquiry",
+          "mode": "call",
+          "contract_sha256": "a6f8e804a8e861263d105aee9c1adc6385e6a18708b1d6b625b1bd15a78e5189"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "fe9ce1de2e18f232c663478afd697ca16683de6b3c4977e24cdf1b1a6db9a105"
+        }
+      ]
+    },
+    {
       "connector_key": "lead_source",
       "provider_key": "tally",
       "provider_revision": "1.0.0",
