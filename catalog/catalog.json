@@ -2603,6 +2603,42 @@
       ]
     },
     {
+      "connector_key": "support",
+      "provider_key": "zendesk",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/support/zendesk",
+      "package_name": "zendesk",
+      "constructor": "New",
+      "descriptor_sha256": "ed99fb444e51c54c237407003293d0f5489481ad29e10d382a980e87c691e34a",
+      "operations": [
+        {
+          "key": "create_ticket",
+          "mode": "call",
+          "contract_sha256": "3f0d1ce44121769894129f731b88a5b83ce477391be225786229db585442ba62"
+        },
+        {
+          "key": "get_ticket",
+          "mode": "call",
+          "contract_sha256": "0354f269e0db3078f6a4877a7f45ba678b1b1ba76481ff4496c0526a420ebdcb"
+        },
+        {
+          "key": "list_tickets",
+          "mode": "call",
+          "contract_sha256": "a931dc2ef958b59469f8355f6b263f4df98beaa173e7d55a54b9d1525143469c"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "5de3016b7110c0a48e1a61d761301a4727f307dc6725540d5fa335dc44d5e5c7"
+        },
+        {
+          "key": "update_ticket",
+          "mode": "call",
+          "contract_sha256": "2092e0a53be456bcc29319084863f6914a7a163eb1f2dc6518e1a7fc90e4f749"
+        }
+      ]
+    },
+    {
       "connector_key": "tariff_classification",
       "provider_key": "brazil_portal_unico_classif",
       "provider_revision": "1.0.0",
