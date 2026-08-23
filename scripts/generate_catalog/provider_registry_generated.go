@@ -8,6 +8,7 @@ import (
 	accounting_money_forward "github.com/domainry/domainry-connectors/providers/accounting/money_forward"
 	accounting_quickbooks "github.com/domainry/domainry-connectors/providers/accounting/quickbooks"
 	ads_audience_meta_ads "github.com/domainry/domainry-connectors/providers/ads_audience/meta_ads"
+	analytics_warehouse_bigquery "github.com/domainry/domainry-connectors/providers/analytics_warehouse/bigquery"
 	app_review_google_play_console "github.com/domainry/domainry-connectors/providers/app_review/google_play_console"
 	appointment_scheduling_cal_com "github.com/domainry/domainry-connectors/providers/appointment_scheduling/cal_com"
 	appointment_scheduling_calendly "github.com/domainry/domainry-connectors/providers/appointment_scheduling/calendly"
@@ -20,6 +21,7 @@ import (
 	customer_feedback_surveymonkey "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey"
 	customer_feedback_trustpilot "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot"
 	customer_feedback_typeform "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform"
+	external_database_bigquery "github.com/domainry/domainry-connectors/providers/external_database/bigquery"
 	help_center_confluence "github.com/domainry/domainry-connectors/providers/help_center/confluence"
 	help_center_gitbook "github.com/domainry/domainry-connectors/providers/help_center/gitbook"
 	help_center_help_scout_docs "github.com/domainry/domainry-connectors/providers/help_center/help_scout_docs"
@@ -53,6 +55,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/accounting/money_forward", packageName: "moneyforward", constructor: providerConstructor(accounting_money_forward.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/accounting/quickbooks", packageName: "quickbooks", constructor: providerConstructor(accounting_quickbooks.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/ads_audience/meta_ads", packageName: "metaads", constructor: providerConstructor(ads_audience_meta_ads.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/analytics_warehouse/bigquery", packageName: "bigquery", constructor: providerConstructor(analytics_warehouse_bigquery.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/app_review/google_play_console", packageName: "googleplayconsole", constructor: providerConstructor(app_review_google_play_console.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/appointment_scheduling/cal_com", packageName: "calcom", constructor: providerConstructor(appointment_scheduling_cal_com.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/appointment_scheduling/calendly", packageName: "calendly", constructor: providerConstructor(appointment_scheduling_calendly.New)},
@@ -65,6 +68,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey", packageName: "surveymonkey", constructor: providerConstructor(customer_feedback_surveymonkey.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot", packageName: "trustpilot", constructor: providerConstructor(customer_feedback_trustpilot.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform", packageName: "typeform", constructor: providerConstructor(customer_feedback_typeform.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/bigquery", packageName: "bigquery", constructor: providerConstructor(external_database_bigquery.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/confluence", packageName: "confluence", constructor: providerConstructor(help_center_confluence.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/gitbook", packageName: "gitbook", constructor: providerConstructor(help_center_gitbook.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/help_scout_docs", packageName: "helpscoutdocs", constructor: providerConstructor(help_center_help_scout_docs.New)},
