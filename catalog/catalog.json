@@ -1,9 +1,9 @@
 {
   "contract_version": "domainry-official-connector-catalog-v1",
   "sdk": {
-    "version": "v0.1.0-dev.8",
-    "contract_version": "connector-contract-v8",
-    "contract_sha256": "c0934e9e6d5ce24f8be0cfe1df1a3bd32bbd818924bf818706943792c04fe33e"
+    "version": "v0.1.0-dev.9",
+    "contract_version": "connector-contract-v9",
+    "contract_sha256": "8d3662131e497098735d876e81b96cf4ac9146acd15b74a92fcc9bcfd2ae7504"
   },
   "providers": [
     {
@@ -2283,6 +2283,32 @@
           "key": "test_connection",
           "mode": "call",
           "contract_sha256": "b098b0312858c224a55e668d19d9c71b77489b4f868c9dada7b9d6939cb6668d"
+        }
+      ]
+    },
+    {
+      "connector_key": "mcp_tool",
+      "provider_key": "mcp",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/mcp_tool/mcp",
+      "package_name": "mcp",
+      "constructor": "New",
+      "descriptor_sha256": "1ee23664f0fa645e5d69272ca83574b3a77a61a9b4d2cd5ec4430951a3594963",
+      "operations": [
+        {
+          "key": "call_tool",
+          "mode": "call",
+          "contract_sha256": "1a88ffb95d28a14734d2c5a417da8a6626a94b64f37a0ffa5051fbe7abf5beba"
+        },
+        {
+          "key": "list_tools",
+          "mode": "call",
+          "contract_sha256": "80912e3d2921f06343a653cb32559bad4b1085bb86f793599ae6da341f4df929"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "2f4a1bc6298cb8d22d02956dc2c1992cc24354638153e07967015bc4d592c9f3"
         }
       ]
     },
