@@ -12,6 +12,8 @@ import (
 	connector "github.com/domainry/domainry-connector-sdk"
 )
 
+const tokenResponseLimit int64 = 1 << 20
+
 type ClientCredentialsRequest struct {
 	Endpoint     string
 	ClientID     string
@@ -36,7 +38,7 @@ func ClientCredentials(ctx context.Context, transport connector.Transport, reque
 	if scope := strings.TrimSpace(request.Scope); scope != "" {
 		form.Set("scope", scope)
 	}
-	response, err := transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: http.MethodPost, URL: parsed.String(), Headers: map[string][]string{"Accept": {"application/json"}, "Content-Type": {"application/x-www-form-urlencoded"}}, Body: []byte(form.Encode()), SecretForm: map[string]string{"client_id": request.ClientID, "client_secret": request.ClientSecret}})
+	response, err := transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: http.MethodPost, URL: parsed.String(), Headers: map[string][]string{"Accept": {"application/json"}, "Content-Type": {"application/x-www-form-urlencoded"}}, Body: []byte(form.Encode()), SecretForm: map[string]string{"client_id": request.ClientID, "client_secret": request.ClientSecret}, MaxResponseBytes: tokenResponseLimit})
 	if err != nil {
 		return Token{}, connector.RetryableError(prefix+".client_credentials_network_error", err)
 	}

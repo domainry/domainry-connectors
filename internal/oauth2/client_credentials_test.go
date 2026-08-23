@@ -17,4 +17,7 @@ func TestClientCredentialsKeepsCredentialsRuntimeOnly(t *testing.T) {
 	if strings.Contains(public, "client-id") || strings.Contains(public, "client-secret") || transport.request.SecretForm["client_id"] != "client-id" || transport.request.SecretForm["client_secret"] != "client-secret" {
 		t.Fatalf("request=%+v", transport.request)
 	}
+	if transport.request.MaxResponseBytes != tokenResponseLimit {
+		t.Fatalf("response limit=%d", transport.request.MaxResponseBytes)
+	}
 }
