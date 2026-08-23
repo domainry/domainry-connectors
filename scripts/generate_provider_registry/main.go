@@ -79,27 +79,45 @@ func discover(root string) ([]provider, error) {
 		if walkErr != nil {
 			return walkErr
 		}
-		if entry.IsDir() || entry.Name() != "provider.go" {
+		if !entry.IsDir() || path == root {
 			return nil
 		}
-		relative, err := filepath.Rel(root, filepath.Dir(path))
+		relative, err := filepath.Rel(root, path)
 		if err != nil {
 			return err
 		}
 		parts := strings.Split(filepath.ToSlash(relative), "/")
-		if len(parts) != 2 {
-			return fmt.Errorf("Provider %s must use providers/<connector-key>/<provider-key>", relative)
+		if len(parts) < 2 {
+			return nil
 		}
-		parsed, err := parser.ParseFile(token.NewFileSet(), path, nil, 0)
+		if len(parts) > 2 {
+			return filepath.SkipDir
+		}
+		packages, err := parser.ParseDir(token.NewFileSet(), path, func(info os.FileInfo) bool {
+			return strings.HasSuffix(info.Name(), ".go") && !strings.HasSuffix(info.Name(), "_test.go")
+		}, 0)
 		if err != nil {
 			return err
 		}
-		if !hasConstructor(parsed) {
+		if len(packages) != 1 {
+			return fmt.Errorf("Provider %s must contain exactly one production Go package", relative)
+		}
+		var packageName string
+		constructorCount := 0
+		for name, parsed := range packages {
+			packageName = name
+			for _, file := range parsed.Files {
+				if hasConstructor(file) {
+					constructorCount++
+				}
+			}
+		}
+		if constructorCount != 1 {
 			return fmt.Errorf("Provider %s does not publish func New(connector.Transport) (connector.Adapter, error)", relative)
 		}
 		alias := sanitize(parts[0] + "_" + parts[1])
-		providers = append(providers, provider{ImportPath: modulePath + "/" + filepath.ToSlash(relative), PackageName: parsed.Name.Name, Alias: alias})
-		return nil
+		providers = append(providers, provider{ImportPath: modulePath + "/" + filepath.ToSlash(relative), PackageName: packageName, Alias: alias})
+		return filepath.SkipDir
 	})
 	if err != nil {
 		return nil, err
