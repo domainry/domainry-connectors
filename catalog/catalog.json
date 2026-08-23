@@ -230,6 +230,32 @@
     },
     {
       "connector_key": "appointment_scheduling",
+      "provider_key": "feishu_calendar",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/appointment_scheduling/feishu_calendar",
+      "package_name": "feishucalendar",
+      "constructor": "New",
+      "descriptor_sha256": "d5dc130615c9962af617fed3ec5dbc807ef2ca758805dece4ee9ab20a6504b31",
+      "operations": [
+        {
+          "key": "create_booking",
+          "mode": "call",
+          "contract_sha256": "928778cc82cac4f36f946f071d8b588e37eb555170f9878281aca249e29c66e1"
+        },
+        {
+          "key": "enqueue_booking",
+          "mode": "enqueue",
+          "contract_sha256": "425b4b8fdc9a5865424285463c073951321d757d50dfbf1dc01b6f05eb507146"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "7fb4c29cab409b99b675ce439ae7c376287217e18c25d5466e6c4cbd4c45b891"
+        }
+      ]
+    },
+    {
+      "connector_key": "appointment_scheduling",
       "provider_key": "google_calendar",
       "provider_revision": "1.0.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/appointment_scheduling/google_calendar",

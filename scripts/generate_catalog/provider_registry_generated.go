@@ -11,6 +11,7 @@ import (
 	app_review_google_play_console "github.com/domainry/domainry-connectors/providers/app_review/google_play_console"
 	appointment_scheduling_cal_com "github.com/domainry/domainry-connectors/providers/appointment_scheduling/cal_com"
 	appointment_scheduling_calendly "github.com/domainry/domainry-connectors/providers/appointment_scheduling/calendly"
+	appointment_scheduling_feishu_calendar "github.com/domainry/domainry-connectors/providers/appointment_scheduling/feishu_calendar"
 	appointment_scheduling_google_calendar "github.com/domainry/domainry-connectors/providers/appointment_scheduling/google_calendar"
 	bank_reconciliation_plaid "github.com/domainry/domainry-connectors/providers/bank_reconciliation/plaid"
 	calendar_holidays_jp "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp"
@@ -54,6 +55,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/app_review/google_play_console", packageName: "googleplayconsole", constructor: providerConstructor(app_review_google_play_console.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/appointment_scheduling/cal_com", packageName: "calcom", constructor: providerConstructor(appointment_scheduling_cal_com.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/appointment_scheduling/calendly", packageName: "calendly", constructor: providerConstructor(appointment_scheduling_calendly.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/appointment_scheduling/feishu_calendar", packageName: "feishucalendar", constructor: providerConstructor(appointment_scheduling_feishu_calendar.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/appointment_scheduling/google_calendar", packageName: "googlecalendar", constructor: providerConstructor(appointment_scheduling_google_calendar.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/bank_reconciliation/plaid", packageName: "plaid", constructor: providerConstructor(bank_reconciliation_plaid.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp", packageName: "holidaysjp", constructor: providerConstructor(calendar_holidays_jp.New)},
