@@ -224,6 +224,27 @@
       ]
     },
     {
+      "connector_key": "observability_compliance",
+      "provider_key": "prometheus",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus",
+      "package_name": "prometheus",
+      "constructor": "New",
+      "descriptor_sha256": "e7c947d06437734f29c8e594df59657569afd87123ccacff0856d6ff1e900ff2",
+      "operations": [
+        {
+          "key": "query",
+          "mode": "call",
+          "contract_sha256": "0be7ab94ddbd24c068df3d1d68181b5eb1375566ee02f153084c1b03f02be53e"
+        },
+        {
+          "key": "query_range",
+          "mode": "call",
+          "contract_sha256": "4bd93814810003573be08b1985c93394694c6619a5d233d760c7e2539e06d131"
+        }
+      ]
+    },
+    {
       "connector_key": "payment",
       "provider_key": "stripe",
       "provider_revision": "0.1.0",

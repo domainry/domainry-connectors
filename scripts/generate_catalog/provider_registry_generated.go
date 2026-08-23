@@ -16,6 +16,7 @@ import (
 	logistics_authorized_carrier_gateway "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway"
 	logistics_freightos "github.com/domainry/domainry-connectors/providers/logistics/freightos"
 	map_address_nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
+	observability_compliance_prometheus "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus"
 	payment_stripe "github.com/domainry/domainry-connectors/providers/payment/stripe"
 	tariff_classification_brazil_portal_unico_classif "github.com/domainry/domainry-connectors/providers/tariff_classification/brazil_portal_unico_classif"
 	tariff_classification_china_hs_bianma "github.com/domainry/domainry-connectors/providers/tariff_classification/china_hs_bianma"
@@ -37,6 +38,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway", packageName: "authorizedcarriergateway", constructor: providerConstructor(logistics_authorized_carrier_gateway.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/freightos", packageName: "freightos", constructor: providerConstructor(logistics_freightos.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: providerConstructor(map_address_nominatim.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus", packageName: "prometheus", constructor: providerConstructor(observability_compliance_prometheus.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/payment/stripe", packageName: "stripe", constructor: providerConstructor(payment_stripe.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/tariff_classification/brazil_portal_unico_classif", packageName: "brazilportalunicoclassif", constructor: providerConstructor(tariff_classification_brazil_portal_unico_classif.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/tariff_classification/china_hs_bianma", packageName: "chinahsbianma", constructor: providerConstructor(tariff_classification_china_hs_bianma.New)},
