@@ -2139,6 +2139,42 @@
       ]
     },
     {
+      "connector_key": "microsoft_365",
+      "provider_key": "microsoft",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/microsoft_365/microsoft",
+      "package_name": "microsoft",
+      "constructor": "New",
+      "descriptor_sha256": "9ed9df71504549408475ef737e624c4ca1c5b67097bbddb3de33ff5382a1b300",
+      "operations": [
+        {
+          "key": "sync_calendar",
+          "mode": "call",
+          "contract_sha256": "6810952a3c33307bd1ccbc77db25e8bca1414438f617dd1802e13612903fb18e"
+        },
+        {
+          "key": "sync_contacts",
+          "mode": "call",
+          "contract_sha256": "5d65856b321e10b13702e0b6026ab5ed98ef1489a51b643ccb22c5147c279f7f"
+        },
+        {
+          "key": "sync_onedrive_file_refs",
+          "mode": "call",
+          "contract_sha256": "6559e67f2b17f63138e83fe87f743dbf40f3ac62bbaa1e5e5fb4d7cb24581528"
+        },
+        {
+          "key": "sync_outlook_mail",
+          "mode": "call",
+          "contract_sha256": "eb7187b4d91d9ef0cf586eb1a2a5158536fd04c31030df469097e81616dd7f92"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "7aaec32fcb96ac020946ade5744e637b848ed7d16e5277bc1055fae8574c45d2"
+        }
+      ]
+    },
+    {
       "connector_key": "observability_compliance",
       "provider_key": "prometheus",
       "provider_revision": "1.0.0",
