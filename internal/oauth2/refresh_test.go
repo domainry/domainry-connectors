@@ -43,3 +43,27 @@ func TestRefreshKeepsCredentialsInRuntimeOnlyFields(t *testing.T) {
 		})
 	}
 }
+
+func TestRefreshAllowsExplicitPublicClientWithoutSecret(t *testing.T) {
+	transport := &recordingTransport{response: connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"access_token":"new-access"}`)}}
+	token, err := Refresh(t.Context(), transport, RefreshRequest{
+		Endpoint: "http://localhost/token", RefreshToken: "refresh-secret", ClientID: "public-client",
+		ClientSecretOptional: true, ClientAuthentication: ClientAuthenticationForm, ErrorPrefix: "google",
+	})
+	if err != nil || token.AccessToken != "new-access" {
+		t.Fatalf("token=%+v error=%v", token, err)
+	}
+	if _, exists := transport.request.SecretForm["client_secret"]; exists || transport.request.SecretForm["client_id"] != "public-client" {
+		t.Fatalf("secret form=%v", transport.request.SecretForm)
+	}
+}
+
+func TestRefreshDoesNotWeakenConfidentialClientDefault(t *testing.T) {
+	_, err := Refresh(t.Context(), &recordingTransport{}, RefreshRequest{
+		Endpoint: "http://localhost/token", RefreshToken: "refresh-secret", ClientID: "client",
+		ClientAuthentication: ClientAuthenticationForm, ErrorPrefix: "provider",
+	})
+	if err == nil {
+		t.Fatal("missing confidential-client secret accepted")
+	}
+}

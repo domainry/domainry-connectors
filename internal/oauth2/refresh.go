@@ -23,10 +23,14 @@ const (
 )
 
 type RefreshRequest struct {
-	Endpoint             string
-	RefreshToken         string
-	ClientID             string
-	ClientSecret         string
+	Endpoint     string
+	RefreshToken string
+	ClientID     string
+	ClientSecret string
+	// ClientSecretOptional is reserved for providers whose authorization
+	// server explicitly supports public clients. The strict default protects
+	// confidential-client integrations from silently dropping authentication.
+	ClientSecretOptional bool
 	ClientAuthentication ClientAuthentication
 	ErrorPrefix          string
 }
@@ -52,7 +56,10 @@ func Refresh(ctx context.Context, transport connector.Transport, request Refresh
 	secretForm := map[string]string{"refresh_token": request.RefreshToken}
 	switch request.ClientAuthentication {
 	case ClientAuthenticationForm:
-		secretForm["client_id"], secretForm["client_secret"] = request.ClientID, request.ClientSecret
+		secretForm["client_id"] = request.ClientID
+		if request.ClientSecret != "" {
+			secretForm["client_secret"] = request.ClientSecret
+		}
 	case ClientAuthenticationBasic:
 		credential := base64.StdEncoding.EncodeToString([]byte(request.ClientID + ":" + request.ClientSecret))
 		secretHeaders["Authorization"] = []string{"Basic " + credential}
@@ -86,8 +93,11 @@ func validateRequest(request RefreshRequest) error {
 	if err != nil || parsed.Host == "" || parsed.User != nil || (parsed.Scheme != "https" && !(parsed.Scheme == "http" && isLoopback(parsed.Hostname()))) {
 		return errors.New("OAuth token endpoint must use HTTPS or loopback HTTP")
 	}
-	if strings.TrimSpace(request.RefreshToken) == "" || strings.TrimSpace(request.ClientID) == "" || strings.TrimSpace(request.ClientSecret) == "" {
+	if strings.TrimSpace(request.RefreshToken) == "" || strings.TrimSpace(request.ClientID) == "" {
 		return errors.New("OAuth refresh credentials are required")
+	}
+	if strings.TrimSpace(request.ClientSecret) == "" && (!request.ClientSecretOptional || request.ClientAuthentication != ClientAuthenticationForm) {
+		return errors.New("OAuth client secret is required")
 	}
 	if request.ClientAuthentication != ClientAuthenticationForm && request.ClientAuthentication != ClientAuthenticationBasic {
 		return errors.New("OAuth client authentication is unsupported")
