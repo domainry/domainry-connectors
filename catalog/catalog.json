@@ -205,6 +205,22 @@
       ]
     },
     {
+      "connector_key": "tariff_classification",
+      "provider_key": "china_hs_bianma",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/tariff_classification/china_hs_bianma",
+      "package_name": "chinahsbianma",
+      "constructor": "New",
+      "descriptor_sha256": "da702f598b16f57b789729ef8cdd6238be0ef451a9bab034423f5f7eef7843bf",
+      "operations": [
+        {
+          "key": "search_china_hs_candidates",
+          "mode": "call",
+          "contract_sha256": "84e27b750eb9744679510ad3302b3b906705a7f186fbcb6bd127e0191b7c3bd7"
+        }
+      ]
+    },
+    {
       "connector_key": "trade_statistics",
       "provider_key": "comex_stat",
       "provider_revision": "1.0.0",
