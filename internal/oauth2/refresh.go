@@ -64,8 +64,7 @@ func Refresh(ctx context.Context, transport connector.Transport, request Refresh
 			secretForm["client_secret"] = request.ClientSecret
 		}
 	case ClientAuthenticationBasic:
-		credential := base64.StdEncoding.EncodeToString([]byte(request.ClientID + ":" + request.ClientSecret))
-		secretHeaders["Authorization"] = []string{"Basic " + credential}
+		secretHeaders["Authorization"] = []string{oauthBasicAuthorization(request.ClientID, request.ClientSecret)}
 	}
 	publicForm := url.Values{"grant_type": {"refresh_token"}}
 	if scope := strings.TrimSpace(request.Scope); scope != "" {
@@ -93,6 +92,11 @@ func Refresh(ctx context.Context, transport connector.Transport, request Refresh
 		return Token{}, connector.PermanentError(prefix+".refresh_response_invalid", errors.New("OAuth token response is invalid"))
 	}
 	return Token{AccessToken: strings.TrimSpace(payload.AccessToken), RefreshToken: strings.TrimSpace(payload.RefreshToken)}, nil
+}
+
+func oauthBasicAuthorization(clientID, clientSecret string) string {
+	credential := base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(clientID) + ":" + url.QueryEscape(clientSecret)))
+	return "Basic " + credential
 }
 
 func validateRequest(request RefreshRequest) error {

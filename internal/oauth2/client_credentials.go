@@ -15,11 +15,12 @@ import (
 const tokenResponseLimit int64 = 1 << 20
 
 type ClientCredentialsRequest struct {
-	Endpoint     string
-	ClientID     string
-	ClientSecret string
-	Scope        string
-	ErrorPrefix  string
+	Endpoint             string
+	ClientID             string
+	ClientSecret         string
+	Scope                string
+	ErrorPrefix          string
+	ClientAuthentication ClientAuthentication
 }
 
 func ClientCredentials(ctx context.Context, transport connector.Transport, request ClientCredentialsRequest) (Token, error) {
@@ -38,7 +39,16 @@ func ClientCredentials(ctx context.Context, transport connector.Transport, reque
 	if scope := strings.TrimSpace(request.Scope); scope != "" {
 		form.Set("scope", scope)
 	}
-	response, err := transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: http.MethodPost, URL: parsed.String(), Headers: map[string][]string{"Accept": {"application/json"}, "Content-Type": {"application/x-www-form-urlencoded"}}, Body: []byte(form.Encode()), SecretForm: map[string]string{"client_id": request.ClientID, "client_secret": request.ClientSecret}, MaxResponseBytes: tokenResponseLimit})
+	httpRequest := connector.HTTPRequest{Method: http.MethodPost, URL: parsed.String(), Headers: map[string][]string{"Accept": {"application/json"}, "Content-Type": {"application/x-www-form-urlencoded"}}, Body: []byte(form.Encode()), MaxResponseBytes: tokenResponseLimit}
+	switch request.ClientAuthentication {
+	case "", ClientAuthenticationForm:
+		httpRequest.SecretForm = map[string]string{"client_id": request.ClientID, "client_secret": request.ClientSecret}
+	case ClientAuthenticationBasic:
+		httpRequest.SecretHeaders = map[string][]string{"Authorization": {oauthBasicAuthorization(request.ClientID, request.ClientSecret)}}
+	default:
+		return Token{}, connector.PermanentError(prefix+".client_credentials_configuration_invalid", errors.New("unsupported token endpoint authentication method"))
+	}
+	response, err := transport.RoundTripHTTP(ctx, httpRequest)
 	if err != nil {
 		return Token{}, connector.RetryableError(prefix+".client_credentials_network_error", err)
 	}

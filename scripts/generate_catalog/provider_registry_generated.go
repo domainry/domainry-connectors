@@ -71,6 +71,7 @@ import (
 	logistics_freightos "github.com/domainry/domainry-connectors/providers/logistics/freightos"
 	logistics_sf_express "github.com/domainry/domainry-connectors/providers/logistics/sf_express"
 	logistics_shopify_fulfillment "github.com/domainry/domainry-connectors/providers/logistics/shopify_fulfillment"
+	logistics_ups "github.com/domainry/domainry-connectors/providers/logistics/ups"
 	map_address_nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
 	marketplace_etsy "github.com/domainry/domainry-connectors/providers/marketplace/etsy"
 	observability_compliance_prometheus "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus"
@@ -153,6 +154,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/freightos", packageName: "freightos", constructor: providerConstructor(logistics_freightos.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/sf_express", packageName: "sfexpress", constructor: providerConstructor(logistics_sf_express.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/shopify_fulfillment", packageName: "shopifyfulfillment", constructor: providerConstructor(logistics_shopify_fulfillment.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/ups", packageName: "ups", constructor: providerConstructor(logistics_ups.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: providerConstructor(map_address_nominatim.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/marketplace/etsy", packageName: "etsy", constructor: providerConstructor(marketplace_etsy.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus", packageName: "prometheus", constructor: providerConstructor(observability_compliance_prometheus.New)},
