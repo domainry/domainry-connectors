@@ -7,6 +7,22 @@
   },
   "providers": [
     {
+      "connector_key": "calendar",
+      "provider_key": "holidays_jp",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp",
+      "package_name": "holidaysjp",
+      "constructor": "New",
+      "descriptor_sha256": "44fcfa071797e9a91ce7ec0e58ac646c6d7a68a83d40ddcf97cdece9df40b58b",
+      "operations": [
+        {
+          "key": "list_factors",
+          "mode": "call",
+          "contract_sha256": "baac11fb6b727ea609ed4d7ab70221c2cef8048ef1df2d5e9d00c31ce505228c"
+        }
+      ]
+    },
+    {
       "connector_key": "map_address",
       "provider_key": "nominatim",
       "provider_revision": "1.0.0",
