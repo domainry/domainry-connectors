@@ -67,3 +67,18 @@ func TestRefreshDoesNotWeakenConfidentialClientDefault(t *testing.T) {
 		t.Fatal("missing confidential-client secret accepted")
 	}
 }
+
+func TestRefreshIncludesPublicScopeWithoutLeakingCredentials(t *testing.T) {
+	transport := &recordingTransport{response: connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"access_token":"new-access"}`)}}
+	_, err := Refresh(t.Context(), transport, RefreshRequest{
+		Endpoint: "http://localhost/token", RefreshToken: "refresh-secret", ClientID: "client-id", ClientSecret: "client-secret",
+		Scope: "https://graph.microsoft.com/.default offline_access", ClientAuthentication: ClientAuthenticationForm,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := string(transport.request.Body)
+	if !strings.Contains(body, "scope=https%3A%2F%2Fgraph.microsoft.com%2F.default+offline_access") || strings.Contains(body, "refresh-secret") || strings.Contains(body, "client-secret") {
+		t.Fatalf("body=%q request=%+v", body, transport.request)
+	}
+}

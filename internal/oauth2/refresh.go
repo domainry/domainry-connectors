@@ -27,6 +27,9 @@ type RefreshRequest struct {
 	RefreshToken string
 	ClientID     string
 	ClientSecret string
+	// Scope is public protocol metadata used only by authorization servers
+	// that require scope replay during refresh.
+	Scope string
 	// ClientSecretOptional is reserved for providers whose authorization
 	// server explicitly supports public clients. The strict default protects
 	// confidential-client integrations from silently dropping authentication.
@@ -64,9 +67,13 @@ func Refresh(ctx context.Context, transport connector.Transport, request Refresh
 		credential := base64.StdEncoding.EncodeToString([]byte(request.ClientID + ":" + request.ClientSecret))
 		secretHeaders["Authorization"] = []string{"Basic " + credential}
 	}
+	publicForm := url.Values{"grant_type": {"refresh_token"}}
+	if scope := strings.TrimSpace(request.Scope); scope != "" {
+		publicForm.Set("scope", scope)
+	}
 	response, err := transport.RoundTripHTTP(ctx, connector.HTTPRequest{
 		Method: http.MethodPost, URL: strings.TrimSpace(request.Endpoint), Headers: headers,
-		SecretHeaders: secretHeaders, Body: []byte(url.Values{"grant_type": {"refresh_token"}}.Encode()), SecretForm: secretForm,
+		SecretHeaders: secretHeaders, Body: []byte(publicForm.Encode()), SecretForm: secretForm,
 	})
 	if err != nil {
 		return Token{}, connector.RetryableError(prefix+".refresh_network_error", err)
