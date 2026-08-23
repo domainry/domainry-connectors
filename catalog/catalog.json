@@ -171,6 +171,32 @@
       ]
     },
     {
+      "connector_key": "lms",
+      "provider_key": "moodle",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/lms/moodle",
+      "package_name": "moodle",
+      "constructor": "New",
+      "descriptor_sha256": "9ce66313d22c367e850beec16825e3c6e151e1e3203719147cf7633b63886688",
+      "operations": [
+        {
+          "key": "list_courses",
+          "mode": "call",
+          "contract_sha256": "c94745f0431bcceb8943b07c11c30d9305fb715566fe048add3580b42696bd75"
+        },
+        {
+          "key": "list_enrolled_users",
+          "mode": "call",
+          "contract_sha256": "c36f2ee1bac3092d5df2f0a763007ae68d81c60c4890f9898bfc5d1e899f4d1b"
+        },
+        {
+          "key": "search_users",
+          "mode": "call",
+          "contract_sha256": "260d267d7d6a6852d49f86e45599135a6b4cd1cbf08b04e46ed9d91ec165a4eb"
+        }
+      ]
+    },
+    {
       "connector_key": "logistics",
       "provider_key": "authorized_carrier_gateway",
       "provider_revision": "1.0.0",
