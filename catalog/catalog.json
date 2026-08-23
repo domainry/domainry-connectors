@@ -1,0 +1,26 @@
+{
+  "contract_version": "domainry-official-connector-catalog-v1",
+  "sdk": {
+    "version": "v0.1.0-dev.1",
+    "contract_version": "connector-contract-v1",
+    "contract_sha256": "52e77dae1a2b09f210a2ee9597fe3bcbecb4ab875336e06a4a18ad3dfbcc90fb"
+  },
+  "providers": [
+    {
+      "connector_key": "weather",
+      "provider_key": "open_meteo",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/weather/open_meteo",
+      "package_name": "openmeteo",
+      "constructor": "New",
+      "descriptor_sha256": "696747ed6927ca7fd43609a6ce264cd3addcd04702eadb4dcbe3edb6bb3a7e42",
+      "operations": [
+        {
+          "key": "get_daily",
+          "mode": "call",
+          "contract_sha256": "65073ca1eb88e5161ba84d107734b1c611cae21cd0ea487290fb4cdc539b9378"
+        }
+      ]
+    }
+  ]
+}

@@ -22,6 +22,7 @@ Runtime-owned transports for outbound effects.
 make fmt-check
 make test
 make vet
+make boundary
 ```
 
 Provider extraction begins only after the independent SDK contract is ready.
