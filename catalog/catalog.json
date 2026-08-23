@@ -39,6 +39,22 @@
       ]
     },
     {
+      "connector_key": "ads_audience",
+      "provider_key": "meta_ads",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/ads_audience/meta_ads",
+      "package_name": "metaads",
+      "constructor": "New",
+      "descriptor_sha256": "921a63401d1bff5f1b6465a6b2c3e936f928ff0525112a8a92de4c3bab4a728e",
+      "operations": [
+        {
+          "key": "list_custom_audiences",
+          "mode": "call",
+          "contract_sha256": "28a016c19174c6ed2b92a5245ecd1fefd937a2abc13887aa6927ec52c30c8700"
+        }
+      ]
+    },
+    {
       "connector_key": "calendar",
       "provider_key": "holidays_jp",
       "provider_revision": "1.0.0",
