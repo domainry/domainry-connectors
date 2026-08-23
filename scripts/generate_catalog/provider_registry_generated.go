@@ -60,7 +60,9 @@ import (
 	help_center_notion_docs "github.com/domainry/domainry-connectors/providers/help_center/notion_docs"
 	help_center_readme "github.com/domainry/domainry-connectors/providers/help_center/readme"
 	help_center_zendesk_guide "github.com/domainry/domainry-connectors/providers/help_center/zendesk_guide"
+	iot_telemetry_aws_iot "github.com/domainry/domainry-connectors/providers/iot_telemetry/aws_iot"
 	iot_telemetry_datadog_metrics "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics"
+	iot_telemetry_mqtt "github.com/domainry/domainry-connectors/providers/iot_telemetry/mqtt"
 	kyc_risk_persona "github.com/domainry/domainry-connectors/providers/kyc_risk/persona"
 	lead_source_tally "github.com/domainry/domainry-connectors/providers/lead_source/tally"
 	lms_moodle "github.com/domainry/domainry-connectors/providers/lms/moodle"
@@ -143,7 +145,9 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/notion_docs", packageName: "notiondocs", constructor: providerConstructor(help_center_notion_docs.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/readme", packageName: "readme", constructor: providerConstructor(help_center_readme.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/zendesk_guide", packageName: "zendeskguide", constructor: providerConstructor(help_center_zendesk_guide.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/iot_telemetry/aws_iot", packageName: "awsiot", constructor: providerConstructor(iot_telemetry_aws_iot.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics", packageName: "datadogmetrics", constructor: providerConstructor(iot_telemetry_datadog_metrics.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/iot_telemetry/mqtt", packageName: "mqtt", constructor: providerConstructor(iot_telemetry_mqtt.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/kyc_risk/persona", packageName: "persona", constructor: providerConstructor(kyc_risk_persona.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lead_source/tally", packageName: "tally", constructor: providerConstructor(lead_source_tally.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/moodle", packageName: "moodle", constructor: providerConstructor(lms_moodle.New)},

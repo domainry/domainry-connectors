@@ -1,9 +1,9 @@
 {
   "contract_version": "domainry-official-connector-catalog-v1",
   "sdk": {
-    "version": "v0.1.0-dev.5",
-    "contract_version": "connector-contract-v5",
-    "contract_sha256": "916f09dda181c978735eadf1df35cef251a07fe4556b033e207181ba9ce319da"
+    "version": "v0.1.0-dev.7",
+    "contract_version": "connector-contract-v7",
+    "contract_sha256": "7f2f6bb06bab4143faf75ebffa76f44cc1f06de6ecdbcfeb88ca6604a5b35274"
   },
   "providers": [
     {
@@ -1724,6 +1724,27 @@
     },
     {
       "connector_key": "iot_telemetry",
+      "provider_key": "aws_iot",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/iot_telemetry/aws_iot",
+      "package_name": "awsiot",
+      "constructor": "New",
+      "descriptor_sha256": "ebb6c84b9727db64a437b493090ac14026f2185d820c34873ff39a47eb7c78d9",
+      "operations": [
+        {
+          "key": "publish_telemetry",
+          "mode": "call",
+          "contract_sha256": "b6fb13a6411ad45e592310c76fba08e7ca986a148b10a9ed5f270afdc7e30714"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "dcb85be24768ffdff7ccda9db4c93254baac73b864885b7ad1527d2c48e401ac"
+        }
+      ]
+    },
+    {
+      "connector_key": "iot_telemetry",
       "provider_key": "datadog_metrics",
       "provider_revision": "1.0.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics",
@@ -1735,6 +1756,27 @@
           "key": "publish_telemetry",
           "mode": "call",
           "contract_sha256": "b6fb13a6411ad45e592310c76fba08e7ca986a148b10a9ed5f270afdc7e30714"
+        }
+      ]
+    },
+    {
+      "connector_key": "iot_telemetry",
+      "provider_key": "mqtt",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/iot_telemetry/mqtt",
+      "package_name": "mqtt",
+      "constructor": "New",
+      "descriptor_sha256": "d0cc3fb9b81b3f62e926bf6800c84c778ec8bb57ce3f2d8978e619cb806e837d",
+      "operations": [
+        {
+          "key": "publish_telemetry",
+          "mode": "call",
+          "contract_sha256": "b6fb13a6411ad45e592310c76fba08e7ca986a148b10a9ed5f270afdc7e30714"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "dcb85be24768ffdff7ccda9db4c93254baac73b864885b7ad1527d2c48e401ac"
         }
       ]
     },

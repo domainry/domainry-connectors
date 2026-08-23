@@ -1,8 +1,6 @@
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
-github.com/domainry/domainry-connector-sdk v0.1.0-dev.5 h1:Cn8fs5qW4kjuE0yByhjMtT8iJI0X+JhD45ju1d925E0=
-github.com/domainry/domainry-connector-sdk v0.1.0-dev.5/go.mod h1:y3YMg09XmWCuxyIeYb1d4xC4AkFmqGWbrm+OaumeyY8=
-github.com/domainry/domainry-connector-sdk v0.1.0-dev.6 h1:11lm0igX8A0/RYY6vZ8+PtH45rNyC8zDUTy5ssMuiZo=
-github.com/domainry/domainry-connector-sdk v0.1.0-dev.6/go.mod h1:y3YMg09XmWCuxyIeYb1d4xC4AkFmqGWbrm+OaumeyY8=
+github.com/domainry/domainry-connector-sdk v0.1.0-dev.7 h1:JLjJKpgFnJtqleJK81zUgtV3faOZzUMS0CeKOPdltz0=
+github.com/domainry/domainry-connector-sdk v0.1.0-dev.7/go.mod h1:y3YMg09XmWCuxyIeYb1d4xC4AkFmqGWbrm+OaumeyY8=
 github.com/go-sql-driver/mysql v1.9.3 h1:U/N249h2WzJ3Ukj8SowVFjdtZKfu9vlLZxjPXV1aweo=
 github.com/go-sql-driver/mysql v1.9.3/go.mod h1:qn46aNg1333BRMNU69Lq93t8du/dwxI64Gl8i5p1WMU=
