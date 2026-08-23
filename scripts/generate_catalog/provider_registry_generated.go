@@ -18,6 +18,7 @@ import (
 	help_center_intercom_articles "github.com/domainry/domainry-connectors/providers/help_center/intercom_articles"
 	help_center_notion_docs "github.com/domainry/domainry-connectors/providers/help_center/notion_docs"
 	help_center_readme "github.com/domainry/domainry-connectors/providers/help_center/readme"
+	help_center_zendesk_guide "github.com/domainry/domainry-connectors/providers/help_center/zendesk_guide"
 	iot_telemetry_datadog_metrics "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics"
 	lms_moodle "github.com/domainry/domainry-connectors/providers/lms/moodle"
 	lms_talentlms "github.com/domainry/domainry-connectors/providers/lms/talentlms"
@@ -49,6 +50,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/intercom_articles", packageName: "intercomarticles", constructor: providerConstructor(help_center_intercom_articles.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/notion_docs", packageName: "notiondocs", constructor: providerConstructor(help_center_notion_docs.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/readme", packageName: "readme", constructor: providerConstructor(help_center_readme.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/help_center/zendesk_guide", packageName: "zendeskguide", constructor: providerConstructor(help_center_zendesk_guide.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics", packageName: "datadogmetrics", constructor: providerConstructor(iot_telemetry_datadog_metrics.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/moodle", packageName: "moodle", constructor: providerConstructor(lms_moodle.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/talentlms", packageName: "talentlms", constructor: providerConstructor(lms_talentlms.New)},
