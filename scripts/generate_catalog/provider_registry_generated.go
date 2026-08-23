@@ -6,6 +6,7 @@ import (
 	connector "github.com/domainry/domainry-connector-sdk"
 	accounting_freee "github.com/domainry/domainry-connectors/providers/accounting/freee"
 	accounting_money_forward "github.com/domainry/domainry-connectors/providers/accounting/money_forward"
+	accounting_quickbooks "github.com/domainry/domainry-connectors/providers/accounting/quickbooks"
 	ads_audience_meta_ads "github.com/domainry/domainry-connectors/providers/ads_audience/meta_ads"
 	app_review_google_play_console "github.com/domainry/domainry-connectors/providers/app_review/google_play_console"
 	calendar_holidays_jp "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp"
@@ -42,6 +43,7 @@ func providerSpecifications() []providerSpec {
 	return []providerSpec{
 		{importPath: "github.com/domainry/domainry-connectors/providers/accounting/freee", packageName: "freee", constructor: providerConstructor(accounting_freee.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/accounting/money_forward", packageName: "moneyforward", constructor: providerConstructor(accounting_money_forward.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/accounting/quickbooks", packageName: "quickbooks", constructor: providerConstructor(accounting_quickbooks.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/ads_audience/meta_ads", packageName: "metaads", constructor: providerConstructor(ads_audience_meta_ads.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/app_review/google_play_console", packageName: "googleplayconsole", constructor: providerConstructor(app_review_google_play_console.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp", packageName: "holidaysjp", constructor: providerConstructor(calendar_holidays_jp.New)},

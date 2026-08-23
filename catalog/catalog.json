@@ -39,6 +39,82 @@
       ]
     },
     {
+      "connector_key": "accounting",
+      "provider_key": "quickbooks",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/accounting/quickbooks",
+      "package_name": "quickbooks",
+      "constructor": "New",
+      "descriptor_sha256": "ab46ba878f24388f0162b348a851ca81f48a727ca65970f832329b8ab62d60be",
+      "operations": [
+        {
+          "key": "cdc_sync",
+          "mode": "call",
+          "contract_sha256": "b25eda2f8884aa97351fd25f5cded1e9ccf5fa475a98250d542ad2912f47414e"
+        },
+        {
+          "key": "create_customer",
+          "mode": "call",
+          "contract_sha256": "fcd6995a11b35e2e2056085ac5871be40a8ca51bb15ddc167e530f8d2be40f14"
+        },
+        {
+          "key": "create_invoice",
+          "mode": "call",
+          "contract_sha256": "cd7ef89b653202b85b0ef26a2d92f1ab7a99785d8b0602c67c330351084e06c6"
+        },
+        {
+          "key": "create_journal_entry",
+          "mode": "enqueue",
+          "contract_sha256": "85fe2779166332efc7b3ffc11ce6ba01c167929370cdd1bd096d81fd3701a0b4"
+        },
+        {
+          "key": "create_payment",
+          "mode": "call",
+          "contract_sha256": "6636da69abfc7ec2dd5628672d3a93c2e823d1ca9e18e6b9bbde96d50f614ba0"
+        },
+        {
+          "key": "list_accounts",
+          "mode": "call",
+          "contract_sha256": "795ed0b64be558e7da9f2705dd208b35b8d1b4a1cec2398e840816ff2ad18150"
+        },
+        {
+          "key": "list_customers",
+          "mode": "call",
+          "contract_sha256": "a8550753aaebce829648374815ca4d02c545ce18b7220e4b56af770357a01c0a"
+        },
+        {
+          "key": "list_invoices",
+          "mode": "call",
+          "contract_sha256": "0912055bdf0133dad49b17d626ecd82271a8c3948d533124ad8b0fcbc8a4cff0"
+        },
+        {
+          "key": "list_payments",
+          "mode": "call",
+          "contract_sha256": "a052a8cf7cc3716527843b5af451a1ddc90fb4297bed4ab8dd99a145b6113c3a"
+        },
+        {
+          "key": "list_tax_codes",
+          "mode": "call",
+          "contract_sha256": "c05c58a112ea80c051e02e558f709cefa269ac479621a3c9aa61dfe5b6919949"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "c8225d47c872988fd3b3056de9599379ece193e2525a0603fd33b29299e84d96"
+        },
+        {
+          "key": "update_customer",
+          "mode": "call",
+          "contract_sha256": "a4ed8b11ec4107e6f2e736005724b7fd25dbff282545c98c3f955990c03d075f"
+        },
+        {
+          "key": "update_invoice",
+          "mode": "call",
+          "contract_sha256": "379f1662d9ef860602d0bccb9be3fa95f5a30687128dc6db3e5a43f1428cce0a"
+        }
+      ]
+    },
+    {
       "connector_key": "ads_audience",
       "provider_key": "meta_ads",
       "provider_revision": "1.0.0",
