@@ -1064,6 +1064,52 @@
       ]
     },
     {
+      "connector_key": "esign",
+      "provider_key": "adobe_sign",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/esign/adobe_sign",
+      "package_name": "adobesign",
+      "constructor": "New",
+      "descriptor_sha256": "4831c30b116fd3e5a2ec196d6cfbe0c7c593deeb7f2f01a2ac120b4498e5ab85",
+      "operations": [
+        {
+          "key": "create_envelope",
+          "mode": "call",
+          "contract_sha256": "cffe2007f4352b8542e199f6578f5476b0a0aa7a7bc3ccf3875916e90da8b663"
+        },
+        {
+          "key": "create_recipient_view",
+          "mode": "call",
+          "contract_sha256": "0defebfe26cb6649fb00973fd883fc7a9bf9a20ef911570d206975a49190b045"
+        },
+        {
+          "key": "get_envelope",
+          "mode": "call",
+          "contract_sha256": "d7dbda5c4ae2787e050cdf5935aed6a8d429a2ebddc93643dcd991aca972d267"
+        },
+        {
+          "key": "list_envelope_status_changes",
+          "mode": "call",
+          "contract_sha256": "f5fd79d5a3011418986efdf1216f47099c8bd45956cab5201b5a62f4c3cbbd6e"
+        },
+        {
+          "key": "send_envelope",
+          "mode": "call",
+          "contract_sha256": "4936ba0cd6632815d0548c127cfcb36411edbe98990641559161dfec8b4221df"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "973cfc9b2671622a791ab84975fb9aa853730640a998307ae0f66f38847ce6fa"
+        },
+        {
+          "key": "void_envelope",
+          "mode": "call",
+          "contract_sha256": "49b989e409f53805a2135308785ebe4c8170fc16044805aafde6c32f875dcd9f"
+        }
+      ]
+    },
+    {
       "connector_key": "external_database",
       "provider_key": "bigquery",
       "provider_revision": "1.0.0",
