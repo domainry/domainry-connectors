@@ -80,6 +80,7 @@ import (
 	map_address_nominatim "github.com/domainry/domainry-connectors/providers/map_address/nominatim"
 	marketplace_etsy "github.com/domainry/domainry-connectors/providers/marketplace/etsy"
 	microsoft_365_microsoft "github.com/domainry/domainry-connectors/providers/microsoft_365/microsoft"
+	notification_web_push "github.com/domainry/domainry-connectors/providers/notification/web_push"
 	observability_compliance_prometheus "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus"
 	openai_openai "github.com/domainry/domainry-connectors/providers/openai/openai"
 	payment_alipay "github.com/domainry/domainry-connectors/providers/payment/alipay"
@@ -177,6 +178,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/map_address/nominatim", packageName: "nominatim", constructor: providerConstructor(map_address_nominatim.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/marketplace/etsy", packageName: "etsy", constructor: providerConstructor(marketplace_etsy.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/microsoft_365/microsoft", packageName: "microsoft", constructor: providerConstructor(microsoft_365_microsoft.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/notification/web_push", packageName: "webpush", constructor: providerConstructor(notification_web_push.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus", packageName: "prometheus", constructor: providerConstructor(observability_compliance_prometheus.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/openai/openai", packageName: "openai", constructor: providerConstructor(openai_openai.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/payment/alipay", packageName: "alipay", constructor: providerConstructor(payment_alipay.New)},

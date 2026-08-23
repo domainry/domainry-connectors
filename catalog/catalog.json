@@ -2323,6 +2323,27 @@
       ]
     },
     {
+      "connector_key": "notification",
+      "provider_key": "web_push",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/notification/web_push",
+      "package_name": "webpush",
+      "constructor": "New",
+      "descriptor_sha256": "e23f2c00bd52ba4cbabffbc5f008d4a31d36fd619b56fc70b82ec90210a9915d",
+      "operations": [
+        {
+          "key": "send",
+          "mode": "enqueue",
+          "contract_sha256": "9279b82133298849994dcb257c632bad4f5979f061fd668a8dd6c7701c4a17e9"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "d66a0f8d3be976ecbc3125daa0c3aea1231c4858104fe87ebbdd5907dd9ced5f"
+        }
+      ]
+    },
+    {
       "connector_key": "observability_compliance",
       "provider_key": "prometheus",
       "provider_revision": "1.0.0",
