@@ -152,6 +152,32 @@
       ]
     },
     {
+      "connector_key": "bank_reconciliation",
+      "provider_key": "plaid",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/bank_reconciliation/plaid",
+      "package_name": "plaid",
+      "constructor": "New",
+      "descriptor_sha256": "74ea3298ab0fa142e113076089dee297849cdd404fdc69efc0ed56e48a3fddeb",
+      "operations": [
+        {
+          "key": "get_accounts",
+          "mode": "call",
+          "contract_sha256": "2b9c30e77e81764fbf1fa539b1082ba8e9e8c8aa7d2abb210aac68abe34ac827"
+        },
+        {
+          "key": "sync_transactions",
+          "mode": "call",
+          "contract_sha256": "e0d805dd5a1f5191a59b108b640a6958b6be2b69d646d5db8506a4a45486a6e6"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "ab98da9d50679388e48506edf0c31abcc58a9c55ddc278ec13c220eb9d7d2e07"
+        }
+      ]
+    },
+    {
       "connector_key": "calendar",
       "provider_key": "holidays_jp",
       "provider_revision": "1.0.0",
