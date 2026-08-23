@@ -1415,6 +1415,37 @@
       ]
     },
     {
+      "connector_key": "file_storage",
+      "provider_key": "s3",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/file_storage/s3",
+      "package_name": "s3",
+      "constructor": "New",
+      "descriptor_sha256": "81859408636b2f4d34d003b2530fe4a1d7d67572854ffc9278c89b8a99bf655f",
+      "operations": [
+        {
+          "key": "delete",
+          "mode": "call",
+          "contract_sha256": "6a170bdbf602291c72d9f37fd2dfbf3591f0c32cf8ce3b751062e3fcd20dbbb8"
+        },
+        {
+          "key": "get_text",
+          "mode": "call",
+          "contract_sha256": "37a7acbfb6ba0e7382a9e39668290cc2d62e0d74567e5029a240712b799210dc"
+        },
+        {
+          "key": "put_text",
+          "mode": "call",
+          "contract_sha256": "98623acc286f328d5bb9208fd741e85c0b147fa24eb685e602982d83760750ec"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "e1d1443180eb710663214176b0c6987a8086f9260203b88b57bdcaf3fbcb6964"
+        }
+      ]
+    },
+    {
       "connector_key": "help_center",
       "provider_key": "confluence",
       "provider_revision": "1.0.0",
