@@ -72,6 +72,22 @@
     },
     {
       "connector_key": "customer_feedback",
+      "provider_key": "delighted",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/customer_feedback/delighted",
+      "package_name": "delighted",
+      "constructor": "New",
+      "descriptor_sha256": "2e46bb49a23f60045eaa5774b8a2b1d0985e778cf09a8686d39d63f2655f2e40",
+      "operations": [
+        {
+          "key": "list_responses",
+          "mode": "call",
+          "contract_sha256": "4a91cb108284b0275c4e5b2980a3492b766f207dc5b8891b0ead4aae66fec922"
+        }
+      ]
+    },
+    {
+      "connector_key": "customer_feedback",
       "provider_key": "surveymonkey",
       "provider_revision": "1.0.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey",
