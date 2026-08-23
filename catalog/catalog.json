@@ -925,6 +925,47 @@
       ]
     },
     {
+      "connector_key": "delivery_operations",
+      "provider_key": "odoo",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/delivery_operations/odoo",
+      "package_name": "odoo",
+      "constructor": "New",
+      "descriptor_sha256": "017617a603ed0a5a574c7828a1c25144ba21c12b3f9a9bea329c8239cc3fce86",
+      "operations": [
+        {
+          "key": "create_delivery_item",
+          "mode": "call",
+          "contract_sha256": "9a097cf1ba8cda7547fc06582abe5babfc4a4f7a7b58d8d824fc436fdc36cbd6"
+        },
+        {
+          "key": "list_delivery_items",
+          "mode": "call",
+          "contract_sha256": "b3503478e21cbb172628db3b0e0e4eb10afeb50a0c7451f067369dc4fbadb4a6"
+        },
+        {
+          "key": "list_delivery_projects",
+          "mode": "call",
+          "contract_sha256": "044bd4d279359354f6fe310a889682bc10ce2b4b9f5e6e58cf89a4f5a66e202c"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "e105356cce844443110d0fe5f4b4ab76bb3dc52bff4d7abf2147f02fffb0df9f"
+        },
+        {
+          "key": "transition_delivery_item",
+          "mode": "call",
+          "contract_sha256": "5d455d95a0b8a58ce17bb61ff1f971ba648863c67de0c3b6bde8424f0e8d150e"
+        },
+        {
+          "key": "update_delivery_item",
+          "mode": "call",
+          "contract_sha256": "b076f0651614ba18b76b0a70c89e7672495ba0bb0b52f23014e353f7c1666630"
+        }
+      ]
+    },
+    {
       "connector_key": "external_database",
       "provider_key": "bigquery",
       "provider_revision": "1.0.0",
