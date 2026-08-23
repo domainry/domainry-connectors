@@ -2520,6 +2520,47 @@
       ]
     },
     {
+      "connector_key": "payment",
+      "provider_key": "wechat_pay",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/payment/wechat_pay",
+      "package_name": "wechatpay",
+      "constructor": "New",
+      "descriptor_sha256": "c1275ad87e8efe3c2dd4bcd72b1f53c45848f5c942b594ffe4b82d2a871314cf",
+      "operations": [
+        {
+          "key": "close_payment_order",
+          "mode": "enqueue",
+          "contract_sha256": "f14e0fcb52024a8c9e892092cedc6507e82dd96e88042665a070f5060f2625de"
+        },
+        {
+          "key": "create_native_payment_order",
+          "mode": "enqueue",
+          "contract_sha256": "daec256080e3012b8ce9fa55860490afc15816beb97804a4b178142bceb985b1"
+        },
+        {
+          "key": "create_payment_refund",
+          "mode": "enqueue",
+          "contract_sha256": "c996f9ba7ff9dd650043d08dba82d8b3f771ce1d24553837623ac061801a2ece"
+        },
+        {
+          "key": "query_payment_order",
+          "mode": "call",
+          "contract_sha256": "014e6b5d4a4abd51ddd078d287e30f26fdc99a1fb28830cfa1b3a3391b17586d"
+        },
+        {
+          "key": "query_payment_refund",
+          "mode": "call",
+          "contract_sha256": "fd7709bce3675ef1a386beede661281e1a6063447dba66b5507c8f84336d4a82"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "73084e236e350007d31eaf5ce0a27fbd7d2f5813ad8b779ff01d0f3af43c2d3c"
+        }
+      ]
+    },
+    {
       "connector_key": "product_event",
       "provider_key": "posthog",
       "provider_revision": "1.0.0",
