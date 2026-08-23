@@ -171,6 +171,22 @@
       ]
     },
     {
+      "connector_key": "iot_telemetry",
+      "provider_key": "datadog_metrics",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics",
+      "package_name": "datadogmetrics",
+      "constructor": "New",
+      "descriptor_sha256": "a4294ef47c36c74c34f388c50846494c41ecf3f77fdfc65dc0f23f21d63c11f8",
+      "operations": [
+        {
+          "key": "publish_telemetry",
+          "mode": "call",
+          "contract_sha256": "b6fb13a6411ad45e592310c76fba08e7ca986a148b10a9ed5f270afdc7e30714"
+        }
+      ]
+    },
+    {
       "connector_key": "lms",
       "provider_key": "moodle",
       "provider_revision": "1.0.0",
