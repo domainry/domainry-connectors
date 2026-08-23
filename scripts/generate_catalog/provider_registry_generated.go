@@ -88,6 +88,7 @@ import (
 	support_zendesk "github.com/domainry/domainry-connectors/providers/support/zendesk"
 	tariff_classification_brazil_portal_unico_classif "github.com/domainry/domainry-connectors/providers/tariff_classification/brazil_portal_unico_classif"
 	tariff_classification_china_hs_bianma "github.com/domainry/domainry-connectors/providers/tariff_classification/china_hs_bianma"
+	telephony_twilio "github.com/domainry/domainry-connectors/providers/telephony/twilio"
 	trade_statistics_comex_stat "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat"
 	weather_open_meteo "github.com/domainry/domainry-connectors/providers/weather/open_meteo"
 	website_form_tally "github.com/domainry/domainry-connectors/providers/website_form/tally"
@@ -180,6 +181,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/support/zendesk", packageName: "zendesk", constructor: providerConstructor(support_zendesk.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/tariff_classification/brazil_portal_unico_classif", packageName: "brazilportalunicoclassif", constructor: providerConstructor(tariff_classification_brazil_portal_unico_classif.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/tariff_classification/china_hs_bianma", packageName: "chinahsbianma", constructor: providerConstructor(tariff_classification_china_hs_bianma.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/telephony/twilio", packageName: "twilio", constructor: providerConstructor(telephony_twilio.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat", packageName: "comexstat", constructor: providerConstructor(trade_statistics_comex_stat.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/weather/open_meteo", packageName: "openmeteo", constructor: providerConstructor(weather_open_meteo.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/website_form/tally", packageName: "tally", constructor: providerConstructor(website_form_tally.New)},

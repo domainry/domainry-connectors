@@ -2671,6 +2671,27 @@
       ]
     },
     {
+      "connector_key": "telephony",
+      "provider_key": "twilio",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/telephony/twilio",
+      "package_name": "twilio",
+      "constructor": "New",
+      "descriptor_sha256": "e1e25052f2a95405ea6162c1cf8bdaaa752b87ce1891b9bbe04196a4307a99f2",
+      "operations": [
+        {
+          "key": "send_sms",
+          "mode": "call",
+          "contract_sha256": "7182e865f86096f212d4ec8bf86fce67a19efe3e6dac7b726cabb53afa3d4343"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "c71765c363077d5a07897a82d99be9ebdb751eafd4772b8e3356e1503fc11077"
+        }
+      ]
+    },
+    {
       "connector_key": "trade_statistics",
       "provider_key": "comex_stat",
       "provider_revision": "1.0.0",
