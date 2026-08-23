@@ -157,6 +157,32 @@
       ]
     },
     {
+      "connector_key": "analytics_warehouse",
+      "provider_key": "snowflake",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/analytics_warehouse/snowflake",
+      "package_name": "snowflake",
+      "constructor": "New",
+      "descriptor_sha256": "55617ec2c0c4d3ceae1f47bb8b2ae8b013815ef20dc08bb0f19c1bfc9afbb703",
+      "operations": [
+        {
+          "key": "list_tables",
+          "mode": "call",
+          "contract_sha256": "05a9e4c852f9eb6717263fee63ae62f4110945dfb09de90ef903ad87859b4690"
+        },
+        {
+          "key": "sample_query",
+          "mode": "call",
+          "contract_sha256": "cfe4d686d9d9f685d4fcd364ab5b70ba086869076684864b66c8fc965ca64594"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "30db39d8f12566e5a218413c5ba468aed3a1825527b3f4fca5b54fe307f635b5"
+        }
+      ]
+    },
+    {
       "connector_key": "app_review",
       "provider_key": "google_play_console",
       "provider_revision": "1.0.0",
@@ -491,6 +517,32 @@
       "package_name": "bigquery",
       "constructor": "New",
       "descriptor_sha256": "3813400320d556f76093c7b63d325d133856e7a9d9b03f107d10fa422e2fa0d1",
+      "operations": [
+        {
+          "key": "list_tables",
+          "mode": "call",
+          "contract_sha256": "d03d37a2abbe4b3ee52533969701dfe6cab3521c59307580d31363ef702a14fe"
+        },
+        {
+          "key": "sample_query",
+          "mode": "call",
+          "contract_sha256": "8cdaa65782d29c2bff21b1c26d6f895440443c2c280f9107180f9c1ffc9b2ba2"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "52de68ed6a73aefa755d209a067f2d0e9697d6840e1fda86cdf9be4ed764b853"
+        }
+      ]
+    },
+    {
+      "connector_key": "external_database",
+      "provider_key": "snowflake",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/external_database/snowflake",
+      "package_name": "snowflake",
+      "constructor": "New",
+      "descriptor_sha256": "56e37e80d770e4d679b3337c2ccb2a4b660c0e79b865222ba4fb1536c464d3e1",
       "operations": [
         {
           "key": "list_tables",
