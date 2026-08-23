@@ -206,6 +206,22 @@
     },
     {
       "connector_key": "tariff_classification",
+      "provider_key": "brazil_portal_unico_classif",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/tariff_classification/brazil_portal_unico_classif",
+      "package_name": "brazilportalunicoclassif",
+      "constructor": "New",
+      "descriptor_sha256": "33afe03dc902f872f8c98c3767ffef7f5fca646de3ebbe6edfc9755addd85dc8",
+      "operations": [
+        {
+          "key": "match_brazil_ncm_candidates",
+          "mode": "call",
+          "contract_sha256": "5eadec2c2f6e65ec2912008800b8ab71122b2b2390c2dbfc9ffd5b8597581850"
+        }
+      ]
+    },
+    {
+      "connector_key": "tariff_classification",
       "provider_key": "china_hs_bianma",
       "provider_revision": "1.0.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/tariff_classification/china_hs_bianma",
