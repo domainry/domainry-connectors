@@ -35,6 +35,7 @@ import (
 	delivery_operations_asana "github.com/domainry/domainry-connectors/providers/delivery_operations/asana"
 	delivery_operations_jira "github.com/domainry/domainry-connectors/providers/delivery_operations/jira"
 	delivery_operations_linear "github.com/domainry/domainry-connectors/providers/delivery_operations/linear"
+	delivery_operations_monday "github.com/domainry/domainry-connectors/providers/delivery_operations/monday"
 	external_database_bigquery "github.com/domainry/domainry-connectors/providers/external_database/bigquery"
 	external_database_snowflake "github.com/domainry/domainry-connectors/providers/external_database/snowflake"
 	feishu_collaboration_feishu "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu"
@@ -98,6 +99,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/asana", packageName: "asana", constructor: providerConstructor(delivery_operations_asana.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/jira", packageName: "jira", constructor: providerConstructor(delivery_operations_jira.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/linear", packageName: "linear", constructor: providerConstructor(delivery_operations_linear.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/monday", packageName: "monday", constructor: providerConstructor(delivery_operations_monday.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/bigquery", packageName: "bigquery", constructor: providerConstructor(external_database_bigquery.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/snowflake", packageName: "snowflake", constructor: providerConstructor(external_database_snowflake.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu", packageName: "feishu", constructor: providerConstructor(feishu_collaboration_feishu.New)},
