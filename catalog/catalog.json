@@ -129,6 +129,27 @@
       ]
     },
     {
+      "connector_key": "customer_feedback",
+      "provider_key": "typeform",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform",
+      "package_name": "typeform",
+      "constructor": "New",
+      "descriptor_sha256": "4aaadb87032aefff677945a81226b47d62a1ce4136195b93e026e48271f3a442",
+      "operations": [
+        {
+          "key": "get_form",
+          "mode": "call",
+          "contract_sha256": "7adc05c1b448a5c935e78c0c50a8d20fea52ea1b541e250c75c33de841af0cf9"
+        },
+        {
+          "key": "list_responses",
+          "mode": "call",
+          "contract_sha256": "4a91cb108284b0275c4e5b2980a3492b766f207dc5b8891b0ead4aae66fec922"
+        }
+      ]
+    },
+    {
       "connector_key": "logistics",
       "provider_key": "authorized_carrier_gateway",
       "provider_revision": "1.0.0",
