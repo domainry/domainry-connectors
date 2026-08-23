@@ -55,6 +55,27 @@
       ]
     },
     {
+      "connector_key": "app_review",
+      "provider_key": "google_play_console",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/app_review/google_play_console",
+      "package_name": "googleplayconsole",
+      "constructor": "New",
+      "descriptor_sha256": "faf4a6f4ec61679f6de94c0416124a7e52c91dd539d93099ef04765730b5e7fb",
+      "operations": [
+        {
+          "key": "list_reviews",
+          "mode": "call",
+          "contract_sha256": "1f66d52b94c81cfeeae5c04361222593c8f6061d0a67b73e3116295b0dcd5975"
+        },
+        {
+          "key": "reply_review",
+          "mode": "call",
+          "contract_sha256": "09151a2a48bca2386217e16f8d3b23458421687fedab5ad05b9392b84fd82c8b"
+        }
+      ]
+    },
+    {
       "connector_key": "calendar",
       "provider_key": "holidays_jp",
       "provider_revision": "1.0.0",

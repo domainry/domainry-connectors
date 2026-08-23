@@ -7,6 +7,7 @@ import (
 	accounting_freee "github.com/domainry/domainry-connectors/providers/accounting/freee"
 	accounting_money_forward "github.com/domainry/domainry-connectors/providers/accounting/money_forward"
 	ads_audience_meta_ads "github.com/domainry/domainry-connectors/providers/ads_audience/meta_ads"
+	app_review_google_play_console "github.com/domainry/domainry-connectors/providers/app_review/google_play_console"
 	calendar_holidays_jp "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp"
 	customer_feedback_delighted "github.com/domainry/domainry-connectors/providers/customer_feedback/delighted"
 	customer_feedback_surveymonkey "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey"
@@ -27,6 +28,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/accounting/freee", packageName: "freee", constructor: providerConstructor(accounting_freee.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/accounting/money_forward", packageName: "moneyforward", constructor: providerConstructor(accounting_money_forward.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/ads_audience/meta_ads", packageName: "metaads", constructor: providerConstructor(ads_audience_meta_ads.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/app_review/google_play_console", packageName: "googleplayconsole", constructor: providerConstructor(app_review_google_play_console.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp", packageName: "holidaysjp", constructor: providerConstructor(calendar_holidays_jp.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/delighted", packageName: "delighted", constructor: providerConstructor(customer_feedback_delighted.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey", packageName: "surveymonkey", constructor: providerConstructor(customer_feedback_surveymonkey.New)},
