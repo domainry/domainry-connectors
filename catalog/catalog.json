@@ -2681,6 +2681,32 @@
           "contract_sha256": "3ce97fb19f44f28519ade0d333a952105df3dc4c33c444ce358f64a9bd8cc53b"
         }
       ]
+    },
+    {
+      "connector_key": "whatsapp",
+      "provider_key": "meta_cloud_api",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/whatsapp/meta_cloud_api",
+      "package_name": "metacloudapi",
+      "constructor": "New",
+      "descriptor_sha256": "6b5daf6c56dd87c912a1759b583651a4983ce841c8d4c119a6f09175f25771b1",
+      "operations": [
+        {
+          "key": "list_templates",
+          "mode": "call",
+          "contract_sha256": "02e9b6f198a1bf75c997c9bd79775e7f989a166a148923f29da731e29b21d568"
+        },
+        {
+          "key": "send_message",
+          "mode": "call",
+          "contract_sha256": "3312e467ef1ca1118ba3be883436c597a8d1f1a8a4ecc019b4fe423073eb52b0"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "3c4028bc879a87aab6cacbdfa44b36583693f053fdc805b01e92938d874b349f"
+        }
+      ]
     }
   ]
 }

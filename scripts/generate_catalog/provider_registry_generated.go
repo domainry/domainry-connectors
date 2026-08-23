@@ -90,6 +90,7 @@ import (
 	trade_statistics_comex_stat "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat"
 	weather_open_meteo "github.com/domainry/domainry-connectors/providers/weather/open_meteo"
 	website_form_tally "github.com/domainry/domainry-connectors/providers/website_form/tally"
+	whatsapp_meta_cloud_api "github.com/domainry/domainry-connectors/providers/whatsapp/meta_cloud_api"
 )
 
 func providerSpecifications() []providerSpec {
@@ -180,6 +181,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/trade_statistics/comex_stat", packageName: "comexstat", constructor: providerConstructor(trade_statistics_comex_stat.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/weather/open_meteo", packageName: "openmeteo", constructor: providerConstructor(weather_open_meteo.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/website_form/tally", packageName: "tally", constructor: providerConstructor(website_form_tally.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/whatsapp/meta_cloud_api", packageName: "metacloudapi", constructor: providerConstructor(whatsapp_meta_cloud_api.New)},
 	}
 }
 
