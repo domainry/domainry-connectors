@@ -32,6 +32,7 @@ import (
 	customer_feedback_surveymonkey "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey"
 	customer_feedback_trustpilot "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot"
 	customer_feedback_typeform "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform"
+	delivery_operations_asana "github.com/domainry/domainry-connectors/providers/delivery_operations/asana"
 	external_database_bigquery "github.com/domainry/domainry-connectors/providers/external_database/bigquery"
 	external_database_snowflake "github.com/domainry/domainry-connectors/providers/external_database/snowflake"
 	feishu_collaboration_feishu "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu"
@@ -92,6 +93,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/surveymonkey", packageName: "surveymonkey", constructor: providerConstructor(customer_feedback_surveymonkey.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/trustpilot", packageName: "trustpilot", constructor: providerConstructor(customer_feedback_trustpilot.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/customer_feedback/typeform", packageName: "typeform", constructor: providerConstructor(customer_feedback_typeform.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/delivery_operations/asana", packageName: "asana", constructor: providerConstructor(delivery_operations_asana.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/bigquery", packageName: "bigquery", constructor: providerConstructor(external_database_bigquery.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/snowflake", packageName: "snowflake", constructor: providerConstructor(external_database_snowflake.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu", packageName: "feishu", constructor: providerConstructor(feishu_collaboration_feishu.New)},
