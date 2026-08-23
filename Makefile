@@ -1,4 +1,4 @@
-.PHONY: test fmt-check vet boundary catalog-check
+.PHONY: test fmt-check vet boundary catalog-check license-check dependency-license-check vulnerability-check release-check
 
 test:
 	go test ./...
@@ -30,3 +30,25 @@ boundary:
 
 catalog-check:
 	go run ./scripts/generate_catalog --check
+
+license-check:
+	@grep -qx 'Domainry Connectors Proprietary License' LICENSE
+	@grep -qx 'Copyright (c) 2026 Domainry. All rights reserved.' LICENSE
+
+dependency-license-check:
+	@report="$$(mktemp)"; errors="$$(mktemp)"; \
+	trap 'rm -f "$$report" "$$errors"' EXIT; \
+	if ! GOTOOLCHAIN=go1.26.6 go run github.com/google/go-licenses@v1.6.0 report ./... >"$$report" 2>"$$errors"; then \
+		cat "$$errors" >&2; \
+		exit 1; \
+	fi; \
+	unknown="$$(awk -F, '$$1 !~ /^github\.com\/domainry\// && $$3 == "Unknown" { print }' "$$report")"; \
+	if [ -n "$$unknown" ]; then \
+		printf 'unknown third-party dependency licenses:\n%s\n' "$$unknown" >&2; \
+		exit 1; \
+	fi
+
+vulnerability-check:
+	GOTOOLCHAIN=go1.26.6 go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./...
+
+release-check: fmt-check test vet boundary catalog-check license-check dependency-license-check vulnerability-check
