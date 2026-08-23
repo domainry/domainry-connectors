@@ -23,6 +23,22 @@
       ]
     },
     {
+      "connector_key": "accounting",
+      "provider_key": "money_forward",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/accounting/money_forward",
+      "package_name": "moneyforward",
+      "constructor": "New",
+      "descriptor_sha256": "601c980fdf7f4fffff2cd3098e43129e744728fe9eb972ee5c8dea6fa8624843",
+      "operations": [
+        {
+          "key": "create_journal_entry",
+          "mode": "enqueue",
+          "contract_sha256": "0f26937182a10d05c71591466024e86216688cdd1006d94edc8f0f32b93825da"
+        }
+      ]
+    },
+    {
       "connector_key": "calendar",
       "provider_key": "holidays_jp",
       "provider_revision": "1.0.0",
