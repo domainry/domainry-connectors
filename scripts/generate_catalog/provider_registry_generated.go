@@ -4,6 +4,7 @@ package main
 
 import (
 	connector "github.com/domainry/domainry-connector-sdk"
+	accounting_freee "github.com/domainry/domainry-connectors/providers/accounting/freee"
 	calendar_holidays_jp "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp"
 	logistics_authorized_carrier_gateway "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway"
 	logistics_freightos "github.com/domainry/domainry-connectors/providers/logistics/freightos"
@@ -17,6 +18,7 @@ import (
 
 func providerSpecifications() []providerSpec {
 	return []providerSpec{
+		{importPath: "github.com/domainry/domainry-connectors/providers/accounting/freee", packageName: "freee", constructor: providerConstructor(accounting_freee.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/calendar/holidays_jp", packageName: "holidaysjp", constructor: providerConstructor(calendar_holidays_jp.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/authorized_carrier_gateway", packageName: "authorizedcarriergateway", constructor: providerConstructor(logistics_authorized_carrier_gateway.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/logistics/freightos", packageName: "freightos", constructor: providerConstructor(logistics_freightos.New)},

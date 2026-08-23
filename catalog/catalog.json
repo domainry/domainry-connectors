@@ -7,6 +7,22 @@
   },
   "providers": [
     {
+      "connector_key": "accounting",
+      "provider_key": "freee",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/accounting/freee",
+      "package_name": "freee",
+      "constructor": "New",
+      "descriptor_sha256": "15e6e5afc08fe599be97876544d1e5b153224ba0c17fd562a69ecd5b3018353e",
+      "operations": [
+        {
+          "key": "create_journal_entry",
+          "mode": "enqueue",
+          "contract_sha256": "0f26937182a10d05c71591466024e86216688cdd1006d94edc8f0f32b93825da"
+        }
+      ]
+    },
+    {
       "connector_key": "calendar",
       "provider_key": "holidays_jp",
       "provider_revision": "1.0.0",
