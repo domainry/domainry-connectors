@@ -99,6 +99,12 @@ func (a *provider) callOperation(ctx context.Context, req connector.CallRequest)
 		values.Set("amount", fmt.Sprint(amount))
 		values.Set("currency", currency)
 		copyQuery(values, input, "customer", "description", "payment_method")
+		if automatic, ok := input["automatic_payment_methods"].(bool); ok {
+			values.Set("automatic_payment_methods[enabled]", fmt.Sprint(automatic))
+		}
+		for index, paymentMethod := range stringList(input["payment_method_types"]) {
+			values.Set(fmt.Sprintf("payment_method_types[%d]", index), paymentMethod)
+		}
 		path = "/v1/payment_intents"
 	case "process_card_payment":
 		amount, err := positiveAmount(input, "amount")
@@ -183,6 +189,13 @@ func (a *provider) callOperation(ctx context.Context, req connector.CallRequest)
 		values.Set("line_items[0][price]", price)
 		values.Set("line_items[0][quantity]", fmt.Sprint(configInt(input, 1, "quantity")))
 		copyQuery(values, input, "success_url", "cancel_url", "customer", "customer_email", "client_reference_id")
+		copyQuery(values, input, "locale")
+		if automatic, ok := input["automatic_payment_methods"].(bool); ok {
+			values.Set("automatic_payment_methods[enabled]", fmt.Sprint(automatic))
+		}
+		for index, paymentMethod := range stringList(input["payment_method_types"]) {
+			values.Set(fmt.Sprintf("payment_method_types[%d]", index), paymentMethod)
+		}
 		path = "/v1/checkout/sessions"
 	case "expire_checkout_session":
 		session, err := requiredID(input, "session")

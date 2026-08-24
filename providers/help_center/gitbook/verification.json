@@ -1,0 +1,17 @@
+{
+  "contract_version": "domainry-provider-verification-v1",
+  "profile": "help_center_gitbook_deterministic_v1",
+  "mode": "deterministic",
+  "manifest_sha256": "",
+  "suites": [
+    "adapter_contract",
+    "error_classification",
+    "network_failure_semantics",
+    "request_translation",
+    "response_normalization",
+    "secret_non_disclosure"
+  ],
+  "test_command": "go test ./providers/help_center/gitbook",
+  "isolated_profile": "help_center_gitbook_isolated_v1",
+  "isolated_command": "go test ./providers/help_center/gitbook"
+}

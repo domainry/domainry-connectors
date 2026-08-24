@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const ContractVersion = "domainry-official-connector-catalog-v1"
+const ContractVersion = "domainry-official-connector-catalog-v2"
 
 //go:embed catalog.json
 var raw []byte
@@ -25,14 +25,33 @@ type SDKIdentity struct {
 }
 
 type ProviderEntry struct {
-	ConnectorKey     string           `json:"connector_key"`
-	ProviderKey      string           `json:"provider_key"`
-	ProviderRevision string           `json:"provider_revision"`
-	ImportPath       string           `json:"import_path"`
-	PackageName      string           `json:"package_name"`
-	Constructor      string           `json:"constructor"`
-	DescriptorSHA256 string           `json:"descriptor_sha256"`
-	Operations       []OperationEntry `json:"operations"`
+	ConnectorKey     string                `json:"connector_key"`
+	ProviderKey      string                `json:"provider_key"`
+	ProviderRevision string                `json:"provider_revision"`
+	ImportPath       string                `json:"import_path"`
+	PackageName      string                `json:"package_name"`
+	Constructor      string                `json:"constructor"`
+	DescriptorSHA256 string                `json:"descriptor_sha256"`
+	Verification     *ProviderVerification `json:"verification,omitempty"`
+	Operations       []OperationEntry      `json:"operations"`
+}
+
+// ProviderVerification binds a released Provider to the connector-owned test
+// suites that prove its external protocol and webhook boundaries. Runtime may
+// trust the immutable Catalog identity and only run its generic host protocol
+// acceptance suite; it must not duplicate these Provider-specific scenarios.
+type ProviderVerification struct {
+	ContractVersion string   `json:"contract_version"`
+	Profile         string   `json:"profile"`
+	Mode            string   `json:"mode"`
+	ManifestSHA256  string   `json:"manifest_sha256"`
+	Suites          []string `json:"suites"`
+	TestCommand     string   `json:"test_command"`
+	IsolatedProfile string   `json:"isolated_profile,omitempty"`
+	IsolatedCommand string   `json:"isolated_command,omitempty"`
+	LiveProfile     string   `json:"live_profile,omitempty"`
+	LiveCommand     string   `json:"live_command,omitempty"`
+	RequiredSecrets []string `json:"required_secrets,omitempty"`
 }
 
 type OperationEntry struct {

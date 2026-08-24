@@ -32,14 +32,15 @@ func (a *provider) execute(ctx context.Context, request connector.CallRequest, m
 	if err != nil {
 		return nil, "", err
 	}
-	headers := map[string][]string{"Authorization": {"Bearer " + apiKey}, "Accept": {"application/json"}}
+	headers := map[string][]string{"Accept": {"application/json"}}
+	secretHeaders := map[string][]string{"Authorization": {"Bearer " + apiKey}}
 	if len(body) > 0 {
 		headers["Content-Type"] = []string{"application/x-www-form-urlencoded"}
 	}
 	if requestRef := strings.TrimSpace(request.RequestRef); requestRef != "" && method == http.MethodPost {
 		headers["Idempotency-Key"] = []string{requestRef}
 	}
-	response, err := a.transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: method, URL: endpoint, Headers: headers, Body: body, MaxResponseBytes: responseLimit})
+	response, err := a.transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: method, URL: endpoint, Headers: headers, SecretHeaders: secretHeaders, Body: body, MaxResponseBytes: responseLimit})
 	if err != nil {
 		if method == http.MethodGet {
 			return nil, "", connector.RetryableError("stripe.network_error", err)
@@ -115,4 +116,23 @@ func copyQuery(destination url.Values, source map[string]any, keys ...string) {
 			destination.Set(key, value)
 		}
 	}
+}
+
+func stringList(value any) []string {
+	items, ok := value.([]any)
+	if !ok {
+		if typed, typedOK := value.([]string); typedOK {
+			items = make([]any, len(typed))
+			for index := range typed {
+				items[index] = typed[index]
+			}
+		}
+	}
+	result := make([]string, 0, len(items))
+	for _, item := range items {
+		if text := strings.TrimSpace(fmt.Sprint(item)); text != "" {
+			result = append(result, text)
+		}
+	}
+	return result
 }

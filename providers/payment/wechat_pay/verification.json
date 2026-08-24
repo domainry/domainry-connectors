@@ -1,0 +1,27 @@
+{
+  "contract_version": "domainry-provider-verification-v1",
+  "profile": "payment_wechat_pay_deterministic_v1",
+  "mode": "deterministic",
+  "manifest_sha256": "",
+  "suites": [
+    "adapter_contract",
+    "error_classification",
+    "network_failure_semantics",
+    "request_translation",
+    "response_normalization",
+    "secret_non_disclosure",
+    "webhook_signature_and_normalization"
+  ],
+  "test_command": "go test ./providers/payment/wechat_pay",
+  "isolated_profile": "payment_wechat_pay_isolated_v1",
+  "isolated_command": "go test ./providers/payment/wechat_pay",
+  "live_profile": "wechat_pay_controlled_test_merchant_v1",
+  "live_command": "go run ./scripts/verify_wechat_pay_controlled_live",
+  "required_secrets": [
+    "WECHAT_PAY_CONTROLLED_TEST",
+    "WECHAT_PAY_APP_ID",
+    "WECHAT_PAY_MERCHANT_ID",
+    "WECHAT_PAY_MERCHANT_SERIAL_NO",
+    "WECHAT_PAY_MERCHANT_PRIVATE_KEY"
+  ]
+}

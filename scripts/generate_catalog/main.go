@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"sort"
 
 	connector "github.com/domainry/domainry-connector-sdk"
@@ -45,6 +46,21 @@ func main() {
 			PackageName: specification.packageName, Constructor: "New",
 			DescriptorSHA256: fmt.Sprintf("%x", sha256.Sum256(descriptorJSON)),
 			Operations:       make([]catalog.OperationEntry, 0, len(descriptor.Operations)),
+		}
+		verificationPath := filepath.Join("providers", descriptor.ConnectorKey, descriptor.ProviderKey, "verification.json")
+		if verificationJSON, readErr := os.ReadFile(verificationPath); readErr == nil {
+			var verification catalog.ProviderVerification
+			decoder := json.NewDecoder(bytes.NewReader(verificationJSON))
+			decoder.DisallowUnknownFields()
+			if err := decoder.Decode(&verification); err != nil {
+				fatal(fmt.Errorf("decode %s: %w", verificationPath, err))
+			}
+			verification.ManifestSHA256 = fmt.Sprintf("%x", sha256.Sum256(verificationJSON))
+			entry.Verification = &verification
+		} else if os.IsNotExist(readErr) {
+			fatal(fmt.Errorf("Provider %s/%s has no release verification manifest", descriptor.ConnectorKey, descriptor.ProviderKey))
+		} else {
+			fatal(readErr)
 		}
 		for _, operation := range descriptor.Operations {
 			entry.Operations = append(entry.Operations, catalog.OperationEntry{Key: operation.Key, Mode: string(operation.Mode), ContractSHA256: operation.ContractSHA256})

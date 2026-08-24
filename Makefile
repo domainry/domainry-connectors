@@ -1,7 +1,14 @@
-.PHONY: test fmt-check vet boundary catalog-check license-check dependency-license-check vulnerability-check release-check
+.PHONY: test verify-providers live-stripe fmt-check vet boundary catalog-check license-check dependency-license-check vulnerability-check release-check
 
 test:
 	go test ./...
+
+live-stripe:
+	go run ./scripts/verify_provider_release --provider payment/stripe --mode live
+
+verify-providers:
+	go run ./scripts/generate_verification_manifests --check
+	go run ./scripts/verify_provider_release --all --mode deterministic
 
 fmt-check:
 	@files="$$(find . -name '*.go' -not -path './.git/*' -print | xargs gofmt -l)"; \
@@ -29,6 +36,7 @@ boundary:
 	fi
 
 catalog-check:
+	go run ./scripts/generate_verification_manifests --check
 	go run ./scripts/generate_catalog --check
 
 license-check:

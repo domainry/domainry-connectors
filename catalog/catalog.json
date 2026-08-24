@@ -1,5 +1,5 @@
 {
-  "contract_version": "domainry-official-connector-catalog-v1",
+  "contract_version": "domainry-official-connector-catalog-v2",
   "sdk": {
     "version": "v0.1.0-dev.11",
     "contract_version": "connector-contract-v9",
@@ -14,6 +14,29 @@
       "package_name": "freee",
       "constructor": "New",
       "descriptor_sha256": "15e6e5afc08fe599be97876544d1e5b153224ba0c17fd562a69ecd5b3018353e",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "accounting_freee_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "efab921b190d3318a618b13ca59ab983ba47cb5977c989a11a0d5e9d5f400036",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/accounting/freee",
+        "isolated_profile": "accounting_freee_isolated_v1",
+        "isolated_command": "go test ./providers/accounting/freee",
+        "live_profile": "freee_test_company_read_probe_v1",
+        "live_command": "go run ./scripts/verify_tenant_read_probe --provider accounting/freee",
+        "required_secrets": [
+          "FREEE_TEST_COMPANY_ID",
+          "FREEE_TEST_ACCESS_TOKEN"
+        ]
+      },
       "operations": [
         {
           "key": "create_journal_entry",
@@ -30,6 +53,28 @@
       "package_name": "moneyforward",
       "constructor": "New",
       "descriptor_sha256": "601c980fdf7f4fffff2cd3098e43129e744728fe9eb972ee5c8dea6fa8624843",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "accounting_money_forward_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "00767a17324a934c8b82811da55715b780458b2bad49b13ef248b20e0a661921",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/accounting/money_forward",
+        "isolated_profile": "accounting_money_forward_isolated_v1",
+        "isolated_command": "go test ./providers/accounting/money_forward",
+        "live_profile": "money_forward_test_office_read_probe_v1",
+        "live_command": "go run ./scripts/verify_tenant_read_probe --provider accounting/money_forward",
+        "required_secrets": [
+          "MONEY_FORWARD_TEST_ACCESS_TOKEN"
+        ]
+      },
       "operations": [
         {
           "key": "create_journal_entry",
@@ -46,6 +91,29 @@
       "package_name": "quickbooks",
       "constructor": "New",
       "descriptor_sha256": "ab46ba878f24388f0162b348a851ca81f48a727ca65970f832329b8ab62d60be",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "accounting_quickbooks_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "93ec91aeaff64f8f554cea4aa4223432e7db04a4284a73b4ec67a0901f88f8cc",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/accounting/quickbooks",
+        "isolated_profile": "accounting_quickbooks_isolated_v1",
+        "isolated_command": "go test ./providers/accounting/quickbooks",
+        "live_profile": "quickbooks_sandbox_read_probe_v1",
+        "live_command": "go run ./scripts/verify_tenant_read_probe --provider accounting/quickbooks",
+        "required_secrets": [
+          "QUICKBOOKS_SANDBOX_COMPANY_ID",
+          "QUICKBOOKS_SANDBOX_ACCESS_TOKEN"
+        ]
+      },
       "operations": [
         {
           "key": "cdc_sync",
@@ -122,6 +190,23 @@
       "package_name": "metaads",
       "constructor": "New",
       "descriptor_sha256": "921a63401d1bff5f1b6465a6b2c3e936f928ff0525112a8a92de4c3bab4a728e",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "ads_audience_meta_ads_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "641b85b62afe4ee044be1dbdceb03d3496ea76c295c93fa4971a4191153fefb6",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/ads_audience/meta_ads",
+        "isolated_profile": "ads_audience_meta_ads_isolated_v1",
+        "isolated_command": "go test ./providers/ads_audience/meta_ads"
+      },
       "operations": [
         {
           "key": "list_custom_audiences",
@@ -138,6 +223,23 @@
       "package_name": "bigquery",
       "constructor": "New",
       "descriptor_sha256": "c099de48c62d0cfd5732e0d4da1933d37fdef38e8dec3b4450f022b129e6fa94",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "analytics_warehouse_bigquery_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "3e0e7b4fa1c2eee1caee812911d8a1a7cdae70a542d930cd28ce4e428374dc6a",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/analytics_warehouse/bigquery",
+        "isolated_profile": "analytics_warehouse_bigquery_isolated_v1",
+        "isolated_command": "go test ./providers/analytics_warehouse/bigquery"
+      },
       "operations": [
         {
           "key": "list_tables",
@@ -164,6 +266,23 @@
       "package_name": "snowflake",
       "constructor": "New",
       "descriptor_sha256": "55617ec2c0c4d3ceae1f47bb8b2ae8b013815ef20dc08bb0f19c1bfc9afbb703",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "analytics_warehouse_snowflake_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "a98fba1ace3af809a76d6ee090d2c0af67451e7dc2dd35add7cbb3ead386c63b",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/analytics_warehouse/snowflake",
+        "isolated_profile": "analytics_warehouse_snowflake_isolated_v1",
+        "isolated_command": "go test ./providers/analytics_warehouse/snowflake"
+      },
       "operations": [
         {
           "key": "list_tables",
@@ -190,6 +309,23 @@
       "package_name": "googleplayconsole",
       "constructor": "New",
       "descriptor_sha256": "faf4a6f4ec61679f6de94c0416124a7e52c91dd539d93099ef04765730b5e7fb",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "app_review_google_play_console_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "eac83a8339abd1c343013ac51c4a70c14dccc38453a3899b07ef8d2aa386715c",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/app_review/google_play_console",
+        "isolated_profile": "app_review_google_play_console_isolated_v1",
+        "isolated_command": "go test ./providers/app_review/google_play_console"
+      },
       "operations": [
         {
           "key": "list_reviews",
@@ -211,6 +347,23 @@
       "package_name": "calcom",
       "constructor": "New",
       "descriptor_sha256": "fdb17fb5f820f9e568e9966920bc3ebaf8ac957b440779afbef41a25e08458c8",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "appointment_scheduling_cal_com_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "3e8448f4e0268ff9376b15892a6a26834ce9d899d3c82fd98f2a00dc0f5f0e58",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/appointment_scheduling/cal_com",
+        "isolated_profile": "appointment_scheduling_cal_com_isolated_v1",
+        "isolated_command": "go test ./providers/appointment_scheduling/cal_com"
+      },
       "operations": [
         {
           "key": "cancel_scheduled_event",
@@ -252,6 +405,23 @@
       "package_name": "calendly",
       "constructor": "New",
       "descriptor_sha256": "0aaa79890f54e272610e7ecbc4a1026ac63505a6674b5a7824438067b3c5fa7f",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "appointment_scheduling_calendly_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "e8a8c719b2beaf6154d565a94e8463741ab0320ccd411a5f0c604d38de1fbe37",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/appointment_scheduling/calendly",
+        "isolated_profile": "appointment_scheduling_calendly_isolated_v1",
+        "isolated_command": "go test ./providers/appointment_scheduling/calendly"
+      },
       "operations": [
         {
           "key": "cancel_scheduled_event",
@@ -288,6 +458,23 @@
       "package_name": "feishucalendar",
       "constructor": "New",
       "descriptor_sha256": "d5dc130615c9962af617fed3ec5dbc807ef2ca758805dece4ee9ab20a6504b31",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "appointment_scheduling_feishu_calendar_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "681ac6aeedd97bda81d75d85ce4f38e831ee55206f288929e1ef006890bfaef9",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/appointment_scheduling/feishu_calendar",
+        "isolated_profile": "appointment_scheduling_feishu_calendar_isolated_v1",
+        "isolated_command": "go test ./providers/appointment_scheduling/feishu_calendar"
+      },
       "operations": [
         {
           "key": "create_booking",
@@ -314,6 +501,23 @@
       "package_name": "googlecalendar",
       "constructor": "New",
       "descriptor_sha256": "fd03ee5cbe2141a7ee6f4f13465e3c0c07d833deb88c515aaab2b33912ef37b9",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "appointment_scheduling_google_calendar_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "53d551df1cd17f63f43823b5f8f572d6ef8a6036369e66f6fa38e4d7fe24d089",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/appointment_scheduling/google_calendar",
+        "isolated_profile": "appointment_scheduling_google_calendar_isolated_v1",
+        "isolated_command": "go test ./providers/appointment_scheduling/google_calendar"
+      },
       "operations": [
         {
           "key": "cancel_scheduled_event",
@@ -360,6 +564,23 @@
       "package_name": "microsoftbooking",
       "constructor": "New",
       "descriptor_sha256": "3f72ecc40cdc60adcc07375a3a2e76ef53e820884afbfeccc4cca794bea977f5",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "appointment_scheduling_microsoft_booking_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "62bf92484d2a4b53f3acce9c3cfc7ac776cd73a98f64cef7437d13f66f0f74b4",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/appointment_scheduling/microsoft_booking",
+        "isolated_profile": "appointment_scheduling_microsoft_booking_isolated_v1",
+        "isolated_command": "go test ./providers/appointment_scheduling/microsoft_booking"
+      },
       "operations": [
         {
           "key": "cancel_scheduled_event",
@@ -396,6 +617,23 @@
       "package_name": "plaid",
       "constructor": "New",
       "descriptor_sha256": "74ea3298ab0fa142e113076089dee297849cdd404fdc69efc0ed56e48a3fddeb",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "bank_reconciliation_plaid_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "c0db616426dbdb833e1b9fd406e31227af6b2b4808aad9168ddb50a2d36b13ff",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/bank_reconciliation/plaid",
+        "isolated_profile": "bank_reconciliation_plaid_isolated_v1",
+        "isolated_command": "go test ./providers/bank_reconciliation/plaid"
+      },
       "operations": [
         {
           "key": "get_accounts",
@@ -422,6 +660,23 @@
       "package_name": "holidaysjp",
       "constructor": "New",
       "descriptor_sha256": "44fcfa071797e9a91ce7ec0e58ac646c6d7a68a83d40ddcf97cdece9df40b58b",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "calendar_holidays_jp_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "8efdd0163e76b7af85cdd6d84a58447422069e17951436542d83fcc0b48cf74b",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/calendar/holidays_jp",
+        "isolated_profile": "calendar_holidays_jp_isolated_v1",
+        "isolated_command": "go test ./providers/calendar/holidays_jp"
+      },
       "operations": [
         {
           "key": "list_factors",
@@ -438,6 +693,23 @@
       "package_name": "dingtalk",
       "constructor": "New",
       "descriptor_sha256": "d04be6062ea8131647f3ac2ef9e401c2d1e46d4326ddaedcb975786e78c98a57",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "collaboration_dingtalk_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "e9d2e77921c15cd6d8164f1d221ba390061e2ef5cf30268d1d9c291b8919a794",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/collaboration/dingtalk",
+        "isolated_profile": "collaboration_dingtalk_isolated_v1",
+        "isolated_command": "go test ./providers/collaboration/dingtalk"
+      },
       "operations": [
         {
           "key": "send_message",
@@ -459,6 +731,23 @@
       "package_name": "discord",
       "constructor": "New",
       "descriptor_sha256": "cd1612d70b8708695a62b5b3f87fd1581d883cd1f90d56525d5526e5211d4db9",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "collaboration_discord_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "025e1f75a626a8ae6f455efd777d44eca70e0955f9fc5fb67147c248cdbb4dee",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/collaboration/discord",
+        "isolated_profile": "collaboration_discord_isolated_v1",
+        "isolated_command": "go test ./providers/collaboration/discord"
+      },
       "operations": [
         {
           "key": "send_message",
@@ -480,6 +769,23 @@
       "package_name": "enterprisewechat",
       "constructor": "New",
       "descriptor_sha256": "2f0dc187a721eb8fe0c3b8224d49c6fd3e65d1c6490a5c45ef37079a40278cf3",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "collaboration_enterprise_wechat_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "9ae069f49dedea1a0f294df44fb5fa089b145a5a665bed4445f3b33b3742927b",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/collaboration/enterprise_wechat",
+        "isolated_profile": "collaboration_enterprise_wechat_isolated_v1",
+        "isolated_command": "go test ./providers/collaboration/enterprise_wechat"
+      },
       "operations": [
         {
           "key": "send_message",
@@ -501,6 +807,29 @@
       "package_name": "feishu",
       "constructor": "New",
       "descriptor_sha256": "ff33600149494e31ce7a0cf590fa35753c47af285dfe46ffa83dd36cbdc1a18f",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "collaboration_feishu_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "8432148e30d584b37c49c544c8f594e3132eb5abf2b294b9b01441dd5aff988f",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/collaboration/feishu",
+        "isolated_profile": "collaboration_feishu_isolated_v1",
+        "isolated_command": "go test ./providers/collaboration/feishu",
+        "live_profile": "feishu_test_tenant_read_probe_v1",
+        "live_command": "go run ./scripts/verify_tenant_read_probe --provider collaboration/feishu",
+        "required_secrets": [
+          "FEISHU_TEST_APP_ID",
+          "FEISHU_TEST_APP_SECRET"
+        ]
+      },
       "operations": [
         {
           "key": "send_message",
@@ -522,6 +851,29 @@
       "package_name": "googleworkspace",
       "constructor": "New",
       "descriptor_sha256": "6d013a1aeb44b9edd896a7afd6191b45a3884da44cdce4b0a7e82a5a4d3924a8",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "collaboration_google_workspace_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "b0be0fb5e786a7b6da902311e4ee9f02422ba5cee857454b93045909fc5087e3",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/collaboration/google_workspace",
+        "isolated_profile": "collaboration_google_workspace_isolated_v1",
+        "isolated_command": "go test ./providers/collaboration/google_workspace",
+        "live_profile": "google_chat_test_space_read_probe_v1",
+        "live_command": "go run ./scripts/verify_tenant_read_probe --provider collaboration/google_workspace",
+        "required_secrets": [
+          "GOOGLE_CHAT_TEST_SPACE",
+          "GOOGLE_CHAT_TEST_ACCESS_TOKEN"
+        ]
+      },
       "operations": [
         {
           "key": "send_message",
@@ -543,6 +895,23 @@
       "package_name": "line",
       "constructor": "New",
       "descriptor_sha256": "c1cff8c507cdbfd85c209ecbfeb3ef45a3bbd2fdc5ac6561a68a537ffa48ead3",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "collaboration_line_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "be2cdf1bc890dcea302ad2a3d1514cad01ecbf1a4f39df1f12af3d58d187e8a6",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/collaboration/line",
+        "isolated_profile": "collaboration_line_isolated_v1",
+        "isolated_command": "go test ./providers/collaboration/line"
+      },
       "operations": [
         {
           "key": "send_message",
@@ -564,6 +933,23 @@
       "package_name": "lineworks",
       "constructor": "New",
       "descriptor_sha256": "26fac23574788edd31cbc7e09f256e06a2f51d6695625b8d31315339f645b48d",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "collaboration_line_works_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "c36c7599a06bd5a66fabf3f24408431dc8ea2d8dc4fbbb40170e5ae21b1d5ad7",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/collaboration/line_works",
+        "isolated_profile": "collaboration_line_works_isolated_v1",
+        "isolated_command": "go test ./providers/collaboration/line_works"
+      },
       "operations": [
         {
           "key": "send_message",
@@ -585,6 +971,29 @@
       "package_name": "microsoft365",
       "constructor": "New",
       "descriptor_sha256": "6b7df8f51b64684f106626d9c83b4de20b86f9715e0820a88a108191309a8cc7",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "collaboration_microsoft_365_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "8c28e3c9610ebd5b6b2b03d0d12bc33eeedb92d4c72b841d5967702c372622a6",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/collaboration/microsoft_365",
+        "isolated_profile": "collaboration_microsoft_365_isolated_v1",
+        "isolated_command": "go test ./providers/collaboration/microsoft_365",
+        "live_profile": "microsoft_365_test_tenant_read_probe_v1",
+        "live_command": "go run ./scripts/verify_tenant_read_probe --provider collaboration/microsoft_365",
+        "required_secrets": [
+          "MICROSOFT_365_TEST_TEAM_ID",
+          "MICROSOFT_365_TEST_ACCESS_TOKEN"
+        ]
+      },
       "operations": [
         {
           "key": "send_message",
@@ -606,6 +1015,28 @@
       "package_name": "slack",
       "constructor": "New",
       "descriptor_sha256": "faca1e7e36211359aa681dc00f9ebb5d9a335c5d4f890ccb4256763ed9748192",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "collaboration_slack_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "9438e3c12308f159374b39eda93877098ecd8bc70a3c9dccac8db32a687b9192",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/collaboration/slack",
+        "isolated_profile": "collaboration_slack_isolated_v1",
+        "isolated_command": "go test ./providers/collaboration/slack",
+        "live_profile": "slack_test_workspace_read_probe_v1",
+        "live_command": "go run ./scripts/verify_tenant_read_probe --provider collaboration/slack",
+        "required_secrets": [
+          "SLACK_TEST_BOT_TOKEN"
+        ]
+      },
       "operations": [
         {
           "key": "send_message",
@@ -627,6 +1058,23 @@
       "package_name": "teams",
       "constructor": "New",
       "descriptor_sha256": "1e2baf715704ecd76c1aa398323342e1b0704737a303b21095125f6a0b10204b",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "collaboration_teams_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "cb1105d8dcff5a1e75371d023a4344ac783baf55e5d7c095cb58d46192f7f84c",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/collaboration/teams",
+        "isolated_profile": "collaboration_teams_isolated_v1",
+        "isolated_command": "go test ./providers/collaboration/teams"
+      },
       "operations": [
         {
           "key": "send_message",
@@ -648,6 +1096,23 @@
       "package_name": "delighted",
       "constructor": "New",
       "descriptor_sha256": "2e46bb49a23f60045eaa5774b8a2b1d0985e778cf09a8686d39d63f2655f2e40",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "customer_feedback_delighted_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "a00a56fb2d976fb1fd50a0c87d3bc4ea09245c0136cc0888c2644c9a26b4b225",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/customer_feedback/delighted",
+        "isolated_profile": "customer_feedback_delighted_isolated_v1",
+        "isolated_command": "go test ./providers/customer_feedback/delighted"
+      },
       "operations": [
         {
           "key": "list_responses",
@@ -664,6 +1129,23 @@
       "package_name": "surveymonkey",
       "constructor": "New",
       "descriptor_sha256": "e6ac5e5e1b2790714475311a293fe4b7e9c3b71193c2453158946260af85cc4d",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "customer_feedback_surveymonkey_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "1df3d3c08635b55ac2ba6ba49aa1f53a3cea8546d062f9d124259fb9f90302c6",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/customer_feedback/surveymonkey",
+        "isolated_profile": "customer_feedback_surveymonkey_isolated_v1",
+        "isolated_command": "go test ./providers/customer_feedback/surveymonkey"
+      },
       "operations": [
         {
           "key": "get_form",
@@ -685,6 +1167,23 @@
       "package_name": "trustpilot",
       "constructor": "New",
       "descriptor_sha256": "ef63f1d4fab578ac864dcc2e075ef083ab0b6f8db6cbe46fbe2ccd7e282b8338",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "customer_feedback_trustpilot_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "efe81c986a85bfa7bde8291d31c597a8a2c60be56d49cbc387b1bbebd3f84feb",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/customer_feedback/trustpilot",
+        "isolated_profile": "customer_feedback_trustpilot_isolated_v1",
+        "isolated_command": "go test ./providers/customer_feedback/trustpilot"
+      },
       "operations": [
         {
           "key": "get_form",
@@ -706,6 +1205,23 @@
       "package_name": "typeform",
       "constructor": "New",
       "descriptor_sha256": "4aaadb87032aefff677945a81226b47d62a1ce4136195b93e026e48271f3a442",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "customer_feedback_typeform_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "ec27f873699914693ebb6b5cce1b26c9fe531d3ea26be09519f2d0663b6f566d",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/customer_feedback/typeform",
+        "isolated_profile": "customer_feedback_typeform_isolated_v1",
+        "isolated_command": "go test ./providers/customer_feedback/typeform"
+      },
       "operations": [
         {
           "key": "get_form",
@@ -727,6 +1243,23 @@
       "package_name": "asana",
       "constructor": "New",
       "descriptor_sha256": "b8d1d816000eeaf5b8f2ac2b9784f7ed8e684f7ac70b07a9efeb917848ad0242",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "delivery_operations_asana_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "24e22d5aac7dbad1140facf714f6c90ccc8a4808d41b6186594db3d3a693cf49",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/delivery_operations/asana",
+        "isolated_profile": "delivery_operations_asana_isolated_v1",
+        "isolated_command": "go test ./providers/delivery_operations/asana"
+      },
       "operations": [
         {
           "key": "create_delivery_item",
@@ -768,6 +1301,23 @@
       "package_name": "jira",
       "constructor": "New",
       "descriptor_sha256": "15df50173fc6b59feb2d4cac65df73a01cca1b46941d84763e5f4696417ba665",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "delivery_operations_jira_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "05bd8bfdcd1bd08595a73c9afcb778951b115b2f42297005da48f723bb6b5f97",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/delivery_operations/jira",
+        "isolated_profile": "delivery_operations_jira_isolated_v1",
+        "isolated_command": "go test ./providers/delivery_operations/jira"
+      },
       "operations": [
         {
           "key": "create_delivery_item",
@@ -809,6 +1359,23 @@
       "package_name": "linear",
       "constructor": "New",
       "descriptor_sha256": "332f7754e5dd9bd66e04dbed3b2b1a17196f0c9662083c5876b5a4c298257f10",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "delivery_operations_linear_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "3723dd863f497fc98bed5cc92a0d724f7966d005ad6a54f2f9062c47969d9b68",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/delivery_operations/linear",
+        "isolated_profile": "delivery_operations_linear_isolated_v1",
+        "isolated_command": "go test ./providers/delivery_operations/linear"
+      },
       "operations": [
         {
           "key": "create_delivery_item",
@@ -850,6 +1417,23 @@
       "package_name": "monday",
       "constructor": "New",
       "descriptor_sha256": "c8dcd99f469f6c22c27227a1b5c4f916297d6a11fbfdc7bab8dbf6050a0e42b9",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "delivery_operations_monday_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "f80d05ccdd776b1882573aa5e56b50420d7f532c7da8e464c8ed3eca073b586a",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/delivery_operations/monday",
+        "isolated_profile": "delivery_operations_monday_isolated_v1",
+        "isolated_command": "go test ./providers/delivery_operations/monday"
+      },
       "operations": [
         {
           "key": "create_delivery_item",
@@ -891,6 +1475,23 @@
       "package_name": "netsuite",
       "constructor": "New",
       "descriptor_sha256": "e189f2416df38120a4556ed543f84cd11a6540b5c76875ed06a4166445210c79",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "delivery_operations_netsuite_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "c71d72e9a74ea43e0ae4752268088e4bc3b3693c4f3ce6985bbb93411eb4a482",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/delivery_operations/netsuite",
+        "isolated_profile": "delivery_operations_netsuite_isolated_v1",
+        "isolated_command": "go test ./providers/delivery_operations/netsuite"
+      },
       "operations": [
         {
           "key": "create_delivery_item",
@@ -932,6 +1533,23 @@
       "package_name": "odoo",
       "constructor": "New",
       "descriptor_sha256": "017617a603ed0a5a574c7828a1c25144ba21c12b3f9a9bea329c8239cc3fce86",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "delivery_operations_odoo_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "ed0a4f8bdfa6732f8e6fcc8afe9ede928ada184a7357bea48c21304fbfa55db5",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/delivery_operations/odoo",
+        "isolated_profile": "delivery_operations_odoo_isolated_v1",
+        "isolated_command": "go test ./providers/delivery_operations/odoo"
+      },
       "operations": [
         {
           "key": "create_delivery_item",
@@ -973,6 +1591,23 @@
       "package_name": "sapbusinessone",
       "constructor": "New",
       "descriptor_sha256": "13e1c223079d4508fec1e1a7dc4f931bb75b73126ae27062fed998afe0d18758",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "delivery_operations_sap_business_one_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "134cbb1171613a0d4d58036204db9fbed9eaf6dd324a9cdfed027b2432ac769d",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/delivery_operations/sap_business_one",
+        "isolated_profile": "delivery_operations_sap_business_one_isolated_v1",
+        "isolated_command": "go test ./providers/delivery_operations/sap_business_one"
+      },
       "operations": [
         {
           "key": "create_delivery_item",
@@ -1014,6 +1649,23 @@
       "package_name": "pdf",
       "constructor": "New",
       "descriptor_sha256": "38429d879dc7d5855ce23e73180e4e9262f1363003e9196d50c3c95622333fe3",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "document_generation_pdf_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "b57e3903ac70e4401df0dc7ea1ad84376b3ab2bd4379ac2d787b79a68a7fa1f7",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/document_generation/pdf",
+        "isolated_profile": "document_generation_pdf_isolated_v1",
+        "isolated_command": "go test ./providers/document_generation/pdf"
+      },
       "operations": [
         {
           "key": "render_pdf",
@@ -1035,6 +1687,29 @@
       "package_name": "shopify",
       "constructor": "New",
       "descriptor_sha256": "f636671bb3a4614418a8f277e8270fe65bc80a74b8cc4cc094607f4c115ea0af",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "ecommerce_shopify_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "1d23ee18f043d0296e4c8c06fef497137d4c7cd1c10046ebb777d8b50d2165e5",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/ecommerce/shopify",
+        "isolated_profile": "ecommerce_shopify_isolated_v1",
+        "isolated_command": "go test ./providers/ecommerce/shopify",
+        "live_profile": "shopify_test_shop_read_probe_v1",
+        "live_command": "go run ./scripts/verify_tenant_read_probe --provider ecommerce/shopify",
+        "required_secrets": [
+          "SHOPIFY_TEST_SHOP_DOMAIN",
+          "SHOPIFY_TEST_ACCESS_TOKEN"
+        ]
+      },
       "operations": [
         {
           "key": "list_customers",
@@ -1066,6 +1741,23 @@
       "package_name": "smtp",
       "constructor": "New",
       "descriptor_sha256": "6514ab20a848355f5b1333b13c62d8eae9850fe82afdcef6e4a362af7ca0ba54",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "email_smtp_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "4fc7cf6aebab1dca4f4653e20b684597f02b4ea24a2d3e4a4e701f787b195684",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/email/smtp",
+        "isolated_profile": "email_smtp_isolated_v1",
+        "isolated_command": "go test ./providers/email/smtp"
+      },
       "operations": [
         {
           "key": "send_email",
@@ -1092,6 +1784,23 @@
       "package_name": "adobesign",
       "constructor": "New",
       "descriptor_sha256": "4831c30b116fd3e5a2ec196d6cfbe0c7c593deeb7f2f01a2ac120b4498e5ab85",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "esign_adobe_sign_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "1db8149907fff3ff91fcc1f85e3b7718a79045bd5a85d588dd7ec6fb45433021",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/esign/adobe_sign",
+        "isolated_profile": "esign_adobe_sign_isolated_v1",
+        "isolated_command": "go test ./providers/esign/adobe_sign"
+      },
       "operations": [
         {
           "key": "create_envelope",
@@ -1138,6 +1847,23 @@
       "package_name": "docusign",
       "constructor": "New",
       "descriptor_sha256": "0594af9bf36e61f87eb398079286a9dd1b5c345ebcfc826b9a316cd74fbe1793",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "esign_docusign_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "7beb0b91f23b939caf18c9014d82dc946c85ea7c4d2899bb54e3c007882ed169",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/esign/docusign",
+        "isolated_profile": "esign_docusign_isolated_v1",
+        "isolated_command": "go test ./providers/esign/docusign"
+      },
       "operations": [
         {
           "key": "create_envelope",
@@ -1184,6 +1910,23 @@
       "package_name": "fadada",
       "constructor": "New",
       "descriptor_sha256": "59586dd325e7164e9a38169702913d74b753e823fa37e05a6e1fec1c2cf2a445",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "esign_fadada_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "1a9a465765f2445c8874f383df94a7c1ef9cb5ba73e59cee88a0a89fd04cf3aa",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/esign/fadada",
+        "isolated_profile": "esign_fadada_isolated_v1",
+        "isolated_command": "go test ./providers/esign/fadada"
+      },
       "operations": [
         {
           "key": "create_envelope",
@@ -1225,6 +1968,23 @@
       "package_name": "signnow",
       "constructor": "New",
       "descriptor_sha256": "8d99ae248ea1b85f054b8aa1ae08a3e6a78cf3a2f6fe771f18b152b96dd98557",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "esign_signnow_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "3f895f5dbfe7b9231218eea4fcb543d0b4e074fe3442bf47389c2737d516217f",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/esign/signnow",
+        "isolated_profile": "esign_signnow_isolated_v1",
+        "isolated_command": "go test ./providers/esign/signnow"
+      },
       "operations": [
         {
           "key": "create_recipient_view",
@@ -1261,6 +2021,23 @@
       "package_name": "zoomwebinar",
       "constructor": "New",
       "descriptor_sha256": "f3c2569f0d2bd02cea21f17d9aa20b68d40729fa774ff40685115ecb97b182b0",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "event_webinar_zoom_webinar_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "22652c166defbd16b03b2d6acd66e917c28cfb349199c7503fc118bc12756074",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/event_webinar/zoom_webinar",
+        "isolated_profile": "event_webinar_zoom_webinar_isolated_v1",
+        "isolated_command": "go test ./providers/event_webinar/zoom_webinar"
+      },
       "operations": [
         {
           "key": "get_webinar",
@@ -1292,6 +2069,23 @@
       "package_name": "bigquery",
       "constructor": "New",
       "descriptor_sha256": "3813400320d556f76093c7b63d325d133856e7a9d9b03f107d10fa422e2fa0d1",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "external_database_bigquery_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "216f5b7749df2eaa68f59d199c6c5b2bf708d376881dce2e32890e18df9a7174",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/external_database/bigquery",
+        "isolated_profile": "external_database_bigquery_isolated_v1",
+        "isolated_command": "go test ./providers/external_database/bigquery"
+      },
       "operations": [
         {
           "key": "list_tables",
@@ -1318,6 +2112,23 @@
       "package_name": "mysql",
       "constructor": "New",
       "descriptor_sha256": "fcfa523811d3cc08e0d6a165e46b0b6556a5b31d88aedac09d235598070abf17",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "external_database_mysql_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "ec69909237f201f4728f55f0e79ca72de09e0ceeb388389f4e5792d7bd4e92e8",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/external_database/mysql",
+        "isolated_profile": "external_database_mysql_isolated_v1",
+        "isolated_command": "go test ./providers/external_database/mysql"
+      },
       "operations": [
         {
           "key": "list_tables",
@@ -1344,6 +2155,23 @@
       "package_name": "postgres",
       "constructor": "New",
       "descriptor_sha256": "cee4f8064a1506a57bdd4cc2c304cb99bdf65ed3999ae4367e4f2ba3f75832a2",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "external_database_postgres_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "6078c12fb7615a0f054a8be3f34ece6bb86472480112f8effc2f3e992b3aad20",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/external_database/postgres",
+        "isolated_profile": "external_database_postgres_isolated_v1",
+        "isolated_command": "go test ./providers/external_database/postgres"
+      },
       "operations": [
         {
           "key": "list_tables",
@@ -1370,6 +2198,23 @@
       "package_name": "snowflake",
       "constructor": "New",
       "descriptor_sha256": "56e37e80d770e4d679b3337c2ccb2a4b660c0e79b865222ba4fb1536c464d3e1",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "external_database_snowflake_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "0d9be5b78d0e0875a771faffe582430f37549908cb3c7c01d545e740883f06d5",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/external_database/snowflake",
+        "isolated_profile": "external_database_snowflake_isolated_v1",
+        "isolated_command": "go test ./providers/external_database/snowflake"
+      },
       "operations": [
         {
           "key": "list_tables",
@@ -1396,6 +2241,23 @@
       "package_name": "sqlserver",
       "constructor": "New",
       "descriptor_sha256": "d0c4864c9d2961f3a02f70701be65c577f3715bba7f4d52eff90fd2276306d51",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "external_database_sqlserver_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "42387eaae9aef08b5f8afc1e61866f7546f4fbcee158cedabaa5c997eb086496",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/external_database/sqlserver",
+        "isolated_profile": "external_database_sqlserver_isolated_v1",
+        "isolated_command": "go test ./providers/external_database/sqlserver"
+      },
       "operations": [
         {
           "key": "list_tables",
@@ -1422,6 +2284,23 @@
       "package_name": "feishu",
       "constructor": "New",
       "descriptor_sha256": "fbf4c6e6ed6704dd9bc329c78ca69a9e867562bb49609ffffa1e9986e77da670",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "feishu_collaboration_feishu_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "a71ec6bf996929c0da1277cba8e049bbad66ee2e5d664dd276d2839b818c4f48",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/feishu_collaboration/feishu",
+        "isolated_profile": "feishu_collaboration_feishu_isolated_v1",
+        "isolated_command": "go test ./providers/feishu_collaboration/feishu"
+      },
       "operations": [
         {
           "key": "send_message",
@@ -1443,6 +2322,23 @@
       "package_name": "local",
       "constructor": "New",
       "descriptor_sha256": "097d49c2860b06efe826a6439cffcace8a6d9040f73a1f303785b2e37853b147",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "file_storage_local_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "d684523b52e0ccf2fcfe794c0cf0a4c676713d58c5c2a2036d30bf9ceee44b6a",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/file_storage/local",
+        "isolated_profile": "file_storage_local_isolated_v1",
+        "isolated_command": "go test ./providers/file_storage/local"
+      },
       "operations": [
         {
           "key": "delete",
@@ -1474,6 +2370,23 @@
       "package_name": "s3",
       "constructor": "New",
       "descriptor_sha256": "81859408636b2f4d34d003b2530fe4a1d7d67572854ffc9278c89b8a99bf655f",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "file_storage_s3_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "66b350dcbf6fd667b5c12b6538cbad0c0a454fe03c199bde4bcdf9544fedf354",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/file_storage/s3",
+        "isolated_profile": "file_storage_s3_isolated_v1",
+        "isolated_command": "go test ./providers/file_storage/s3"
+      },
       "operations": [
         {
           "key": "delete",
@@ -1505,6 +2418,23 @@
       "package_name": "google",
       "constructor": "New",
       "descriptor_sha256": "fc81848d0a03844374d59e5ee28e6f280c81a187ad5046b1631e5758955ac396",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "google_workspace_google_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "69c17803c1860538cf45449c053d88c4e427945befe5dbfb8d43b7e6aba9197a",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/google_workspace/google",
+        "isolated_profile": "google_workspace_google_isolated_v1",
+        "isolated_command": "go test ./providers/google_workspace/google"
+      },
       "operations": [
         {
           "key": "gmail_get_message",
@@ -1601,6 +2531,23 @@
       "package_name": "confluence",
       "constructor": "New",
       "descriptor_sha256": "3d1ef5066950a01244cd8a374e2dd43d0eead8e4c2407d9a2501f2bf515fdc8c",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "help_center_confluence_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "232f22101c987cf663c62a062f03fa1b84875dc0db537c9251957bf72d79ca7b",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/help_center/confluence",
+        "isolated_profile": "help_center_confluence_isolated_v1",
+        "isolated_command": "go test ./providers/help_center/confluence"
+      },
       "operations": [
         {
           "key": "create_article",
@@ -1642,6 +2589,23 @@
       "package_name": "gitbook",
       "constructor": "New",
       "descriptor_sha256": "ecd4a5177c86f9a137378b1ae26177779f17453f1a012d724790eac67cae8254",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "help_center_gitbook_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "d86fb28207ea38cc4c3661dc001f0eb8ebe7a7db415a279aeb9bf9fcfb20586c",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/help_center/gitbook",
+        "isolated_profile": "help_center_gitbook_isolated_v1",
+        "isolated_command": "go test ./providers/help_center/gitbook"
+      },
       "operations": [
         {
           "key": "get_article",
@@ -1673,6 +2637,23 @@
       "package_name": "helpscoutdocs",
       "constructor": "New",
       "descriptor_sha256": "650438c360b3c4015b28f5f0697756aeaf00355243d9e36f2633a8f175c6d425",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "help_center_help_scout_docs_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "ebfa15a5a0585289781e285c6adfac62327ed53545d61e7738ae55df03c31387",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/help_center/help_scout_docs",
+        "isolated_profile": "help_center_help_scout_docs_isolated_v1",
+        "isolated_command": "go test ./providers/help_center/help_scout_docs"
+      },
       "operations": [
         {
           "key": "create_article",
@@ -1714,6 +2695,23 @@
       "package_name": "intercomarticles",
       "constructor": "New",
       "descriptor_sha256": "410b9e4180b8a52ef18519dc5057195fe264274c714cf0d31099431c9243733f",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "help_center_intercom_articles_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "c82fd537e79ace4226d3611873e3c57419418862e42c7c7ff4fce9c67e3cf007",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/help_center/intercom_articles",
+        "isolated_profile": "help_center_intercom_articles_isolated_v1",
+        "isolated_command": "go test ./providers/help_center/intercom_articles"
+      },
       "operations": [
         {
           "key": "create_article",
@@ -1755,6 +2753,23 @@
       "package_name": "notiondocs",
       "constructor": "New",
       "descriptor_sha256": "2fe7d9cc1f8c5cd9f23d6291911d2a063a462942cec96a5d085af1bd57f0ea75",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "help_center_notion_docs_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "f1ac7edef04f36b3154022db2d0390c73d05e70392c5ec10cc17687f05662665",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/help_center/notion_docs",
+        "isolated_profile": "help_center_notion_docs_isolated_v1",
+        "isolated_command": "go test ./providers/help_center/notion_docs"
+      },
       "operations": [
         {
           "key": "create_article",
@@ -1796,6 +2811,23 @@
       "package_name": "readme",
       "constructor": "New",
       "descriptor_sha256": "9b3fe849362c45973f844801229014a60860df0a1ee755c34108fa450eb45ee6",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "help_center_readme_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "33d36faa5aca08b88254fe09837287e4d50c69cc5e04f26a617c924dc3968137",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/help_center/readme",
+        "isolated_profile": "help_center_readme_isolated_v1",
+        "isolated_command": "go test ./providers/help_center/readme"
+      },
       "operations": [
         {
           "key": "create_article",
@@ -1837,6 +2869,23 @@
       "package_name": "zendeskguide",
       "constructor": "New",
       "descriptor_sha256": "7857814654623d03adadea3e74825fc26cccc219478515c81d071f21a19e3ede",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "help_center_zendesk_guide_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "a29fcb40b4dc1412e24da71eeae401f5999163484ab30456b1dea3315488b189",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/help_center/zendesk_guide",
+        "isolated_profile": "help_center_zendesk_guide_isolated_v1",
+        "isolated_command": "go test ./providers/help_center/zendesk_guide"
+      },
       "operations": [
         {
           "key": "create_article",
@@ -1878,6 +2927,23 @@
       "package_name": "awsiot",
       "constructor": "New",
       "descriptor_sha256": "ebb6c84b9727db64a437b493090ac14026f2185d820c34873ff39a47eb7c78d9",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "iot_telemetry_aws_iot_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "a0596a237790fcbfe96a75bde4276128cec0e76c920e44473a1b43a368bf352e",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/iot_telemetry/aws_iot",
+        "isolated_profile": "iot_telemetry_aws_iot_isolated_v1",
+        "isolated_command": "go test ./providers/iot_telemetry/aws_iot"
+      },
       "operations": [
         {
           "key": "publish_telemetry",
@@ -1899,6 +2965,23 @@
       "package_name": "datadogmetrics",
       "constructor": "New",
       "descriptor_sha256": "a4294ef47c36c74c34f388c50846494c41ecf3f77fdfc65dc0f23f21d63c11f8",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "iot_telemetry_datadog_metrics_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "e3bd8e53d34f7e237cae74677a48820d426dfe0c4d5053387df72b7ecf62d24a",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/iot_telemetry/datadog_metrics",
+        "isolated_profile": "iot_telemetry_datadog_metrics_isolated_v1",
+        "isolated_command": "go test ./providers/iot_telemetry/datadog_metrics"
+      },
       "operations": [
         {
           "key": "publish_telemetry",
@@ -1915,6 +2998,23 @@
       "package_name": "mqtt",
       "constructor": "New",
       "descriptor_sha256": "d0cc3fb9b81b3f62e926bf6800c84c778ec8bb57ce3f2d8978e619cb806e837d",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "iot_telemetry_mqtt_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "5b4f36a12d29265427a48707ad1c54d7936e31293c368070397b8c4155fb0058",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/iot_telemetry/mqtt",
+        "isolated_profile": "iot_telemetry_mqtt_isolated_v1",
+        "isolated_command": "go test ./providers/iot_telemetry/mqtt"
+      },
       "operations": [
         {
           "key": "publish_telemetry",
@@ -1936,6 +3036,23 @@
       "package_name": "persona",
       "constructor": "New",
       "descriptor_sha256": "b1b8480e1835b0e99832f523ddcf38256e008c0d0b24e0d749e7764a4081db9e",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "kyc_risk_persona_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "ace76168f86769047975bdb2f6b300bdccb75036d45acccfe0de088eddb33f26",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/kyc_risk/persona",
+        "isolated_profile": "kyc_risk_persona_isolated_v1",
+        "isolated_command": "go test ./providers/kyc_risk/persona"
+      },
       "operations": [
         {
           "key": "create_inquiry",
@@ -1962,6 +3079,23 @@
       "package_name": "tally",
       "constructor": "New",
       "descriptor_sha256": "bf214cd250a98d6616eed76ac869a268d23fbf3ea63f3e94b6f9a3b7c93271d8",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "lead_source_tally_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "9d606df00c9efdd6eace961f3b3911cffdeb2f0075cb0c7fede1df7e050e55ad",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/lead_source/tally",
+        "isolated_profile": "lead_source_tally_isolated_v1",
+        "isolated_command": "go test ./providers/lead_source/tally"
+      },
       "operations": [
         {
           "key": "test_connection",
@@ -1978,6 +3112,23 @@
       "package_name": "moodle",
       "constructor": "New",
       "descriptor_sha256": "9ce66313d22c367e850beec16825e3c6e151e1e3203719147cf7633b63886688",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "lms_moodle_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "bd51b884c0921c4c8e3c270ee9b5393ec8fca64e807c6770fb8a382a73b79421",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/lms/moodle",
+        "isolated_profile": "lms_moodle_isolated_v1",
+        "isolated_command": "go test ./providers/lms/moodle"
+      },
       "operations": [
         {
           "key": "list_courses",
@@ -2004,6 +3155,23 @@
       "package_name": "talentlms",
       "constructor": "New",
       "descriptor_sha256": "b74b58bb988780c00f44149b8f777faf95b70aa7fd38f2f94c732133799a6ffd",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "lms_talentlms_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "770a90926d128f53c51dfba67e76d29d40d3dc6bbb2435dcdde89fb212ae4247",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/lms/talentlms",
+        "isolated_profile": "lms_talentlms_isolated_v1",
+        "isolated_command": "go test ./providers/lms/talentlms"
+      },
       "operations": [
         {
           "key": "list_courses",
@@ -2030,6 +3198,23 @@
       "package_name": "authorizedcarriergateway",
       "constructor": "New",
       "descriptor_sha256": "5382b3fd1b016f1a984cf318323d0347401915a4b2de7bd78bbc887349995779",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "logistics_authorized_carrier_gateway_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "bb5683b85cb64a4954f9c8d29cb4559d34cfdd8e533d7bf7b856904e99c9f229",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/logistics/authorized_carrier_gateway",
+        "isolated_profile": "logistics_authorized_carrier_gateway_isolated_v1",
+        "isolated_command": "go test ./providers/logistics/authorized_carrier_gateway"
+      },
       "operations": [
         {
           "key": "quote_rates",
@@ -2046,6 +3231,23 @@
       "package_name": "dhl",
       "constructor": "New",
       "descriptor_sha256": "ee4ef98c3e5d2d4ca7d45f9fbe9adc34cd09cc98b3113433a6a60751ca8e9973",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "logistics_dhl_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "87f90b162ddaa4366d471474b507df85700517b4937221fa40c0553a17176190",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/logistics/dhl",
+        "isolated_profile": "logistics_dhl_isolated_v1",
+        "isolated_command": "go test ./providers/logistics/dhl"
+      },
       "operations": [
         {
           "key": "cancel_pickup",
@@ -2092,6 +3294,23 @@
       "package_name": "fedex",
       "constructor": "New",
       "descriptor_sha256": "2a3d72ab218020f662361fd179cb0bed12e4d211609cef985756567a358588cd",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "logistics_fedex_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "7497aa5de216e7e40c1d375417335b307d4921d4425b5dcea04cc49f5b90b44c",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/logistics/fedex",
+        "isolated_profile": "logistics_fedex_isolated_v1",
+        "isolated_command": "go test ./providers/logistics/fedex"
+      },
       "operations": [
         {
           "key": "cancel_pickup",
@@ -2133,6 +3352,23 @@
       "package_name": "freightos",
       "constructor": "New",
       "descriptor_sha256": "5ad4fb10968f6052bdb3fc9bb45cba26f6370b184f51ae36b5b7ca3e2daebfe1",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "logistics_freightos_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "9e54a230892c040542e3b9199a557c81a0d2fd634242dbc9e51cc9b3df77faa9",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/logistics/freightos",
+        "isolated_profile": "logistics_freightos_isolated_v1",
+        "isolated_command": "go test ./providers/logistics/freightos"
+      },
       "operations": [
         {
           "key": "quote_rates",
@@ -2149,6 +3385,23 @@
       "package_name": "sfexpress",
       "constructor": "New",
       "descriptor_sha256": "03926a44bb73d59cb309a85405d739e8dba27078f535ee7746d82b903d7681e3",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "logistics_sf_express_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "39c504571a67fe1657027ec409241f5bc354084a8849524b3470967f8b8856ce",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/logistics/sf_express",
+        "isolated_profile": "logistics_sf_express_isolated_v1",
+        "isolated_command": "go test ./providers/logistics/sf_express"
+      },
       "operations": [
         {
           "key": "create_shipment",
@@ -2180,6 +3433,23 @@
       "package_name": "shopifyfulfillment",
       "constructor": "New",
       "descriptor_sha256": "9fc8b54c87f923bbdc15b061cf932d041db33b5245539f990895a0ffb28ecf90",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "logistics_shopify_fulfillment_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "4a166926ee1c9a1ccea5fe8c9d5b4da3830a80f20181de57079dddb59aa5b7d9",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/logistics/shopify_fulfillment",
+        "isolated_profile": "logistics_shopify_fulfillment_isolated_v1",
+        "isolated_command": "go test ./providers/logistics/shopify_fulfillment"
+      },
       "operations": [
         {
           "key": "cancel_fulfillment",
@@ -2216,6 +3486,23 @@
       "package_name": "ups",
       "constructor": "New",
       "descriptor_sha256": "2674d314b75d7af55255b3b897854d053bbbb370b56a531750c168c20d3a7b0f",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "logistics_ups_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "d769c8dfef577556dde8fd617dded76df42852da46d3bbe625cd096e2522e4e2",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/logistics/ups",
+        "isolated_profile": "logistics_ups_isolated_v1",
+        "isolated_command": "go test ./providers/logistics/ups"
+      },
       "operations": [
         {
           "key": "create_shipment",
@@ -2247,6 +3534,23 @@
       "package_name": "nominatim",
       "constructor": "New",
       "descriptor_sha256": "98198a81af8afcd22576784b0ab66553c3cac77d0b5b63cf0ba43935bb845a0d",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "map_address_nominatim_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "96c6b473b5ac17e63d790bf9d87d028a5ff453ae8d421cdec92507b2b55372dc",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/map_address/nominatim",
+        "isolated_profile": "map_address_nominatim_isolated_v1",
+        "isolated_command": "go test ./providers/map_address/nominatim"
+      },
       "operations": [
         {
           "key": "reverse_geocode",
@@ -2268,6 +3572,23 @@
       "package_name": "etsy",
       "constructor": "New",
       "descriptor_sha256": "acfd53ce678bf6a2155210c1d23e2227dea8838cca26a627d1c059fa00786ab8",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "marketplace_etsy_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "d525c5721e1eefc7cad49ce962a7be7d12743c1af06004d623212d8b6b3a2bb4",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/marketplace/etsy",
+        "isolated_profile": "marketplace_etsy_isolated_v1",
+        "isolated_command": "go test ./providers/marketplace/etsy"
+      },
       "operations": [
         {
           "key": "list_listings",
@@ -2294,6 +3615,23 @@
       "package_name": "mcp",
       "constructor": "New",
       "descriptor_sha256": "1ee23664f0fa645e5d69272ca83574b3a77a61a9b4d2cd5ec4430951a3594963",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "mcp_tool_mcp_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "1d87dd66e2b89ef514e642fb6ee088e048cef87c913a31dfcf014ccf95bc0d61",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/mcp_tool/mcp",
+        "isolated_profile": "mcp_tool_mcp_isolated_v1",
+        "isolated_command": "go test ./providers/mcp_tool/mcp"
+      },
       "operations": [
         {
           "key": "call_tool",
@@ -2320,6 +3658,23 @@
       "package_name": "microsoft",
       "constructor": "New",
       "descriptor_sha256": "9ed9df71504549408475ef737e624c4ca1c5b67097bbddb3de33ff5382a1b300",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "microsoft_365_microsoft_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "056f9a860c9bf8a7c5b3c38cdfb88d4fe3e5f6e71e47519addcc22ce158beba0",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/microsoft_365/microsoft",
+        "isolated_profile": "microsoft_365_microsoft_isolated_v1",
+        "isolated_command": "go test ./providers/microsoft_365/microsoft"
+      },
       "operations": [
         {
           "key": "sync_calendar",
@@ -2356,6 +3711,23 @@
       "package_name": "webpush",
       "constructor": "New",
       "descriptor_sha256": "e23f2c00bd52ba4cbabffbc5f008d4a31d36fd619b56fc70b82ec90210a9915d",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "notification_web_push_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "79a25d9f0bf6c3a0bfe225d27a79a3d326f7a4239ecabe40c09f07a775a4fff1",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/notification/web_push",
+        "isolated_profile": "notification_web_push_isolated_v1",
+        "isolated_command": "go test ./providers/notification/web_push"
+      },
       "operations": [
         {
           "key": "send",
@@ -2377,6 +3749,23 @@
       "package_name": "prometheus",
       "constructor": "New",
       "descriptor_sha256": "e7c947d06437734f29c8e594df59657569afd87123ccacff0856d6ff1e900ff2",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "observability_compliance_prometheus_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "bc32fd488f2b344682d04ac1fc0099124d577a03ee66a43a2c57a327373517bb",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/observability_compliance/prometheus",
+        "isolated_profile": "observability_compliance_prometheus_isolated_v1",
+        "isolated_command": "go test ./providers/observability_compliance/prometheus"
+      },
       "operations": [
         {
           "key": "query",
@@ -2398,6 +3787,23 @@
       "package_name": "openai",
       "constructor": "New",
       "descriptor_sha256": "e17306c95cb0789206c297c86372f619074205753dbed052d3833e458ea4b67b",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "openai_openai_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "508a4df9f1380b0307717d454e6b7884fd4027a19f74dd2a2b3e663d4c28a4c6",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/openai/openai",
+        "isolated_profile": "openai_openai_isolated_v1",
+        "isolated_command": "go test ./providers/openai/openai"
+      },
       "operations": [
         {
           "key": "create_response",
@@ -2424,6 +3830,31 @@
       "package_name": "alipay",
       "constructor": "New",
       "descriptor_sha256": "f8f0dece37e2104257c571370221967f487f8cf101b3a9853587bdf752fb5e0b",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "payment_alipay_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "b81461e08ffdab18f915454b6fd20cbacc71835ee471428f01bcb159629c7cf7",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure",
+          "webhook_signature_and_normalization"
+        ],
+        "test_command": "go test ./providers/payment/alipay",
+        "isolated_profile": "payment_alipay_isolated_v1",
+        "isolated_command": "go test ./providers/payment/alipay",
+        "live_profile": "alipay_sandbox_native_payment_v1",
+        "live_command": "go run ./scripts/verify_alipay_sandbox_live",
+        "required_secrets": [
+          "ALIPAY_SANDBOX",
+          "ALIPAY_APP_ID",
+          "ALIPAY_MERCHANT_PRIVATE_KEY"
+        ]
+      },
       "operations": [
         {
           "key": "close_payment_order",
@@ -2465,6 +3896,33 @@
       "package_name": "stripe",
       "constructor": "New",
       "descriptor_sha256": "bab53ffb01431a95bbaf14a0f9f06ddf645a1fb0c89b56591c0a6b5b024dc2cf",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "payment_stripe_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "9550a9a8de5c5d49ac0ef7ad8e78aee680f8c64b0404836b0fba5ff4bb409cac",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "japan_checkout_card_paypay_konbini",
+          "network_failure_semantics",
+          "payment_intent_idempotency",
+          "provider_error_classification",
+          "refund_and_reconciliation",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure",
+          "webhook_signature_and_normalization"
+        ],
+        "test_command": "go test ./providers/payment/stripe",
+        "isolated_profile": "payment_stripe_isolated_v1",
+        "isolated_command": "go test ./providers/payment/stripe",
+        "live_profile": "stripe_japan_online_v1",
+        "live_command": "go run ./scripts/verify_stripe_japan_live",
+        "required_secrets": [
+          "STRIPE_SECRET_KEY"
+        ]
+      },
       "operations": [
         {
           "key": "attach_payment_method",
@@ -2626,6 +4084,33 @@
       "package_name": "wechatpay",
       "constructor": "New",
       "descriptor_sha256": "c1275ad87e8efe3c2dd4bcd72b1f53c45848f5c942b594ffe4b82d2a871314cf",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "payment_wechat_pay_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "808901b240a2d5b8f632a5d402fa0c4d20626acbc3130ff2c8916e635d49b38b",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure",
+          "webhook_signature_and_normalization"
+        ],
+        "test_command": "go test ./providers/payment/wechat_pay",
+        "isolated_profile": "payment_wechat_pay_isolated_v1",
+        "isolated_command": "go test ./providers/payment/wechat_pay",
+        "live_profile": "wechat_pay_controlled_test_merchant_v1",
+        "live_command": "go run ./scripts/verify_wechat_pay_controlled_live",
+        "required_secrets": [
+          "WECHAT_PAY_CONTROLLED_TEST",
+          "WECHAT_PAY_APP_ID",
+          "WECHAT_PAY_MERCHANT_ID",
+          "WECHAT_PAY_MERCHANT_SERIAL_NO",
+          "WECHAT_PAY_MERCHANT_PRIVATE_KEY"
+        ]
+      },
       "operations": [
         {
           "key": "close_payment_order",
@@ -2667,6 +4152,23 @@
       "package_name": "posthog",
       "constructor": "New",
       "descriptor_sha256": "072db1c3d6898c95319ca08b23b188b10f8a49fad9d0002e624c458da0cb4342",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "product_event_posthog_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "a4cbf7bf56888d384524917153481ac45c4d2e4177eaa4f9bdca35f0cc51e1f0",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/product_event/posthog",
+        "isolated_profile": "product_event_posthog_isolated_v1",
+        "isolated_command": "go test ./providers/product_event/posthog"
+      },
       "operations": [
         {
           "key": "capture_event",
@@ -2688,6 +4190,24 @@
       "package_name": "facebookmessenger",
       "constructor": "New",
       "descriptor_sha256": "fadec660b4e0517039c22691d76505c6a549be3639f7226fb942e3139def1855",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "social_message_facebook_messenger_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "e739ea19de6d26b44b24aaeb6688872330f31b8f1ab18d800339362a192647f1",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure",
+          "webhook_signature_and_normalization"
+        ],
+        "test_command": "go test ./providers/social_message/facebook_messenger",
+        "isolated_profile": "social_message_facebook_messenger_isolated_v1",
+        "isolated_command": "go test ./providers/social_message/facebook_messenger"
+      },
       "operations": [
         {
           "key": "send_message",
@@ -2709,6 +4229,23 @@
       "package_name": "oidc",
       "constructor": "New",
       "descriptor_sha256": "2a14eb52af8ccd84816b137800d5b11c4c602d031c13c9a8e525a773b5856ed8",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "sso_oidc_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "f748964a45e8e314ac89179a30bb1aa5736de69c1431d4fdfbfa8a5b4878c309",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/sso/oidc",
+        "isolated_profile": "sso_oidc_isolated_v1",
+        "isolated_command": "go test ./providers/sso/oidc"
+      },
       "operations": [
         {
           "key": "list_users",
@@ -2730,6 +4267,24 @@
       "package_name": "zendesk",
       "constructor": "New",
       "descriptor_sha256": "ed99fb444e51c54c237407003293d0f5489481ad29e10d382a980e87c691e34a",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "support_zendesk_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "6b4c340b3246629070c9c423b0dae9b5cbdf644d61f19e00e2704c8e494dd1fc",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure",
+          "webhook_signature_and_normalization"
+        ],
+        "test_command": "go test ./providers/support/zendesk",
+        "isolated_profile": "support_zendesk_isolated_v1",
+        "isolated_command": "go test ./providers/support/zendesk"
+      },
       "operations": [
         {
           "key": "create_ticket",
@@ -2766,6 +4321,23 @@
       "package_name": "brazilportalunicoclassif",
       "constructor": "New",
       "descriptor_sha256": "33afe03dc902f872f8c98c3767ffef7f5fca646de3ebbe6edfc9755addd85dc8",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "tariff_classification_brazil_portal_unico_classif_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "7c3bc710623fb79e395a2ebf7b4b826fe61f731aad3c27d064556307d1005a5d",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/tariff_classification/brazil_portal_unico_classif",
+        "isolated_profile": "tariff_classification_brazil_portal_unico_classif_isolated_v1",
+        "isolated_command": "go test ./providers/tariff_classification/brazil_portal_unico_classif"
+      },
       "operations": [
         {
           "key": "match_brazil_ncm_candidates",
@@ -2782,6 +4354,23 @@
       "package_name": "chinahsbianma",
       "constructor": "New",
       "descriptor_sha256": "da702f598b16f57b789729ef8cdd6238be0ef451a9bab034423f5f7eef7843bf",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "tariff_classification_china_hs_bianma_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "c4f98e4483a861f2d395ece276cf9d3267c6e9c0fd2f95118ca43148e8f9c413",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/tariff_classification/china_hs_bianma",
+        "isolated_profile": "tariff_classification_china_hs_bianma_isolated_v1",
+        "isolated_command": "go test ./providers/tariff_classification/china_hs_bianma"
+      },
       "operations": [
         {
           "key": "search_china_hs_candidates",
@@ -2798,6 +4387,24 @@
       "package_name": "twilio",
       "constructor": "New",
       "descriptor_sha256": "e1e25052f2a95405ea6162c1cf8bdaaa752b87ce1891b9bbe04196a4307a99f2",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "telephony_twilio_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "3b3c9a750d5ae8334d01feab162def71a501f20d099898a3d8ad4165b32f6133",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure",
+          "webhook_signature_and_normalization"
+        ],
+        "test_command": "go test ./providers/telephony/twilio",
+        "isolated_profile": "telephony_twilio_isolated_v1",
+        "isolated_command": "go test ./providers/telephony/twilio"
+      },
       "operations": [
         {
           "key": "send_sms",
@@ -2819,6 +4426,23 @@
       "package_name": "comexstat",
       "constructor": "New",
       "descriptor_sha256": "16f31782ce807e0381a6bcea687db2f75affc4083e783adafd3e70fde458efd0",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "trade_statistics_comex_stat_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "927bc51524fe7a1a45d556ba98a68fad3ba92b09fc9dbf84d14bd70dfb92e518",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/trade_statistics/comex_stat",
+        "isolated_profile": "trade_statistics_comex_stat_isolated_v1",
+        "isolated_command": "go test ./providers/trade_statistics/comex_stat"
+      },
       "operations": [
         {
           "key": "query_import_statistics",
@@ -2835,6 +4459,23 @@
       "package_name": "openmeteo",
       "constructor": "New",
       "descriptor_sha256": "696747ed6927ca7fd43609a6ce264cd3addcd04702eadb4dcbe3edb6bb3a7e42",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "weather_open_meteo_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "85e46d0736ca3c30d908b70e11578055a68236aad5e8d8b6e3f0ca271a5db72a",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/weather/open_meteo",
+        "isolated_profile": "weather_open_meteo_isolated_v1",
+        "isolated_command": "go test ./providers/weather/open_meteo"
+      },
       "operations": [
         {
           "key": "get_daily",
@@ -2851,6 +4492,23 @@
       "package_name": "http",
       "constructor": "New",
       "descriptor_sha256": "c99211116a23249d4cf3b438c677f935adf9507f0c49f726ed07dda61a58ea67",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "webhook_http_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "c062d4dcfc093fa8f3aec5439c0cb84c6531aa416c74d3ba8845781f74323f69",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/webhook/http",
+        "isolated_profile": "webhook_http_isolated_v1",
+        "isolated_command": "go test ./providers/webhook/http"
+      },
       "operations": [
         {
           "key": "send",
@@ -2872,6 +4530,23 @@
       "package_name": "tally",
       "constructor": "New",
       "descriptor_sha256": "acf8c40e3b830db57a4bb6a5835b7695540b65aa6ed837e73feda5399243e75a",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "website_form_tally_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "306b3220fcdf747b519b88cbfd4731ccf96d40f0cd64e96037c17c311fabe408",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/website_form/tally",
+        "isolated_profile": "website_form_tally_isolated_v1",
+        "isolated_command": "go test ./providers/website_form/tally"
+      },
       "operations": [
         {
           "key": "test_connection",
@@ -2888,6 +4563,24 @@
       "package_name": "metacloudapi",
       "constructor": "New",
       "descriptor_sha256": "6b5daf6c56dd87c912a1759b583651a4983ce841c8d4c119a6f09175f25771b1",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "whatsapp_meta_cloud_api_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "9b91ba30cab3571359e81ad0fda829c2dea45e02b2109f99c360b57db843385c",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure",
+          "webhook_signature_and_normalization"
+        ],
+        "test_command": "go test ./providers/whatsapp/meta_cloud_api",
+        "isolated_profile": "whatsapp_meta_cloud_api_isolated_v1",
+        "isolated_command": "go test ./providers/whatsapp/meta_cloud_api"
+      },
       "operations": [
         {
           "key": "list_templates",

@@ -2,7 +2,9 @@ package catalog
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -34,6 +36,24 @@ func TestCatalogIsCanonicalAndHasUniqueIdentities(t *testing.T) {
 		expectedImportPath := "github.com/domainry/domainry-connectors/providers/" + provider.ConnectorKey + "/" + provider.ProviderKey
 		if provider.ImportPath != expectedImportPath {
 			t.Fatalf("Provider %s import path does not match stable keys: %s", identity, provider.ImportPath)
+		}
+		if provider.Verification == nil {
+			t.Fatalf("Provider %s has no release verification", identity)
+		} else {
+			manifestPath := filepath.Join("..", "providers", provider.ConnectorKey, provider.ProviderKey, "verification.json")
+			manifest, err := os.ReadFile(manifestPath)
+			if err != nil {
+				t.Fatalf("read Provider verification %s: %v", identity, err)
+			}
+			if got := fmt.Sprintf("%x", sha256.Sum256(manifest)); got != provider.Verification.ManifestSHA256 {
+				t.Fatalf("Provider %s verification digest=%s want=%s", identity, provider.Verification.ManifestSHA256, got)
+			}
+			if !sort.StringsAreSorted(provider.Verification.Suites) {
+				t.Fatalf("Provider %s verification suites are not sorted", identity)
+			}
+			if provider.Verification.Mode == "" || provider.Verification.TestCommand == "" {
+				t.Fatalf("Provider %s verification is incomplete", identity)
+			}
 		}
 		operations := make([]string, len(provider.Operations))
 		for index, operation := range provider.Operations {

@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
 	"time"
@@ -72,8 +73,12 @@ func TestWriteUsesResolvedSecretAndRequestIdentity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if stub.request.Headers["Authorization"][0] != "Bearer sk_test_resolved" || stub.request.Headers["Idempotency-Key"][0] != "request-123" {
-		t.Fatalf("headers=%v", stub.request.Headers)
+	if stub.request.SecretHeaders["Authorization"][0] != "Bearer sk_test_resolved" || stub.request.Headers["Authorization"] != nil || stub.request.Headers["Idempotency-Key"][0] != "request-123" {
+		t.Fatalf("headers=%v secret headers present=%t", stub.request.Headers, len(stub.request.SecretHeaders) > 0)
+	}
+	encoded, _ := json.Marshal(stub.request)
+	if strings.Contains(string(encoded), "sk_test_resolved") {
+		t.Fatalf("request serialization leaks API key: %s", encoded)
 	}
 	if string(stub.request.Body) != "amount=1200&currency=usd" || result.ResponseRef != "stripe:pi_123" {
 		t.Fatalf("request body=%q result=%+v", stub.request.Body, result)
@@ -91,6 +96,62 @@ func TestWriteNetworkFailureIsUncertain(t *testing.T) {
 	_, err = adapter.Call(t.Context(), connector.CallRequest{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, OperationKey: operation.Key, ContractSHA256: operation.ContractSHA256, Mode: operation.Mode, Connection: connector.Connection{Config: map[string]any{"base_url": "http://localhost"}}, Secrets: map[string]string{"api_key": "sk_test"}, Payload: payload})
 	if classification, ok := connector.ErrorClassificationOf(err); !ok || classification != connector.ErrorUncertain {
 		t.Fatalf("classification=%q ok=%v error=%v", classification, ok, err)
+	}
+}
+
+func TestJapanCheckoutOwnsLocalPaymentMethodTranslation(t *testing.T) {
+	stub := &transportStub{response: connector.HTTPResponse{StatusCode: http.StatusOK, Body: []byte(`{"id":"cs_jp","status":"open"}`)}}
+	adapter, err := New(stub)
+	if err != nil {
+		t.Fatal(err)
+	}
+	operation := operationByKey(t, adapter.Descriptor(), "create_checkout_session")
+	payload, _ := json.Marshal(map[string]any{
+		"mode": "payment", "price": "price_jpy", "quantity": 1,
+		"success_url": "https://shop.example/success", "cancel_url": "https://shop.example/cancel",
+		"locale": "ja", "payment_method_types": []string{"card", "paypay", "konbini"},
+	})
+	_, err = adapter.Call(t.Context(), connector.CallRequest{
+		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, OperationKey: operation.Key,
+		ContractSHA256: operation.ContractSHA256, Mode: operation.Mode, RequestRef: "checkout-jp-1",
+		Connection: connector.Connection{Config: map[string]any{"base_url": "http://localhost"}},
+		Secrets:    map[string]string{"api_key": "sk_test_resolved"}, Payload: payload,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	values, err := url.ParseQuery(string(stub.request.Body))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if values.Get("locale") != "ja" || values.Get("payment_method_types[0]") != "card" || values.Get("payment_method_types[1]") != "paypay" || values.Get("payment_method_types[2]") != "konbini" {
+		t.Fatalf("Japan Checkout parameters=%v", values)
+	}
+}
+
+func TestJapanPaymentIntentOwnsLocalPaymentMethodTranslation(t *testing.T) {
+	stub := &transportStub{response: connector.HTTPResponse{StatusCode: http.StatusOK, Body: []byte(`{"id":"pi_jp","status":"requires_payment_method"}`)}}
+	adapter, err := New(stub)
+	if err != nil {
+		t.Fatal(err)
+	}
+	operation := operationByKey(t, adapter.Descriptor(), "create_payment_intent")
+	payload, _ := json.Marshal(map[string]any{"amount": 100, "currency": "jpy", "payment_method_types": []string{"card", "paypay", "konbini"}})
+	_, err = adapter.Call(t.Context(), connector.CallRequest{
+		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, OperationKey: operation.Key,
+		ContractSHA256: operation.ContractSHA256, Mode: operation.Mode, RequestRef: "payment-jp-1",
+		Connection: connector.Connection{Config: map[string]any{"base_url": "http://localhost"}},
+		Secrets:    map[string]string{"api_key": "sk_test_resolved"}, Payload: payload,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	values, err := url.ParseQuery(string(stub.request.Body))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if values.Get("currency") != "jpy" || values.Get("payment_method_types[0]") != "card" || values.Get("payment_method_types[1]") != "paypay" || values.Get("payment_method_types[2]") != "konbini" {
+		t.Fatalf("Japan PaymentIntent parameters=%v", values)
 	}
 }
 

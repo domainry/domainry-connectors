@@ -39,6 +39,34 @@ for generated callers and tests.
 No package registration occurs in `init`. Runtime composition imports exact
 selected packages and calls `New` explicitly.
 
+## Release verification boundary
+
+Every Provider commits a `verification.json` beside its implementation. Catalog
+generation refuses to publish a Provider without one and hashes the manifest
+into the immutable Provider entry. Every manifest names a mandatory,
+credential-free deterministic contract gate. Providers with a safe sandbox or
+controlled test tenant may additionally name an opt-in live command and its
+required test-only credentials. Absence of a live command is explicit and must
+never be presented as live certification.
+
+Run one gate with `go run ./scripts/verify_provider_release --provider
+payment/stripe --mode deterministic`, or all deterministic gates with
+`go run ./scripts/verify_provider_release --all --mode deterministic`. Live
+mode is deliberately opt-in and fails closed when no live profile or credential
+is declared.
+
+Protocol and local Providers may additionally declare an `isolated_profile`.
+This means their complete external boundary is exercised with an isolated test
+service or deterministic Runtime-transport fake; it is not a claim of external
+live-account verification.
+
+Provider-specific API translation, regional payment methods, refunds,
+reconciliation, webhook signatures, and remote error classification are tested
+here. Runtime consumes the immutable Catalog entry and runs only generic host
+acceptance: construction, governed transport, secret injection, durable retry,
+ingress, replay protection, audit, and writeback. Runtime must not maintain a
+second provider-specific live matrix.
+
 ## Ownership boundary
 
 Provider code owns protocol translation, Provider-specific validation,
