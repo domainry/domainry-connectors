@@ -13,6 +13,7 @@ import (
 	"go/token"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -21,6 +22,12 @@ const (
 	modulePath = "github.com/domainry/domainry-connectors/providers"
 	outputPath = "scripts/generate_catalog/provider_registry_generated.go"
 )
+
+var stableKey = regexp.MustCompile(`^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$`)
+
+var forbiddenGenericKey = map[string]bool{
+	"common": true, "library": true, "shared": true, "util": true, "utils": true,
+}
 
 type provider struct {
 	ImportPath  string
@@ -93,6 +100,12 @@ func discover(root string) ([]provider, error) {
 		if len(parts) > 2 {
 			return filepath.SkipDir
 		}
+		if !stableKey.MatchString(parts[0]) || !stableKey.MatchString(parts[1]) || forbiddenGenericKey[parts[0]] || forbiddenGenericKey[parts[1]] {
+			return fmt.Errorf("Provider path %s must use two specific stable lower_snake_case keys", relative)
+		}
+		if err := rejectNestedGoPackages(path); err != nil {
+			return fmt.Errorf("Provider %s: %w", relative, err)
+		}
 		packages, err := parser.ParseDir(token.NewFileSet(), path, func(info os.FileInfo) bool {
 			return strings.HasSuffix(info.Name(), ".go") && !strings.HasSuffix(info.Name(), "_test.go")
 		}, 0)
@@ -112,6 +125,9 @@ func discover(root string) ([]provider, error) {
 				}
 			}
 		}
+		if packageName != strings.ReplaceAll(parts[1], "_", "") {
+			return fmt.Errorf("Provider %s package name %s must be the idiomatic provider key", relative, packageName)
+		}
 		if constructorCount != 1 {
 			return fmt.Errorf("Provider %s does not publish func New(connector.Transport) (connector.Adapter, error)", relative)
 		}
@@ -124,6 +140,21 @@ func discover(root string) ([]provider, error) {
 	}
 	sort.Slice(providers, func(i, j int) bool { return providers[i].ImportPath < providers[j].ImportPath })
 	return providers, nil
+}
+
+func rejectNestedGoPackages(providerRoot string) error {
+	return filepath.WalkDir(providerRoot, func(path string, entry os.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if path == providerRoot || entry.IsDir() || !strings.HasSuffix(entry.Name(), ".go") {
+			return nil
+		}
+		if filepath.Dir(path) != providerRoot {
+			return fmt.Errorf("nested Go package is forbidden: %s", path)
+		}
+		return nil
+	})
 }
 
 func hasConstructor(file *ast.File) bool {

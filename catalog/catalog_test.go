@@ -31,7 +31,8 @@ func TestCatalogIsCanonicalAndHasUniqueIdentities(t *testing.T) {
 		}
 		identities[identity] = true
 		previous = identity
-		if !strings.HasPrefix(provider.ImportPath, "github.com/domainry/domainry-connectors/providers/"+provider.ConnectorKey+"/"+provider.ProviderKey) {
+		expectedImportPath := "github.com/domainry/domainry-connectors/providers/" + provider.ConnectorKey + "/" + provider.ProviderKey
+		if provider.ImportPath != expectedImportPath {
 			t.Fatalf("Provider %s import path does not match stable keys: %s", identity, provider.ImportPath)
 		}
 		operations := make([]string, len(provider.Operations))

@@ -55,6 +55,42 @@ func TestDiscoverRequiresOneExplicitFactory(t *testing.T) {
 	}
 }
 
+func TestDiscoverRejectsAmbiguousOrInvalidProviderPaths(t *testing.T) {
+	for _, relative := range []string{"shared/acme", "search/utils", "Search/acme", "search/acme-provider"} {
+		t.Run(relative, func(t *testing.T) {
+			root := t.TempDir()
+			writeProviderFixture(t, root, relative, "acme", "provider.go")
+			if _, err := discover(root); err == nil {
+				t.Fatal("ambiguous or invalid Provider path accepted")
+			}
+		})
+	}
+}
+
+func TestDiscoverRejectsPackageNameDriftAndNestedGoPackages(t *testing.T) {
+	t.Run("package name", func(t *testing.T) {
+		root := t.TempDir()
+		writeProviderFixture(t, root, "search/acme_search", "acme", "provider.go")
+		if _, err := discover(root); err == nil {
+			t.Fatal("Provider package name drift accepted")
+		}
+	})
+	t.Run("nested package", func(t *testing.T) {
+		root := t.TempDir()
+		writeProviderFixture(t, root, "search/acme", "acme", "provider.go")
+		nested := filepath.Join(root, "search", "acme", "helper")
+		if err := os.MkdirAll(nested, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(nested, "helper.go"), []byte("package helper\n"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := discover(root); err == nil {
+			t.Fatal("nested Provider Go package accepted")
+		}
+	})
+}
+
 func writeProviderFixture(t *testing.T, root, relative, packageName, filename string) {
 	t.Helper()
 	directory := filepath.Join(root, filepath.FromSlash(relative))
