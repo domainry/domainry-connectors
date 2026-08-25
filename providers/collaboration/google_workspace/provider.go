@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	connector "github.com/domainry/domainry-connector-sdk"
+	"github.com/domainry/domainry-connectors/internal/notificationmessage"
 )
 
 const (
@@ -23,15 +24,16 @@ const (
 )
 
 type SendMessageInput struct {
-	Recipient       string         `json:"recipient"`
-	Message         string         `json:"message"`
-	Text            string         `json:"text,omitempty"`
-	ProviderPayload map[string]any `json:"provider_payload,omitempty"`
+	Recipient           string         `json:"recipient"`
+	Message             string         `json:"message"`
+	Text                string         `json:"text,omitempty"`
+	ProviderPayload     map[string]any `json:"provider_payload,omitempty"`
+	NotificationContent map[string]any `json:"notification_content,omitempty"`
 }
 type Response map[string]any
 
 var (
-	SendMessage    = connector.EnqueueOperation[SendMessageInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "send_message", ContractSHA256: "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb", Reliability: writeReliability()}
+	SendMessage    = connector.EnqueueOperation[SendMessageInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "send_message", ContractSHA256: "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324", Reliability: writeReliability()}
 	TestConnection = connector.CallOperation[struct{}, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "test_connection", ContractSHA256: "a354f65a655c7afc141199c44f831137989741466e5c064d4a872fdb8dec4916", Reliability: readReliability()}
 )
 
@@ -100,7 +102,10 @@ func (p *provider) sendMessage(ctx context.Context, request connector.TypedReque
 	if err != nil || message == "" {
 		return connector.DeliveryResult{}, permanent("message_fields_required", "recipient and message are required")
 	}
-	payload := cloneMap(request.Input.ProviderPayload)
+	payload, compileErr := notificationmessage.ResolveProviderPayload(ProviderKey, request.Input.NotificationContent, request.Input.ProviderPayload)
+	if compileErr != nil {
+		return connector.DeliveryResult{}, permanent("notification_content_invalid", compileErr.Error())
+	}
 	if len(payload) == 0 {
 		payload = map[string]any{"text": message}
 	}

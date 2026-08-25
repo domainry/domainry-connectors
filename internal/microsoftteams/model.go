@@ -15,10 +15,11 @@ type Identity struct {
 }
 
 type SendMessageInput struct {
-	Recipient       string         `json:"recipient"`
-	Message         string         `json:"message"`
-	Text            string         `json:"text,omitempty"`
-	ProviderPayload map[string]any `json:"provider_payload,omitempty"`
+	Recipient           string         `json:"recipient"`
+	Message             string         `json:"message"`
+	Text                string         `json:"text,omitempty"`
+	ProviderPayload     map[string]any `json:"provider_payload,omitempty"`
+	NotificationContent map[string]any `json:"notification_content,omitempty"`
 }
 
 type Response map[string]any

@@ -1,9 +1,9 @@
 {
   "contract_version": "domainry-official-connector-catalog-v2",
   "sdk": {
-    "version": "v0.1.0-dev.11",
-    "contract_version": "connector-contract-v9",
-    "contract_sha256": "8d3662131e497098735d876e81b96cf4ac9146acd15b74a92fcc9bcfd2ae7504"
+    "version": "v0.1.0-dev.12",
+    "contract_version": "connector-contract-v10",
+    "contract_sha256": "46b776e062af85c4b6d39f6d8bfaab08800454a6ab52a1077aaa3eda87f2fdf6"
   },
   "providers": [
     {
@@ -692,7 +692,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/dingtalk",
       "package_name": "dingtalk",
       "constructor": "New",
-      "descriptor_sha256": "d04be6062ea8131647f3ac2ef9e401c2d1e46d4326ddaedcb975786e78c98a57",
+      "descriptor_sha256": "6d75f054fc7048ccd0246bb15166fcaa45fe4e60ab41c37b02a634f7fe802834",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "collaboration_dingtalk_deterministic_v1",
@@ -714,7 +714,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+          "contract_sha256": "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324"
         },
         {
           "key": "test_connection",
@@ -730,7 +730,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/discord",
       "package_name": "discord",
       "constructor": "New",
-      "descriptor_sha256": "cd1612d70b8708695a62b5b3f87fd1581d883cd1f90d56525d5526e5211d4db9",
+      "descriptor_sha256": "b237638b4ea17d6bd26501dfe98b915f97fa6da9e92416a056408a442b86a81a",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "collaboration_discord_deterministic_v1",
@@ -752,7 +752,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+          "contract_sha256": "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324"
         },
         {
           "key": "test_connection",
@@ -768,7 +768,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/enterprise_wechat",
       "package_name": "enterprisewechat",
       "constructor": "New",
-      "descriptor_sha256": "2f0dc187a721eb8fe0c3b8224d49c6fd3e65d1c6490a5c45ef37079a40278cf3",
+      "descriptor_sha256": "0a40722be77564452e8e26411f6314249d5463b3530834e4a74c72043496a43f",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "collaboration_enterprise_wechat_deterministic_v1",
@@ -790,7 +790,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+          "contract_sha256": "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324"
         },
         {
           "key": "test_connection",
@@ -806,7 +806,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/feishu",
       "package_name": "feishu",
       "constructor": "New",
-      "descriptor_sha256": "ff33600149494e31ce7a0cf590fa35753c47af285dfe46ffa83dd36cbdc1a18f",
+      "descriptor_sha256": "85931929f394b77245a7810f5f3a6e31720286f4b387a2ff2f3dababc9561e20",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "collaboration_feishu_deterministic_v1",
@@ -834,7 +834,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+          "contract_sha256": "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324"
         },
         {
           "key": "test_connection",
@@ -850,7 +850,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/google_workspace",
       "package_name": "googleworkspace",
       "constructor": "New",
-      "descriptor_sha256": "6d013a1aeb44b9edd896a7afd6191b45a3884da44cdce4b0a7e82a5a4d3924a8",
+      "descriptor_sha256": "fde1957f8f2502c99aa769f0f965a641f3f319d272f78f2f4c3b03ca2083d25e",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "collaboration_google_workspace_deterministic_v1",
@@ -878,7 +878,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+          "contract_sha256": "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324"
         },
         {
           "key": "test_connection",
@@ -894,7 +894,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/line",
       "package_name": "line",
       "constructor": "New",
-      "descriptor_sha256": "c1cff8c507cdbfd85c209ecbfeb3ef45a3bbd2fdc5ac6561a68a537ffa48ead3",
+      "descriptor_sha256": "776caa823bb4c3a709be62f4e4989a86a881ef6ff4f73f5c53711cd6485fcd4f",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "collaboration_line_deterministic_v1",
@@ -916,7 +916,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+          "contract_sha256": "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324"
         },
         {
           "key": "test_connection",
@@ -932,7 +932,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/line_works",
       "package_name": "lineworks",
       "constructor": "New",
-      "descriptor_sha256": "26fac23574788edd31cbc7e09f256e06a2f51d6695625b8d31315339f645b48d",
+      "descriptor_sha256": "004e6136f08fb37424f213c2d73a6a55df513169064b01ce08ac9107a5d529e0",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "collaboration_line_works_deterministic_v1",
@@ -954,7 +954,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+          "contract_sha256": "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324"
         },
         {
           "key": "test_connection",
@@ -970,7 +970,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/microsoft_365",
       "package_name": "microsoft365",
       "constructor": "New",
-      "descriptor_sha256": "6b7df8f51b64684f106626d9c83b4de20b86f9715e0820a88a108191309a8cc7",
+      "descriptor_sha256": "9e58e896b0caafc91cc3399a9d1b4f20896cd88b11db65ff25d34f6da8ea5cbe",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "collaboration_microsoft_365_deterministic_v1",
@@ -998,7 +998,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+          "contract_sha256": "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324"
         },
         {
           "key": "test_connection",
@@ -1014,7 +1014,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/slack",
       "package_name": "slack",
       "constructor": "New",
-      "descriptor_sha256": "faca1e7e36211359aa681dc00f9ebb5d9a335c5d4f890ccb4256763ed9748192",
+      "descriptor_sha256": "84dbdedd727f42b68a7f960462b5439fde12d8b1f47645a15dd0772056524add",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "collaboration_slack_deterministic_v1",
@@ -1041,7 +1041,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+          "contract_sha256": "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324"
         },
         {
           "key": "test_connection",
@@ -1057,7 +1057,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/collaboration/teams",
       "package_name": "teams",
       "constructor": "New",
-      "descriptor_sha256": "1e2baf715704ecd76c1aa398323342e1b0704737a303b21095125f6a0b10204b",
+      "descriptor_sha256": "3297f2aed14a064249d3b95d6faae0ce7dc749bdf450f17b6ba9161b889a84df",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "collaboration_teams_deterministic_v1",
@@ -1079,7 +1079,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb"
+          "contract_sha256": "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324"
         },
         {
           "key": "test_connection",
@@ -2283,7 +2283,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu",
       "package_name": "feishu",
       "constructor": "New",
-      "descriptor_sha256": "fbf4c6e6ed6704dd9bc329c78ca69a9e867562bb49609ffffa1e9986e77da670",
+      "descriptor_sha256": "a682432a8926053f14130e01f9dc1c2658a840eafc4157f5bd852a13b841c8d7",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "feishu_collaboration_feishu_deterministic_v1",
@@ -2305,7 +2305,7 @@
         {
           "key": "send_message",
           "mode": "enqueue",
-          "contract_sha256": "c9cbe7e05fdcf6c9df5735a92cf2f8db3631e79068652516a808982ed423e34f"
+          "contract_sha256": "f4e5855b952b0c58704e7a30f51af50efb2f4c3cc878a329a56aa08a7755e279"
         },
         {
           "key": "test_connection",
@@ -2417,7 +2417,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/google_workspace/google",
       "package_name": "google",
       "constructor": "New",
-      "descriptor_sha256": "fc81848d0a03844374d59e5ee28e6f280c81a187ad5046b1631e5758955ac396",
+      "descriptor_sha256": "aca3719ebdc750c41dbeb98b7a40df08a8bdd0ee94bd360468a16687d9d2d0f2",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "google_workspace_google_deterministic_v1",
@@ -4562,7 +4562,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/whatsapp/meta_cloud_api",
       "package_name": "metacloudapi",
       "constructor": "New",
-      "descriptor_sha256": "6b5daf6c56dd87c912a1759b583651a4983ce841c8d4c119a6f09175f25771b1",
+      "descriptor_sha256": "05abf5b532313ba3f4c36c7d9c2890e6343b9687d418ae64288c921cc41ddfa0",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "whatsapp_meta_cloud_api_deterministic_v1",
@@ -4590,7 +4590,7 @@
         {
           "key": "send_message",
           "mode": "call",
-          "contract_sha256": "3312e467ef1ca1118ba3be883436c597a8d1f1a8a4ecc019b4fe423073eb52b0"
+          "contract_sha256": "96e5ebdfa3a2fcde368c2e2379d8d852e7a2526aa1b5d091638bac5e46236966"
         },
         {
           "key": "test_connection",

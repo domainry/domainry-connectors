@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	connector "github.com/domainry/domainry-connector-sdk"
+	"github.com/domainry/domainry-connectors/internal/notificationmessage"
 )
 
 const (
@@ -23,9 +24,10 @@ const (
 
 type Response map[string]any
 type SendMessageInput struct {
-	Recipient       string         `json:"recipient"`
-	Message         string         `json:"message"`
-	ProviderPayload map[string]any `json:"provider_payload,omitempty"`
+	Recipient           string         `json:"recipient"`
+	Message             string         `json:"message"`
+	ProviderPayload     map[string]any `json:"provider_payload,omitempty"`
+	NotificationContent map[string]any `json:"notification_content,omitempty"`
 }
 type ListTemplatesInput struct {
 	Status string `json:"status,omitempty"`
@@ -33,7 +35,7 @@ type ListTemplatesInput struct {
 
 var (
 	ListTemplates  = operation[ListTemplatesInput]("list_templates", "02e9b6f198a1bf75c997c9bd79775e7f989a166a148923f29da731e29b21d568", connector.EffectRead, connector.IdempotencyNatural)
-	SendMessage    = operation[SendMessageInput]("send_message", "3312e467ef1ca1118ba3be883436c597a8d1f1a8a4ecc019b4fe423073eb52b0", connector.EffectWrite, connector.IdempotencyNone)
+	SendMessage    = operation[SendMessageInput]("send_message", "96e5ebdfa3a2fcde368c2e2379d8d852e7a2526aa1b5d091638bac5e46236966", connector.EffectWrite, connector.IdempotencyNone)
 	TestConnection = operation[struct{}]("test_connection", "3c4028bc879a87aab6cacbdfa44b36583693f053fdc805b01e92938d874b349f", connector.EffectRead, connector.IdempotencyNatural)
 )
 
@@ -100,7 +102,10 @@ func (p *provider) sendMessage(ctx context.Context, r connector.TypedRequest[Sen
 	if recipient == "" || message == "" {
 		return empty(), permanent("message_invalid", "recipient and message are required")
 	}
-	payload := r.Input.ProviderPayload
+	payload, compileErr := notificationmessage.ResolveProviderPayload(ProviderKey, r.Input.NotificationContent, r.Input.ProviderPayload)
+	if compileErr != nil {
+		return empty(), permanent("notification_content_invalid", compileErr.Error())
+	}
 	if payload == nil {
 		payload = map[string]any{"type": "text", "text": map[string]any{"preview_url": false, "body": message}}
 	}

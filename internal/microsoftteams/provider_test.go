@@ -47,7 +47,7 @@ func (*recordingTransport) ExecuteSQL(context.Context, connector.SQLRequest) (co
 }
 
 func identity() Identity {
-	return Identity{ConnectorKey: "collaboration", ProviderKey: "teams", ProviderName: "Microsoft Teams", SendContractSHA256: "c8e3420b4832306a7f1ea9beec5ae3694c0a795a6a3f8bb28a568a8fb6d501cb", TestContractSHA256: "a354f65a655c7afc141199c44f831137989741466e5c064d4a872fdb8dec4916"}
+	return Identity{ConnectorKey: "collaboration", ProviderKey: "teams", ProviderName: "Microsoft Teams", SendContractSHA256: "5dc35c6a31a177b460a433d8d33524d57f4c9cbbf08a8a84e0bda46ad512c324", TestContractSHA256: "a354f65a655c7afc141199c44f831137989741466e5c064d4a872fdb8dec4916"}
 }
 func connection(endpoint string) connector.Connection {
 	return connector.Connection{Config: map[string]any{"target_type": "chat", "graph_base_url": endpoint, "timeout_seconds": 15}}

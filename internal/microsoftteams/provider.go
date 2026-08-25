@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	connector "github.com/domainry/domainry-connector-sdk"
+	"github.com/domainry/domainry-connectors/internal/notificationmessage"
 )
 
 const (
@@ -20,7 +21,8 @@ const (
 
 type provider struct {
 	connector.Adapter
-	transport connector.Transport
+	transport   connector.Transport
+	providerKey string
 }
 
 func New(transport connector.Transport, identity Identity) (connector.Adapter, error) {
@@ -32,7 +34,7 @@ func New(transport connector.Transport, identity Identity) (connector.Adapter, e
 	}
 	sendOperation := connector.EnqueueOperation[SendMessageInput]{ConnectorKey: identity.ConnectorKey, ProviderKey: identity.ProviderKey, Key: "send_message", ContractSHA256: identity.SendContractSHA256, Reliability: writeReliability()}
 	testOperation := connector.CallOperation[struct{}, Response]{ConnectorKey: identity.ConnectorKey, ProviderKey: identity.ProviderKey, Key: "test_connection", ContractSHA256: identity.TestContractSHA256, Reliability: readReliability()}
-	p := &provider{transport: transport}
+	p := &provider{transport: transport, providerKey: identity.ProviderKey}
 	send, err := connector.BindEnqueueDelivery(sendOperation, p.sendMessage)
 	if err != nil {
 		return nil, err
@@ -106,7 +108,10 @@ func (p *provider) sendMessage(ctx context.Context, request connector.TypedReque
 	if err != nil {
 		return connector.DeliveryResult{}, err
 	}
-	payload := cloneMap(request.Input.ProviderPayload)
+	payload, compileErr := notificationmessage.ResolveProviderPayload(p.providerKey, request.Input.NotificationContent, request.Input.ProviderPayload)
+	if compileErr != nil {
+		return connector.DeliveryResult{}, permanent("notification_content_invalid", compileErr.Error())
+	}
 	if len(payload) == 0 {
 		payload = map[string]any{"body": map[string]any{"contentType": "text", "content": message}}
 	}
