@@ -41,14 +41,18 @@ func readOp[I any](key, hash string) connector.CallOperation[I, map[string]any] 
 
 type provider struct {
 	connector.Adapter
-	transport connector.Transport
+	database *databasesql.Client
 }
 
 func New(transport connector.Transport) (connector.Adapter, error) {
 	if transport == nil {
 		return nil, errors.New("MySQL transport is required")
 	}
-	p := &provider{transport: transport}
+	database, err := databasesql.NewClient(transport, "mysql", ProviderKey)
+	if err != nil {
+		return nil, err
+	}
+	p := &provider{database: database}
 	list, err := connector.BindCall(ListTables, p.list)
 	if err != nil {
 		return nil, err
@@ -102,20 +106,20 @@ func (p *provider) test(ctx context.Context, r connector.TypedRequest[struct{}])
 		return empty(), err
 	}
 	timeout := duration(r.Connection)
-	if _, err = p.transport.ExecuteSQL(ctx, connector.SQLRequest{Driver: "mysql", DSN: dsn, Operation: connector.SQLOperationPing, Timeout: timeout}); err != nil {
-		return empty(), connector.RetryableError("mysql.ping_failed", err)
+	if err = p.database.Ping(ctx, dsn, timeout); err != nil {
+		return empty(), err
 	}
-	result, err := p.transport.ExecuteSQL(ctx, connector.SQLRequest{Driver: "mysql", DSN: dsn, Operation: connector.SQLOperationQuery, Statement: "SELECT DATABASE(), CURRENT_USER()", MaxRows: 1, Timeout: timeout})
+	result, err := p.database.Query(ctx, dsn, "SELECT DATABASE(), CURRENT_USER()", nil, 1, timeout, "identity_failed")
 	if err != nil {
-		return empty(), connector.RetryableError("mysql.identity_failed", err)
+		return empty(), err
 	}
 	database, user := "", ""
 	if len(result.Rows) > 0 {
 		if len(result.Rows[0]) > 0 {
-			database = stringValue(result.Rows[0][0])
+			database = databasesql.Text(result.Rows[0][0])
 		}
 		if len(result.Rows[0]) > 1 {
-			user = stringValue(result.Rows[0][1])
+			user = databasesql.Text(result.Rows[0][1])
 		}
 	}
 	return connector.TypedResult[map[string]any]{Output: map[string]any{"connected": true, "database": database, "user": user, "readonly": true}, ResponseRef: "mysql:" + database}, nil
@@ -153,24 +157,11 @@ func (p *provider) query(ctx context.Context, connection connector.Connection, s
 	if err != nil {
 		return empty(), err
 	}
-	result, err := p.transport.ExecuteSQL(ctx, connector.SQLRequest{Driver: "mysql", DSN: dsn, Operation: connector.SQLOperationQuery, Statement: statement, Arguments: args, MaxRows: limit, Timeout: duration(connection)})
+	result, err := p.database.Query(ctx, dsn, statement, args, limit, duration(connection), "query_failed")
 	if err != nil {
-		return empty(), connector.RetryableError("mysql.query_failed", err)
+		return empty(), err
 	}
-	rows := make([]any, 0, len(result.Rows))
-	for _, values := range result.Rows {
-		item := map[string]any{}
-		for index, column := range result.Columns {
-			if index < len(values) {
-				if raw, ok := values[index].([]byte); ok {
-					item[column] = string(raw)
-				} else {
-					item[column] = values[index]
-				}
-			}
-		}
-		rows = append(rows, item)
-	}
+	rows := databasesql.ProjectRows(result)
 	output := map[string]any{"columns": result.Columns, "rows": rows, "row_count": len(rows), "truncated": result.Truncated}
 	return connector.TypedResult[map[string]any]{Output: output, ResponseRef: fmt.Sprintf("mysql:rows:%d", len(rows))}, nil
 }
@@ -253,12 +244,6 @@ func boolValue(value any, fallback bool) bool {
 		return typed
 	}
 	return fallback
-}
-func stringValue(value any) string {
-	if raw, ok := value.([]byte); ok {
-		return string(raw)
-	}
-	return strings.TrimSpace(fmt.Sprint(value))
 }
 func permanent(code, message string) error {
 	return connector.PermanentError("mysql."+code, errors.New(message))
