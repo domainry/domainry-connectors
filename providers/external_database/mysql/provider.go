@@ -6,13 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	connector "github.com/domainry/domainry-connector-sdk"
-	"github.com/domainry/domainry-connectors/internal/databasesql"
-	mysqldriver "github.com/go-sql-driver/mysql"
-	"net"
 	"strconv"
 	"strings"
 	"time"
+
+	connector "github.com/domainry/domainry-connector-sdk"
+	"github.com/domainry/domainry-connectors/internal/databasesql"
 )
 
 const (
@@ -166,43 +165,20 @@ func (p *provider) query(ctx context.Context, connection connector.Connection, s
 	return connector.TypedResult[map[string]any]{Output: output, ResponseRef: fmt.Sprintf("mysql:rows:%d", len(rows))}, nil
 }
 func connectionString(connection connector.Connection, secrets map[string]string) (string, error) {
-	if raw := strings.TrimSpace(secrets["connection_string"]); raw != "" {
-		parsed, err := mysqldriver.ParseDSN(raw)
-		if err != nil {
-			return "", permanent("connection_string_invalid", "connection string is invalid")
-		}
-		return harden(parsed, duration(connection)), nil
-	}
 	username := strings.TrimSpace(secrets["username"])
-	if username == "" {
+	connectionString := strings.TrimSpace(secrets["connection_string"])
+	if connectionString == "" && username == "" {
 		return "", permanent("username_required", "username is required")
 	}
-	cfg := mysqldriver.NewConfig()
-	cfg.User = username
-	cfg.Passwd = secrets["password"]
-	cfg.Net = "tcp"
-	cfg.Addr = net.JoinHostPort(config(connection, "host"), strconv.Itoa(intValue(connection.Config["port"], 3306)))
-	cfg.DBName = config(connection, "database")
-	cfg.TLSConfig = map[string]string{"disable": "false", "preferred": "preferred", "skip-verify": "skip-verify", "require": "true"}[configDefault(connection, "ssl_mode", "require")]
-	return harden(cfg, duration(connection)), nil
-}
-func harden(cfg *mysqldriver.Config, timeout time.Duration) string {
-	cfg.MultiStatements = false
-	cfg.AllowAllFiles = false
-	cfg.AllowCleartextPasswords = false
-	cfg.ParseTime = true
-	cfg.Timeout = timeout
-	cfg.ReadTimeout = timeout
-	cfg.WriteTimeout = timeout
-	params := map[string]string{}
-	for key, value := range cfg.Params {
-		params[key] = value
+	dsn, err := databasesql.BuildMySQLDSN(databasesql.MySQLConnectionConfig{
+		ConnectionString: connectionString, Username: username, Password: secrets["password"],
+		Host: config(connection, "host"), Port: intValue(connection.Config["port"], 3306),
+		Database: config(connection, "database"), SSLMode: configDefault(connection, "ssl_mode", "require"), Timeout: duration(connection),
+	})
+	if err != nil {
+		return "", permanent("connection_string_invalid", "connection string is invalid")
 	}
-	params["transaction_read_only"] = "ON"
-	params["sql_safe_updates"] = "1"
-	cfg.Params = params
-	cfg.Loc = time.UTC
-	return cfg.FormatDSN()
+	return dsn, nil
 }
 
 var mysqlPolicy = databasesql.ReadOnlyPolicy{AllowedFirstKeywords: []string{"select", "with", "show", "describe", "explain"}, DeniedKeywords: []string{"alter", "analyze", "call", "create", "delete", "do", "drop", "execute", "grant", "insert", "load", "lock", "replace", "revoke", "set", "truncate", "unlock", "update"}, UnsafeFragments: []string{"#"}, QuotePairs: map[rune]rune{'\'': '\'', '"': '"', '`': '`'}, KeywordRules: []databasesql.KeywordRule{{Sequence: []string{"for", "update"}, Code: databasesql.LockingReadDenied}, {Sequence: []string{"for", "share"}, Code: databasesql.LockingReadDenied}}}
