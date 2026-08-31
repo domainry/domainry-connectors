@@ -1,7 +1,8 @@
 # Repository architecture
 
 `domainry-connectors` is the source owner for official external Provider
-implementations. It is a library collection, not a Runtime and not a service.
+implementations. It is an embeddable module and library collection, not a
+Runtime and not a standalone service.
 
 ## Package layout
 
@@ -11,6 +12,12 @@ providers/<connector-key>/<provider-key>/
                                       one external Provider implementation
 internal/<protocol-or-helper>/         repository-private reuse with two or
                                       more proven consumers
+internal/domain/connector/             catalog domain model and rules
+internal/application/connector/        catalog discovery use cases
+internal/adapter/connectorsdk/          Connector SDK registry adapter
+internal/assembly/module/              in-process composition
+internal/infrastructure/catalog/       embedded catalog repository
+module/                                stable in-process facade
 ```
 
 The two identity path segments under `providers/` match the stable

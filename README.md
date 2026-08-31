@@ -16,6 +16,17 @@ Runtime-owned transports for outbound effects.
 - No implicit global registration or blank-import side effects.
 - Descriptor and operation identities must pass SDK contract tests.
 
+## Source layout
+
+- `internal/domain/connector`: catalog models, repository ports, and domain validation.
+- `internal/application/connector`: catalog discovery use cases.
+- `internal/adapter/connectorsdk`: adapter to the public Connector SDK Registry.
+- `internal/assembly/module`: in-process composition for a selected Provider set.
+- `internal/infrastructure/catalog`: embedded catalog repository implementation.
+- `module`: stable public in-process factory facade.
+- `providers/<connector-key>/<provider-key>`: stable, independently importable Provider entrypoints.
+- `catalog`: backward-compatible public catalog contract and embedded artifact.
+
 ## Development
 
 ```sh
