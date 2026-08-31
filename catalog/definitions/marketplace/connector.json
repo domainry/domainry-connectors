@@ -1,0 +1,1435 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "amazon_seller",
+    "mercado_livre",
+    "shopee",
+    "rakuten",
+    "etsy",
+    "buyers",
+    "orders",
+    "reviews",
+    "returns",
+    "platform_messages",
+    "settlements",
+    "channel_compliance",
+    "data_migration_handoff"
+  ],
+  "config": {
+    "channel_onboarding_path": "/integrations/marketplace/channel-onboarding",
+    "config_fields": [
+      "provider",
+      "seller_id",
+      "marketplace_id",
+      "store_url",
+      "sync_window_days",
+      "default_currency",
+      "default_country",
+      "channel_policy_key"
+    ],
+    "default_connection_key": "marketplace_primary",
+    "options_path": "/integrations/marketplace/options",
+    "secret_refs": [
+      "api_token",
+      "oauth_client_id",
+      "oauth_client_secret",
+      "webhook_secret"
+    ]
+  },
+  "config_fields": [
+    "provider",
+    "seller_id",
+    "marketplace_id",
+    "store_url",
+    "sync_window_days",
+    "default_currency",
+    "default_country",
+    "channel_policy_key"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Marketplace Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Marketplace Connector definitions, Provider choices, and operation contracts.",
+      "name": "Marketplace"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方市场平台连接器定义、Provider 选项与操作契约。",
+      "name": "市场平台"
+    }
+  },
+  "key": "marketplace",
+  "name": "Marketplace",
+  "operations": [
+    {"key":"test_connection","name":"Test connection","description":"Verify Etsy shop access.","i18n":{"en-US":{"name":"Test connection","description":"Verify Etsy shop access."},"zh-CN":{"name":"测试连接","description":"验证 Etsy 店铺访问。"}},"method":"GET","execution_mode":"sync","side_effect":"read","test_supported":true,"timeout_default_seconds":15,"timeout_max_seconds":30,"output":[{"key":"connected","name":"Connected","type":"boolean","required":true},{"key":"shops","name":"Shops","type":"json","required":true}]},
+    {"key":"list_orders","name":"List orders","description":"List Etsy shop receipts and orders.","i18n":{"en-US":{"name":"List orders","description":"List Etsy shop receipts and orders."},"zh-CN":{"name":"查询订单","description":"查询 Etsy 店铺收据与订单。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"limit","name":"Limit","type":"integer","required":false},{"key":"offset","name":"Offset","type":"integer","required":false},{"key":"min_created","name":"Minimum created time","type":"integer","required":false},{"key":"max_created","name":"Maximum created time","type":"integer","required":false}],"output":[{"key":"results","name":"Orders","type":"json","required":true}]},
+    {"key":"list_listings","name":"List listings","description":"List active Etsy listings.","i18n":{"en-US":{"name":"List listings","description":"List active Etsy listings."},"zh-CN":{"name":"查询商品刊登","description":"查询 Etsy 在售商品刊登。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"limit","name":"Limit","type":"integer","required":false},{"key":"offset","name":"Offset","type":"integer","required":false}],"output":[{"key":"results","name":"Listings","type":"json","required":true}]}
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for channel policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for channel policy key.",
+              "name": "channel policy key"
+            },
+            "zh-CN": {
+              "description": "channel policy key 配置项。",
+              "name": "channel policy key"
+            }
+          },
+          "key": "channel_policy_key",
+          "name": "channel policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default currency.",
+              "name": "default currency"
+            },
+            "zh-CN": {
+              "description": "default currency 配置项。",
+              "name": "default currency"
+            }
+          },
+          "key": "default_currency",
+          "name": "default currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for marketplace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for marketplace id.",
+              "name": "marketplace id"
+            },
+            "zh-CN": {
+              "description": "marketplace id 配置项。",
+              "name": "marketplace id"
+            }
+          },
+          "key": "marketplace_id",
+          "name": "marketplace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for seller id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for seller id.",
+              "name": "seller id"
+            },
+            "zh-CN": {
+              "description": "seller id 配置项。",
+              "name": "seller id"
+            }
+          },
+          "key": "seller_id",
+          "name": "seller id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store url.",
+              "name": "store url"
+            },
+            "zh-CN": {
+              "description": "store url 配置项。",
+              "name": "store url"
+            }
+          },
+          "key": "store_url",
+          "name": "store url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider amazon_seller",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider amazon_seller",
+          "name": "amazon_seller"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider amazon_seller",
+          "name": "amazon_seller"
+        }
+      },
+      "key": "amazon_seller",
+      "name": "amazon_seller",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for channel policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for channel policy key.",
+              "name": "channel policy key"
+            },
+            "zh-CN": {
+              "description": "channel policy key 配置项。",
+              "name": "channel policy key"
+            }
+          },
+          "key": "channel_policy_key",
+          "name": "channel policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default currency.",
+              "name": "default currency"
+            },
+            "zh-CN": {
+              "description": "default currency 配置项。",
+              "name": "default currency"
+            }
+          },
+          "key": "default_currency",
+          "name": "default currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for marketplace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for marketplace id.",
+              "name": "marketplace id"
+            },
+            "zh-CN": {
+              "description": "marketplace id 配置项。",
+              "name": "marketplace id"
+            }
+          },
+          "key": "marketplace_id",
+          "name": "marketplace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for seller id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for seller id.",
+              "name": "seller id"
+            },
+            "zh-CN": {
+              "description": "seller id 配置项。",
+              "name": "seller id"
+            }
+          },
+          "key": "seller_id",
+          "name": "seller id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store url.",
+              "name": "store url"
+            },
+            "zh-CN": {
+              "description": "store url 配置项。",
+              "name": "store url"
+            }
+          },
+          "key": "store_url",
+          "name": "store url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider etsy",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider etsy",
+          "name": "etsy"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider etsy",
+          "name": "etsy"
+        }
+      },
+      "key": "etsy",
+      "name": "etsy",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for channel policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for channel policy key.",
+              "name": "channel policy key"
+            },
+            "zh-CN": {
+              "description": "channel policy key 配置项。",
+              "name": "channel policy key"
+            }
+          },
+          "key": "channel_policy_key",
+          "name": "channel policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default currency.",
+              "name": "default currency"
+            },
+            "zh-CN": {
+              "description": "default currency 配置项。",
+              "name": "default currency"
+            }
+          },
+          "key": "default_currency",
+          "name": "default currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for marketplace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for marketplace id.",
+              "name": "marketplace id"
+            },
+            "zh-CN": {
+              "description": "marketplace id 配置项。",
+              "name": "marketplace id"
+            }
+          },
+          "key": "marketplace_id",
+          "name": "marketplace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for seller id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for seller id.",
+              "name": "seller id"
+            },
+            "zh-CN": {
+              "description": "seller id 配置项。",
+              "name": "seller id"
+            }
+          },
+          "key": "seller_id",
+          "name": "seller id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store url.",
+              "name": "store url"
+            },
+            "zh-CN": {
+              "description": "store url 配置项。",
+              "name": "store url"
+            }
+          },
+          "key": "store_url",
+          "name": "store url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider mercado_livre",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider mercado_livre",
+          "name": "mercado_livre"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider mercado_livre",
+          "name": "mercado_livre"
+        }
+      },
+      "key": "mercado_livre",
+      "name": "mercado_livre",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for channel policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for channel policy key.",
+              "name": "channel policy key"
+            },
+            "zh-CN": {
+              "description": "channel policy key 配置项。",
+              "name": "channel policy key"
+            }
+          },
+          "key": "channel_policy_key",
+          "name": "channel policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default currency.",
+              "name": "default currency"
+            },
+            "zh-CN": {
+              "description": "default currency 配置项。",
+              "name": "default currency"
+            }
+          },
+          "key": "default_currency",
+          "name": "default currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for marketplace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for marketplace id.",
+              "name": "marketplace id"
+            },
+            "zh-CN": {
+              "description": "marketplace id 配置项。",
+              "name": "marketplace id"
+            }
+          },
+          "key": "marketplace_id",
+          "name": "marketplace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for seller id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for seller id.",
+              "name": "seller id"
+            },
+            "zh-CN": {
+              "description": "seller id 配置项。",
+              "name": "seller id"
+            }
+          },
+          "key": "seller_id",
+          "name": "seller id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store url.",
+              "name": "store url"
+            },
+            "zh-CN": {
+              "description": "store url 配置项。",
+              "name": "store url"
+            }
+          },
+          "key": "store_url",
+          "name": "store url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider rakuten",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider rakuten",
+          "name": "rakuten"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider rakuten",
+          "name": "rakuten"
+        }
+      },
+      "key": "rakuten",
+      "name": "rakuten",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for channel policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for channel policy key.",
+              "name": "channel policy key"
+            },
+            "zh-CN": {
+              "description": "channel policy key 配置项。",
+              "name": "channel policy key"
+            }
+          },
+          "key": "channel_policy_key",
+          "name": "channel policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default currency.",
+              "name": "default currency"
+            },
+            "zh-CN": {
+              "description": "default currency 配置项。",
+              "name": "default currency"
+            }
+          },
+          "key": "default_currency",
+          "name": "default currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for marketplace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for marketplace id.",
+              "name": "marketplace id"
+            },
+            "zh-CN": {
+              "description": "marketplace id 配置项。",
+              "name": "marketplace id"
+            }
+          },
+          "key": "marketplace_id",
+          "name": "marketplace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for seller id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for seller id.",
+              "name": "seller id"
+            },
+            "zh-CN": {
+              "description": "seller id 配置项。",
+              "name": "seller id"
+            }
+          },
+          "key": "seller_id",
+          "name": "seller id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store url.",
+              "name": "store url"
+            },
+            "zh-CN": {
+              "description": "store url 配置项。",
+              "name": "store url"
+            }
+          },
+          "key": "store_url",
+          "name": "store url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider shopee",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider shopee",
+          "name": "shopee"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider shopee",
+          "name": "shopee"
+        }
+      },
+      "key": "shopee",
+      "name": "shopee",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_token",
+    "oauth_client_id",
+    "oauth_client_secret",
+    "webhook_secret"
+  ],
+  "source": "connectors:marketplace",
+  "type": "marketplace",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

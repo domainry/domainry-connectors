@@ -1,0 +1,2019 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "stripe_billing",
+    "chargebee",
+    "recurly",
+    "quickbooks",
+    "xero",
+    "custom_billing",
+    "failed_payment",
+    "retry_attempt",
+    "promise_to_pay",
+    "service_pause",
+    "service_reactivation",
+    "payment_method_update",
+    "renewal_risk",
+    "accounting_review",
+    "customer_success_handoff",
+    "notification_handoff",
+    "contactability_gate_handoff",
+    "business_writeback"
+  ],
+  "config": {
+    "config_fields": [
+      "provider",
+      "workspace_url",
+      "invoice_id_field",
+      "customer_id_field",
+      "retry_count_field",
+      "promise_to_pay_field",
+      "service_status_field",
+      "writeback_status_field"
+    ],
+    "connection_request_path": "/integrations/dunning/connection-request",
+    "default_connection_key": "dunning_primary",
+    "options_path": "/integrations/dunning/options",
+    "recovery_onboarding_path": "/integrations/dunning/recovery-onboarding",
+    "secret_refs": [
+      "api_key",
+      "client_id",
+      "client_secret",
+      "access_token",
+      "refresh_token",
+      "webhook_secret"
+    ],
+    "source_objects": [
+      "dunning_events",
+      "failed_payments",
+      "retry_attempts",
+      "promise_to_pay",
+      "service_pauses",
+      "service_reactivations",
+      "payment_method_updates",
+      "invoices",
+      "subscriptions",
+      "customers"
+    ],
+    "target_objects": [
+      "customer",
+      "invoice",
+      "payment",
+      "customer_health",
+      "activity",
+      "task"
+    ]
+  },
+  "config_fields": [
+    "provider",
+    "workspace_url",
+    "invoice_id_field",
+    "customer_id_field",
+    "retry_count_field",
+    "promise_to_pay_field",
+    "service_status_field",
+    "writeback_status_field"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Dunning Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Dunning Connector definitions, Provider choices, and operation contracts.",
+      "name": "Dunning"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方催收连接器定义、Provider 选项与操作契约。",
+      "name": "催收"
+    }
+  },
+  "key": "dunning",
+  "classification": "runtime_native",
+  "lifecycle_status": "reclassified",
+  "replacement_capability": "scheduler.business_job",
+  "name": "Dunning",
+  "operations": [],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for customer id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for customer id field.",
+              "name": "customer id field"
+            },
+            "zh-CN": {
+              "description": "customer id field 配置项。",
+              "name": "customer id field"
+            }
+          },
+          "key": "customer_id_field",
+          "name": "customer id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invoice id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invoice id field.",
+              "name": "invoice id field"
+            },
+            "zh-CN": {
+              "description": "invoice id field 配置项。",
+              "name": "invoice id field"
+            }
+          },
+          "key": "invoice_id_field",
+          "name": "invoice id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for promise to pay field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for promise to pay field.",
+              "name": "promise to pay field"
+            },
+            "zh-CN": {
+              "description": "promise to pay field 配置项。",
+              "name": "promise to pay field"
+            }
+          },
+          "key": "promise_to_pay_field",
+          "name": "promise to pay field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for retry count field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for retry count field.",
+              "name": "retry count field"
+            },
+            "zh-CN": {
+              "description": "retry count field 配置项。",
+              "name": "retry count field"
+            }
+          },
+          "key": "retry_count_field",
+          "name": "retry count field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for service status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for service status field.",
+              "name": "service status field"
+            },
+            "zh-CN": {
+              "description": "service status field 配置项。",
+              "name": "service status field"
+            }
+          },
+          "key": "service_status_field",
+          "name": "service status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for workspace url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace url.",
+              "name": "workspace url"
+            },
+            "zh-CN": {
+              "description": "workspace url 配置项。",
+              "name": "workspace url"
+            }
+          },
+          "key": "workspace_url",
+          "name": "workspace url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider chargebee",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider chargebee",
+          "name": "chargebee"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider chargebee",
+          "name": "chargebee"
+        }
+      },
+      "key": "chargebee",
+      "name": "chargebee",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for customer id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for customer id field.",
+              "name": "customer id field"
+            },
+            "zh-CN": {
+              "description": "customer id field 配置项。",
+              "name": "customer id field"
+            }
+          },
+          "key": "customer_id_field",
+          "name": "customer id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invoice id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invoice id field.",
+              "name": "invoice id field"
+            },
+            "zh-CN": {
+              "description": "invoice id field 配置项。",
+              "name": "invoice id field"
+            }
+          },
+          "key": "invoice_id_field",
+          "name": "invoice id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for promise to pay field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for promise to pay field.",
+              "name": "promise to pay field"
+            },
+            "zh-CN": {
+              "description": "promise to pay field 配置项。",
+              "name": "promise to pay field"
+            }
+          },
+          "key": "promise_to_pay_field",
+          "name": "promise to pay field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for retry count field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for retry count field.",
+              "name": "retry count field"
+            },
+            "zh-CN": {
+              "description": "retry count field 配置项。",
+              "name": "retry count field"
+            }
+          },
+          "key": "retry_count_field",
+          "name": "retry count field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for service status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for service status field.",
+              "name": "service status field"
+            },
+            "zh-CN": {
+              "description": "service status field 配置项。",
+              "name": "service status field"
+            }
+          },
+          "key": "service_status_field",
+          "name": "service status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for workspace url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace url.",
+              "name": "workspace url"
+            },
+            "zh-CN": {
+              "description": "workspace url 配置项。",
+              "name": "workspace url"
+            }
+          },
+          "key": "workspace_url",
+          "name": "workspace url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider custom_billing",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider custom_billing",
+          "name": "custom_billing"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider custom_billing",
+          "name": "custom_billing"
+        }
+      },
+      "key": "custom_billing",
+      "name": "custom_billing",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for customer id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for customer id field.",
+              "name": "customer id field"
+            },
+            "zh-CN": {
+              "description": "customer id field 配置项。",
+              "name": "customer id field"
+            }
+          },
+          "key": "customer_id_field",
+          "name": "customer id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invoice id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invoice id field.",
+              "name": "invoice id field"
+            },
+            "zh-CN": {
+              "description": "invoice id field 配置项。",
+              "name": "invoice id field"
+            }
+          },
+          "key": "invoice_id_field",
+          "name": "invoice id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for promise to pay field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for promise to pay field.",
+              "name": "promise to pay field"
+            },
+            "zh-CN": {
+              "description": "promise to pay field 配置项。",
+              "name": "promise to pay field"
+            }
+          },
+          "key": "promise_to_pay_field",
+          "name": "promise to pay field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for retry count field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for retry count field.",
+              "name": "retry count field"
+            },
+            "zh-CN": {
+              "description": "retry count field 配置项。",
+              "name": "retry count field"
+            }
+          },
+          "key": "retry_count_field",
+          "name": "retry count field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for service status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for service status field.",
+              "name": "service status field"
+            },
+            "zh-CN": {
+              "description": "service status field 配置项。",
+              "name": "service status field"
+            }
+          },
+          "key": "service_status_field",
+          "name": "service status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for workspace url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace url.",
+              "name": "workspace url"
+            },
+            "zh-CN": {
+              "description": "workspace url 配置项。",
+              "name": "workspace url"
+            }
+          },
+          "key": "workspace_url",
+          "name": "workspace url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider quickbooks",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider quickbooks",
+          "name": "quickbooks"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider quickbooks",
+          "name": "quickbooks"
+        }
+      },
+      "key": "quickbooks",
+      "name": "quickbooks",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for customer id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for customer id field.",
+              "name": "customer id field"
+            },
+            "zh-CN": {
+              "description": "customer id field 配置项。",
+              "name": "customer id field"
+            }
+          },
+          "key": "customer_id_field",
+          "name": "customer id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invoice id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invoice id field.",
+              "name": "invoice id field"
+            },
+            "zh-CN": {
+              "description": "invoice id field 配置项。",
+              "name": "invoice id field"
+            }
+          },
+          "key": "invoice_id_field",
+          "name": "invoice id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for promise to pay field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for promise to pay field.",
+              "name": "promise to pay field"
+            },
+            "zh-CN": {
+              "description": "promise to pay field 配置项。",
+              "name": "promise to pay field"
+            }
+          },
+          "key": "promise_to_pay_field",
+          "name": "promise to pay field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for retry count field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for retry count field.",
+              "name": "retry count field"
+            },
+            "zh-CN": {
+              "description": "retry count field 配置项。",
+              "name": "retry count field"
+            }
+          },
+          "key": "retry_count_field",
+          "name": "retry count field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for service status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for service status field.",
+              "name": "service status field"
+            },
+            "zh-CN": {
+              "description": "service status field 配置项。",
+              "name": "service status field"
+            }
+          },
+          "key": "service_status_field",
+          "name": "service status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for workspace url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace url.",
+              "name": "workspace url"
+            },
+            "zh-CN": {
+              "description": "workspace url 配置项。",
+              "name": "workspace url"
+            }
+          },
+          "key": "workspace_url",
+          "name": "workspace url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider recurly",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider recurly",
+          "name": "recurly"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider recurly",
+          "name": "recurly"
+        }
+      },
+      "key": "recurly",
+      "name": "recurly",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for customer id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for customer id field.",
+              "name": "customer id field"
+            },
+            "zh-CN": {
+              "description": "customer id field 配置项。",
+              "name": "customer id field"
+            }
+          },
+          "key": "customer_id_field",
+          "name": "customer id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invoice id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invoice id field.",
+              "name": "invoice id field"
+            },
+            "zh-CN": {
+              "description": "invoice id field 配置项。",
+              "name": "invoice id field"
+            }
+          },
+          "key": "invoice_id_field",
+          "name": "invoice id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for promise to pay field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for promise to pay field.",
+              "name": "promise to pay field"
+            },
+            "zh-CN": {
+              "description": "promise to pay field 配置项。",
+              "name": "promise to pay field"
+            }
+          },
+          "key": "promise_to_pay_field",
+          "name": "promise to pay field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for retry count field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for retry count field.",
+              "name": "retry count field"
+            },
+            "zh-CN": {
+              "description": "retry count field 配置项。",
+              "name": "retry count field"
+            }
+          },
+          "key": "retry_count_field",
+          "name": "retry count field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for service status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for service status field.",
+              "name": "service status field"
+            },
+            "zh-CN": {
+              "description": "service status field 配置项。",
+              "name": "service status field"
+            }
+          },
+          "key": "service_status_field",
+          "name": "service status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for workspace url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace url.",
+              "name": "workspace url"
+            },
+            "zh-CN": {
+              "description": "workspace url 配置项。",
+              "name": "workspace url"
+            }
+          },
+          "key": "workspace_url",
+          "name": "workspace url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider stripe_billing",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider stripe_billing",
+          "name": "stripe_billing"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider stripe_billing",
+          "name": "stripe_billing"
+        }
+      },
+      "key": "stripe_billing",
+      "name": "stripe_billing",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for customer id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for customer id field.",
+              "name": "customer id field"
+            },
+            "zh-CN": {
+              "description": "customer id field 配置项。",
+              "name": "customer id field"
+            }
+          },
+          "key": "customer_id_field",
+          "name": "customer id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invoice id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invoice id field.",
+              "name": "invoice id field"
+            },
+            "zh-CN": {
+              "description": "invoice id field 配置项。",
+              "name": "invoice id field"
+            }
+          },
+          "key": "invoice_id_field",
+          "name": "invoice id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for promise to pay field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for promise to pay field.",
+              "name": "promise to pay field"
+            },
+            "zh-CN": {
+              "description": "promise to pay field 配置项。",
+              "name": "promise to pay field"
+            }
+          },
+          "key": "promise_to_pay_field",
+          "name": "promise to pay field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for retry count field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for retry count field.",
+              "name": "retry count field"
+            },
+            "zh-CN": {
+              "description": "retry count field 配置项。",
+              "name": "retry count field"
+            }
+          },
+          "key": "retry_count_field",
+          "name": "retry count field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for service status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for service status field.",
+              "name": "service status field"
+            },
+            "zh-CN": {
+              "description": "service status field 配置项。",
+              "name": "service status field"
+            }
+          },
+          "key": "service_status_field",
+          "name": "service status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for workspace url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace url.",
+              "name": "workspace url"
+            },
+            "zh-CN": {
+              "description": "workspace url 配置项。",
+              "name": "workspace url"
+            }
+          },
+          "key": "workspace_url",
+          "name": "workspace url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider xero",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider xero",
+          "name": "xero"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider xero",
+          "name": "xero"
+        }
+      },
+      "key": "xero",
+      "name": "xero",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_key",
+    "client_id",
+    "client_secret",
+    "access_token",
+    "refresh_token",
+    "webhook_secret"
+  ],
+  "source": "connectors:dunning",
+  "type": "dunning",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

@@ -1,0 +1,508 @@
+{
+  "adapter_ready": true,
+  "capabilities": [
+    "cloud_api",
+    "inbound_webhook",
+    "send_message",
+    "template_message",
+    "delivery_status",
+    "contact_mapping",
+    "setup_readiness",
+    "conversation_onboarding",
+    "history_media_timeline",
+    "brazil_inbound_support",
+    "brazil_channel_timeline_closeout",
+    "multi_channel_archive",
+    "historical_messages",
+    "template_status_sync",
+    "media_download_archive",
+    "timeline_backfill",
+    "sales_support_entry",
+    "data_migration_handoff",
+    "opt_in",
+    "unsubscribe_review",
+    "template_status_review",
+    "contactability_gate_handoff",
+    "timeline_writeback",
+    "conversation_triage",
+    "lgpd_review",
+    "media_archive_handoff",
+    "payment_reminder_handoff",
+    "high_intent_sales_handoff",
+    "support_escalation",
+    "manual_takeover",
+    "sla_delivery_repair",
+    "owner_task_handoff",
+    "brazil_preset"
+  ],
+  "config": {
+    "brazil_channel_timeline_closeout_path": "/integrations/whatsapp/brazil-channel-timeline-closeout-plan",
+    "brazil_inbound_support_path": "/integrations/whatsapp/brazil-inbound-support-plan",
+    "channel_adapter": true,
+    "channel_connection_channel": "whatsapp",
+    "channel_connection_external_account_field": "external_account_id",
+    "channel_connection_key_field": "connection_key",
+    "channel_connection_object": "channel_connection",
+    "channel_connection_secret_boundary": "secret_refs_only",
+    "channel_connection_status_field": "status",
+    "channel_connection_webhook_status_field": "webhook_status",
+    "channel_writeback_objects": [
+      "conversation",
+      "message",
+      "channel_connection"
+    ],
+    "config_fields": [
+      "phone_number_id",
+      "business_account_id",
+      "app_id",
+      "locale",
+      "default_country",
+      "region",
+      "opt_in_required",
+      "sales_support_entry",
+      "contactability_policy"
+    ],
+    "contact_mapping_path": "/integrations/whatsapp/contact-mapping",
+    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "conversation_onboarding_path": "/integrations/whatsapp/conversation-onboarding",
+    "default_connection_key": "whatsapp_business_primary",
+    "history_media_timeline_path": "/integrations/whatsapp/history-media-timeline-plan",
+    "message_send_plan_path": "/integrations/whatsapp/message-send-plan",
+    "options_path": "/integrations/whatsapp/options",
+    "regional_presets": [
+      "br:whatsapp_business"
+    ],
+    "secret_refs": [
+      "access_token",
+      "app_secret",
+      "webhook_verify_token"
+    ],
+    "send_path": "/integrations/whatsapp/send",
+    "setup_readiness_path": "/integrations/whatsapp/setup-readiness",
+    "template_send_path": "/integrations/whatsapp/template/send",
+    "webhook_events_path": "/integrations/webhooks/whatsapp/events",
+    "webhook_verify_path": "/integrations/webhooks/whatsapp"
+  },
+  "config_fields": [
+    "phone_number_id",
+    "business_account_id",
+    "app_id",
+    "locale",
+    "default_country",
+    "region",
+    "opt_in_required",
+    "sales_support_entry",
+    "contactability_policy"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry WhatsApp Business Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry WhatsApp Business Connector definitions, Provider choices, and operation contracts.",
+      "name": "WhatsApp Business"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方WhatsApp Business连接器定义、Provider 选项与操作契约。",
+      "name": "WhatsApp Business"
+    }
+  },
+  "key": "whatsapp",
+  "name": "WhatsApp Business",
+  "operations": [
+    {
+      "description": "Execute the test connection operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the test connection operation.",
+          "name": "test connection"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "GET",
+      "name": "test connection",
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "List WhatsApp message templates and their Meta review status.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "List approved and pending WhatsApp message templates from Meta.",
+          "name": "list message templates"
+        },
+        "zh-CN": {
+          "description": "从 Meta 获取已审核或审核中的 WhatsApp 消息模板。",
+          "name": "获取消息模板"
+        }
+      },
+      "input": [
+        {
+          "key": "status",
+          "name": "Review Status",
+          "type": "text"
+        }
+      ],
+      "key": "list_templates",
+      "method": "GET",
+      "name": "list message templates",
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the send message operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the send message operation.",
+          "name": "send message"
+        },
+        "zh-CN": {
+          "description": "执行“发送消息”操作。",
+          "name": "发送消息"
+        }
+      },
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "recipient",
+          "name": "Recipient Phone",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "message",
+          "name": "Message",
+          "required": true,
+          "type": "long_text"
+        },
+        {
+          "key": "provider_payload",
+          "name": "Provider Payload",
+          "description": "Deprecated immutable native payload retained only for previously persisted outbox messages.",
+          "type": "json"
+        },
+        {
+          "key": "notification_content",
+          "name": "Notification Content",
+          "description": "Versioned provider-neutral rendered notification snapshot compiled by the selected provider.",
+          "type": "json"
+        }
+      ],
+      "key": "send_message",
+      "method": "POST",
+      "name": "send message",
+      "side_effect": "write",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    }
+  ],
+  "provider": "meta",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for app id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for app id.",
+              "name": "app id"
+            },
+            "zh-CN": {
+              "description": "app id 配置项。",
+              "name": "app id"
+            }
+          },
+          "key": "app_id",
+          "name": "app id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for business account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for business account id.",
+              "name": "business account id"
+            },
+            "zh-CN": {
+              "description": "business account id 配置项。",
+              "name": "business account id"
+            }
+          },
+          "key": "business_account_id",
+          "name": "business account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for contactability policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for contactability policy.",
+              "name": "contactability policy"
+            },
+            "zh-CN": {
+              "description": "contactability policy 配置项。",
+              "name": "contactability policy"
+            }
+          },
+          "key": "contactability_policy",
+          "name": "contactability policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for locale.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for locale.",
+              "name": "locale"
+            },
+            "zh-CN": {
+              "description": "locale 配置项。",
+              "name": "locale"
+            }
+          },
+          "key": "locale",
+          "name": "locale",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for opt in required.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for opt in required.",
+              "name": "opt in required"
+            },
+            "zh-CN": {
+              "description": "opt in required 配置项。",
+              "name": "opt in required"
+            }
+          },
+          "key": "opt_in_required",
+          "name": "opt in required",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for phone number id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for phone number id.",
+              "name": "phone number id"
+            },
+            "zh-CN": {
+              "description": "phone number id 配置项。",
+              "name": "phone number id"
+            }
+          },
+          "key": "phone_number_id",
+          "name": "phone number id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sales support entry.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sales support entry.",
+              "name": "sales support entry"
+            },
+            "zh-CN": {
+              "description": "sales support entry 配置项。",
+              "name": "sales support entry"
+            }
+          },
+          "key": "sales_support_entry",
+          "name": "sales support entry",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider meta_cloud_api",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider meta_cloud_api",
+          "name": "meta_cloud_api"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider meta_cloud_api",
+          "name": "meta_cloud_api"
+        }
+      },
+      "key": "meta_cloud_api",
+      "name": "meta_cloud_api",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook verify token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook verify token.",
+              "name": "webhook verify token"
+            },
+            "zh-CN": {
+              "description": "webhook verify token 敏感凭据。",
+              "name": "webhook verify token"
+            }
+          },
+          "key": "webhook_verify_token",
+          "name": "webhook verify token",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "access_token",
+    "app_secret",
+    "webhook_verify_token"
+  ],
+  "source": "connectors:whatsapp",
+  "type": "messaging",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

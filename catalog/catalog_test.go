@@ -73,6 +73,57 @@ func TestCatalogIsCanonicalAndHasUniqueIdentities(t *testing.T) {
 	}
 }
 
+func TestConnectorDefinitionsAreEmbeddedAndDetached(t *testing.T) {
+	definitions, err := Definitions()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(definitions) < 50 || definitions[0].Key != "accounting" {
+		t.Fatalf("definitions count=%d first=%q", len(definitions), definitions[0].Key)
+	}
+	definitions[0].Payload[0] = 'x'
+	again, err := Definitions()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !json.Valid(again[0].Payload) {
+		t.Fatal("Definitions returned shared mutable payload")
+	}
+}
+
+func TestConnectorDefinitionDocumentsAreSourceOwnedAndTyped(t *testing.T) {
+	documents, err := DefinitionDocuments()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(documents) < 50 {
+		t.Fatalf("definitions count=%d", len(documents))
+	}
+	for _, document := range documents {
+		if document.Source != "connectors:"+document.Key {
+			t.Fatalf("Connector %s source=%q", document.Key, document.Source)
+		}
+	}
+	email := documents[0]
+	for _, document := range documents {
+		if document.Key == "email" {
+			email = document
+			break
+		}
+	}
+	if len(email.Operations) == 0 || len(email.Providers) == 0 {
+		t.Fatal("Email Connector did not decode typed operations and Providers")
+	}
+	left, err := OperationContractSHA256(email.Key, email.Providers[0].Key, email.Operations[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	right, err := OperationContractSHA256(email.Key, "another-provider", email.Operations[0])
+	if err != nil || left == "" || left != right {
+		t.Fatalf("operation contract is not stable across Providers: %q %q (%v)", left, right, err)
+	}
+}
+
 func TestCatalogCoversEveryProviderPackage(t *testing.T) {
 	document, err := Load()
 	if err != nil {

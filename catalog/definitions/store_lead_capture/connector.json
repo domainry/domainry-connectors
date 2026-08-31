@@ -1,0 +1,2492 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "wifi_captive_portal",
+    "receipt_qr",
+    "membership_signup",
+    "event_checkin",
+    "coupon_scan",
+    "sms_signup",
+    "custom_store_lead",
+    "phone_identity",
+    "email_identity",
+    "store_attribution",
+    "campaign_attribution",
+    "consent_review",
+    "duplicate_phone",
+    "local_marketing",
+    "first_touch_contactability_gate",
+    "contactability_gate_handoff",
+    "sales_associate_followup",
+    "business_writeback"
+  ],
+  "config": {
+    "config_fields": [
+      "provider",
+      "landing_page_url",
+      "store_id_field",
+      "phone_field",
+      "email_field",
+      "campaign_field",
+      "associate_field",
+      "default_country",
+      "default_language"
+    ],
+    "connection_request_path": "/integrations/store-lead-capture/connection-request",
+    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "default_connection_key": "store_lead_capture_primary",
+    "options_path": "/integrations/store-lead-capture/options",
+    "secret_refs": [
+      "api_key",
+      "client_id",
+      "client_secret",
+      "access_token",
+      "refresh_token",
+      "webhook_secret"
+    ],
+    "source_objects": [
+      "wifi_sessions",
+      "receipt_qr_scans",
+      "membership_signups",
+      "event_checkins",
+      "coupon_scans",
+      "sms_optins",
+      "store_locations",
+      "campaign_sources"
+    ],
+    "target_objects": [
+      "contact",
+      "customer",
+      "visit",
+      "campaign",
+      "activity",
+      "task",
+      "consent"
+    ],
+    "visit_lead_onboarding_path": "/integrations/store-lead-capture/visit-lead-onboarding"
+  },
+  "config_fields": [
+    "provider",
+    "landing_page_url",
+    "store_id_field",
+    "phone_field",
+    "email_field",
+    "campaign_field",
+    "associate_field",
+    "default_country",
+    "default_language"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Store Lead Capture Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Store Lead Capture Connector definitions, Provider choices, and operation contracts.",
+      "name": "Store Lead Capture"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方门店线索采集连接器定义、Provider 选项与操作契约。",
+      "name": "门店线索采集"
+    }
+  },
+  "key": "store_lead_capture",
+  "classification": "runtime_native",
+  "lifecycle_status": "reclassified",
+  "replacement_capability": "automation.non_record_triggers",
+  "name": "Store Lead Capture",
+  "operations": [],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for associate field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for associate field.",
+              "name": "associate field"
+            },
+            "zh-CN": {
+              "description": "associate field 配置项。",
+              "name": "associate field"
+            }
+          },
+          "key": "associate_field",
+          "name": "associate field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for campaign field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for campaign field.",
+              "name": "campaign field"
+            },
+            "zh-CN": {
+              "description": "campaign field 配置项。",
+              "name": "campaign field"
+            }
+          },
+          "key": "campaign_field",
+          "name": "campaign field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for email field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email field.",
+              "name": "email field"
+            },
+            "zh-CN": {
+              "description": "email field 配置项。",
+              "name": "email field"
+            }
+          },
+          "key": "email_field",
+          "name": "email field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for landing page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for landing page url.",
+              "name": "landing page url"
+            },
+            "zh-CN": {
+              "description": "landing page url 配置项。",
+              "name": "landing page url"
+            }
+          },
+          "key": "landing_page_url",
+          "name": "landing page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for phone field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for phone field.",
+              "name": "phone field"
+            },
+            "zh-CN": {
+              "description": "phone field 配置项。",
+              "name": "phone field"
+            }
+          },
+          "key": "phone_field",
+          "name": "phone field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store id field.",
+              "name": "store id field"
+            },
+            "zh-CN": {
+              "description": "store id field 配置项。",
+              "name": "store id field"
+            }
+          },
+          "key": "store_id_field",
+          "name": "store id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider coupon_scan",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider coupon_scan",
+          "name": "coupon_scan"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider coupon_scan",
+          "name": "coupon_scan"
+        }
+      },
+      "key": "coupon_scan",
+      "name": "coupon_scan",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for associate field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for associate field.",
+              "name": "associate field"
+            },
+            "zh-CN": {
+              "description": "associate field 配置项。",
+              "name": "associate field"
+            }
+          },
+          "key": "associate_field",
+          "name": "associate field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for campaign field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for campaign field.",
+              "name": "campaign field"
+            },
+            "zh-CN": {
+              "description": "campaign field 配置项。",
+              "name": "campaign field"
+            }
+          },
+          "key": "campaign_field",
+          "name": "campaign field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for email field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email field.",
+              "name": "email field"
+            },
+            "zh-CN": {
+              "description": "email field 配置项。",
+              "name": "email field"
+            }
+          },
+          "key": "email_field",
+          "name": "email field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for landing page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for landing page url.",
+              "name": "landing page url"
+            },
+            "zh-CN": {
+              "description": "landing page url 配置项。",
+              "name": "landing page url"
+            }
+          },
+          "key": "landing_page_url",
+          "name": "landing page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for phone field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for phone field.",
+              "name": "phone field"
+            },
+            "zh-CN": {
+              "description": "phone field 配置项。",
+              "name": "phone field"
+            }
+          },
+          "key": "phone_field",
+          "name": "phone field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store id field.",
+              "name": "store id field"
+            },
+            "zh-CN": {
+              "description": "store id field 配置项。",
+              "name": "store id field"
+            }
+          },
+          "key": "store_id_field",
+          "name": "store id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider custom_store_lead",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider custom_store_lead",
+          "name": "custom_store_lead"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider custom_store_lead",
+          "name": "custom_store_lead"
+        }
+      },
+      "key": "custom_store_lead",
+      "name": "custom_store_lead",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for associate field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for associate field.",
+              "name": "associate field"
+            },
+            "zh-CN": {
+              "description": "associate field 配置项。",
+              "name": "associate field"
+            }
+          },
+          "key": "associate_field",
+          "name": "associate field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for campaign field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for campaign field.",
+              "name": "campaign field"
+            },
+            "zh-CN": {
+              "description": "campaign field 配置项。",
+              "name": "campaign field"
+            }
+          },
+          "key": "campaign_field",
+          "name": "campaign field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for email field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email field.",
+              "name": "email field"
+            },
+            "zh-CN": {
+              "description": "email field 配置项。",
+              "name": "email field"
+            }
+          },
+          "key": "email_field",
+          "name": "email field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for landing page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for landing page url.",
+              "name": "landing page url"
+            },
+            "zh-CN": {
+              "description": "landing page url 配置项。",
+              "name": "landing page url"
+            }
+          },
+          "key": "landing_page_url",
+          "name": "landing page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for phone field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for phone field.",
+              "name": "phone field"
+            },
+            "zh-CN": {
+              "description": "phone field 配置项。",
+              "name": "phone field"
+            }
+          },
+          "key": "phone_field",
+          "name": "phone field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store id field.",
+              "name": "store id field"
+            },
+            "zh-CN": {
+              "description": "store id field 配置项。",
+              "name": "store id field"
+            }
+          },
+          "key": "store_id_field",
+          "name": "store id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider event_checkin",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider event_checkin",
+          "name": "event_checkin"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider event_checkin",
+          "name": "event_checkin"
+        }
+      },
+      "key": "event_checkin",
+      "name": "event_checkin",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for associate field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for associate field.",
+              "name": "associate field"
+            },
+            "zh-CN": {
+              "description": "associate field 配置项。",
+              "name": "associate field"
+            }
+          },
+          "key": "associate_field",
+          "name": "associate field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for campaign field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for campaign field.",
+              "name": "campaign field"
+            },
+            "zh-CN": {
+              "description": "campaign field 配置项。",
+              "name": "campaign field"
+            }
+          },
+          "key": "campaign_field",
+          "name": "campaign field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for email field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email field.",
+              "name": "email field"
+            },
+            "zh-CN": {
+              "description": "email field 配置项。",
+              "name": "email field"
+            }
+          },
+          "key": "email_field",
+          "name": "email field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for landing page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for landing page url.",
+              "name": "landing page url"
+            },
+            "zh-CN": {
+              "description": "landing page url 配置项。",
+              "name": "landing page url"
+            }
+          },
+          "key": "landing_page_url",
+          "name": "landing page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for phone field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for phone field.",
+              "name": "phone field"
+            },
+            "zh-CN": {
+              "description": "phone field 配置项。",
+              "name": "phone field"
+            }
+          },
+          "key": "phone_field",
+          "name": "phone field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store id field.",
+              "name": "store id field"
+            },
+            "zh-CN": {
+              "description": "store id field 配置项。",
+              "name": "store id field"
+            }
+          },
+          "key": "store_id_field",
+          "name": "store id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider membership_signup",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider membership_signup",
+          "name": "membership_signup"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider membership_signup",
+          "name": "membership_signup"
+        }
+      },
+      "key": "membership_signup",
+      "name": "membership_signup",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for associate field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for associate field.",
+              "name": "associate field"
+            },
+            "zh-CN": {
+              "description": "associate field 配置项。",
+              "name": "associate field"
+            }
+          },
+          "key": "associate_field",
+          "name": "associate field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for campaign field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for campaign field.",
+              "name": "campaign field"
+            },
+            "zh-CN": {
+              "description": "campaign field 配置项。",
+              "name": "campaign field"
+            }
+          },
+          "key": "campaign_field",
+          "name": "campaign field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for email field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email field.",
+              "name": "email field"
+            },
+            "zh-CN": {
+              "description": "email field 配置项。",
+              "name": "email field"
+            }
+          },
+          "key": "email_field",
+          "name": "email field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for landing page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for landing page url.",
+              "name": "landing page url"
+            },
+            "zh-CN": {
+              "description": "landing page url 配置项。",
+              "name": "landing page url"
+            }
+          },
+          "key": "landing_page_url",
+          "name": "landing page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for phone field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for phone field.",
+              "name": "phone field"
+            },
+            "zh-CN": {
+              "description": "phone field 配置项。",
+              "name": "phone field"
+            }
+          },
+          "key": "phone_field",
+          "name": "phone field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store id field.",
+              "name": "store id field"
+            },
+            "zh-CN": {
+              "description": "store id field 配置项。",
+              "name": "store id field"
+            }
+          },
+          "key": "store_id_field",
+          "name": "store id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider receipt_qr",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider receipt_qr",
+          "name": "receipt_qr"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider receipt_qr",
+          "name": "receipt_qr"
+        }
+      },
+      "key": "receipt_qr",
+      "name": "receipt_qr",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for associate field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for associate field.",
+              "name": "associate field"
+            },
+            "zh-CN": {
+              "description": "associate field 配置项。",
+              "name": "associate field"
+            }
+          },
+          "key": "associate_field",
+          "name": "associate field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for campaign field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for campaign field.",
+              "name": "campaign field"
+            },
+            "zh-CN": {
+              "description": "campaign field 配置项。",
+              "name": "campaign field"
+            }
+          },
+          "key": "campaign_field",
+          "name": "campaign field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for email field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email field.",
+              "name": "email field"
+            },
+            "zh-CN": {
+              "description": "email field 配置项。",
+              "name": "email field"
+            }
+          },
+          "key": "email_field",
+          "name": "email field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for landing page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for landing page url.",
+              "name": "landing page url"
+            },
+            "zh-CN": {
+              "description": "landing page url 配置项。",
+              "name": "landing page url"
+            }
+          },
+          "key": "landing_page_url",
+          "name": "landing page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for phone field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for phone field.",
+              "name": "phone field"
+            },
+            "zh-CN": {
+              "description": "phone field 配置项。",
+              "name": "phone field"
+            }
+          },
+          "key": "phone_field",
+          "name": "phone field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store id field.",
+              "name": "store id field"
+            },
+            "zh-CN": {
+              "description": "store id field 配置项。",
+              "name": "store id field"
+            }
+          },
+          "key": "store_id_field",
+          "name": "store id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider sms_signup",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider sms_signup",
+          "name": "sms_signup"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider sms_signup",
+          "name": "sms_signup"
+        }
+      },
+      "key": "sms_signup",
+      "name": "sms_signup",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for associate field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for associate field.",
+              "name": "associate field"
+            },
+            "zh-CN": {
+              "description": "associate field 配置项。",
+              "name": "associate field"
+            }
+          },
+          "key": "associate_field",
+          "name": "associate field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for campaign field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for campaign field.",
+              "name": "campaign field"
+            },
+            "zh-CN": {
+              "description": "campaign field 配置项。",
+              "name": "campaign field"
+            }
+          },
+          "key": "campaign_field",
+          "name": "campaign field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for email field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email field.",
+              "name": "email field"
+            },
+            "zh-CN": {
+              "description": "email field 配置项。",
+              "name": "email field"
+            }
+          },
+          "key": "email_field",
+          "name": "email field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for landing page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for landing page url.",
+              "name": "landing page url"
+            },
+            "zh-CN": {
+              "description": "landing page url 配置项。",
+              "name": "landing page url"
+            }
+          },
+          "key": "landing_page_url",
+          "name": "landing page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for phone field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for phone field.",
+              "name": "phone field"
+            },
+            "zh-CN": {
+              "description": "phone field 配置项。",
+              "name": "phone field"
+            }
+          },
+          "key": "phone_field",
+          "name": "phone field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for store id field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for store id field.",
+              "name": "store id field"
+            },
+            "zh-CN": {
+              "description": "store id field 配置项。",
+              "name": "store id field"
+            }
+          },
+          "key": "store_id_field",
+          "name": "store id field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider wifi_captive_portal",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider wifi_captive_portal",
+          "name": "wifi_captive_portal"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider wifi_captive_portal",
+          "name": "wifi_captive_portal"
+        }
+      },
+      "key": "wifi_captive_portal",
+      "name": "wifi_captive_portal",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_key",
+    "client_id",
+    "client_secret",
+    "access_token",
+    "refresh_token",
+    "webhook_secret"
+  ],
+  "source": "connectors:store_lead_capture",
+  "type": "store_lead_capture",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

@@ -1,0 +1,1552 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "webflow",
+    "wordpress",
+    "wix",
+    "tally",
+    "jotform",
+    "form_field_detection",
+    "source_page",
+    "utm",
+    "consent",
+    "dedupe",
+    "owner_routing",
+    "welcome_email_intent",
+    "sales_task_intent",
+    "first_response_contactability_gate",
+    "contactability_gate_handoff",
+    "data_migration_handoff"
+  ],
+  "config": {
+    "config_fields": [
+      "provider",
+      "site_id",
+      "form_id",
+      "source_page_field",
+      "default_country",
+      "default_language",
+      "default_owner_queue",
+      "welcome_email_template_key",
+      "sales_task_workflow_key"
+    ],
+    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "default_connection_key": "website_form_primary",
+    "inquiry_onboarding_path": "/integrations/website-forms/inquiry-onboarding",
+    "options_path": "/integrations/website-forms/options",
+    "secret_refs": [
+      "api_token",
+      "oauth_client_id",
+      "oauth_client_secret",
+      "webhook_secret"
+    ]
+  },
+  "config_fields": [
+    "provider",
+    "site_id",
+    "form_id",
+    "source_page_field",
+    "default_country",
+    "default_language",
+    "default_owner_queue",
+    "welcome_email_template_key",
+    "sales_task_workflow_key"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Website Form Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Website Form Connector definitions, Provider choices, and operation contracts.",
+      "name": "Website Form"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方网站表单连接器定义、Provider 选项与操作契约。",
+      "name": "网站表单"
+    }
+  },
+  "key": "website_form",
+  "name": "Website Form",
+  "operations": [
+    {
+      "key": "test_connection",
+      "name": "test connection",
+      "description": "Verify access to the configured website form.",
+      "i18n": {
+        "en-US": {
+          "name": "Test connection",
+          "description": "Verify access to the configured website form."
+        },
+        "zh-CN": {
+          "name": "测试连接",
+          "description": "验证对已配置网站表单的访问。"
+        }
+      },
+      "method": "GET",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30,
+      "output": [
+        {
+          "key": "connected",
+          "name": "Connected",
+          "type": "boolean",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for form id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for form id.",
+              "name": "form id"
+            },
+            "zh-CN": {
+              "description": "form id 配置项。",
+              "name": "form id"
+            }
+          },
+          "key": "form_id",
+          "name": "form id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sales task workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sales task workflow key.",
+              "name": "sales task workflow key"
+            },
+            "zh-CN": {
+              "description": "sales task workflow key 配置项。",
+              "name": "sales task workflow key"
+            }
+          },
+          "key": "sales_task_workflow_key",
+          "name": "sales task workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for site id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for site id.",
+              "name": "site id"
+            },
+            "zh-CN": {
+              "description": "site id 配置项。",
+              "name": "site id"
+            }
+          },
+          "key": "site_id",
+          "name": "site id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for source page field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for source page field.",
+              "name": "source page field"
+            },
+            "zh-CN": {
+              "description": "source page field 配置项。",
+              "name": "source page field"
+            }
+          },
+          "key": "source_page_field",
+          "name": "source page field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for welcome email template key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for welcome email template key.",
+              "name": "welcome email template key"
+            },
+            "zh-CN": {
+              "description": "welcome email template key 配置项。",
+              "name": "welcome email template key"
+            }
+          },
+          "key": "welcome_email_template_key",
+          "name": "welcome email template key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider jotform",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider jotform",
+          "name": "jotform"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider jotform",
+          "name": "jotform"
+        }
+      },
+      "key": "jotform",
+      "name": "jotform",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for form id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for form id.",
+              "name": "form id"
+            },
+            "zh-CN": {
+              "description": "form id 配置项。",
+              "name": "form id"
+            }
+          },
+          "key": "form_id",
+          "name": "form id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sales task workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sales task workflow key.",
+              "name": "sales task workflow key"
+            },
+            "zh-CN": {
+              "description": "sales task workflow key 配置项。",
+              "name": "sales task workflow key"
+            }
+          },
+          "key": "sales_task_workflow_key",
+          "name": "sales task workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for site id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for site id.",
+              "name": "site id"
+            },
+            "zh-CN": {
+              "description": "site id 配置项。",
+              "name": "site id"
+            }
+          },
+          "key": "site_id",
+          "name": "site id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for source page field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for source page field.",
+              "name": "source page field"
+            },
+            "zh-CN": {
+              "description": "source page field 配置项。",
+              "name": "source page field"
+            }
+          },
+          "key": "source_page_field",
+          "name": "source page field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for welcome email template key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for welcome email template key.",
+              "name": "welcome email template key"
+            },
+            "zh-CN": {
+              "description": "welcome email template key 配置项。",
+              "name": "welcome email template key"
+            }
+          },
+          "key": "welcome_email_template_key",
+          "name": "welcome email template key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider tally",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider tally",
+          "name": "tally"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider tally",
+          "name": "tally"
+        }
+      },
+      "key": "tally",
+      "name": "tally",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for form id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for form id.",
+              "name": "form id"
+            },
+            "zh-CN": {
+              "description": "form id 配置项。",
+              "name": "form id"
+            }
+          },
+          "key": "form_id",
+          "name": "form id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sales task workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sales task workflow key.",
+              "name": "sales task workflow key"
+            },
+            "zh-CN": {
+              "description": "sales task workflow key 配置项。",
+              "name": "sales task workflow key"
+            }
+          },
+          "key": "sales_task_workflow_key",
+          "name": "sales task workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for site id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for site id.",
+              "name": "site id"
+            },
+            "zh-CN": {
+              "description": "site id 配置项。",
+              "name": "site id"
+            }
+          },
+          "key": "site_id",
+          "name": "site id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for source page field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for source page field.",
+              "name": "source page field"
+            },
+            "zh-CN": {
+              "description": "source page field 配置项。",
+              "name": "source page field"
+            }
+          },
+          "key": "source_page_field",
+          "name": "source page field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for welcome email template key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for welcome email template key.",
+              "name": "welcome email template key"
+            },
+            "zh-CN": {
+              "description": "welcome email template key 配置项。",
+              "name": "welcome email template key"
+            }
+          },
+          "key": "welcome_email_template_key",
+          "name": "welcome email template key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider webflow",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider webflow",
+          "name": "webflow"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider webflow",
+          "name": "webflow"
+        }
+      },
+      "key": "webflow",
+      "name": "webflow",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for form id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for form id.",
+              "name": "form id"
+            },
+            "zh-CN": {
+              "description": "form id 配置项。",
+              "name": "form id"
+            }
+          },
+          "key": "form_id",
+          "name": "form id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sales task workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sales task workflow key.",
+              "name": "sales task workflow key"
+            },
+            "zh-CN": {
+              "description": "sales task workflow key 配置项。",
+              "name": "sales task workflow key"
+            }
+          },
+          "key": "sales_task_workflow_key",
+          "name": "sales task workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for site id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for site id.",
+              "name": "site id"
+            },
+            "zh-CN": {
+              "description": "site id 配置项。",
+              "name": "site id"
+            }
+          },
+          "key": "site_id",
+          "name": "site id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for source page field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for source page field.",
+              "name": "source page field"
+            },
+            "zh-CN": {
+              "description": "source page field 配置项。",
+              "name": "source page field"
+            }
+          },
+          "key": "source_page_field",
+          "name": "source page field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for welcome email template key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for welcome email template key.",
+              "name": "welcome email template key"
+            },
+            "zh-CN": {
+              "description": "welcome email template key 配置项。",
+              "name": "welcome email template key"
+            }
+          },
+          "key": "welcome_email_template_key",
+          "name": "welcome email template key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider wix",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider wix",
+          "name": "wix"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider wix",
+          "name": "wix"
+        }
+      },
+      "key": "wix",
+      "name": "wix",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for form id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for form id.",
+              "name": "form id"
+            },
+            "zh-CN": {
+              "description": "form id 配置项。",
+              "name": "form id"
+            }
+          },
+          "key": "form_id",
+          "name": "form id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sales task workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sales task workflow key.",
+              "name": "sales task workflow key"
+            },
+            "zh-CN": {
+              "description": "sales task workflow key 配置项。",
+              "name": "sales task workflow key"
+            }
+          },
+          "key": "sales_task_workflow_key",
+          "name": "sales task workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for site id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for site id.",
+              "name": "site id"
+            },
+            "zh-CN": {
+              "description": "site id 配置项。",
+              "name": "site id"
+            }
+          },
+          "key": "site_id",
+          "name": "site id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for source page field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for source page field.",
+              "name": "source page field"
+            },
+            "zh-CN": {
+              "description": "source page field 配置项。",
+              "name": "source page field"
+            }
+          },
+          "key": "source_page_field",
+          "name": "source page field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for welcome email template key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for welcome email template key.",
+              "name": "welcome email template key"
+            },
+            "zh-CN": {
+              "description": "welcome email template key 配置项。",
+              "name": "welcome email template key"
+            }
+          },
+          "key": "welcome_email_template_key",
+          "name": "welcome email template key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider wordpress",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider wordpress",
+          "name": "wordpress"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider wordpress",
+          "name": "wordpress"
+        }
+      },
+      "key": "wordpress",
+      "name": "wordpress",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_token",
+    "oauth_client_id",
+    "oauth_client_secret",
+    "webhook_secret"
+  ],
+  "source": "connectors:website_form",
+  "type": "website_form",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

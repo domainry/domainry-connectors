@@ -1,0 +1,340 @@
+{
+  "adapter_ready": true,
+  "capabilities": [
+    "oauth",
+    "graph_scopes",
+    "sync_outlook_mail",
+    "sync_contacts",
+    "sync_calendar",
+    "sync_teams_context",
+    "sync_onedrive_file_refs",
+    "sync_groups_directory",
+    "crm_onboarding",
+    "workspace_backfill_closeout",
+    "workspace_asset_onboarding",
+    "reply_outbox",
+    "disconnect_rollback",
+    "data_migration_handoff",
+    "file_storage_handoff",
+    "payment_status_gap_review",
+    "owner_candidate_review",
+    "permission_risk_review",
+    "attachment_gap_review",
+    "external_identity"
+  ],
+  "config": {
+    "crm_onboarding_path": "/integrations/microsoft-365/crm-onboarding",
+    "default_connection_key": "microsoft_365_primary",
+    "oauth_start_path": "/integrations/microsoft-365/oauth/start",
+    "options_path": "/integrations/microsoft-365/options",
+    "scopes": [
+      "openid",
+      "email",
+      "profile",
+      "offline_access",
+      "User.Read",
+      "Mail.Read",
+      "Contacts.Read",
+      "Calendars.Read",
+      "OnlineMeetings.Read",
+      "Files.Read.All",
+      "Group.Read.All",
+      "Directory.Read.All"
+    ],
+    "secret_refs": [
+      "client_id",
+      "client_secret",
+      "access_token",
+      "refresh_token"
+    ],
+    "selection_path": "/integrations/microsoft-365/selection",
+    "sync_options": [
+      "outlook_mail_contacts",
+      "calendar",
+      "teams_meetings",
+      "onedrive_file_refs",
+      "groups_directory",
+      "record_enrichment"
+    ],
+    "workspace_backfill_closeout_path": "/integrations/microsoft-365/workspace-backfill-closeout-plan",
+    "writeback_targets": [
+      "contact",
+      "company",
+      "activity",
+      "conversation",
+      "message",
+      "appointment",
+      "document",
+      "customer_timeline"
+    ]
+  },
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Microsoft 365 Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Microsoft 365 Connector definitions, Provider choices, and operation contracts.",
+      "name": "Microsoft 365"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方Microsoft 365连接器定义、Provider 选项与操作契约。",
+      "name": "Microsoft 365"
+    }
+  },
+  "key": "microsoft_365",
+  "name": "Microsoft 365",
+  "operations": [
+    {
+      "description": "Execute the test connection operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the test connection operation.",
+          "name": "test connection"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "GET",
+      "name": "test connection",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the sync outlook mail operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the sync outlook mail operation.",
+          "name": "sync outlook mail"
+        },
+        "zh-CN": {
+          "description": "执行“同步 Outlook 邮件”操作。",
+          "name": "同步 Outlook 邮件"
+        }
+      },
+      "input": [],
+      "key": "sync_outlook_mail",
+      "method": "GET",
+      "name": "sync outlook mail",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the sync contacts operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the sync contacts operation.",
+          "name": "sync contacts"
+        },
+        "zh-CN": {
+          "description": "执行“同步联系人”操作。",
+          "name": "同步联系人"
+        }
+      },
+      "input": [],
+      "key": "sync_contacts",
+      "method": "GET",
+      "name": "sync contacts",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the sync calendar operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the sync calendar operation.",
+          "name": "sync calendar"
+        },
+        "zh-CN": {
+          "description": "执行“同步日历”操作。",
+          "name": "同步日历"
+        }
+      },
+      "input": [],
+      "key": "sync_calendar",
+      "method": "GET",
+      "name": "sync calendar",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the sync onedrive file refs operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the sync onedrive file refs operation.",
+          "name": "sync onedrive file refs"
+        },
+        "zh-CN": {
+          "description": "执行“同步 OneDrive 文件引用”操作。",
+          "name": "同步 OneDrive 文件引用"
+        }
+      },
+      "input": [],
+      "key": "sync_onedrive_file_refs",
+      "method": "GET",
+      "name": "sync onedrive file refs",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    }
+  ],
+  "provider": "microsoft",
+  "providers": [
+    {
+      "config_fields": [],
+      "description": "Runtime Provider microsoft",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider microsoft",
+          "name": "microsoft"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider microsoft",
+          "name": "microsoft"
+        }
+      },
+      "key": "microsoft",
+      "name": "microsoft",
+      "readiness": "connection_ready",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "connection_ready",
+  "secret_refs": [
+    "client_id",
+    "client_secret",
+    "access_token",
+    "refresh_token"
+  ],
+  "source": "connectors:microsoft_365",
+  "type": "workspace",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_secrets"
+  ]
+}

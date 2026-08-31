@@ -1,0 +1,263 @@
+{
+  "adapter_ready": true,
+  "capabilities": [
+    "receive_event",
+    "send_message",
+    "external_identity",
+    "run_action",
+    "run_workflow"
+  ],
+  "config": {
+    "channel_adapter": true,
+    "channel_connection_channel": "feishu",
+    "channel_connection_external_account_field": "external_account_id",
+    "channel_connection_key_field": "connection_key",
+    "channel_connection_object": "channel_connection",
+    "channel_connection_secret_boundary": "secret_refs_only",
+    "channel_connection_status_field": "status",
+    "channel_connection_webhook_status_field": "webhook_status",
+    "channel_writeback_objects": [
+      "conversation",
+      "message",
+      "channel_connection"
+    ],
+    "command_prefixes": [
+      "/crm"
+    ],
+    "identity_subjects": [
+      "open_id",
+      "union_id",
+      "user_id"
+    ],
+    "options_path": "/integrations/feishu/options",
+    "reply_adapter": "feishu_bot",
+    "secret_refs": [
+      "verification_token",
+      "app_secret",
+      "encrypt_key"
+    ],
+    "summary_only_payloads": true,
+    "workspace_assets": [
+      "directory",
+      "chats",
+      "calendar",
+      "drive_files",
+      "approvals",
+      "workflow_outbox"
+    ],
+    "workspace_backfill_closeout_path": "/integrations/feishu/workspace-backfill-closeout-plan",
+    "workspace_backfill_targets": [
+      "person",
+      "organization",
+      "conversation",
+      "message",
+      "appointment",
+      "approval_task",
+      "document",
+      "customer_timeline"
+    ],
+    "workspace_sync_runtime_path": "/integrations/feishu/workspace-sync/runtime"
+  },
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Feishu Collaboration Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Feishu Collaboration Connector definitions, Provider choices, and operation contracts.",
+      "name": "Feishu Collaboration"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方飞书协作连接器定义、Provider 选项与操作契约。",
+      "name": "飞书协作"
+    }
+  },
+  "key": "feishu_collaboration",
+  "name": "Feishu Collaboration",
+  "operations": [
+    {
+      "description": "Execute the Send Message operation.",
+      "execution_mode": "async",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Send Message operation.",
+          "name": "Send Message"
+        },
+        "zh-CN": {
+          "description": "执行“发送消息”操作。",
+          "name": "发送消息"
+        }
+      },
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "recipient",
+          "name": "Recipient",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "message",
+          "name": "Message",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "provider_payload",
+          "name": "Provider Payload",
+          "description": "Deprecated immutable native payload retained only for previously persisted outbox messages.",
+          "type": "json"
+        },
+        {
+          "key": "notification_content",
+          "name": "Notification Content",
+          "description": "Versioned provider-neutral rendered notification snapshot compiled by the selected provider.",
+          "type": "json"
+        }
+      ],
+      "key": "send_message",
+      "method": "POST",
+      "name": "Send Message",
+      "side_effect": "write",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 60
+    },
+    {
+      "description": "Execute the Test Collaboration Connection operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Test Collaboration Connection operation.",
+          "name": "Test Collaboration Connection"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "GET",
+      "name": "Test Collaboration Connection",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 10,
+      "timeout_max_seconds": 30
+    }
+  ],
+  "provider": "feishu",
+  "providers": [
+    {
+      "config_fields": [],
+      "description": "Runtime Provider feishu",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider feishu",
+          "name": "feishu"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider feishu",
+          "name": "feishu"
+        }
+      },
+      "key": "feishu",
+      "name": "feishu",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for encrypt key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for encrypt key.",
+              "name": "encrypt key"
+            },
+            "zh-CN": {
+              "description": "encrypt key 敏感凭据。",
+              "name": "encrypt key"
+            }
+          },
+          "key": "encrypt_key",
+          "name": "encrypt key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for verification token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for verification token.",
+              "name": "verification token"
+            },
+            "zh-CN": {
+              "description": "verification token 敏感凭据。",
+              "name": "verification token"
+            }
+          },
+          "key": "verification_token",
+          "name": "verification token",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "verification_token",
+    "app_secret",
+    "encrypt_key"
+  ],
+  "source": "connectors:feishu_collaboration",
+  "type": "collaboration",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_secrets"
+  ]
+}

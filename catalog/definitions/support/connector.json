@@ -1,0 +1,2117 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "zendesk",
+    "intercom",
+    "freshdesk",
+    "intercom_fin",
+    "zendesk_ai",
+    "drift",
+    "botpress",
+    "custom_chatbot",
+    "tickets",
+    "conversations",
+    "chatbot_conversations",
+    "bot_intents",
+    "unresolved_intents",
+    "human_handoff",
+    "knowledge_gaps",
+    "sentiment",
+    "csat",
+    "sla_breach",
+    "attachments",
+    "customer_health",
+    "support_activity",
+    "health_followup_plan",
+    "health_followup_contactability_gate",
+    "escalation_executor",
+    "live_channel_closeout",
+    "history_backfill",
+    "delivery_receipt_writeback",
+    "manual_takeover",
+    "cross_channel_repair",
+    "unreplied_thread_escalation",
+    "high_intent_support_handoff",
+    "owner_task_handoff",
+    "product_feedback_handoff",
+    "customer_success_handoff",
+    "data_migration_handoff",
+    "knowledge_gap_handoff"
+  ],
+  "config": {
+    "chatbot_history_onboarding_path": "/integrations/support/chatbot-history-onboarding",
+    "config_fields": [
+      "provider",
+      "subdomain",
+      "workspace_id",
+      "sync_window_days",
+      "default_owner_field",
+      "health_score_field",
+      "sla_policy_key"
+    ],
+    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "customer_health_onboarding_path": "/integrations/support/customer-health-onboarding",
+    "default_connection_key": "support_primary",
+    "escalation_executor_plan_path": "/integrations/support/escalation-executor-plan",
+    "health_followup_plan_path": "/integrations/support/health-followup-plan",
+    "live_channel_closeout_plan_path": "/integrations/support/live-channel-closeout-plan",
+    "options_path": "/integrations/support/options",
+    "secret_refs": [
+      "api_token",
+      "oauth_client_id",
+      "oauth_client_secret",
+      "webhook_secret"
+    ]
+  },
+  "config_fields": [
+    "provider",
+    "subdomain",
+    "workspace_id",
+    "sync_window_days",
+    "default_owner_field",
+    "health_score_field",
+    "sla_policy_key"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Support Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Support Connector definitions, Provider choices, and operation contracts.",
+      "name": "Support"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方客户支持连接器定义、Provider 选项与操作契约。",
+      "name": "客户支持"
+    }
+  },
+  "key": "support",
+  "name": "Support",
+  "operations": [
+    {
+      "key": "test_connection", "name": "Test connection", "description": "Verify Zendesk credentials.",
+      "i18n": {"en-US": {"name": "Test connection", "description": "Verify Zendesk credentials."}, "zh-CN": {"name": "测试连接", "description": "验证 Zendesk 凭据。"}},
+      "method": "GET", "execution_mode": "sync", "side_effect": "read", "test_supported": true,
+      "timeout_default_seconds": 15, "timeout_max_seconds": 30,
+      "output": [{"key": "connected", "name": "Connected", "type": "boolean", "required": true}]
+    },
+    {
+      "key": "list_tickets", "name": "List tickets", "description": "List support tickets.",
+      "i18n": {"en-US": {"name": "List tickets", "description": "List support tickets."}, "zh-CN": {"name": "查询工单", "description": "查询客户支持工单。"}},
+      "method": "GET", "execution_mode": "sync", "side_effect": "read", "timeout_default_seconds": 30, "timeout_max_seconds": 60,
+      "output": [{"key": "tickets", "name": "Tickets", "type": "json", "required": true}]
+    },
+    {
+      "key": "get_ticket", "name": "Get ticket", "description": "Get one support ticket.",
+      "i18n": {"en-US": {"name": "Get ticket", "description": "Get one support ticket."}, "zh-CN": {"name": "读取工单", "description": "读取一个客户支持工单。"}},
+      "method": "GET", "execution_mode": "sync", "side_effect": "read", "timeout_default_seconds": 30, "timeout_max_seconds": 60,
+      "input": [{"key": "ticket_id", "name": "Ticket ID", "type": "text", "required": true}],
+      "output": [{"key": "ticket", "name": "Ticket", "type": "json", "required": true}]
+    },
+    {
+      "key": "create_ticket", "name": "Create ticket", "description": "Create an idempotent support ticket.",
+      "i18n": {"en-US": {"name": "Create ticket", "description": "Create an idempotent support ticket."}, "zh-CN": {"name": "创建工单", "description": "以幂等方式创建客户支持工单。"}},
+      "method": "POST", "execution_mode": "sync", "side_effect": "write", "idempotency_supported": true,
+      "timeout_default_seconds": 30, "timeout_max_seconds": 60,
+      "input": [{"key": "subject", "name": "Subject", "type": "text", "required": true}, {"key": "comment", "name": "Comment", "type": "json", "required": true}, {"key": "requester", "name": "Requester", "type": "json", "required": false}, {"key": "priority", "name": "Priority", "type": "text", "required": false}],
+      "output": [{"key": "ticket", "name": "Ticket", "type": "json", "required": true}]
+    },
+    {
+      "key": "update_ticket", "name": "Update ticket", "description": "Update an existing support ticket.",
+      "i18n": {"en-US": {"name": "Update ticket", "description": "Update an existing support ticket."}, "zh-CN": {"name": "更新工单", "description": "更新已有客户支持工单。"}},
+      "method": "PUT", "execution_mode": "sync", "side_effect": "write", "idempotency_supported": true,
+      "timeout_default_seconds": 30, "timeout_max_seconds": 60,
+      "input": [{"key": "ticket_id", "name": "Ticket ID", "type": "text", "required": true}, {"key": "status", "name": "Status", "type": "text", "required": false}, {"key": "comment", "name": "Comment", "type": "json", "required": false}, {"key": "priority", "name": "Priority", "type": "text", "required": false}],
+      "output": [{"key": "ticket", "name": "Ticket", "type": "json", "required": true}]
+    }
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner field.",
+              "name": "default owner field"
+            },
+            "zh-CN": {
+              "description": "default owner field 配置项。",
+              "name": "default owner field"
+            }
+          },
+          "key": "default_owner_field",
+          "name": "default owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sla policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sla policy key.",
+              "name": "sla policy key"
+            },
+            "zh-CN": {
+              "description": "sla policy key 配置项。",
+              "name": "sla policy key"
+            }
+          },
+          "key": "sla_policy_key",
+          "name": "sla policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for subdomain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for subdomain.",
+              "name": "subdomain"
+            },
+            "zh-CN": {
+              "description": "subdomain 配置项。",
+              "name": "subdomain"
+            }
+          },
+          "key": "subdomain",
+          "name": "subdomain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider botpress",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider botpress",
+          "name": "botpress"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider botpress",
+          "name": "botpress"
+        }
+      },
+      "key": "botpress",
+      "name": "botpress",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner field.",
+              "name": "default owner field"
+            },
+            "zh-CN": {
+              "description": "default owner field 配置项。",
+              "name": "default owner field"
+            }
+          },
+          "key": "default_owner_field",
+          "name": "default owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sla policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sla policy key.",
+              "name": "sla policy key"
+            },
+            "zh-CN": {
+              "description": "sla policy key 配置项。",
+              "name": "sla policy key"
+            }
+          },
+          "key": "sla_policy_key",
+          "name": "sla policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for subdomain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for subdomain.",
+              "name": "subdomain"
+            },
+            "zh-CN": {
+              "description": "subdomain 配置项。",
+              "name": "subdomain"
+            }
+          },
+          "key": "subdomain",
+          "name": "subdomain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider custom_chatbot",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider custom_chatbot",
+          "name": "custom_chatbot"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider custom_chatbot",
+          "name": "custom_chatbot"
+        }
+      },
+      "key": "custom_chatbot",
+      "name": "custom_chatbot",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner field.",
+              "name": "default owner field"
+            },
+            "zh-CN": {
+              "description": "default owner field 配置项。",
+              "name": "default owner field"
+            }
+          },
+          "key": "default_owner_field",
+          "name": "default owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sla policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sla policy key.",
+              "name": "sla policy key"
+            },
+            "zh-CN": {
+              "description": "sla policy key 配置项。",
+              "name": "sla policy key"
+            }
+          },
+          "key": "sla_policy_key",
+          "name": "sla policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for subdomain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for subdomain.",
+              "name": "subdomain"
+            },
+            "zh-CN": {
+              "description": "subdomain 配置项。",
+              "name": "subdomain"
+            }
+          },
+          "key": "subdomain",
+          "name": "subdomain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider drift",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider drift",
+          "name": "drift"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider drift",
+          "name": "drift"
+        }
+      },
+      "key": "drift",
+      "name": "drift",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner field.",
+              "name": "default owner field"
+            },
+            "zh-CN": {
+              "description": "default owner field 配置项。",
+              "name": "default owner field"
+            }
+          },
+          "key": "default_owner_field",
+          "name": "default owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sla policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sla policy key.",
+              "name": "sla policy key"
+            },
+            "zh-CN": {
+              "description": "sla policy key 配置项。",
+              "name": "sla policy key"
+            }
+          },
+          "key": "sla_policy_key",
+          "name": "sla policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for subdomain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for subdomain.",
+              "name": "subdomain"
+            },
+            "zh-CN": {
+              "description": "subdomain 配置项。",
+              "name": "subdomain"
+            }
+          },
+          "key": "subdomain",
+          "name": "subdomain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider freshdesk",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider freshdesk",
+          "name": "freshdesk"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider freshdesk",
+          "name": "freshdesk"
+        }
+      },
+      "key": "freshdesk",
+      "name": "freshdesk",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner field.",
+              "name": "default owner field"
+            },
+            "zh-CN": {
+              "description": "default owner field 配置项。",
+              "name": "default owner field"
+            }
+          },
+          "key": "default_owner_field",
+          "name": "default owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sla policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sla policy key.",
+              "name": "sla policy key"
+            },
+            "zh-CN": {
+              "description": "sla policy key 配置项。",
+              "name": "sla policy key"
+            }
+          },
+          "key": "sla_policy_key",
+          "name": "sla policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for subdomain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for subdomain.",
+              "name": "subdomain"
+            },
+            "zh-CN": {
+              "description": "subdomain 配置项。",
+              "name": "subdomain"
+            }
+          },
+          "key": "subdomain",
+          "name": "subdomain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider intercom",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider intercom",
+          "name": "intercom"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider intercom",
+          "name": "intercom"
+        }
+      },
+      "key": "intercom",
+      "name": "intercom",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner field.",
+              "name": "default owner field"
+            },
+            "zh-CN": {
+              "description": "default owner field 配置项。",
+              "name": "default owner field"
+            }
+          },
+          "key": "default_owner_field",
+          "name": "default owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sla policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sla policy key.",
+              "name": "sla policy key"
+            },
+            "zh-CN": {
+              "description": "sla policy key 配置项。",
+              "name": "sla policy key"
+            }
+          },
+          "key": "sla_policy_key",
+          "name": "sla policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for subdomain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for subdomain.",
+              "name": "subdomain"
+            },
+            "zh-CN": {
+              "description": "subdomain 配置项。",
+              "name": "subdomain"
+            }
+          },
+          "key": "subdomain",
+          "name": "subdomain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider intercom_fin",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider intercom_fin",
+          "name": "intercom_fin"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider intercom_fin",
+          "name": "intercom_fin"
+        }
+      },
+      "key": "intercom_fin",
+      "name": "intercom_fin",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner field.",
+              "name": "default owner field"
+            },
+            "zh-CN": {
+              "description": "default owner field 配置项。",
+              "name": "default owner field"
+            }
+          },
+          "key": "default_owner_field",
+          "name": "default owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sla policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sla policy key.",
+              "name": "sla policy key"
+            },
+            "zh-CN": {
+              "description": "sla policy key 配置项。",
+              "name": "sla policy key"
+            }
+          },
+          "key": "sla_policy_key",
+          "name": "sla policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for subdomain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for subdomain.",
+              "name": "subdomain"
+            },
+            "zh-CN": {
+              "description": "subdomain 配置项。",
+              "name": "subdomain"
+            }
+          },
+          "key": "subdomain",
+          "name": "subdomain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider zendesk",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider zendesk",
+          "name": "zendesk"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider zendesk",
+          "name": "zendesk"
+        }
+      },
+      "key": "zendesk",
+      "name": "zendesk",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for default owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner field.",
+              "name": "default owner field"
+            },
+            "zh-CN": {
+              "description": "default owner field 配置项。",
+              "name": "default owner field"
+            }
+          },
+          "key": "default_owner_field",
+          "name": "default owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for sla policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sla policy key.",
+              "name": "sla policy key"
+            },
+            "zh-CN": {
+              "description": "sla policy key 配置项。",
+              "name": "sla policy key"
+            }
+          },
+          "key": "sla_policy_key",
+          "name": "sla policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for subdomain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for subdomain.",
+              "name": "subdomain"
+            },
+            "zh-CN": {
+              "description": "subdomain 配置项。",
+              "name": "subdomain"
+            }
+          },
+          "key": "subdomain",
+          "name": "subdomain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider zendesk_ai",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider zendesk_ai",
+          "name": "zendesk_ai"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider zendesk_ai",
+          "name": "zendesk_ai"
+        }
+      },
+      "key": "zendesk_ai",
+      "name": "zendesk_ai",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_token",
+    "oauth_client_id",
+    "oauth_client_secret",
+    "webhook_secret"
+  ],
+  "source": "connectors:support",
+  "type": "support",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

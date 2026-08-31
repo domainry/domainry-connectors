@@ -1,0 +1,392 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "template_metadata",
+    "pdf_render",
+    "file_storage_archive",
+    "delivery_closeout",
+    "evidence_deepening",
+    "invoice",
+    "quote",
+    "contract",
+    "work_order",
+    "watermark",
+    "header_footer",
+    "numbering",
+    "signature_hook",
+    "download_handoff",
+    "email_handoff",
+    "status_webhook",
+    "evidence_archive",
+    "retention_policy",
+    "legal_hold",
+    "permissioned_download",
+    "audit_package"
+  ],
+  "config": {
+    "archive_path": "/integrations/documents/archive",
+    "config_fields": [
+      "default_locale",
+      "default_currency",
+      "watermark",
+      "header",
+      "footer",
+      "numbering_rule",
+      "archive_connector_key",
+      "archive_connection_key",
+      "signature_provider"
+    ],
+    "default_connection_key": "document_generation_primary",
+    "delivery_closeout_path": "/integrations/documents/delivery-closeout-plan",
+    "evidence_deepening_path": "/integrations/documents/evidence-deepening-plan",
+    "options_path": "/integrations/documents/options",
+    "output_formats": [
+      "pdf"
+    ],
+    "pdf_archive_plan_path": "/integrations/documents/pdf-archive-plan",
+    "render_artifact_path": "/integrations/documents/render-artifact",
+    "render_path": "/integrations/documents/render",
+    "secret_refs": [
+      "signature_secret",
+      "archive_signing_secret"
+    ],
+    "template_types": [
+      "invoice",
+      "quote",
+      "contract",
+      "work_order"
+    ]
+  },
+  "config_fields": [
+    "default_locale",
+    "default_currency",
+    "watermark",
+    "header",
+    "footer",
+    "numbering_rule",
+    "archive_connector_key",
+    "archive_connection_key",
+    "signature_provider"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Document Generation Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Document Generation Connector definitions, Provider choices, and operation contracts.",
+      "name": "Document Generation"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方文档生成连接器定义、Provider 选项与操作契约。",
+      "name": "文档生成"
+    }
+  },
+  "key": "document_generation",
+  "classification": "runtime_native",
+  "lifecycle_status": "active",
+  "name": "Document Generation",
+  "operations": [
+    {
+      "key": "test_connection",
+      "name": "Test PDF Provider",
+      "description": "Verify that the Runtime PDF renderer is available.",
+      "i18n": {"en-US": {"name": "Test PDF Provider", "description": "Verify that the Runtime PDF renderer is available."}, "zh-CN": {"name": "测试 PDF Provider", "description": "验证 Runtime PDF 渲染器可用。"}},
+      "method": "GET", "execution_mode": "sync", "side_effect": "read", "test_supported": true,
+      "timeout_default_seconds": 5, "timeout_max_seconds": 15,
+      "output": [{"key": "connected", "name": "Connected", "type": "boolean", "required": true}]
+    },
+    {
+      "key": "render_pdf",
+      "name": "Render PDF",
+      "description": "Render a PDF document inside the user's Runtime instance.",
+      "i18n": {"en-US": {"name": "Render PDF", "description": "Render a PDF document inside the user's Runtime instance."}, "zh-CN": {"name": "渲染 PDF", "description": "在用户自己的 Runtime 实例内渲染 PDF 文档。"}},
+      "method": "POST", "execution_mode": "sync", "side_effect": "write", "idempotency_supported": true,
+      "timeout_default_seconds": 10, "timeout_max_seconds": 30,
+      "input": [
+        {"key": "title", "name": "Title", "type": "text", "required": true},
+        {"key": "content", "name": "Content", "type": "long_text", "required": true},
+        {"key": "filename", "name": "Filename", "type": "text", "required": false}
+      ],
+      "output": [
+        {"key": "filename", "name": "Filename", "type": "text", "required": true},
+        {"key": "mime_type", "name": "MIME Type", "type": "text", "required": true},
+        {"key": "document_base64", "name": "Document Base64", "type": "long_text", "required": true},
+        {"key": "sha256", "name": "SHA-256", "type": "text", "required": true},
+        {"key": "bytes", "name": "Bytes", "type": "integer", "required": true},
+        {"key": "signature_hmac_sha256", "name": "HMAC Signature", "type": "text", "required": false}
+      ]
+    }
+  ],
+  "provider": "pdf",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for archive connection key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for archive connection key.",
+              "name": "archive connection key"
+            },
+            "zh-CN": {
+              "description": "archive connection key 配置项。",
+              "name": "archive connection key"
+            }
+          },
+          "key": "archive_connection_key",
+          "name": "archive connection key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for archive connector key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for archive connector key.",
+              "name": "archive connector key"
+            },
+            "zh-CN": {
+              "description": "archive connector key 配置项。",
+              "name": "archive connector key"
+            }
+          },
+          "key": "archive_connector_key",
+          "name": "archive connector key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default currency.",
+              "name": "default currency"
+            },
+            "zh-CN": {
+              "description": "default currency 配置项。",
+              "name": "default currency"
+            }
+          },
+          "key": "default_currency",
+          "name": "default currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for default locale.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default locale.",
+              "name": "default locale"
+            },
+            "zh-CN": {
+              "description": "default locale 配置项。",
+              "name": "default locale"
+            }
+          },
+          "key": "default_locale",
+          "name": "default locale",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for footer.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for footer.",
+              "name": "footer"
+            },
+            "zh-CN": {
+              "description": "footer 配置项。",
+              "name": "footer"
+            }
+          },
+          "key": "footer",
+          "name": "footer",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for header.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for header.",
+              "name": "header"
+            },
+            "zh-CN": {
+              "description": "header 配置项。",
+              "name": "header"
+            }
+          },
+          "key": "header",
+          "name": "header",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for numbering rule.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for numbering rule.",
+              "name": "numbering rule"
+            },
+            "zh-CN": {
+              "description": "numbering rule 配置项。",
+              "name": "numbering rule"
+            }
+          },
+          "key": "numbering_rule",
+          "name": "numbering rule",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for signature provider.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature provider.",
+              "name": "signature provider"
+            },
+            "zh-CN": {
+              "description": "signature provider 配置项。",
+              "name": "signature provider"
+            }
+          },
+          "key": "signature_provider",
+          "name": "signature provider",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for watermark.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for watermark.",
+              "name": "watermark"
+            },
+            "zh-CN": {
+              "description": "watermark 配置项。",
+              "name": "watermark"
+            }
+          },
+          "key": "watermark",
+          "name": "watermark",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider pdf",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider pdf",
+          "name": "pdf"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider pdf",
+          "name": "pdf"
+        }
+      },
+      "key": "pdf",
+      "name": "pdf",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for archive signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for archive signing secret.",
+              "name": "archive signing secret"
+            },
+            "zh-CN": {
+              "description": "archive signing secret 敏感凭据。",
+              "name": "archive signing secret"
+            }
+          },
+          "key": "archive_signing_secret",
+          "name": "archive signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signature secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signature secret.",
+              "name": "signature secret"
+            },
+            "zh-CN": {
+              "description": "signature secret 敏感凭据。",
+              "name": "signature secret"
+            }
+          },
+          "key": "signature_secret",
+          "name": "signature secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "signature_secret",
+    "archive_signing_secret"
+  ],
+  "source": "connectors:document_generation",
+  "type": "document_generation",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

@@ -1,0 +1,585 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "send_event",
+    "headers",
+    "timeout",
+    "retry",
+    "signature_header",
+    "exponential_backoff",
+    "rate_limit",
+    "circuit_breaker",
+    "delivery_diagnostic",
+    "connection_repair_plan"
+  ],
+  "config": {
+    "config_fields": [
+      "url",
+      "method",
+      "headers",
+      "timeout_seconds",
+      "signature_algorithm",
+      "signature_header",
+      "signature_timestamp_header",
+      "signature_secret_ref_name",
+      "min_interval_seconds",
+      "retry_backoff",
+      "retry_base_seconds",
+      "retry_max_seconds",
+      "circuit_failure_threshold",
+      "circuit_cooldown_seconds"
+    ],
+    "connection_request_path": "/integrations/webhooks/connection-request",
+    "dead_letter_alert_path": "/integrations/webhooks/dead-letter-alert-plan",
+    "default_connection_key": "webhook_primary",
+    "delivery_diagnostic_compat_path": "/integrations/webhooks/delivery-diagnostic",
+    "delivery_diagnostic_path": "/integrations/webhooks/delivery-diagnostic-plan",
+    "options_path": "/integrations/webhooks/options",
+    "retry_policy_path": "/integrations/webhooks/retry-policy",
+    "secret_refs": [
+      "webhook_secret",
+      "signing_secret",
+      "bearer_token",
+      "basic_auth_password"
+    ],
+    "signature_preview_path": "/integrations/webhooks/signature-preview"
+  },
+  "config_fields": [
+    "url",
+    "method",
+    "headers",
+    "timeout_seconds",
+    "signature_algorithm",
+    "signature_header",
+    "signature_timestamp_header",
+    "signature_secret_ref_name",
+    "min_interval_seconds",
+    "retry_backoff",
+    "retry_base_seconds",
+    "retry_max_seconds",
+    "circuit_failure_threshold",
+    "circuit_cooldown_seconds"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Outbound Webhook Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Outbound Webhook Connector definitions, Provider choices, and operation contracts.",
+      "name": "Outbound Webhook"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方出站 Webhook连接器定义、Provider 选项与操作契约。",
+      "name": "出站 Webhook"
+    }
+  },
+  "key": "webhook",
+  "name": "Outbound Webhook",
+  "operations": [
+    {
+      "description": "Execute the Send Webhook operation.",
+      "execution_mode": "async",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Send Webhook operation.",
+          "name": "Send Webhook"
+        },
+        "zh-CN": {
+          "description": "执行“发送”操作。",
+          "name": "发送"
+        }
+      },
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "payload",
+          "name": "Payload",
+          "required": true,
+          "type": "json"
+        }
+      ],
+      "key": "send",
+      "method": "POST",
+      "name": "Send Webhook",
+      "output": [
+        {
+          "key": "status_code",
+          "name": "Status Code",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "side_effect": "write",
+      "test_supported": true,
+      "timeout_default_seconds": 10,
+      "timeout_max_seconds": 300
+    },
+    {
+      "description": "Execute the Test Connection operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Test Connection operation.",
+          "name": "Test Connection"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "POST",
+      "name": "Test Connection",
+      "output": [
+        {
+          "key": "status_code",
+          "name": "Status Code",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 10,
+      "timeout_max_seconds": 30
+    }
+  ],
+  "provider": "http",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "default": 30,
+          "description": "Configuration value for circuit cooldown seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for circuit cooldown seconds.",
+              "name": "circuit cooldown seconds"
+            },
+            "zh-CN": {
+              "description": "circuit cooldown seconds 配置项。",
+              "name": "circuit cooldown seconds"
+            }
+          },
+          "key": "circuit_cooldown_seconds",
+          "name": "circuit cooldown seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "default": 5,
+          "description": "Configuration value for circuit failure threshold.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for circuit failure threshold.",
+              "name": "circuit failure threshold"
+            },
+            "zh-CN": {
+              "description": "circuit failure threshold 配置项。",
+              "name": "circuit failure threshold"
+            }
+          },
+          "key": "circuit_failure_threshold",
+          "name": "circuit failure threshold",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1000000,
+            "min": 0
+          }
+        },
+        {
+          "config": {
+            "json_shape": "object"
+          },
+          "default": {},
+          "description": "Configuration value for headers.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for headers.",
+              "name": "headers"
+            },
+            "zh-CN": {
+              "description": "headers 配置项。",
+              "name": "headers"
+            }
+          },
+          "key": "headers",
+          "name": "headers",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "description": "Configuration value for method.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for method.",
+              "name": "method"
+            },
+            "zh-CN": {
+              "description": "method 配置项。",
+              "name": "method"
+            }
+          },
+          "key": "method",
+          "name": "method",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 1,
+          "description": "Configuration value for min interval seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for min interval seconds.",
+              "name": "min interval seconds"
+            },
+            "zh-CN": {
+              "description": "min interval seconds 配置项。",
+              "name": "min interval seconds"
+            }
+          },
+          "key": "min_interval_seconds",
+          "name": "min interval seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for retry backoff.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for retry backoff.",
+              "name": "retry backoff"
+            },
+            "zh-CN": {
+              "description": "retry backoff 配置项。",
+              "name": "retry backoff"
+            }
+          },
+          "key": "retry_backoff",
+          "name": "retry backoff",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 1,
+          "description": "Configuration value for retry base seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for retry base seconds.",
+              "name": "retry base seconds"
+            },
+            "zh-CN": {
+              "description": "retry base seconds 配置项。",
+              "name": "retry base seconds"
+            }
+          },
+          "key": "retry_base_seconds",
+          "name": "retry base seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "default": 60,
+          "description": "Configuration value for retry max seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for retry max seconds.",
+              "name": "retry max seconds"
+            },
+            "zh-CN": {
+              "description": "retry max seconds 配置项。",
+              "name": "retry max seconds"
+            }
+          },
+          "key": "retry_max_seconds",
+          "name": "retry max seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for signature algorithm.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature algorithm.",
+              "name": "signature algorithm"
+            },
+            "zh-CN": {
+              "description": "signature algorithm 配置项。",
+              "name": "signature algorithm"
+            }
+          },
+          "key": "signature_algorithm",
+          "name": "signature algorithm",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for signature header.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature header.",
+              "name": "signature header"
+            },
+            "zh-CN": {
+              "description": "signature header 配置项。",
+              "name": "signature header"
+            }
+          },
+          "key": "signature_header",
+          "name": "signature header",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for signature secret ref name.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature secret ref name.",
+              "name": "signature secret ref name"
+            },
+            "zh-CN": {
+              "description": "signature secret ref name 配置项。",
+              "name": "signature secret ref name"
+            }
+          },
+          "key": "signature_secret_ref_name",
+          "name": "signature secret ref name",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for signature timestamp header.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature timestamp header.",
+              "name": "signature timestamp header"
+            },
+            "zh-CN": {
+              "description": "signature timestamp header 配置项。",
+              "name": "signature timestamp header"
+            }
+          },
+          "key": "signature_timestamp_header",
+          "name": "signature timestamp header",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for timeout seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for timeout seconds.",
+              "name": "timeout seconds"
+            },
+            "zh-CN": {
+              "description": "timeout seconds 配置项。",
+              "name": "timeout seconds"
+            }
+          },
+          "key": "timeout_seconds",
+          "name": "timeout seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for url.",
+              "name": "url"
+            },
+            "zh-CN": {
+              "description": "url 配置项。",
+              "name": "url"
+            }
+          },
+          "key": "url",
+          "name": "url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider http",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider http",
+          "name": "http"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider http",
+          "name": "http"
+        }
+      },
+      "key": "http",
+      "name": "http",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "webhook_secret",
+    "signing_secret",
+    "bearer_token",
+    "basic_auth_password"
+  ],
+  "source": "connectors:webhook",
+  "type": "webhook",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

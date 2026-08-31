@@ -1,0 +1,447 @@
+{
+  "adapter_ready": true,
+  "capabilities": [
+    "oauth",
+    "oauth_token_exchange",
+    "oauth_token_refresh",
+    "oauth_revoke",
+    "encrypted_token_storage",
+    "incremental_sync_worker",
+    "sync_email_history",
+    "sync_contacts",
+    "sync_calendar",
+    "sync_drive_file_refs",
+    "sync_meeting_records",
+    "sync_groups_directory",
+    "business_writeback",
+    "timeline_writeback",
+    "idempotent_writeback",
+    "record_enrichment",
+    "crm_onboarding",
+    "workspace_backfill_closeout",
+    "workspace_asset_onboarding",
+    "reply_outbox",
+    "disconnect_rollback",
+    "data_migration_handoff",
+    "file_storage_handoff",
+    "payment_status_gap_review",
+    "owner_candidate_review",
+    "field_permission_review",
+    "source_explanation",
+    "human_confirmation",
+    "external_identity"
+  ],
+  "config": {
+    "crm_onboarding_path": "/integrations/google/crm-onboarding",
+    "default_connection_key": "google_workspace_primary",
+    "enrichment_review_path": "/integrations/google/enrichment-review",
+    "oauth_callback_path": "/integrations/google/oauth/callback",
+    "oauth_refresh_path": "/integrations/google/oauth/refresh",
+    "oauth_revoke_path": "/integrations/google/oauth/revoke",
+    "oauth_start_path": "/tenant-admin/integrations/connections/{connectionKey}/oauth/google/start",
+    "scopes": [
+      "openid",
+      "email",
+      "profile",
+      "https://www.googleapis.com/auth/gmail.readonly",
+      "https://www.googleapis.com/auth/gmail.send",
+      "https://www.googleapis.com/auth/pubsub",
+      "https://www.googleapis.com/auth/contacts.readonly",
+      "https://www.googleapis.com/auth/calendar.readonly",
+      "https://www.googleapis.com/auth/drive.metadata.readonly",
+      "https://www.googleapis.com/auth/admin.directory.group.readonly"
+    ],
+    "secret_refs": [
+      "client_id",
+      "client_secret",
+      "access_token",
+      "refresh_token"
+    ],
+    "selection_path": "/integrations/google/selection",
+    "sync_options": [
+      "email_history_contacts",
+      "calendar",
+      "drive_file_refs",
+      "meeting_records",
+      "groups_directory",
+      "record_enrichment"
+    ],
+    "sync_path": "/integrations/google/sync",
+    "workspace_backfill_closeout_path": "/integrations/google/workspace-backfill-closeout-plan",
+    "writeback_targets": [
+      "contact",
+      "company",
+      "activity",
+      "conversation",
+      "message",
+      "appointment",
+      "document",
+      "customer_timeline"
+    ]
+  },
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Google Workspace Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Google Workspace Connector definitions, Provider choices, and operation contracts.",
+      "name": "Google Workspace"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方Google Workspace连接器定义、Provider 选项与操作契约。",
+      "name": "Google Workspace"
+    }
+  },
+  "key": "google_workspace",
+  "name": "Google Workspace",
+  "operations": [
+    {
+      "description": "Execute the test connection operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the test connection operation.",
+          "name": "test connection"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "GET",
+      "name": "test connection",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the sync email history operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the sync email history operation.",
+          "name": "sync email history"
+        },
+        "zh-CN": {
+          "description": "执行“同步邮件历史”操作。",
+          "name": "同步邮件历史"
+        }
+      },
+      "input": [],
+      "key": "sync_email_history",
+      "method": "GET",
+      "name": "sync email history",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Read the authorized Gmail mailbox profile and current history cursor.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {"description": "Read the authorized Gmail mailbox profile and current history cursor.", "name": "get Gmail profile"},
+        "zh-CN": {"description": "读取已授权 Gmail 邮箱身份与当前历史游标。", "name": "读取 Gmail 邮箱信息"}
+      },
+      "input": [],
+      "key": "gmail_get_profile",
+      "method": "GET",
+      "name": "get Gmail profile",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "List Gmail messages for bounded bootstrap or history-gap reconciliation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {"description": "List Gmail messages for bounded bootstrap or history-gap reconciliation.", "name": "list Gmail messages"},
+        "zh-CN": {"description": "为受限初始化或历史缺口恢复列出 Gmail 邮件。", "name": "列出 Gmail 邮件"}
+      },
+      "input": [],
+      "key": "gmail_list_messages",
+      "method": "GET",
+      "name": "list Gmail messages",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Read one full Gmail message by provider message ID.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {"description": "Read one full Gmail message by provider message ID.", "name": "get Gmail message"},
+        "zh-CN": {"description": "按提供方邮件 ID 读取一封完整 Gmail 邮件。", "name": "读取 Gmail 邮件"}
+      },
+      "input": [],
+      "key": "gmail_get_message",
+      "method": "GET",
+      "name": "get Gmail message",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Enqueue one Gmail API message with stable RFC and thread correlation.",
+      "execution_mode": "async",
+      "i18n": {
+        "en-US": {"description": "Enqueue one Gmail API message with stable RFC and thread correlation.", "name": "send Gmail message"},
+        "zh-CN": {"description": "使用稳定 RFC 与线程标识异步发送一封 Gmail 邮件。", "name": "发送 Gmail 邮件"}
+      },
+      "input": [
+        {"key":"to","name":"Recipients","type":"json","required":true},
+        {"key":"subject","name":"Subject","type":"text","required":true},
+        {"key":"text","name":"Text body","type":"long_text","required":true},
+        {"key":"rfc_message_id","name":"RFC Message ID","type":"text","required":true},
+        {"key":"thread_id","name":"Gmail thread ID","type":"text"},
+        {"key":"in_reply_to","name":"In-Reply-To","type":"text"},
+        {"key":"references","name":"References","type":"text"},
+        {"key":"date","name":"RFC Date","type":"text"}
+      ],
+      "key": "gmail_send_message",
+      "method": "POST",
+      "name": "send Gmail message",
+      "output": [
+        {"key":"id","name":"Gmail message ID","type":"text","required":true},
+        {"key":"threadId","name":"Gmail thread ID","type":"text","required":true},
+        {"key":"labelIds","name":"Gmail labels","type":"json"}
+      ],
+      "side_effect": "write",
+      "idempotency_supported": false,
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 60
+    },
+    {
+      "description": "Execute the sync calendar operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the sync calendar operation.",
+          "name": "sync calendar"
+        },
+        "zh-CN": {
+          "description": "执行“同步日历”操作。",
+          "name": "同步日历"
+        }
+      },
+      "input": [],
+      "key": "sync_calendar",
+      "method": "GET",
+      "name": "sync calendar",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the sync drive file refs operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the sync drive file refs operation.",
+          "name": "sync drive file refs"
+        },
+        "zh-CN": {
+          "description": "执行“同步云端文件引用”操作。",
+          "name": "同步云端文件引用"
+        }
+      },
+      "input": [],
+      "key": "sync_drive_file_refs",
+      "method": "GET",
+      "name": "sync drive file refs",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description":"Start or renew managed Gmail push notifications.","execution_mode":"sync","i18n":{"en-US":{"name":"start Gmail watch","description":"Start or renew managed Gmail push notifications."},"zh-CN":{"name":"启动 Gmail Watch","description":"启动或续期托管 Gmail 推送通知。"}},"input":[],"key":"gmail_watch","method":"POST","name":"start Gmail watch","output":[],"side_effect":"write","timeout_default_seconds":15,"timeout_max_seconds":30
+    },
+    {
+      "description":"Stop managed Gmail push notifications.","execution_mode":"sync","i18n":{"en-US":{"name":"stop Gmail watch","description":"Stop managed Gmail push notifications."},"zh-CN":{"name":"停止 Gmail Watch","description":"停止托管 Gmail 推送通知。"}},"input":[],"key":"gmail_stop","method":"POST","name":"stop Gmail watch","output":[],"side_effect":"write","timeout_default_seconds":15,"timeout_max_seconds":30
+    },
+    {
+      "description":"Ensure the platform Pub/Sub topic exists.","execution_mode":"sync","i18n":{"en-US":{"name":"ensure Pub/Sub topic","description":"Ensure the platform Pub/Sub topic exists."},"zh-CN":{"name":"确保 Pub/Sub 主题","description":"确保平台 Pub/Sub 主题存在。"}},"input":[],"key":"pubsub_ensure_topic","method":"PUT","name":"ensure Pub/Sub topic","output":[],"side_effect":"write","timeout_default_seconds":15,"timeout_max_seconds":30
+    },
+    {
+      "description":"Ensure the managed per-connection Pub/Sub subscription exists.","execution_mode":"sync","i18n":{"en-US":{"name":"ensure Pub/Sub subscription","description":"Ensure the managed per-connection Pub/Sub subscription exists."},"zh-CN":{"name":"确保 Pub/Sub 订阅","description":"确保每连接托管的 Pub/Sub 订阅存在。"}},"input":[],"key":"pubsub_ensure_subscription","method":"PUT","name":"ensure Pub/Sub subscription","output":[],"side_effect":"write","timeout_default_seconds":15,"timeout_max_seconds":30
+    },
+    {
+      "description":"Read the platform Pub/Sub topic IAM policy.","execution_mode":"sync","i18n":{"en-US":{"name":"get Pub/Sub topic policy","description":"Read the platform Pub/Sub topic IAM policy."},"zh-CN":{"name":"读取 Pub/Sub 主题策略","description":"读取平台 Pub/Sub 主题 IAM 策略。"}},"input":[],"key":"pubsub_get_topic_policy","method":"POST","name":"get Pub/Sub topic policy","output":[],"side_effect":"read","timeout_default_seconds":15,"timeout_max_seconds":30
+    },
+    {
+      "description":"Persist the Pub/Sub topic IAM policy required by Gmail notifications.","execution_mode":"sync","i18n":{"en-US":{"name":"set Pub/Sub topic policy","description":"Persist the Pub/Sub topic IAM policy required by Gmail notifications."},"zh-CN":{"name":"设置 Pub/Sub 主题策略","description":"持久化 Gmail 通知所需的 Pub/Sub 主题 IAM 策略。"}},"input":[],"key":"pubsub_set_topic_policy","method":"POST","name":"set Pub/Sub topic policy","output":[],"side_effect":"write","timeout_default_seconds":15,"timeout_max_seconds":30
+    },
+    {
+      "description":"Pull a bounded batch from the managed Pub/Sub subscription.","execution_mode":"sync","i18n":{"en-US":{"name":"pull Pub/Sub messages","description":"Pull a bounded batch from the managed Pub/Sub subscription."},"zh-CN":{"name":"拉取 Pub/Sub 消息","description":"从托管 Pub/Sub 订阅拉取受限批次。"}},"input":[],"key":"pubsub_pull","method":"POST","name":"pull Pub/Sub messages","output":[],"side_effect":"read","timeout_default_seconds":15,"timeout_max_seconds":30
+    },
+    {
+      "description":"Acknowledge durably processed Pub/Sub messages.","execution_mode":"sync","i18n":{"en-US":{"name":"acknowledge Pub/Sub messages","description":"Acknowledge durably processed Pub/Sub messages."},"zh-CN":{"name":"确认 Pub/Sub 消息","description":"确认已持久处理的 Pub/Sub 消息。"}},"input":[],"key":"pubsub_acknowledge","method":"POST","name":"acknowledge Pub/Sub messages","output":[],"side_effect":"write","timeout_default_seconds":15,"timeout_max_seconds":30
+    },
+    {
+      "description":"Delete the managed per-connection Pub/Sub subscription.","execution_mode":"sync","i18n":{"en-US":{"name":"delete Pub/Sub subscription","description":"Delete the managed per-connection Pub/Sub subscription."},"zh-CN":{"name":"删除 Pub/Sub 订阅","description":"删除每连接托管的 Pub/Sub 订阅。"}},"input":[],"key":"pubsub_delete_subscription","method":"DELETE","name":"delete Pub/Sub subscription","output":[],"side_effect":"write","timeout_default_seconds":15,"timeout_max_seconds":30
+    }
+  ],
+  "provider": "google",
+  "providers": [
+    {
+      "config_fields": [
+        {"key":"gmail_ingest_enabled","name":"Gmail ingest enabled","description":"Automatically receive new Gmail messages for this connection.","type":"boolean","required":false,"default":false,"i18n":{"en-US":{"name":"Gmail ingest enabled","description":"Automatically receive new Gmail messages for this connection."},"zh-CN":{"name":"启用 Gmail 收件","description":"为此连接自动接收新的 Gmail 邮件。"}}},
+        {"key":"gmail_ingest_label","name":"Gmail ingest label","description":"Gmail label ID allowed for inbound synchronization.","type":"text","required":false,"default":"INBOX","validation":{"max_length":255},"i18n":{"en-US":{"name":"Gmail ingest label","description":"Gmail label ID allowed for inbound synchronization."},"zh-CN":{"name":"Gmail 收件标签","description":"允许进入同步范围的 Gmail 标签 ID。"}}},
+        {"key":"gmail_ingest_query","name":"Gmail ingest query","description":"Optional bounded Gmail search query used during reconciliation.","type":"text","required":false,"validation":{"max_length":2048},"i18n":{"en-US":{"name":"Gmail ingest query","description":"Optional bounded Gmail search query used during reconciliation."},"zh-CN":{"name":"Gmail 收件查询","description":"历史缺口恢复时使用的可选受限 Gmail 查询。"}}},
+        {"key":"gmail_ingest_bootstrap","name":"Gmail ingest bootstrap","description":"Import a bounded current message page when synchronization is first enabled.","type":"boolean","required":false,"default":false,"i18n":{"en-US":{"name":"Gmail ingest bootstrap","description":"Import a bounded current message page when synchronization is first enabled."},"zh-CN":{"name":"导入当前 Gmail 邮件","description":"首次启用同步时导入一页受限的当前邮件。"}}},
+        {"key":"gmail_poll_seconds","name":"Gmail poll seconds","description":"Minimum interval between mailbox polling attempts.","type":"integer","required":false,"default":60,"validation":{"min":5,"max":3600},"i18n":{"en-US":{"name":"Gmail poll seconds","description":"Minimum interval between mailbox polling attempts."},"zh-CN":{"name":"Gmail 轮询秒数","description":"邮箱轮询尝试之间的最短间隔。"}}},
+        {"key":"gmail_watch_enabled","name":"Managed Gmail Watch enabled","description":"Automatically provision and renew Gmail Watch when platform Pub/Sub is configured.","type":"boolean","required":false,"default":true,"i18n":{"en-US":{"name":"Managed Gmail Watch enabled","description":"Automatically provision and renew Gmail Watch when platform Pub/Sub is configured."},"zh-CN":{"name":"启用托管 Gmail Watch","description":"平台配置 Pub/Sub 后自动开通并续期 Gmail Watch。"}}},
+        {"key":"gmail_pubsub_project_id","name":"Gmail Pub/Sub project ID","description":"Platform-owned Google Cloud project for Gmail notifications.","type":"text","required":false,"validation":{"max_length":255},"i18n":{"en-US":{"name":"Gmail Pub/Sub project ID","description":"Platform-owned Google Cloud project for Gmail notifications."},"zh-CN":{"name":"Gmail Pub/Sub 项目 ID","description":"Gmail 通知使用的平台 Google Cloud 项目。"}}},
+        {"key":"gmail_pubsub_topic","name":"Gmail Pub/Sub topic","description":"Platform-owned topic ID.","type":"text","required":false,"default":"domainry-gmail-events","validation":{"max_length":255},"i18n":{"en-US":{"name":"Gmail Pub/Sub topic","description":"Platform-owned topic ID."},"zh-CN":{"name":"Gmail Pub/Sub 主题","description":"平台所有的主题 ID。"}}},
+        {"key":"gmail_pubsub_subscription","name":"Gmail Pub/Sub subscription","description":"Optional deterministic subscription ID override.","type":"text","required":false,"validation":{"max_length":255},"i18n":{"en-US":{"name":"Gmail Pub/Sub subscription","description":"Optional deterministic subscription ID override."},"zh-CN":{"name":"Gmail Pub/Sub 订阅","description":"可选的确定性订阅 ID 覆盖。"}}},
+        {"key":"pubsub_base_url","name":"Pub/Sub API base URL","description":"Pub/Sub API base URL.","type":"text","required":false,"default":"https://pubsub.googleapis.com","validation":{"max_length":2048},"i18n":{"en-US":{"name":"Pub/Sub API base URL","description":"Pub/Sub API base URL."},"zh-CN":{"name":"Pub/Sub API 地址","description":"Pub/Sub API 基础地址。"}}},
+        {"key":"oauth_linked_connection_keys","name":"OAuth-linked connection keys","description":"Comma-separated non-secret connection keys that reuse this Google OAuth grant, such as a Google Calendar connection.","type":"text","required":false,"validation":{"max_length":2048},"i18n":{"en-US":{"name":"OAuth-linked connection keys","description":"Comma-separated non-secret connection keys that reuse this Google OAuth grant, such as a Google Calendar connection."},"zh-CN":{"name":"OAuth 联动连接键","description":"以逗号分隔、复用当前 Google OAuth 授权的非敏感连接键，例如 Google Calendar 连接。"}}}
+      ],
+      "description": "Runtime Provider google",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider google",
+          "name": "google"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider google",
+          "name": "google"
+        }
+      },
+      "key": "google",
+      "name": "google",
+      "readiness": "connection_ready",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "connection_ready",
+  "secret_refs": [
+    "client_id",
+    "client_secret",
+    "access_token",
+    "refresh_token"
+  ],
+  "source": "connectors:google_workspace",
+  "type": "workspace",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

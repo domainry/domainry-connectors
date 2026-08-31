@@ -1,0 +1,2633 @@
+{
+  "adapter_ready": true,
+  "capabilities": [
+    "elasticsearch",
+    "opensearch",
+    "meilisearch",
+    "typesense",
+    "bigquery",
+    "snowflake",
+    "clickhouse",
+    "metabase",
+    "power_bi",
+    "looker",
+    "business_metric_writeback",
+    "warehouse_object_modeling",
+    "fact_table_semantics",
+    "readonly_to_write_cutover",
+    "customer_segments",
+    "ltv",
+    "churn_probability",
+    "activity_score",
+    "product_event_onboarding",
+    "segment",
+    "rudderstack",
+    "amplitude",
+    "mixpanel",
+    "signup_signal",
+    "activation_signal",
+    "trial_signal",
+    "feature_usage_signal",
+    "churn_signal",
+    "analytics_events",
+    "funnels"
+  ],
+  "config": {
+    "analytics_event_path": "/integrations/analytics-warehouse/analytics/event",
+    "bi_embed_path": "/integrations/analytics-warehouse/bi/embed",
+    "business_metrics": [
+      "customer_segment",
+      "ltv",
+      "churn_probability",
+      "activity_score",
+      "health_score",
+      "renewal_risk"
+    ],
+    "crm_metric_writeback_path": "/integrations/analytics/metric-writeback-plan",
+    "default_connection_key": "analytics_warehouse_primary",
+    "funnel_path": "/integrations/analytics-warehouse/analytics/funnel",
+    "metric_sources": [
+      "bigquery",
+      "snowflake",
+      "clickhouse",
+      "metabase",
+      "power_bi",
+      "looker"
+    ],
+    "metric_writeback_path": "/integrations/analytics-warehouse/bi/metric-writeback-plan",
+    "object_modeling_path": "/integrations/analytics-warehouse/warehouse/object-modeling-plan",
+    "options_path": "/integrations/analytics-warehouse/options",
+    "product_event_onboarding_path": "/integrations/analytics-warehouse/product-events/onboarding-plan",
+    "product_event_signals": [
+      "signup",
+      "activation",
+      "trial",
+      "feature_usage",
+      "churn_signal"
+    ],
+    "search_index_path": "/integrations/analytics-warehouse/search/index-plan",
+    "secret_refs": [
+      "api_key",
+      "bearer_token",
+      "service_account_json",
+      "client_secret",
+      "database_password",
+      "embed_secret"
+    ],
+    "warehouse_export_path": "/integrations/analytics-warehouse/warehouse/export-plan"
+  },
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Search / BI / Warehouse Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Search / BI / Warehouse Connector definitions, Provider choices, and operation contracts.",
+      "name": "Search / BI / Warehouse"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方搜索、BI 与数据仓库连接器定义、Provider 选项与操作契约。",
+      "name": "搜索、BI 与数据仓库"
+    }
+  },
+  "key": "analytics_warehouse",
+  "name": "Search / BI / Warehouse",
+  "operations": [
+    {
+      "description": "Execute the test connection operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the test connection operation.",
+          "name": "test connection"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "GET",
+      "name": "test connection",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the list tables operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the list tables operation.",
+          "name": "list tables"
+        },
+        "zh-CN": {
+          "description": "执行“列出数据表”操作。",
+          "name": "列出数据表"
+        }
+      },
+      "input": [],
+      "key": "list_tables",
+      "method": "GET",
+      "name": "list tables",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the sample query operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the sample query operation.",
+          "name": "sample query"
+        },
+        "zh-CN": {
+          "description": "执行“样例查询”操作。",
+          "name": "样例查询"
+        }
+      },
+      "input": [],
+      "key": "sample_query",
+      "method": "POST",
+      "name": "sample query",
+      "output": [],
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    }
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [],
+      "description": "Runtime Provider amplitude",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider amplitude",
+          "name": "amplitude"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider amplitude",
+          "name": "amplitude"
+        }
+      },
+      "key": "amplitude",
+      "name": "amplitude",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider bigquery",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider bigquery",
+          "name": "bigquery"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider bigquery",
+          "name": "bigquery"
+        }
+      },
+      "key": "bigquery",
+      "name": "bigquery",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider clickhouse",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider clickhouse",
+          "name": "clickhouse"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider clickhouse",
+          "name": "clickhouse"
+        }
+      },
+      "key": "clickhouse",
+      "name": "clickhouse",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider elasticsearch",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider elasticsearch",
+          "name": "elasticsearch"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider elasticsearch",
+          "name": "elasticsearch"
+        }
+      },
+      "key": "elasticsearch",
+      "name": "elasticsearch",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider looker",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider looker",
+          "name": "looker"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider looker",
+          "name": "looker"
+        }
+      },
+      "key": "looker",
+      "name": "looker",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider meilisearch",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider meilisearch",
+          "name": "meilisearch"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider meilisearch",
+          "name": "meilisearch"
+        }
+      },
+      "key": "meilisearch",
+      "name": "meilisearch",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider metabase",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider metabase",
+          "name": "metabase"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider metabase",
+          "name": "metabase"
+        }
+      },
+      "key": "metabase",
+      "name": "metabase",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider mixpanel",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider mixpanel",
+          "name": "mixpanel"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider mixpanel",
+          "name": "mixpanel"
+        }
+      },
+      "key": "mixpanel",
+      "name": "mixpanel",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider opensearch",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider opensearch",
+          "name": "opensearch"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider opensearch",
+          "name": "opensearch"
+        }
+      },
+      "key": "opensearch",
+      "name": "opensearch",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider power_bi",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider power_bi",
+          "name": "power_bi"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider power_bi",
+          "name": "power_bi"
+        }
+      },
+      "key": "power_bi",
+      "name": "power_bi",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider rudderstack",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider rudderstack",
+          "name": "rudderstack"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider rudderstack",
+          "name": "rudderstack"
+        }
+      },
+      "key": "rudderstack",
+      "name": "rudderstack",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider segment",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider segment",
+          "name": "segment"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider segment",
+          "name": "segment"
+        }
+      },
+      "key": "segment",
+      "name": "segment",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider snowflake",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider snowflake",
+          "name": "snowflake"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider snowflake",
+          "name": "snowflake"
+        }
+      },
+      "key": "snowflake",
+      "name": "snowflake",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider typesense",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider typesense",
+          "name": "typesense"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider typesense",
+          "name": "typesense"
+        }
+      },
+      "key": "typesense",
+      "name": "typesense",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "database_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database password.",
+              "name": "database password"
+            },
+            "zh-CN": {
+              "description": "database password 敏感凭据。",
+              "name": "database password"
+            }
+          },
+          "key": "database_password",
+          "name": "database password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for embed secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for embed secret.",
+              "name": "embed secret"
+            },
+            "zh-CN": {
+              "description": "embed secret 敏感凭据。",
+              "name": "embed secret"
+            }
+          },
+          "key": "embed_secret",
+          "name": "embed secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_key",
+    "bearer_token",
+    "service_account_json",
+    "client_secret",
+    "database_password",
+    "embed_secret"
+  ],
+  "source": "connectors:analytics_warehouse",
+  "type": "analytics_warehouse",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_secrets"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "key": "weather",
+  "type": "http",
+  "provider": "multi",
+  "source": "connectors:weather",
+  "version": "1.0.0",
+  "minimum_runtime_version": "0.0.47",
+  "classification": "external_connector",
+  "lifecycle_status": "active",
+  "name": "Weather",
+  "description": "Reads normalized daily weather observations and forecasts through official Domainry Providers.",
+  "i18n": {
+    "en-US": {"name":"Weather","description":"Reads normalized daily weather observations and forecasts through official Domainry Providers."},
+    "zh-CN": {"name":"天气","description":"通过 Runtime 管理的 Provider 读取标准化的每日天气观测与预报。"}
+  },
+  "capabilities": ["daily_weather","observation","forecast","location_isolation","source_audit"],
+  "feature_flags": ["connection_test","operations","provider_catalog","typed_config"],
+  "definition_ready": true,
+  "adapter_ready": true,
+  "connection_ready": false,
+  "providers": [
+    {
+      "key":"open_meteo","adapter_key":"weather_open_meteo","name":"Open-Meteo","description":"Keyless Open-Meteo forecast and historical archive APIs.",
+      "i18n":{"en-US":{"name":"Open-Meteo","description":"Keyless Open-Meteo forecast and historical archive APIs."},"zh-CN":{"name":"Open-Meteo","description":"无需密钥的 Open-Meteo 预报与历史归档 API。"}},
+      "readiness":"provider_available","startup_activation":"default_safe","operation_keys":["test_connection","get_daily"],
+      "config_fields":[
+        {"key":"base_url","name":"Base URL","description":"HTTPS Open-Meteo endpoint or loopback acceptance endpoint.","i18n":{"en-US":{"name":"Base URL","description":"HTTPS Open-Meteo endpoint or loopback acceptance endpoint."},"zh-CN":{"name":"基础地址","description":"Open-Meteo HTTPS 地址或本地验收地址。"}},"type":"text","required":true,"default":"https://api.open-meteo.com","validation":{"max_length":2048,"pattern":"^https?://"}},
+        {"key":"timeout_seconds","name":"Timeout seconds","description":"Maximum duration of one Provider request.","i18n":{"en-US":{"name":"Timeout seconds","description":"Maximum duration of one Provider request."},"zh-CN":{"name":"超时秒数","description":"单次 Provider 请求最长时间。"}},"type":"integer","default":15,"validation":{"min":1,"max":60}},
+        {"key":"cache_ttl_seconds","name":"Cache TTL seconds","description":"Workspace-scoped response cache lifetime.","i18n":{"en-US":{"name":"Cache TTL seconds","description":"Workspace-scoped response cache lifetime."},"zh-CN":{"name":"缓存秒数","description":"工作区隔离的响应缓存时间。"}},"type":"integer","default":300,"validation":{"min":0,"max":3600}}
+      ],"secret_fields":[]
+    },
+    {
+      "key":"deterministic_emulator","adapter_key":"weather_emulator","name":"Deterministic weather emulator","description":"Local deterministic acceptance Provider; never production weather evidence.",
+      "i18n":{"en-US":{"name":"Deterministic weather emulator","description":"Local deterministic acceptance Provider; never production weather evidence."},"zh-CN":{"name":"确定性天气模拟器","description":"用于本地验收的确定性 Provider，不构成生产天气证据。"}},
+      "readiness":"emulator_only","operation_keys":["test_connection","get_daily"],"config_fields":[],"secret_fields":[]
+    }
+  ],
+  "operations": [
+    {"key":"test_connection","name":"Test weather connection","description":"Verify Provider availability without returning forecast success as production acceptance.","i18n":{"en-US":{"name":"Test weather connection","description":"Verify Provider availability without returning forecast success as production acceptance."},"zh-CN":{"name":"测试天气连接","description":"验证 Provider 可用性，模拟器成功不得视为生产验收。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":10,"timeout_max_seconds":30,"test_supported":true,"output":[{"key":"provider_status","name":"Provider status","type":"text","required":true}]},
+    {"key":"get_daily","name":"Get daily weather","description":"Read normalized weather for coordinates or a normalized location and inclusive date range.","i18n":{"en-US":{"name":"Get daily weather","description":"Read normalized weather for coordinates or a normalized location and inclusive date range."},"zh-CN":{"name":"读取每日天气","description":"按经纬度或标准地点及闭合日期范围读取标准化天气。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":15,"timeout_max_seconds":60,"test_supported":true,"input":[{"key":"latitude","name":"Latitude","type":"number"},{"key":"longitude","name":"Longitude","type":"number"},{"key":"location","name":"Normalized location","type":"text"},{"key":"start_date","name":"Start date","type":"date","required":true},{"key":"end_date","name":"End date","type":"date","required":true},{"key":"timezone","name":"Timezone","type":"text"}],"output":[{"key":"location","name":"Location","type":"json","required":true},{"key":"days","name":"Daily weather","type":"json","required":true},{"key":"source_time","name":"Source time","type":"datetime","required":true},{"key":"source_version","name":"Source version","type":"text","required":true},{"key":"provider_status","name":"Provider status","type":"text","required":true}]}
+  ]
+}

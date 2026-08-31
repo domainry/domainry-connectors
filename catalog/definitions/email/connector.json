@@ -1,0 +1,3171 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "send_email",
+    "send_file_email",
+    "send_template_email",
+    "attachments",
+    "delivery_status",
+    "inbound_email",
+    "provider_native_signatures",
+    "activity_routing",
+    "suppression_policy",
+    "contactability_gate_handoff",
+    "crm_relation_matching",
+    "business_writeback",
+    "signature_enrichment",
+    "business_card_enrichment",
+    "thread_archive_closeout",
+    "provider_native_archive",
+    "delivery_bounce_repair",
+    "manual_takeover",
+    "data_migration_handoff",
+    "retry"
+  ],
+  "config": {
+    "channel_adapter": true,
+    "channel_connection_channel": "email",
+    "channel_connection_external_account_field": "external_account_id",
+    "channel_connection_key_field": "connection_key",
+    "channel_connection_object": "channel_connection",
+    "channel_connection_secret_boundary": "secret_refs_only",
+    "channel_connection_status_field": "status",
+    "channel_connection_webhook_status_field": "webhook_status",
+    "channel_writeback_objects": [
+      "conversation",
+      "message",
+      "channel_connection"
+    ],
+    "config_fields": [
+      "provider",
+      "host",
+      "port",
+      "from_email",
+      "from_name",
+      "username",
+      "tls",
+      "start_tls",
+      "dry_run",
+      "headers",
+      "base_url",
+      "domain",
+      "region",
+      "timeout_seconds",
+      "max_attachment_bytes",
+      "max_total_attachment_bytes",
+      "route_events_to_activity",
+      "route_delivery_to_activity",
+      "route_inbound_to_activity",
+      "write_delivery_status_to_business_object",
+      "email_delivery_writeback",
+      "signature_enrichment_sources",
+      "signature_confidence_threshold",
+      "business_card_ocr_enabled"
+    ],
+    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "default_connection_key": "email_primary",
+    "inbound_path": "/integrations/webhooks/email/inbound",
+    "options_path": "/integrations/email/options",
+    "preview_path": "/integrations/email/preview",
+    "secret_refs": [
+      "password",
+      "api_key",
+      "access_key_id",
+      "secret_access_key",
+      "session_token",
+      "webhook_secret",
+      "sendgrid_webhook_public_key",
+      "mailgun_webhook_signing_key",
+      "ocr_provider_key"
+    ],
+    "send_path": "/integrations/email/send",
+    "send_plan_path": "/integrations/email/send-plan",
+    "signature_enrichment_compat_path": "/integrations/email/signature-enrichment",
+    "signature_enrichment_path": "/integrations/email/signature-enrichment-plan",
+    "thread_archive_closeout_path": "/integrations/email/thread-archive-closeout-plan"
+  },
+  "config_fields": [
+    "provider",
+    "host",
+    "port",
+    "from_email",
+    "from_name",
+    "username",
+    "tls",
+    "start_tls",
+    "dry_run",
+    "headers",
+    "base_url",
+    "domain",
+    "region",
+    "timeout_seconds",
+    "max_attachment_bytes",
+    "max_total_attachment_bytes",
+    "route_events_to_activity",
+    "route_delivery_to_activity",
+    "route_inbound_to_activity",
+    "write_delivery_status_to_business_object",
+    "email_delivery_writeback",
+    "signature_enrichment_sources",
+    "signature_confidence_threshold",
+    "business_card_ocr_enabled"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Email Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Email Connector definitions, Provider choices, and operation contracts.",
+      "name": "Email"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方电子邮件连接器定义、Provider 选项与操作契约。",
+      "name": "电子邮件"
+    }
+  },
+  "key": "email",
+  "name": "Email",
+  "operations": [
+    {
+      "description": "Execute the Send Email operation.",
+      "execution_mode": "async",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Send Email operation.",
+          "name": "Send Email"
+        },
+        "zh-CN": {
+          "description": "执行“发送邮件”操作。",
+          "name": "发送邮件"
+        }
+      },
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "to",
+          "name": "Recipients",
+          "required": true,
+          "type": "json"
+        },
+        {
+          "key": "subject",
+          "name": "Subject",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "text",
+          "name": "Text Body",
+          "required": false,
+          "type": "text"
+        }
+      ],
+      "key": "send_email",
+      "method": "SMTP",
+      "name": "Send Email",
+      "output": [
+        {
+          "key": "accepted",
+          "name": "Accepted",
+          "required": true,
+          "type": "boolean"
+        }
+      ],
+      "side_effect": "write",
+      "test_supported": true,
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 120
+    },
+    {
+      "description": "Send one Runtime-verified clean file as an Email attachment.",
+      "execution_mode": "async",
+      "i18n": {
+        "en-US": {"description": "Send one Runtime-verified clean file as an Email attachment.", "name": "Send Verified File Email"},
+        "zh-CN": {"description": "通过邮件附件发送一份经 Runtime 验证为 clean 的文件。", "name": "发送已验证文件邮件"}
+      },
+      "idempotency_supported": true,
+      "input": [
+        {"key": "to", "name": "Recipients", "required": true, "type": "json"},
+        {"key": "subject", "name": "Subject", "required": true, "type": "text"},
+        {"key": "text", "name": "Text Body", "required": false, "type": "text"},
+        {"key": "file_id", "name": "Runtime File ID", "required": true, "type": "text"},
+        {"key": "content_sha256", "name": "Content SHA-256", "required": true, "type": "text"},
+        {"key": "scan_receipt", "name": "Runtime Scan Receipt", "required": true, "type": "text"}
+      ],
+      "key": "send_file_email",
+      "method": "SMTP",
+      "name": "Send Verified File Email",
+      "output": [
+        {"key": "accepted", "name": "Provider Accepted", "required": true, "type": "boolean"},
+        {"key": "provider_message_id", "name": "Provider Message ID", "required": true, "type": "text"}
+      ],
+      "side_effect": "write",
+      "test_supported": false,
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 120
+    },
+    {
+      "description": "Execute the Test SMTP Connection operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Test SMTP Connection operation.",
+          "name": "Test SMTP Connection"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "SMTP",
+      "name": "Test SMTP Connection",
+      "output": [
+        {
+          "key": "connected",
+          "name": "Connected",
+          "required": true,
+          "type": "boolean"
+        }
+      ],
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 10,
+      "timeout_max_seconds": 30
+    }
+  ],
+  "provider": "smtp",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": false,
+          "description": "Configuration value for business card ocr enabled.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for business card ocr enabled.",
+              "name": "business card ocr enabled"
+            },
+            "zh-CN": {
+              "description": "business card ocr enabled 配置项。",
+              "name": "business card ocr enabled"
+            }
+          },
+          "key": "business_card_ocr_enabled",
+          "name": "business card ocr enabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Configuration value for domain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for domain.",
+              "name": "domain"
+            },
+            "zh-CN": {
+              "description": "domain 配置项。",
+              "name": "domain"
+            }
+          },
+          "key": "domain",
+          "name": "domain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for dry run.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for dry run.",
+              "name": "dry run"
+            },
+            "zh-CN": {
+              "description": "dry run 配置项。",
+              "name": "dry run"
+            }
+          },
+          "key": "dry_run",
+          "name": "dry run",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for email delivery writeback.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email delivery writeback.",
+              "name": "email delivery writeback"
+            },
+            "zh-CN": {
+              "description": "email delivery writeback 配置项。",
+              "name": "email delivery writeback"
+            }
+          },
+          "key": "email_delivery_writeback",
+          "name": "email delivery writeback",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from email.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from email.",
+              "name": "from email"
+            },
+            "zh-CN": {
+              "description": "from email 配置项。",
+              "name": "from email"
+            }
+          },
+          "key": "from_email",
+          "name": "from email",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from name.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from name.",
+              "name": "from name"
+            },
+            "zh-CN": {
+              "description": "from name 配置项。",
+              "name": "from name"
+            }
+          },
+          "key": "from_name",
+          "name": "from name",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "config": {
+            "json_shape": "object"
+          },
+          "default": {},
+          "description": "Configuration value for headers.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for headers.",
+              "name": "headers"
+            },
+            "zh-CN": {
+              "description": "headers 配置项。",
+              "name": "headers"
+            }
+          },
+          "key": "headers",
+          "name": "headers",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "description": "Configuration value for host.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for host.",
+              "name": "host"
+            },
+            "zh-CN": {
+              "description": "host 配置项。",
+              "name": "host"
+            }
+          },
+          "key": "host",
+          "name": "host",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 26214400,
+          "description": "Configuration value for max attachment bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max attachment bytes.",
+              "name": "max attachment bytes"
+            },
+            "zh-CN": {
+              "description": "max attachment bytes 配置项。",
+              "name": "max attachment bytes"
+            }
+          },
+          "key": "max_attachment_bytes",
+          "name": "max attachment bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "default": 104857600,
+          "description": "Configuration value for max total attachment bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max total attachment bytes.",
+              "name": "max total attachment bytes"
+            },
+            "zh-CN": {
+              "description": "max total attachment bytes 配置项。",
+              "name": "max total attachment bytes"
+            }
+          },
+          "key": "max_total_attachment_bytes",
+          "name": "max total attachment bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "config": {
+            "required_with": [
+              "host"
+            ]
+          },
+          "description": "Configuration value for port.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for port.",
+              "name": "port"
+            },
+            "zh-CN": {
+              "description": "port 配置项。",
+              "name": "port"
+            }
+          },
+          "key": "port",
+          "name": "port",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 65535,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route delivery to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route delivery to activity.",
+              "name": "route delivery to activity"
+            },
+            "zh-CN": {
+              "description": "route delivery to activity 配置项。",
+              "name": "route delivery to activity"
+            }
+          },
+          "key": "route_delivery_to_activity",
+          "name": "route delivery to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route events to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route events to activity.",
+              "name": "route events to activity"
+            },
+            "zh-CN": {
+              "description": "route events to activity 配置项。",
+              "name": "route events to activity"
+            }
+          },
+          "key": "route_events_to_activity",
+          "name": "route events to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route inbound to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route inbound to activity.",
+              "name": "route inbound to activity"
+            },
+            "zh-CN": {
+              "description": "route inbound to activity 配置项。",
+              "name": "route inbound to activity"
+            }
+          },
+          "key": "route_inbound_to_activity",
+          "name": "route inbound to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for signature confidence threshold.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature confidence threshold.",
+              "name": "signature confidence threshold"
+            },
+            "zh-CN": {
+              "description": "signature confidence threshold 配置项。",
+              "name": "signature confidence threshold"
+            }
+          },
+          "key": "signature_confidence_threshold",
+          "name": "signature confidence threshold",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 100,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for signature enrichment sources.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature enrichment sources.",
+              "name": "signature enrichment sources"
+            },
+            "zh-CN": {
+              "description": "signature enrichment sources 配置项。",
+              "name": "signature enrichment sources"
+            }
+          },
+          "key": "signature_enrichment_sources",
+          "name": "signature enrichment sources",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for start tls.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for start tls.",
+              "name": "start tls"
+            },
+            "zh-CN": {
+              "description": "start tls 配置项。",
+              "name": "start tls"
+            }
+          },
+          "key": "start_tls",
+          "name": "start tls",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for timeout seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for timeout seconds.",
+              "name": "timeout seconds"
+            },
+            "zh-CN": {
+              "description": "timeout seconds 配置项。",
+              "name": "timeout seconds"
+            }
+          },
+          "key": "timeout_seconds",
+          "name": "timeout seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for tls.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tls.",
+              "name": "tls"
+            },
+            "zh-CN": {
+              "description": "tls 配置项。",
+              "name": "tls"
+            }
+          },
+          "key": "tls",
+          "name": "tls",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for username.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for username.",
+              "name": "username"
+            },
+            "zh-CN": {
+              "description": "username 配置项。",
+              "name": "username"
+            }
+          },
+          "key": "username",
+          "name": "username",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for write delivery status to business object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for write delivery status to business object.",
+              "name": "write delivery status to business object"
+            },
+            "zh-CN": {
+              "description": "write delivery status to business object 配置项。",
+              "name": "write delivery status to business object"
+            }
+          },
+          "key": "write_delivery_status_to_business_object",
+          "name": "write delivery status to business object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider mailgun",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider mailgun",
+          "name": "mailgun"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider mailgun",
+          "name": "mailgun"
+        }
+      },
+      "key": "mailgun",
+      "name": "mailgun",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access key id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access key id.",
+              "name": "access key id"
+            },
+            "zh-CN": {
+              "description": "access key id 敏感凭据。",
+              "name": "access key id"
+            }
+          },
+          "key": "access_key_id",
+          "name": "access key id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for mailgun webhook signing key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for mailgun webhook signing key.",
+              "name": "mailgun webhook signing key"
+            },
+            "zh-CN": {
+              "description": "mailgun webhook signing key 敏感凭据。",
+              "name": "mailgun webhook signing key"
+            }
+          },
+          "key": "mailgun_webhook_signing_key",
+          "name": "mailgun webhook signing key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for ocr provider key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for ocr provider key.",
+              "name": "ocr provider key"
+            },
+            "zh-CN": {
+              "description": "ocr provider key 敏感凭据。",
+              "name": "ocr provider key"
+            }
+          },
+          "key": "ocr_provider_key",
+          "name": "ocr provider key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for password.",
+              "name": "password"
+            },
+            "zh-CN": {
+              "description": "password 敏感凭据。",
+              "name": "password"
+            }
+          },
+          "key": "password",
+          "name": "password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for secret access key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for secret access key.",
+              "name": "secret access key"
+            },
+            "zh-CN": {
+              "description": "secret access key 敏感凭据。",
+              "name": "secret access key"
+            }
+          },
+          "key": "secret_access_key",
+          "name": "secret access key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for sendgrid webhook public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for sendgrid webhook public key.",
+              "name": "sendgrid webhook public key"
+            },
+            "zh-CN": {
+              "description": "sendgrid webhook public key 敏感凭据。",
+              "name": "sendgrid webhook public key"
+            }
+          },
+          "key": "sendgrid_webhook_public_key",
+          "name": "sendgrid webhook public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for session token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for session token.",
+              "name": "session token"
+            },
+            "zh-CN": {
+              "description": "session token 敏感凭据。",
+              "name": "session token"
+            }
+          },
+          "key": "session_token",
+          "name": "session token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": false,
+          "description": "Configuration value for business card ocr enabled.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for business card ocr enabled.",
+              "name": "business card ocr enabled"
+            },
+            "zh-CN": {
+              "description": "business card ocr enabled 配置项。",
+              "name": "business card ocr enabled"
+            }
+          },
+          "key": "business_card_ocr_enabled",
+          "name": "business card ocr enabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Configuration value for domain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for domain.",
+              "name": "domain"
+            },
+            "zh-CN": {
+              "description": "domain 配置项。",
+              "name": "domain"
+            }
+          },
+          "key": "domain",
+          "name": "domain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for dry run.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for dry run.",
+              "name": "dry run"
+            },
+            "zh-CN": {
+              "description": "dry run 配置项。",
+              "name": "dry run"
+            }
+          },
+          "key": "dry_run",
+          "name": "dry run",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for email delivery writeback.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email delivery writeback.",
+              "name": "email delivery writeback"
+            },
+            "zh-CN": {
+              "description": "email delivery writeback 配置项。",
+              "name": "email delivery writeback"
+            }
+          },
+          "key": "email_delivery_writeback",
+          "name": "email delivery writeback",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from email.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from email.",
+              "name": "from email"
+            },
+            "zh-CN": {
+              "description": "from email 配置项。",
+              "name": "from email"
+            }
+          },
+          "key": "from_email",
+          "name": "from email",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from name.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from name.",
+              "name": "from name"
+            },
+            "zh-CN": {
+              "description": "from name 配置项。",
+              "name": "from name"
+            }
+          },
+          "key": "from_name",
+          "name": "from name",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "config": {
+            "json_shape": "object"
+          },
+          "default": {},
+          "description": "Configuration value for headers.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for headers.",
+              "name": "headers"
+            },
+            "zh-CN": {
+              "description": "headers 配置项。",
+              "name": "headers"
+            }
+          },
+          "key": "headers",
+          "name": "headers",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "description": "Configuration value for host.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for host.",
+              "name": "host"
+            },
+            "zh-CN": {
+              "description": "host 配置项。",
+              "name": "host"
+            }
+          },
+          "key": "host",
+          "name": "host",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 26214400,
+          "description": "Configuration value for max attachment bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max attachment bytes.",
+              "name": "max attachment bytes"
+            },
+            "zh-CN": {
+              "description": "max attachment bytes 配置项。",
+              "name": "max attachment bytes"
+            }
+          },
+          "key": "max_attachment_bytes",
+          "name": "max attachment bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "default": 104857600,
+          "description": "Configuration value for max total attachment bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max total attachment bytes.",
+              "name": "max total attachment bytes"
+            },
+            "zh-CN": {
+              "description": "max total attachment bytes 配置项。",
+              "name": "max total attachment bytes"
+            }
+          },
+          "key": "max_total_attachment_bytes",
+          "name": "max total attachment bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "config": {
+            "required_with": [
+              "host"
+            ]
+          },
+          "description": "Configuration value for port.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for port.",
+              "name": "port"
+            },
+            "zh-CN": {
+              "description": "port 配置项。",
+              "name": "port"
+            }
+          },
+          "key": "port",
+          "name": "port",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 65535,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route delivery to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route delivery to activity.",
+              "name": "route delivery to activity"
+            },
+            "zh-CN": {
+              "description": "route delivery to activity 配置项。",
+              "name": "route delivery to activity"
+            }
+          },
+          "key": "route_delivery_to_activity",
+          "name": "route delivery to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route events to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route events to activity.",
+              "name": "route events to activity"
+            },
+            "zh-CN": {
+              "description": "route events to activity 配置项。",
+              "name": "route events to activity"
+            }
+          },
+          "key": "route_events_to_activity",
+          "name": "route events to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route inbound to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route inbound to activity.",
+              "name": "route inbound to activity"
+            },
+            "zh-CN": {
+              "description": "route inbound to activity 配置项。",
+              "name": "route inbound to activity"
+            }
+          },
+          "key": "route_inbound_to_activity",
+          "name": "route inbound to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for signature confidence threshold.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature confidence threshold.",
+              "name": "signature confidence threshold"
+            },
+            "zh-CN": {
+              "description": "signature confidence threshold 配置项。",
+              "name": "signature confidence threshold"
+            }
+          },
+          "key": "signature_confidence_threshold",
+          "name": "signature confidence threshold",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 100,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for signature enrichment sources.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature enrichment sources.",
+              "name": "signature enrichment sources"
+            },
+            "zh-CN": {
+              "description": "signature enrichment sources 配置项。",
+              "name": "signature enrichment sources"
+            }
+          },
+          "key": "signature_enrichment_sources",
+          "name": "signature enrichment sources",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for start tls.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for start tls.",
+              "name": "start tls"
+            },
+            "zh-CN": {
+              "description": "start tls 配置项。",
+              "name": "start tls"
+            }
+          },
+          "key": "start_tls",
+          "name": "start tls",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for timeout seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for timeout seconds.",
+              "name": "timeout seconds"
+            },
+            "zh-CN": {
+              "description": "timeout seconds 配置项。",
+              "name": "timeout seconds"
+            }
+          },
+          "key": "timeout_seconds",
+          "name": "timeout seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for tls.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tls.",
+              "name": "tls"
+            },
+            "zh-CN": {
+              "description": "tls 配置项。",
+              "name": "tls"
+            }
+          },
+          "key": "tls",
+          "name": "tls",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for username.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for username.",
+              "name": "username"
+            },
+            "zh-CN": {
+              "description": "username 配置项。",
+              "name": "username"
+            }
+          },
+          "key": "username",
+          "name": "username",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for write delivery status to business object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for write delivery status to business object.",
+              "name": "write delivery status to business object"
+            },
+            "zh-CN": {
+              "description": "write delivery status to business object 配置项。",
+              "name": "write delivery status to business object"
+            }
+          },
+          "key": "write_delivery_status_to_business_object",
+          "name": "write delivery status to business object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider sendgrid",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider sendgrid",
+          "name": "sendgrid"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider sendgrid",
+          "name": "sendgrid"
+        }
+      },
+      "key": "sendgrid",
+      "name": "sendgrid",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access key id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access key id.",
+              "name": "access key id"
+            },
+            "zh-CN": {
+              "description": "access key id 敏感凭据。",
+              "name": "access key id"
+            }
+          },
+          "key": "access_key_id",
+          "name": "access key id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for mailgun webhook signing key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for mailgun webhook signing key.",
+              "name": "mailgun webhook signing key"
+            },
+            "zh-CN": {
+              "description": "mailgun webhook signing key 敏感凭据。",
+              "name": "mailgun webhook signing key"
+            }
+          },
+          "key": "mailgun_webhook_signing_key",
+          "name": "mailgun webhook signing key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for ocr provider key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for ocr provider key.",
+              "name": "ocr provider key"
+            },
+            "zh-CN": {
+              "description": "ocr provider key 敏感凭据。",
+              "name": "ocr provider key"
+            }
+          },
+          "key": "ocr_provider_key",
+          "name": "ocr provider key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for password.",
+              "name": "password"
+            },
+            "zh-CN": {
+              "description": "password 敏感凭据。",
+              "name": "password"
+            }
+          },
+          "key": "password",
+          "name": "password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for secret access key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for secret access key.",
+              "name": "secret access key"
+            },
+            "zh-CN": {
+              "description": "secret access key 敏感凭据。",
+              "name": "secret access key"
+            }
+          },
+          "key": "secret_access_key",
+          "name": "secret access key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for sendgrid webhook public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for sendgrid webhook public key.",
+              "name": "sendgrid webhook public key"
+            },
+            "zh-CN": {
+              "description": "sendgrid webhook public key 敏感凭据。",
+              "name": "sendgrid webhook public key"
+            }
+          },
+          "key": "sendgrid_webhook_public_key",
+          "name": "sendgrid webhook public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for session token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for session token.",
+              "name": "session token"
+            },
+            "zh-CN": {
+              "description": "session token 敏感凭据。",
+              "name": "session token"
+            }
+          },
+          "key": "session_token",
+          "name": "session token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": false,
+          "description": "Configuration value for business card ocr enabled.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for business card ocr enabled.",
+              "name": "business card ocr enabled"
+            },
+            "zh-CN": {
+              "description": "business card ocr enabled 配置项。",
+              "name": "business card ocr enabled"
+            }
+          },
+          "key": "business_card_ocr_enabled",
+          "name": "business card ocr enabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Configuration value for domain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for domain.",
+              "name": "domain"
+            },
+            "zh-CN": {
+              "description": "domain 配置项。",
+              "name": "domain"
+            }
+          },
+          "key": "domain",
+          "name": "domain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for dry run.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for dry run.",
+              "name": "dry run"
+            },
+            "zh-CN": {
+              "description": "dry run 配置项。",
+              "name": "dry run"
+            }
+          },
+          "key": "dry_run",
+          "name": "dry run",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for email delivery writeback.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email delivery writeback.",
+              "name": "email delivery writeback"
+            },
+            "zh-CN": {
+              "description": "email delivery writeback 配置项。",
+              "name": "email delivery writeback"
+            }
+          },
+          "key": "email_delivery_writeback",
+          "name": "email delivery writeback",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from email.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from email.",
+              "name": "from email"
+            },
+            "zh-CN": {
+              "description": "from email 配置项。",
+              "name": "from email"
+            }
+          },
+          "key": "from_email",
+          "name": "from email",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from name.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from name.",
+              "name": "from name"
+            },
+            "zh-CN": {
+              "description": "from name 配置项。",
+              "name": "from name"
+            }
+          },
+          "key": "from_name",
+          "name": "from name",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "config": {
+            "json_shape": "object"
+          },
+          "default": {},
+          "description": "Configuration value for headers.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for headers.",
+              "name": "headers"
+            },
+            "zh-CN": {
+              "description": "headers 配置项。",
+              "name": "headers"
+            }
+          },
+          "key": "headers",
+          "name": "headers",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "description": "Configuration value for host.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for host.",
+              "name": "host"
+            },
+            "zh-CN": {
+              "description": "host 配置项。",
+              "name": "host"
+            }
+          },
+          "key": "host",
+          "name": "host",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 26214400,
+          "description": "Configuration value for max attachment bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max attachment bytes.",
+              "name": "max attachment bytes"
+            },
+            "zh-CN": {
+              "description": "max attachment bytes 配置项。",
+              "name": "max attachment bytes"
+            }
+          },
+          "key": "max_attachment_bytes",
+          "name": "max attachment bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "default": 104857600,
+          "description": "Configuration value for max total attachment bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max total attachment bytes.",
+              "name": "max total attachment bytes"
+            },
+            "zh-CN": {
+              "description": "max total attachment bytes 配置项。",
+              "name": "max total attachment bytes"
+            }
+          },
+          "key": "max_total_attachment_bytes",
+          "name": "max total attachment bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "config": {
+            "required_with": [
+              "host"
+            ]
+          },
+          "description": "Configuration value for port.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for port.",
+              "name": "port"
+            },
+            "zh-CN": {
+              "description": "port 配置项。",
+              "name": "port"
+            }
+          },
+          "key": "port",
+          "name": "port",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 65535,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route delivery to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route delivery to activity.",
+              "name": "route delivery to activity"
+            },
+            "zh-CN": {
+              "description": "route delivery to activity 配置项。",
+              "name": "route delivery to activity"
+            }
+          },
+          "key": "route_delivery_to_activity",
+          "name": "route delivery to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route events to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route events to activity.",
+              "name": "route events to activity"
+            },
+            "zh-CN": {
+              "description": "route events to activity 配置项。",
+              "name": "route events to activity"
+            }
+          },
+          "key": "route_events_to_activity",
+          "name": "route events to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route inbound to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route inbound to activity.",
+              "name": "route inbound to activity"
+            },
+            "zh-CN": {
+              "description": "route inbound to activity 配置项。",
+              "name": "route inbound to activity"
+            }
+          },
+          "key": "route_inbound_to_activity",
+          "name": "route inbound to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for signature confidence threshold.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature confidence threshold.",
+              "name": "signature confidence threshold"
+            },
+            "zh-CN": {
+              "description": "signature confidence threshold 配置项。",
+              "name": "signature confidence threshold"
+            }
+          },
+          "key": "signature_confidence_threshold",
+          "name": "signature confidence threshold",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 100,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for signature enrichment sources.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature enrichment sources.",
+              "name": "signature enrichment sources"
+            },
+            "zh-CN": {
+              "description": "signature enrichment sources 配置项。",
+              "name": "signature enrichment sources"
+            }
+          },
+          "key": "signature_enrichment_sources",
+          "name": "signature enrichment sources",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for start tls.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for start tls.",
+              "name": "start tls"
+            },
+            "zh-CN": {
+              "description": "start tls 配置项。",
+              "name": "start tls"
+            }
+          },
+          "key": "start_tls",
+          "name": "start tls",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for timeout seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for timeout seconds.",
+              "name": "timeout seconds"
+            },
+            "zh-CN": {
+              "description": "timeout seconds 配置项。",
+              "name": "timeout seconds"
+            }
+          },
+          "key": "timeout_seconds",
+          "name": "timeout seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for tls.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tls.",
+              "name": "tls"
+            },
+            "zh-CN": {
+              "description": "tls 配置项。",
+              "name": "tls"
+            }
+          },
+          "key": "tls",
+          "name": "tls",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for username.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for username.",
+              "name": "username"
+            },
+            "zh-CN": {
+              "description": "username 配置项。",
+              "name": "username"
+            }
+          },
+          "key": "username",
+          "name": "username",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for write delivery status to business object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for write delivery status to business object.",
+              "name": "write delivery status to business object"
+            },
+            "zh-CN": {
+              "description": "write delivery status to business object 配置项。",
+              "name": "write delivery status to business object"
+            }
+          },
+          "key": "write_delivery_status_to_business_object",
+          "name": "write delivery status to business object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider ses",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider ses",
+          "name": "ses"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider ses",
+          "name": "ses"
+        }
+      },
+      "key": "ses",
+      "name": "ses",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access key id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access key id.",
+              "name": "access key id"
+            },
+            "zh-CN": {
+              "description": "access key id 敏感凭据。",
+              "name": "access key id"
+            }
+          },
+          "key": "access_key_id",
+          "name": "access key id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for mailgun webhook signing key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for mailgun webhook signing key.",
+              "name": "mailgun webhook signing key"
+            },
+            "zh-CN": {
+              "description": "mailgun webhook signing key 敏感凭据。",
+              "name": "mailgun webhook signing key"
+            }
+          },
+          "key": "mailgun_webhook_signing_key",
+          "name": "mailgun webhook signing key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for ocr provider key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for ocr provider key.",
+              "name": "ocr provider key"
+            },
+            "zh-CN": {
+              "description": "ocr provider key 敏感凭据。",
+              "name": "ocr provider key"
+            }
+          },
+          "key": "ocr_provider_key",
+          "name": "ocr provider key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for password.",
+              "name": "password"
+            },
+            "zh-CN": {
+              "description": "password 敏感凭据。",
+              "name": "password"
+            }
+          },
+          "key": "password",
+          "name": "password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for secret access key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for secret access key.",
+              "name": "secret access key"
+            },
+            "zh-CN": {
+              "description": "secret access key 敏感凭据。",
+              "name": "secret access key"
+            }
+          },
+          "key": "secret_access_key",
+          "name": "secret access key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for sendgrid webhook public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for sendgrid webhook public key.",
+              "name": "sendgrid webhook public key"
+            },
+            "zh-CN": {
+              "description": "sendgrid webhook public key 敏感凭据。",
+              "name": "sendgrid webhook public key"
+            }
+          },
+          "key": "sendgrid_webhook_public_key",
+          "name": "sendgrid webhook public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for session token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for session token.",
+              "name": "session token"
+            },
+            "zh-CN": {
+              "description": "session token 敏感凭据。",
+              "name": "session token"
+            }
+          },
+          "key": "session_token",
+          "name": "session token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": false,
+          "description": "Configuration value for business card ocr enabled.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for business card ocr enabled.",
+              "name": "business card ocr enabled"
+            },
+            "zh-CN": {
+              "description": "business card ocr enabled 配置项。",
+              "name": "business card ocr enabled"
+            }
+          },
+          "key": "business_card_ocr_enabled",
+          "name": "business card ocr enabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Configuration value for domain.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for domain.",
+              "name": "domain"
+            },
+            "zh-CN": {
+              "description": "domain 配置项。",
+              "name": "domain"
+            }
+          },
+          "key": "domain",
+          "name": "domain",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for dry run.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for dry run.",
+              "name": "dry run"
+            },
+            "zh-CN": {
+              "description": "dry run 配置项。",
+              "name": "dry run"
+            }
+          },
+          "key": "dry_run",
+          "name": "dry run",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for email delivery writeback.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for email delivery writeback.",
+              "name": "email delivery writeback"
+            },
+            "zh-CN": {
+              "description": "email delivery writeback 配置项。",
+              "name": "email delivery writeback"
+            }
+          },
+          "key": "email_delivery_writeback",
+          "name": "email delivery writeback",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from email.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from email.",
+              "name": "from email"
+            },
+            "zh-CN": {
+              "description": "from email 配置项。",
+              "name": "from email"
+            }
+          },
+          "key": "from_email",
+          "name": "from email",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from name.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from name.",
+              "name": "from name"
+            },
+            "zh-CN": {
+              "description": "from name 配置项。",
+              "name": "from name"
+            }
+          },
+          "key": "from_name",
+          "name": "from name",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "config": {
+            "json_shape": "object"
+          },
+          "default": {},
+          "description": "Configuration value for headers.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for headers.",
+              "name": "headers"
+            },
+            "zh-CN": {
+              "description": "headers 配置项。",
+              "name": "headers"
+            }
+          },
+          "key": "headers",
+          "name": "headers",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "description": "Configuration value for host.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for host.",
+              "name": "host"
+            },
+            "zh-CN": {
+              "description": "host 配置项。",
+              "name": "host"
+            }
+          },
+          "key": "host",
+          "name": "host",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 26214400,
+          "description": "Configuration value for max attachment bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max attachment bytes.",
+              "name": "max attachment bytes"
+            },
+            "zh-CN": {
+              "description": "max attachment bytes 配置项。",
+              "name": "max attachment bytes"
+            }
+          },
+          "key": "max_attachment_bytes",
+          "name": "max attachment bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "default": 104857600,
+          "description": "Configuration value for max total attachment bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max total attachment bytes.",
+              "name": "max total attachment bytes"
+            },
+            "zh-CN": {
+              "description": "max total attachment bytes 配置项。",
+              "name": "max total attachment bytes"
+            }
+          },
+          "key": "max_total_attachment_bytes",
+          "name": "max total attachment bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "config": {
+            "required_with": [
+              "host"
+            ]
+          },
+          "description": "Configuration value for port.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for port.",
+              "name": "port"
+            },
+            "zh-CN": {
+              "description": "port 配置项。",
+              "name": "port"
+            }
+          },
+          "key": "port",
+          "name": "port",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 65535,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route delivery to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route delivery to activity.",
+              "name": "route delivery to activity"
+            },
+            "zh-CN": {
+              "description": "route delivery to activity 配置项。",
+              "name": "route delivery to activity"
+            }
+          },
+          "key": "route_delivery_to_activity",
+          "name": "route delivery to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route events to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route events to activity.",
+              "name": "route events to activity"
+            },
+            "zh-CN": {
+              "description": "route events to activity 配置项。",
+              "name": "route events to activity"
+            }
+          },
+          "key": "route_events_to_activity",
+          "name": "route events to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for route inbound to activity.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for route inbound to activity.",
+              "name": "route inbound to activity"
+            },
+            "zh-CN": {
+              "description": "route inbound to activity 配置项。",
+              "name": "route inbound to activity"
+            }
+          },
+          "key": "route_inbound_to_activity",
+          "name": "route inbound to activity",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for signature confidence threshold.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature confidence threshold.",
+              "name": "signature confidence threshold"
+            },
+            "zh-CN": {
+              "description": "signature confidence threshold 配置项。",
+              "name": "signature confidence threshold"
+            }
+          },
+          "key": "signature_confidence_threshold",
+          "name": "signature confidence threshold",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 100,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for signature enrichment sources.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for signature enrichment sources.",
+              "name": "signature enrichment sources"
+            },
+            "zh-CN": {
+              "description": "signature enrichment sources 配置项。",
+              "name": "signature enrichment sources"
+            }
+          },
+          "key": "signature_enrichment_sources",
+          "name": "signature enrichment sources",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for start tls.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for start tls.",
+              "name": "start tls"
+            },
+            "zh-CN": {
+              "description": "start tls 配置项。",
+              "name": "start tls"
+            }
+          },
+          "key": "start_tls",
+          "name": "start tls",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for timeout seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for timeout seconds.",
+              "name": "timeout seconds"
+            },
+            "zh-CN": {
+              "description": "timeout seconds 配置项。",
+              "name": "timeout seconds"
+            }
+          },
+          "key": "timeout_seconds",
+          "name": "timeout seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for tls.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tls.",
+              "name": "tls"
+            },
+            "zh-CN": {
+              "description": "tls 配置项。",
+              "name": "tls"
+            }
+          },
+          "key": "tls",
+          "name": "tls",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for username.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for username.",
+              "name": "username"
+            },
+            "zh-CN": {
+              "description": "username 配置项。",
+              "name": "username"
+            }
+          },
+          "key": "username",
+          "name": "username",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for write delivery status to business object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for write delivery status to business object.",
+              "name": "write delivery status to business object"
+            },
+            "zh-CN": {
+              "description": "write delivery status to business object 配置项。",
+              "name": "write delivery status to business object"
+            }
+          },
+          "key": "write_delivery_status_to_business_object",
+          "name": "write delivery status to business object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider smtp",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider smtp",
+          "name": "smtp"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider smtp",
+          "name": "smtp"
+        }
+      },
+      "key": "smtp",
+      "name": "smtp",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access key id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access key id.",
+              "name": "access key id"
+            },
+            "zh-CN": {
+              "description": "access key id 敏感凭据。",
+              "name": "access key id"
+            }
+          },
+          "key": "access_key_id",
+          "name": "access key id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for mailgun webhook signing key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for mailgun webhook signing key.",
+              "name": "mailgun webhook signing key"
+            },
+            "zh-CN": {
+              "description": "mailgun webhook signing key 敏感凭据。",
+              "name": "mailgun webhook signing key"
+            }
+          },
+          "key": "mailgun_webhook_signing_key",
+          "name": "mailgun webhook signing key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for ocr provider key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for ocr provider key.",
+              "name": "ocr provider key"
+            },
+            "zh-CN": {
+              "description": "ocr provider key 敏感凭据。",
+              "name": "ocr provider key"
+            }
+          },
+          "key": "ocr_provider_key",
+          "name": "ocr provider key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for password.",
+              "name": "password"
+            },
+            "zh-CN": {
+              "description": "password 敏感凭据。",
+              "name": "password"
+            }
+          },
+          "key": "password",
+          "name": "password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for secret access key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for secret access key.",
+              "name": "secret access key"
+            },
+            "zh-CN": {
+              "description": "secret access key 敏感凭据。",
+              "name": "secret access key"
+            }
+          },
+          "key": "secret_access_key",
+          "name": "secret access key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for sendgrid webhook public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for sendgrid webhook public key.",
+              "name": "sendgrid webhook public key"
+            },
+            "zh-CN": {
+              "description": "sendgrid webhook public key 敏感凭据。",
+              "name": "sendgrid webhook public key"
+            }
+          },
+          "key": "sendgrid_webhook_public_key",
+          "name": "sendgrid webhook public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for session token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for session token.",
+              "name": "session token"
+            },
+            "zh-CN": {
+              "description": "session token 敏感凭据。",
+              "name": "session token"
+            }
+          },
+          "key": "session_token",
+          "name": "session token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "password",
+    "api_key",
+    "access_key_id",
+    "secret_access_key",
+    "session_token",
+    "webhook_secret",
+    "sendgrid_webhook_public_key",
+    "mailgun_webhook_signing_key",
+    "ocr_provider_key"
+  ],
+  "source": "connectors:email",
+  "type": "email",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

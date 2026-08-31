@@ -1,0 +1,1529 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "app_store_connect",
+    "google_play_console",
+    "chrome_web_store",
+    "shopify_app_store",
+    "aws_marketplace",
+    "app_reviews",
+    "app_review_replies",
+    "app_versions",
+    "app_subscriptions",
+    "marketplace_ratings",
+    "review_recovery",
+    "product_signal_plan",
+    "competitor_mention_review",
+    "pricing_complaint_review",
+    "customer_health_signal",
+    "product_backlog",
+    "public_reply_workflow",
+    "knowledge_gap_handoff",
+    "customer_success_handoff",
+    "data_migration_handoff"
+  ],
+  "config": {
+    "config_fields": [
+      "provider",
+      "app_id",
+      "marketplace_id",
+      "default_country",
+      "default_language",
+      "product_area_field",
+      "support_owner_field",
+      "product_owner_field",
+      "public_reply_policy"
+    ],
+    "default_connection_key": "app_review_primary",
+    "options_path": "/integrations/app-reviews/options",
+    "review_onboarding_path": "/integrations/app-reviews/review-onboarding",
+    "secret_refs": [
+      "api_token",
+      "oauth_client_id",
+      "oauth_client_secret",
+      "webhook_secret"
+    ]
+  },
+  "config_fields": [
+    "provider",
+    "app_id",
+    "marketplace_id",
+    "default_country",
+    "default_language",
+    "product_area_field",
+    "support_owner_field",
+    "product_owner_field",
+    "public_reply_policy"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry App Review Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry App Review Connector definitions, Provider choices, and operation contracts.",
+      "name": "App Review"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方应用评价连接器定义、Provider 选项与操作契约。",
+      "name": "应用评价"
+    }
+  },
+  "key": "app_review",
+  "name": "App Review",
+  "operations": [
+    {"key":"test_connection","name":"Test connection","description":"Verify Google Play review access.","i18n":{"en-US":{"name":"Test connection","description":"Verify Google Play review access."},"zh-CN":{"name":"测试连接","description":"验证 Google Play 评论访问。"}},"method":"GET","execution_mode":"sync","side_effect":"read","test_supported":true,"timeout_default_seconds":15,"timeout_max_seconds":30,"output":[{"key":"connected","name":"Connected","type":"boolean","required":true}]},
+    {"key":"list_reviews","name":"List reviews","description":"List Google Play app reviews.","i18n":{"en-US":{"name":"List reviews","description":"List Google Play app reviews."},"zh-CN":{"name":"查询应用评论","description":"查询 Google Play 应用评论。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"maxResults","name":"Maximum results","type":"integer","required":false},{"key":"token","name":"Page token","type":"text","required":false},{"key":"translationLanguage","name":"Translation language","type":"text","required":false}],"output":[{"key":"reviews","name":"Reviews","type":"json","required":true}]},
+    {"key":"reply_review","name":"Reply to review","description":"Publish a developer reply to a Google Play review.","i18n":{"en-US":{"name":"Reply to review","description":"Publish a developer reply to a Google Play review."},"zh-CN":{"name":"回复应用评论","description":"向 Google Play 应用评论发布开发者回复。"}},"method":"POST","execution_mode":"sync","side_effect":"write","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"review_id","name":"Review ID","type":"text","required":true},{"key":"reply_text","name":"Reply text","type":"long_text","required":true}],"output":[{"key":"result","name":"Reply result","type":"json","required":true}]}
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for app id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for app id.",
+              "name": "app id"
+            },
+            "zh-CN": {
+              "description": "app id 配置项。",
+              "name": "app id"
+            }
+          },
+          "key": "app_id",
+          "name": "app id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for marketplace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for marketplace id.",
+              "name": "marketplace id"
+            },
+            "zh-CN": {
+              "description": "marketplace id 配置项。",
+              "name": "marketplace id"
+            }
+          },
+          "key": "marketplace_id",
+          "name": "marketplace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for product area field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for product area field.",
+              "name": "product area field"
+            },
+            "zh-CN": {
+              "description": "product area field 配置项。",
+              "name": "product area field"
+            }
+          },
+          "key": "product_area_field",
+          "name": "product area field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for product owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for product owner field.",
+              "name": "product owner field"
+            },
+            "zh-CN": {
+              "description": "product owner field 配置项。",
+              "name": "product owner field"
+            }
+          },
+          "key": "product_owner_field",
+          "name": "product owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for public reply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for public reply policy.",
+              "name": "public reply policy"
+            },
+            "zh-CN": {
+              "description": "public reply policy 配置项。",
+              "name": "public reply policy"
+            }
+          },
+          "key": "public_reply_policy",
+          "name": "public reply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for support owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for support owner field.",
+              "name": "support owner field"
+            },
+            "zh-CN": {
+              "description": "support owner field 配置项。",
+              "name": "support owner field"
+            }
+          },
+          "key": "support_owner_field",
+          "name": "support owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider app_store_connect",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider app_store_connect",
+          "name": "app_store_connect"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider app_store_connect",
+          "name": "app_store_connect"
+        }
+      },
+      "key": "app_store_connect",
+      "name": "app_store_connect",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for app id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for app id.",
+              "name": "app id"
+            },
+            "zh-CN": {
+              "description": "app id 配置项。",
+              "name": "app id"
+            }
+          },
+          "key": "app_id",
+          "name": "app id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for marketplace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for marketplace id.",
+              "name": "marketplace id"
+            },
+            "zh-CN": {
+              "description": "marketplace id 配置项。",
+              "name": "marketplace id"
+            }
+          },
+          "key": "marketplace_id",
+          "name": "marketplace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for product area field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for product area field.",
+              "name": "product area field"
+            },
+            "zh-CN": {
+              "description": "product area field 配置项。",
+              "name": "product area field"
+            }
+          },
+          "key": "product_area_field",
+          "name": "product area field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for product owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for product owner field.",
+              "name": "product owner field"
+            },
+            "zh-CN": {
+              "description": "product owner field 配置项。",
+              "name": "product owner field"
+            }
+          },
+          "key": "product_owner_field",
+          "name": "product owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for public reply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for public reply policy.",
+              "name": "public reply policy"
+            },
+            "zh-CN": {
+              "description": "public reply policy 配置项。",
+              "name": "public reply policy"
+            }
+          },
+          "key": "public_reply_policy",
+          "name": "public reply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for support owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for support owner field.",
+              "name": "support owner field"
+            },
+            "zh-CN": {
+              "description": "support owner field 配置项。",
+              "name": "support owner field"
+            }
+          },
+          "key": "support_owner_field",
+          "name": "support owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider aws_marketplace",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider aws_marketplace",
+          "name": "aws_marketplace"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider aws_marketplace",
+          "name": "aws_marketplace"
+        }
+      },
+      "key": "aws_marketplace",
+      "name": "aws_marketplace",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for app id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for app id.",
+              "name": "app id"
+            },
+            "zh-CN": {
+              "description": "app id 配置项。",
+              "name": "app id"
+            }
+          },
+          "key": "app_id",
+          "name": "app id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for marketplace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for marketplace id.",
+              "name": "marketplace id"
+            },
+            "zh-CN": {
+              "description": "marketplace id 配置项。",
+              "name": "marketplace id"
+            }
+          },
+          "key": "marketplace_id",
+          "name": "marketplace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for product area field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for product area field.",
+              "name": "product area field"
+            },
+            "zh-CN": {
+              "description": "product area field 配置项。",
+              "name": "product area field"
+            }
+          },
+          "key": "product_area_field",
+          "name": "product area field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for product owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for product owner field.",
+              "name": "product owner field"
+            },
+            "zh-CN": {
+              "description": "product owner field 配置项。",
+              "name": "product owner field"
+            }
+          },
+          "key": "product_owner_field",
+          "name": "product owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for public reply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for public reply policy.",
+              "name": "public reply policy"
+            },
+            "zh-CN": {
+              "description": "public reply policy 配置项。",
+              "name": "public reply policy"
+            }
+          },
+          "key": "public_reply_policy",
+          "name": "public reply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for support owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for support owner field.",
+              "name": "support owner field"
+            },
+            "zh-CN": {
+              "description": "support owner field 配置项。",
+              "name": "support owner field"
+            }
+          },
+          "key": "support_owner_field",
+          "name": "support owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider chrome_web_store",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider chrome_web_store",
+          "name": "chrome_web_store"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider chrome_web_store",
+          "name": "chrome_web_store"
+        }
+      },
+      "key": "chrome_web_store",
+      "name": "chrome_web_store",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for app id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for app id.",
+              "name": "app id"
+            },
+            "zh-CN": {
+              "description": "app id 配置项。",
+              "name": "app id"
+            }
+          },
+          "key": "app_id",
+          "name": "app id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for marketplace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for marketplace id.",
+              "name": "marketplace id"
+            },
+            "zh-CN": {
+              "description": "marketplace id 配置项。",
+              "name": "marketplace id"
+            }
+          },
+          "key": "marketplace_id",
+          "name": "marketplace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for product area field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for product area field.",
+              "name": "product area field"
+            },
+            "zh-CN": {
+              "description": "product area field 配置项。",
+              "name": "product area field"
+            }
+          },
+          "key": "product_area_field",
+          "name": "product area field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for product owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for product owner field.",
+              "name": "product owner field"
+            },
+            "zh-CN": {
+              "description": "product owner field 配置项。",
+              "name": "product owner field"
+            }
+          },
+          "key": "product_owner_field",
+          "name": "product owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for public reply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for public reply policy.",
+              "name": "public reply policy"
+            },
+            "zh-CN": {
+              "description": "public reply policy 配置项。",
+              "name": "public reply policy"
+            }
+          },
+          "key": "public_reply_policy",
+          "name": "public reply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for support owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for support owner field.",
+              "name": "support owner field"
+            },
+            "zh-CN": {
+              "description": "support owner field 配置项。",
+              "name": "support owner field"
+            }
+          },
+          "key": "support_owner_field",
+          "name": "support owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider google_play_console",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider google_play_console",
+          "name": "google_play_console"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider google_play_console",
+          "name": "google_play_console"
+        }
+      },
+      "key": "google_play_console",
+      "name": "google_play_console",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for app id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for app id.",
+              "name": "app id"
+            },
+            "zh-CN": {
+              "description": "app id 配置项。",
+              "name": "app id"
+            }
+          },
+          "key": "app_id",
+          "name": "app id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default language.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default language.",
+              "name": "default language"
+            },
+            "zh-CN": {
+              "description": "default language 配置项。",
+              "name": "default language"
+            }
+          },
+          "key": "default_language",
+          "name": "default language",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for marketplace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for marketplace id.",
+              "name": "marketplace id"
+            },
+            "zh-CN": {
+              "description": "marketplace id 配置项。",
+              "name": "marketplace id"
+            }
+          },
+          "key": "marketplace_id",
+          "name": "marketplace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for product area field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for product area field.",
+              "name": "product area field"
+            },
+            "zh-CN": {
+              "description": "product area field 配置项。",
+              "name": "product area field"
+            }
+          },
+          "key": "product_area_field",
+          "name": "product area field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for product owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for product owner field.",
+              "name": "product owner field"
+            },
+            "zh-CN": {
+              "description": "product owner field 配置项。",
+              "name": "product owner field"
+            }
+          },
+          "key": "product_owner_field",
+          "name": "product owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for public reply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for public reply policy.",
+              "name": "public reply policy"
+            },
+            "zh-CN": {
+              "description": "public reply policy 配置项。",
+              "name": "public reply policy"
+            }
+          },
+          "key": "public_reply_policy",
+          "name": "public reply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for support owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for support owner field.",
+              "name": "support owner field"
+            },
+            "zh-CN": {
+              "description": "support owner field 配置项。",
+              "name": "support owner field"
+            }
+          },
+          "key": "support_owner_field",
+          "name": "support owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider shopify_app_store",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider shopify_app_store",
+          "name": "shopify_app_store"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider shopify_app_store",
+          "name": "shopify_app_store"
+        }
+      },
+      "key": "shopify_app_store",
+      "name": "shopify_app_store",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_token",
+    "oauth_client_id",
+    "oauth_client_secret",
+    "webhook_secret"
+  ],
+  "source": "connectors:app_review",
+  "type": "app_review",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

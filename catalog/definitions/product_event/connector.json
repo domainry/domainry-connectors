@@ -1,0 +1,2091 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "segment",
+    "amplitude",
+    "mixpanel",
+    "posthog",
+    "custom_event_table",
+    "signup",
+    "activation",
+    "feature_usage",
+    "trial_limit",
+    "trial_expiry",
+    "billing_intent",
+    "invite_missing",
+    "seat_usage",
+    "license_usage",
+    "billing_subscription",
+    "workspace_role",
+    "expansion_opportunity",
+    "admin_outreach",
+    "churn_signal",
+    "lead_score",
+    "pql",
+    "trial_conversion",
+    "customer_health",
+    "renewal_risk",
+    "sales_task",
+    "plg_sales_contactability_gate",
+    "usage_expansion_contactability_gate",
+    "contactability_gate_handoff",
+    "data_migration_handoff"
+  ],
+  "config": {
+    "behavior_onboarding_path": "/integrations/product-events/behavior-onboarding",
+    "config_fields": [
+      "provider",
+      "project_id",
+      "workspace_id",
+      "event_table",
+      "sync_window_days",
+      "identity_key",
+      "default_timezone",
+      "health_score_field",
+      "lead_score_field",
+      "trial_days",
+      "activation_event",
+      "invite_event",
+      "billing_intent_event"
+    ],
+    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "default_connection_key": "product_event_primary",
+    "options_path": "/integrations/product-events/options",
+    "plg_sales_onboarding_path": "/integrations/product-events/plg-sales-onboarding",
+    "secret_refs": [
+      "api_token",
+      "project_secret",
+      "oauth_client_id",
+      "oauth_client_secret",
+      "database_url"
+    ],
+    "usage_expansion_onboarding_path": "/integrations/product-events/usage-expansion-onboarding"
+  },
+  "config_fields": [
+    "provider",
+    "project_id",
+    "workspace_id",
+    "event_table",
+    "sync_window_days",
+    "identity_key",
+    "default_timezone",
+    "health_score_field",
+    "lead_score_field",
+    "trial_days",
+    "activation_event",
+    "invite_event",
+    "billing_intent_event"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Product Event Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Product Event Connector definitions, Provider choices, and operation contracts.",
+      "name": "Product Event"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方产品事件连接器定义、Provider 选项与操作契约。",
+      "name": "产品事件"
+    }
+  },
+  "key": "product_event",
+  "name": "Product Event",
+  "operations": [
+    {"key":"test_connection","name":"Test connection","description":"Verify PostHog project access.","i18n":{"en-US":{"name":"Test connection","description":"Verify PostHog project access."},"zh-CN":{"name":"测试连接","description":"验证 PostHog 项目访问。"}},"method":"GET","execution_mode":"sync","side_effect":"read","test_supported":true,"timeout_default_seconds":15,"timeout_max_seconds":30,"output":[{"key":"connected","name":"Connected","type":"boolean","required":true}]},
+    {"key":"list_events","name":"List events","description":"List PostHog product events.","i18n":{"en-US":{"name":"List events","description":"List PostHog product events."},"zh-CN":{"name":"查询产品事件","description":"查询 PostHog 产品事件。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"limit","name":"Limit","type":"integer","required":false},{"key":"offset","name":"Offset","type":"integer","required":false},{"key":"after","name":"After","type":"datetime","required":false},{"key":"before","name":"Before","type":"datetime","required":false},{"key":"event","name":"Event name","type":"text","required":false},{"key":"distinct_id","name":"Distinct ID","type":"text","required":false}],"output":[{"key":"results","name":"Events","type":"json","required":true}]},
+    {"key":"capture_event","name":"Capture event","description":"Capture an idempotent PostHog product event.","i18n":{"en-US":{"name":"Capture event","description":"Capture an idempotent PostHog product event."},"zh-CN":{"name":"写入产品事件","description":"以幂等方式写入 PostHog 产品事件。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"event","name":"Event name","type":"text","required":true},{"key":"distinct_id","name":"Distinct ID","type":"text","required":true},{"key":"properties","name":"Properties","type":"json","required":false},{"key":"timestamp","name":"Timestamp","type":"datetime","required":false}],"output":[{"key":"status","name":"Status","type":"integer","required":false}]}
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for activation event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for activation event.",
+              "name": "activation event"
+            },
+            "zh-CN": {
+              "description": "activation event 配置项。",
+              "name": "activation event"
+            }
+          },
+          "key": "activation_event",
+          "name": "activation event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for billing intent event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for billing intent event.",
+              "name": "billing intent event"
+            },
+            "zh-CN": {
+              "description": "billing intent event 配置项。",
+              "name": "billing intent event"
+            }
+          },
+          "key": "billing_intent_event",
+          "name": "billing intent event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default timezone.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default timezone.",
+              "name": "default timezone"
+            },
+            "zh-CN": {
+              "description": "default timezone 配置项。",
+              "name": "default timezone"
+            }
+          },
+          "key": "default_timezone",
+          "name": "default timezone",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for event table.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for event table.",
+              "name": "event table"
+            },
+            "zh-CN": {
+              "description": "event table 配置项。",
+              "name": "event table"
+            }
+          },
+          "key": "event_table",
+          "name": "event table",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for identity key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for identity key.",
+              "name": "identity key"
+            },
+            "zh-CN": {
+              "description": "identity key 配置项。",
+              "name": "identity key"
+            }
+          },
+          "key": "identity_key",
+          "name": "identity key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invite event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invite event.",
+              "name": "invite event"
+            },
+            "zh-CN": {
+              "description": "invite event 配置项。",
+              "name": "invite event"
+            }
+          },
+          "key": "invite_event",
+          "name": "invite event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for lead score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for lead score field.",
+              "name": "lead score field"
+            },
+            "zh-CN": {
+              "description": "lead score field 配置项。",
+              "name": "lead score field"
+            }
+          },
+          "key": "lead_score_field",
+          "name": "lead score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for project id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for project id.",
+              "name": "project id"
+            },
+            "zh-CN": {
+              "description": "project id 配置项。",
+              "name": "project id"
+            }
+          },
+          "key": "project_id",
+          "name": "project id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "default": 14,
+          "description": "Configuration value for trial days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for trial days.",
+              "name": "trial days"
+            },
+            "zh-CN": {
+              "description": "trial days 配置项。",
+              "name": "trial days"
+            }
+          },
+          "key": "trial_days",
+          "name": "trial days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider amplitude",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider amplitude",
+          "name": "amplitude"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider amplitude",
+          "name": "amplitude"
+        }
+      },
+      "key": "amplitude",
+      "name": "amplitude",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "connection_string",
+            "expiry_policy": "optional",
+            "material_format": "uri_or_dsn",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database url.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database url.",
+              "name": "database url"
+            },
+            "zh-CN": {
+              "description": "database url 敏感凭据。",
+              "name": "database url"
+            }
+          },
+          "key": "database_url",
+          "name": "database url",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for project secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for project secret.",
+              "name": "project secret"
+            },
+            "zh-CN": {
+              "description": "project secret 敏感凭据。",
+              "name": "project secret"
+            }
+          },
+          "key": "project_secret",
+          "name": "project secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for activation event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for activation event.",
+              "name": "activation event"
+            },
+            "zh-CN": {
+              "description": "activation event 配置项。",
+              "name": "activation event"
+            }
+          },
+          "key": "activation_event",
+          "name": "activation event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for billing intent event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for billing intent event.",
+              "name": "billing intent event"
+            },
+            "zh-CN": {
+              "description": "billing intent event 配置项。",
+              "name": "billing intent event"
+            }
+          },
+          "key": "billing_intent_event",
+          "name": "billing intent event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default timezone.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default timezone.",
+              "name": "default timezone"
+            },
+            "zh-CN": {
+              "description": "default timezone 配置项。",
+              "name": "default timezone"
+            }
+          },
+          "key": "default_timezone",
+          "name": "default timezone",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for event table.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for event table.",
+              "name": "event table"
+            },
+            "zh-CN": {
+              "description": "event table 配置项。",
+              "name": "event table"
+            }
+          },
+          "key": "event_table",
+          "name": "event table",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for identity key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for identity key.",
+              "name": "identity key"
+            },
+            "zh-CN": {
+              "description": "identity key 配置项。",
+              "name": "identity key"
+            }
+          },
+          "key": "identity_key",
+          "name": "identity key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invite event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invite event.",
+              "name": "invite event"
+            },
+            "zh-CN": {
+              "description": "invite event 配置项。",
+              "name": "invite event"
+            }
+          },
+          "key": "invite_event",
+          "name": "invite event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for lead score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for lead score field.",
+              "name": "lead score field"
+            },
+            "zh-CN": {
+              "description": "lead score field 配置项。",
+              "name": "lead score field"
+            }
+          },
+          "key": "lead_score_field",
+          "name": "lead score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for project id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for project id.",
+              "name": "project id"
+            },
+            "zh-CN": {
+              "description": "project id 配置项。",
+              "name": "project id"
+            }
+          },
+          "key": "project_id",
+          "name": "project id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "default": 14,
+          "description": "Configuration value for trial days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for trial days.",
+              "name": "trial days"
+            },
+            "zh-CN": {
+              "description": "trial days 配置项。",
+              "name": "trial days"
+            }
+          },
+          "key": "trial_days",
+          "name": "trial days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider custom_event_table",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider custom_event_table",
+          "name": "custom_event_table"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider custom_event_table",
+          "name": "custom_event_table"
+        }
+      },
+      "key": "custom_event_table",
+      "name": "custom_event_table",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "connection_string",
+            "expiry_policy": "optional",
+            "material_format": "uri_or_dsn",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database url.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database url.",
+              "name": "database url"
+            },
+            "zh-CN": {
+              "description": "database url 敏感凭据。",
+              "name": "database url"
+            }
+          },
+          "key": "database_url",
+          "name": "database url",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for project secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for project secret.",
+              "name": "project secret"
+            },
+            "zh-CN": {
+              "description": "project secret 敏感凭据。",
+              "name": "project secret"
+            }
+          },
+          "key": "project_secret",
+          "name": "project secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for activation event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for activation event.",
+              "name": "activation event"
+            },
+            "zh-CN": {
+              "description": "activation event 配置项。",
+              "name": "activation event"
+            }
+          },
+          "key": "activation_event",
+          "name": "activation event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for billing intent event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for billing intent event.",
+              "name": "billing intent event"
+            },
+            "zh-CN": {
+              "description": "billing intent event 配置项。",
+              "name": "billing intent event"
+            }
+          },
+          "key": "billing_intent_event",
+          "name": "billing intent event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default timezone.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default timezone.",
+              "name": "default timezone"
+            },
+            "zh-CN": {
+              "description": "default timezone 配置项。",
+              "name": "default timezone"
+            }
+          },
+          "key": "default_timezone",
+          "name": "default timezone",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for event table.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for event table.",
+              "name": "event table"
+            },
+            "zh-CN": {
+              "description": "event table 配置项。",
+              "name": "event table"
+            }
+          },
+          "key": "event_table",
+          "name": "event table",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for identity key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for identity key.",
+              "name": "identity key"
+            },
+            "zh-CN": {
+              "description": "identity key 配置项。",
+              "name": "identity key"
+            }
+          },
+          "key": "identity_key",
+          "name": "identity key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invite event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invite event.",
+              "name": "invite event"
+            },
+            "zh-CN": {
+              "description": "invite event 配置项。",
+              "name": "invite event"
+            }
+          },
+          "key": "invite_event",
+          "name": "invite event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for lead score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for lead score field.",
+              "name": "lead score field"
+            },
+            "zh-CN": {
+              "description": "lead score field 配置项。",
+              "name": "lead score field"
+            }
+          },
+          "key": "lead_score_field",
+          "name": "lead score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for project id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for project id.",
+              "name": "project id"
+            },
+            "zh-CN": {
+              "description": "project id 配置项。",
+              "name": "project id"
+            }
+          },
+          "key": "project_id",
+          "name": "project id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "default": 14,
+          "description": "Configuration value for trial days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for trial days.",
+              "name": "trial days"
+            },
+            "zh-CN": {
+              "description": "trial days 配置项。",
+              "name": "trial days"
+            }
+          },
+          "key": "trial_days",
+          "name": "trial days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider mixpanel",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider mixpanel",
+          "name": "mixpanel"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider mixpanel",
+          "name": "mixpanel"
+        }
+      },
+      "key": "mixpanel",
+      "name": "mixpanel",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "connection_string",
+            "expiry_policy": "optional",
+            "material_format": "uri_or_dsn",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database url.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database url.",
+              "name": "database url"
+            },
+            "zh-CN": {
+              "description": "database url 敏感凭据。",
+              "name": "database url"
+            }
+          },
+          "key": "database_url",
+          "name": "database url",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for project secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for project secret.",
+              "name": "project secret"
+            },
+            "zh-CN": {
+              "description": "project secret 敏感凭据。",
+              "name": "project secret"
+            }
+          },
+          "key": "project_secret",
+          "name": "project secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for activation event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for activation event.",
+              "name": "activation event"
+            },
+            "zh-CN": {
+              "description": "activation event 配置项。",
+              "name": "activation event"
+            }
+          },
+          "key": "activation_event",
+          "name": "activation event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for billing intent event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for billing intent event.",
+              "name": "billing intent event"
+            },
+            "zh-CN": {
+              "description": "billing intent event 配置项。",
+              "name": "billing intent event"
+            }
+          },
+          "key": "billing_intent_event",
+          "name": "billing intent event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default timezone.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default timezone.",
+              "name": "default timezone"
+            },
+            "zh-CN": {
+              "description": "default timezone 配置项。",
+              "name": "default timezone"
+            }
+          },
+          "key": "default_timezone",
+          "name": "default timezone",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for event table.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for event table.",
+              "name": "event table"
+            },
+            "zh-CN": {
+              "description": "event table 配置项。",
+              "name": "event table"
+            }
+          },
+          "key": "event_table",
+          "name": "event table",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for identity key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for identity key.",
+              "name": "identity key"
+            },
+            "zh-CN": {
+              "description": "identity key 配置项。",
+              "name": "identity key"
+            }
+          },
+          "key": "identity_key",
+          "name": "identity key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invite event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invite event.",
+              "name": "invite event"
+            },
+            "zh-CN": {
+              "description": "invite event 配置项。",
+              "name": "invite event"
+            }
+          },
+          "key": "invite_event",
+          "name": "invite event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for lead score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for lead score field.",
+              "name": "lead score field"
+            },
+            "zh-CN": {
+              "description": "lead score field 配置项。",
+              "name": "lead score field"
+            }
+          },
+          "key": "lead_score_field",
+          "name": "lead score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for project id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for project id.",
+              "name": "project id"
+            },
+            "zh-CN": {
+              "description": "project id 配置项。",
+              "name": "project id"
+            }
+          },
+          "key": "project_id",
+          "name": "project id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "default": 14,
+          "description": "Configuration value for trial days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for trial days.",
+              "name": "trial days"
+            },
+            "zh-CN": {
+              "description": "trial days 配置项。",
+              "name": "trial days"
+            }
+          },
+          "key": "trial_days",
+          "name": "trial days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider posthog",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider posthog",
+          "name": "posthog"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider posthog",
+          "name": "posthog"
+        }
+      },
+      "key": "posthog",
+      "name": "posthog",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "connection_string",
+            "expiry_policy": "optional",
+            "material_format": "uri_or_dsn",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database url.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database url.",
+              "name": "database url"
+            },
+            "zh-CN": {
+              "description": "database url 敏感凭据。",
+              "name": "database url"
+            }
+          },
+          "key": "database_url",
+          "name": "database url",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for project secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for project secret.",
+              "name": "project secret"
+            },
+            "zh-CN": {
+              "description": "project secret 敏感凭据。",
+              "name": "project secret"
+            }
+          },
+          "key": "project_secret",
+          "name": "project secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for activation event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for activation event.",
+              "name": "activation event"
+            },
+            "zh-CN": {
+              "description": "activation event 配置项。",
+              "name": "activation event"
+            }
+          },
+          "key": "activation_event",
+          "name": "activation event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for billing intent event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for billing intent event.",
+              "name": "billing intent event"
+            },
+            "zh-CN": {
+              "description": "billing intent event 配置项。",
+              "name": "billing intent event"
+            }
+          },
+          "key": "billing_intent_event",
+          "name": "billing intent event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default timezone.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default timezone.",
+              "name": "default timezone"
+            },
+            "zh-CN": {
+              "description": "default timezone 配置项。",
+              "name": "default timezone"
+            }
+          },
+          "key": "default_timezone",
+          "name": "default timezone",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for event table.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for event table.",
+              "name": "event table"
+            },
+            "zh-CN": {
+              "description": "event table 配置项。",
+              "name": "event table"
+            }
+          },
+          "key": "event_table",
+          "name": "event table",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for health score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for health score field.",
+              "name": "health score field"
+            },
+            "zh-CN": {
+              "description": "health score field 配置项。",
+              "name": "health score field"
+            }
+          },
+          "key": "health_score_field",
+          "name": "health score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for identity key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for identity key.",
+              "name": "identity key"
+            },
+            "zh-CN": {
+              "description": "identity key 配置项。",
+              "name": "identity key"
+            }
+          },
+          "key": "identity_key",
+          "name": "identity key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invite event.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invite event.",
+              "name": "invite event"
+            },
+            "zh-CN": {
+              "description": "invite event 配置项。",
+              "name": "invite event"
+            }
+          },
+          "key": "invite_event",
+          "name": "invite event",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for lead score field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for lead score field.",
+              "name": "lead score field"
+            },
+            "zh-CN": {
+              "description": "lead score field 配置项。",
+              "name": "lead score field"
+            }
+          },
+          "key": "lead_score_field",
+          "name": "lead score field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for project id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for project id.",
+              "name": "project id"
+            },
+            "zh-CN": {
+              "description": "project id 配置项。",
+              "name": "project id"
+            }
+          },
+          "key": "project_id",
+          "name": "project id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "default": 14,
+          "description": "Configuration value for trial days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for trial days.",
+              "name": "trial days"
+            },
+            "zh-CN": {
+              "description": "trial days 配置项。",
+              "name": "trial days"
+            }
+          },
+          "key": "trial_days",
+          "name": "trial days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for workspace id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for workspace id.",
+              "name": "workspace id"
+            },
+            "zh-CN": {
+              "description": "workspace id 配置项。",
+              "name": "workspace id"
+            }
+          },
+          "key": "workspace_id",
+          "name": "workspace id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider segment",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider segment",
+          "name": "segment"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider segment",
+          "name": "segment"
+        }
+      },
+      "key": "segment",
+      "name": "segment",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "connection_string",
+            "expiry_policy": "optional",
+            "material_format": "uri_or_dsn",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for database url.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for database url.",
+              "name": "database url"
+            },
+            "zh-CN": {
+              "description": "database url 敏感凭据。",
+              "name": "database url"
+            }
+          },
+          "key": "database_url",
+          "name": "database url",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for project secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for project secret.",
+              "name": "project secret"
+            },
+            "zh-CN": {
+              "description": "project secret 敏感凭据。",
+              "name": "project secret"
+            }
+          },
+          "key": "project_secret",
+          "name": "project secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_token",
+    "project_secret",
+    "oauth_client_id",
+    "oauth_client_secret",
+    "database_url"
+  ],
+  "source": "connectors:product_event",
+  "type": "product_event",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

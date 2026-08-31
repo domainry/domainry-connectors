@@ -1,0 +1,1649 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "docusign",
+    "adobe_sign",
+    "signnow",
+    "fadada",
+    "envelope_create",
+    "recipient_routing",
+    "embedded_signing",
+    "status_sync",
+    "webhook",
+    "business_writeback",
+    "audit_certificate",
+    "envelope_onboarding",
+    "contract_archive",
+    "renewal_review",
+    "data_migration_handoff"
+  ],
+  "config": {
+    "certificate_archive_path": "/integrations/esign/certificate-archive-plan",
+    "config_fields": [
+      "provider",
+      "account_id",
+      "base_url",
+      "brand_id",
+      "default_locale",
+      "default_routing_order",
+      "embedded_signing",
+      "document_object_key",
+      "writeback_status_field",
+      "certificate_archive_connector_key"
+    ],
+    "connection_request_path": "/integrations/esign/connection-request",
+    "default_connection_key": "esign_primary",
+    "envelope_onboarding_path": "/integrations/esign/envelope-onboarding",
+    "envelope_path": "/integrations/esign/envelope",
+    "options_path": "/integrations/esign/options",
+    "recipient_path": "/integrations/esign/recipient",
+    "regional_presets": [
+      "us:docusign",
+      "global:adobe_sign",
+      "global:signnow",
+      "cn:fadada"
+    ],
+    "secret_refs": [
+      "client_id",
+      "client_secret",
+      "access_token",
+      "refresh_token",
+      "private_key",
+      "webhook_secret",
+      "api_key"
+    ],
+    "status_path": "/integrations/esign/status"
+  },
+  "config_fields": [
+    "provider",
+    "account_id",
+    "base_url",
+    "brand_id",
+    "default_locale",
+    "default_routing_order",
+    "embedded_signing",
+    "document_object_key",
+    "writeback_status_field",
+    "certificate_archive_connector_key"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry E-Signature Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry E-Signature Connector definitions, Provider choices, and operation contracts.",
+      "name": "E-Signature"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方电子签名连接器定义、Provider 选项与操作契约。",
+      "name": "电子签名"
+    }
+  },
+  "key": "esign",
+  "name": "E-Signature",
+  "operations": [
+    {"key":"test_connection","name":"test connection","description":"Verify access to the selected e-signature Provider.","i18n":{"en-US":{"name":"Test connection","description":"Verify access to the selected e-signature Provider."},"zh-CN":{"name":"测试连接","description":"验证所选电子签名 Provider 的访问权限。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":20,"timeout_max_seconds":60},
+    {"key":"create_envelope","name":"create envelope","description":"Create an envelope or agreement with documents and recipients.","i18n":{"en-US":{"name":"Create envelope","description":"Create an envelope or agreement with documents and recipients."},"zh-CN":{"name":"创建签署包","description":"使用文件和签署人创建签署包或协议。"}},"method":"POST","execution_mode":"sync","side_effect":"write","timeout_default_seconds":60,"timeout_max_seconds":120,"input":[{"key":"input","name":"Provider request","type":"json","required":true}],"output":[{"key":"envelopeId","name":"Envelope ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"get_envelope","name":"get envelope","description":"Retrieve an envelope and its current status.","i18n":{"en-US":{"name":"Get envelope","description":"Retrieve an envelope and its current status."},"zh-CN":{"name":"查询签署包","description":"查询签署包及其当前状态。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"envelope_id","name":"Envelope ID","type":"text","required":true}]},
+    {"key":"send_envelope","name":"send envelope","description":"Send a previously created draft envelope.","i18n":{"en-US":{"name":"Send envelope","description":"Send a previously created draft envelope."},"zh-CN":{"name":"发送签署包","description":"发送此前创建的草稿签署包。"}},"method":"PUT","execution_mode":"sync","side_effect":"write","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"envelope_id","name":"Envelope ID","type":"text","required":true},{"key":"input","name":"Provider send request","type":"json","required":false}]},
+    {"key":"void_envelope","name":"void envelope","description":"Void an envelope with an explicit reason.","i18n":{"en-US":{"name":"Void envelope","description":"Void an envelope with an explicit reason."},"zh-CN":{"name":"作废签署包","description":"使用明确原因作废签署包。"}},"method":"PUT","execution_mode":"sync","side_effect":"write","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"envelope_id","name":"Envelope ID","type":"text","required":true},{"key":"reason","name":"Void reason","type":"text","required":true}]},
+    {"key":"create_recipient_view","name":"create recipient view","description":"Create an embedded signing URL for a recipient.","i18n":{"en-US":{"name":"Create recipient view","description":"Create an embedded signing URL for a recipient."},"zh-CN":{"name":"创建嵌入签署链接","description":"为签署人创建嵌入式签署链接。"}},"method":"POST","execution_mode":"sync","side_effect":"write","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"envelope_id","name":"Envelope ID","type":"text","required":true},{"key":"input","name":"Recipient view request","type":"json","required":true}],"output":[{"key":"url","name":"Signing URL","type":"text"}]},
+    {"key":"list_envelope_status_changes","name":"list envelope status changes","description":"List envelope status changes from a specified time.","i18n":{"en-US":{"name":"List envelope status changes","description":"List envelope status changes from a specified time."},"zh-CN":{"name":"查询签署状态变化","description":"查询指定时间之后的签署包状态变化。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":90,"input":[{"key":"from_date","name":"From date","type":"text","required":true},{"key":"cursor","name":"Cursor","type":"text"}]}
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for brand id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for brand id.",
+              "name": "brand id"
+            },
+            "zh-CN": {
+              "description": "brand id 配置项。",
+              "name": "brand id"
+            }
+          },
+          "key": "brand_id",
+          "name": "brand id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for certificate archive connector key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for certificate archive connector key.",
+              "name": "certificate archive connector key"
+            },
+            "zh-CN": {
+              "description": "certificate archive connector key 配置项。",
+              "name": "certificate archive connector key"
+            }
+          },
+          "key": "certificate_archive_connector_key",
+          "name": "certificate archive connector key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default locale.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default locale.",
+              "name": "default locale"
+            },
+            "zh-CN": {
+              "description": "default locale 配置项。",
+              "name": "default locale"
+            }
+          },
+          "key": "default_locale",
+          "name": "default locale",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default routing order.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default routing order.",
+              "name": "default routing order"
+            },
+            "zh-CN": {
+              "description": "default routing order 配置项。",
+              "name": "default routing order"
+            }
+          },
+          "key": "default_routing_order",
+          "name": "default routing order",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for document object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for document object key.",
+              "name": "document object key"
+            },
+            "zh-CN": {
+              "description": "document object key 配置项。",
+              "name": "document object key"
+            }
+          },
+          "key": "document_object_key",
+          "name": "document object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for embedded signing.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for embedded signing.",
+              "name": "embedded signing"
+            },
+            "zh-CN": {
+              "description": "embedded signing 配置项。",
+              "name": "embedded signing"
+            }
+          },
+          "key": "embedded_signing",
+          "name": "embedded signing",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider adobe_sign",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider adobe_sign",
+          "name": "adobe_sign"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider adobe_sign",
+          "name": "adobe_sign"
+        }
+      },
+      "key": "adobe_sign",
+      "name": "adobe_sign",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for brand id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for brand id.",
+              "name": "brand id"
+            },
+            "zh-CN": {
+              "description": "brand id 配置项。",
+              "name": "brand id"
+            }
+          },
+          "key": "brand_id",
+          "name": "brand id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for certificate archive connector key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for certificate archive connector key.",
+              "name": "certificate archive connector key"
+            },
+            "zh-CN": {
+              "description": "certificate archive connector key 配置项。",
+              "name": "certificate archive connector key"
+            }
+          },
+          "key": "certificate_archive_connector_key",
+          "name": "certificate archive connector key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default locale.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default locale.",
+              "name": "default locale"
+            },
+            "zh-CN": {
+              "description": "default locale 配置项。",
+              "name": "default locale"
+            }
+          },
+          "key": "default_locale",
+          "name": "default locale",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default routing order.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default routing order.",
+              "name": "default routing order"
+            },
+            "zh-CN": {
+              "description": "default routing order 配置项。",
+              "name": "default routing order"
+            }
+          },
+          "key": "default_routing_order",
+          "name": "default routing order",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for document object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for document object key.",
+              "name": "document object key"
+            },
+            "zh-CN": {
+              "description": "document object key 配置项。",
+              "name": "document object key"
+            }
+          },
+          "key": "document_object_key",
+          "name": "document object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for embedded signing.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for embedded signing.",
+              "name": "embedded signing"
+            },
+            "zh-CN": {
+              "description": "embedded signing 配置项。",
+              "name": "embedded signing"
+            }
+          },
+          "key": "embedded_signing",
+          "name": "embedded signing",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider docusign",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider docusign",
+          "name": "docusign"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider docusign",
+          "name": "docusign"
+        }
+      },
+      "key": "docusign",
+      "name": "docusign",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for brand id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for brand id.",
+              "name": "brand id"
+            },
+            "zh-CN": {
+              "description": "brand id 配置项。",
+              "name": "brand id"
+            }
+          },
+          "key": "brand_id",
+          "name": "brand id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for certificate archive connector key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for certificate archive connector key.",
+              "name": "certificate archive connector key"
+            },
+            "zh-CN": {
+              "description": "certificate archive connector key 配置项。",
+              "name": "certificate archive connector key"
+            }
+          },
+          "key": "certificate_archive_connector_key",
+          "name": "certificate archive connector key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default locale.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default locale.",
+              "name": "default locale"
+            },
+            "zh-CN": {
+              "description": "default locale 配置项。",
+              "name": "default locale"
+            }
+          },
+          "key": "default_locale",
+          "name": "default locale",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default routing order.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default routing order.",
+              "name": "default routing order"
+            },
+            "zh-CN": {
+              "description": "default routing order 配置项。",
+              "name": "default routing order"
+            }
+          },
+          "key": "default_routing_order",
+          "name": "default routing order",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for document object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for document object key.",
+              "name": "document object key"
+            },
+            "zh-CN": {
+              "description": "document object key 配置项。",
+              "name": "document object key"
+            }
+          },
+          "key": "document_object_key",
+          "name": "document object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for embedded signing.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for embedded signing.",
+              "name": "embedded signing"
+            },
+            "zh-CN": {
+              "description": "embedded signing 配置项。",
+              "name": "embedded signing"
+            }
+          },
+          "key": "embedded_signing",
+          "name": "embedded signing",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider fadada",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider fadada",
+          "name": "fadada"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider fadada",
+          "name": "fadada"
+        }
+      },
+      "key": "fadada",
+      "name": "fadada",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for brand id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for brand id.",
+              "name": "brand id"
+            },
+            "zh-CN": {
+              "description": "brand id 配置项。",
+              "name": "brand id"
+            }
+          },
+          "key": "brand_id",
+          "name": "brand id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for certificate archive connector key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for certificate archive connector key.",
+              "name": "certificate archive connector key"
+            },
+            "zh-CN": {
+              "description": "certificate archive connector key 配置项。",
+              "name": "certificate archive connector key"
+            }
+          },
+          "key": "certificate_archive_connector_key",
+          "name": "certificate archive connector key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default locale.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default locale.",
+              "name": "default locale"
+            },
+            "zh-CN": {
+              "description": "default locale 配置项。",
+              "name": "default locale"
+            }
+          },
+          "key": "default_locale",
+          "name": "default locale",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default routing order.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default routing order.",
+              "name": "default routing order"
+            },
+            "zh-CN": {
+              "description": "default routing order 配置项。",
+              "name": "default routing order"
+            }
+          },
+          "key": "default_routing_order",
+          "name": "default routing order",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for document object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for document object key.",
+              "name": "document object key"
+            },
+            "zh-CN": {
+              "description": "document object key 配置项。",
+              "name": "document object key"
+            }
+          },
+          "key": "document_object_key",
+          "name": "document object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for embedded signing.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for embedded signing.",
+              "name": "embedded signing"
+            },
+            "zh-CN": {
+              "description": "embedded signing 配置项。",
+              "name": "embedded signing"
+            }
+          },
+          "key": "embedded_signing",
+          "name": "embedded signing",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider signnow",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider signnow",
+          "name": "signnow"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider signnow",
+          "name": "signnow"
+        }
+      },
+      "key": "signnow",
+      "name": "signnow",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "client_id",
+    "client_secret",
+    "access_token",
+    "refresh_token",
+    "private_key",
+    "webhook_secret",
+    "api_key"
+  ],
+  "source": "connectors:esign",
+  "type": "esign",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "csv_import",
+    "excel_import",
+    "spreadsheet_onboarding",
+    "file_sampling_plan",
+    "streaming_import_plan",
+    "large_file_sampling",
+    "large_file_streaming",
+    "multi_sheet_excel_review",
+    "stream_checkpoint_resume",
+    "error_row_artifact",
+    "repair_upload",
+    "semantic_field_detection",
+    "regional_data_standardization",
+    "japanese_name_company_review",
+    "brazil_cpf_cnpj_phone_review",
+    "europe_vat_address_review",
+    "language_preference_review",
+    "phone_country_normalization",
+    "currency_normalization",
+    "date_format_review",
+    "timezone_review",
+    "duplicate_detection",
+    "repair_plan",
+    "repair_suggestions",
+    "field_mapping",
+    "preview",
+    "error_row_download",
+    "dedupe_merge",
+    "bulk_update",
+    "post_import_closeout",
+    "acceptance_package",
+    "rollback_manifest",
+    "audited_export",
+    "templated_export"
+  ],
+  "config": {
+    "audit_events": [
+      "import_previewed",
+      "import_streaming_planned",
+      "import_repair_planned",
+      "import_applied",
+      "import_reconciled",
+      "import_closeout_packaged",
+      "export_requested",
+      "export_template_rendered"
+    ],
+    "closeout_package_path": "/integrations/import-export/import/closeout-package",
+    "default_connection_key": "import_export_default",
+    "error_rows_path": "/integrations/import-export/import/error-rows",
+    "export_request_path": "/integrations/import-export/export/request",
+    "export_template_path": "/integrations/import-export/export/template",
+    "file_sampling_plan_path": "/integrations/import-export/import/file-sampling-plan",
+    "formats": [
+      "csv",
+      "xlsx"
+    ],
+    "import_apply_path": "/integrations/import-export/import/apply",
+    "import_preview_path": "/integrations/import-export/import/preview",
+    "import_repair_plan_path": "/integrations/import-export/import/repair-plan",
+    "merge_strategies": [
+      "create_only",
+      "upsert",
+      "update_only",
+      "skip_duplicates",
+      "manual_review"
+    ],
+    "options_path": "/integrations/import-export/options",
+    "post_apply_reconciliation_plan_path": "/integrations/import-export/import/post-apply-reconciliation-plan",
+    "spreadsheet_onboarding_assets": [
+      "columns",
+      "sample_rows",
+      "field_semantics",
+      "phone_country",
+      "currency",
+      "date_format",
+      "timezone",
+      "language_preference",
+      "japanese_name_company",
+      "brazil_tax_phone",
+      "europe_vat_address",
+      "duplicate_candidates",
+      "error_rows",
+      "repair_suggestions"
+    ],
+    "spreadsheet_onboarding_path": "/integrations/import-export/spreadsheet-onboarding",
+    "streaming_plan_path": "/integrations/import-export/import/streaming-plan"
+  },
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry CSV / Excel Import Export Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry CSV / Excel Import Export Connector definitions, Provider choices, and operation contracts.",
+      "name": "CSV / Excel Import Export"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方CSV 与 Excel 导入导出连接器定义、Provider 选项与操作契约。",
+      "name": "CSV 与 Excel 导入导出"
+    }
+  },
+  "key": "import_export",
+  "classification": "runtime_native",
+  "lifecycle_status": "reclassified",
+  "replacement_capability": "record.import_export",
+  "name": "CSV / Excel Import Export",
+  "operations": [],
+  "provider": "generated",
+  "providers": [],
+  "readiness": "catalog_only",
+  "source": "connectors:import_export",
+  "type": "data_ingress_egress",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "provider_catalog"
+  ]
+}

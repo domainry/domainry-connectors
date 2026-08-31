@@ -1,0 +1,613 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "mcp_stdio",
+    "mcp_http",
+    "mcp_sse",
+    "function_tool",
+    "api_key_secret_ref",
+    "agent_tool_provider",
+    "action_guard_plan",
+    "approved_external_action",
+    "approved_external_action_execute",
+    "external_principal",
+    "scope_rotation",
+    "policy_rate_limit",
+    "dry_run_gate",
+    "approval_gate",
+    "redaction_policy",
+    "result_summary",
+    "rollback_plan",
+    "dead_letter_plan",
+    "audit_plan"
+  ],
+  "config": {
+    "action_guard_plan_path": "/integrations/mcp-tools/action-guard-plan",
+    "approved_external_action_execute_path": "/integrations/mcp-tools/approved-external-action/execute",
+    "approved_external_action_plan_path": "/integrations/mcp-tools/approved-external-action-plan",
+    "config_fields": [
+      "transport",
+      "command",
+      "args",
+      "url",
+      "headers",
+      "allowed_tools",
+      "timeout_seconds",
+      "requires_approval",
+      "risk_policy_key",
+      "dry_run_required",
+      "approval_policy_key",
+      "rollback_strategy",
+      "rate_limit_policy",
+      "external_principal",
+      "dead_letter_queue"
+    ],
+    "connection_request_path": "/integrations/mcp-tools/connection-request",
+    "default_connection_key": "mcp_tools_primary",
+    "options_path": "/integrations/mcp-tools/options",
+    "secret_refs": [
+      "api_key",
+      "authorization",
+      "header_authorization"
+    ],
+    "test_path": "/integrations/mcp-tools/test",
+    "transport_types": [
+      "stdio",
+      "http",
+      "sse",
+      "function"
+    ]
+  },
+  "config_fields": [
+    "transport",
+    "command",
+    "args",
+    "url",
+    "headers",
+    "allowed_tools",
+    "timeout_seconds",
+    "requires_approval",
+    "risk_policy_key",
+    "dry_run_required",
+    "approval_policy_key",
+    "rollback_strategy",
+    "rate_limit_policy",
+    "external_principal",
+    "dead_letter_queue"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry MCP / Tool Connector Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry MCP / Tool Connector Connector definitions, Provider choices, and operation contracts.",
+      "name": "MCP / Tool Connector"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方MCP 工具连接器连接器定义、Provider 选项与操作契约。",
+      "name": "MCP 工具连接器"
+    }
+  },
+  "key": "mcp_tool",
+  "name": "MCP / Tool Connector",
+  "operations": [
+    {
+      "description": "Execute the Initialize MCP and List Tools operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Initialize MCP and List Tools operation.",
+          "name": "Initialize MCP and List Tools"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "POST",
+      "name": "Initialize MCP and List Tools",
+      "output": [
+        {
+          "key": "connected",
+          "name": "Connected",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "key": "tool_count",
+          "name": "Tool Count",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 60
+    },
+    {
+      "description": "Execute the List MCP Tools operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the List MCP Tools operation.",
+          "name": "List MCP Tools"
+        },
+        "zh-CN": {
+          "description": "执行“列出工具”操作。",
+          "name": "列出工具"
+        }
+      },
+      "key": "list_tools",
+      "method": "POST",
+      "name": "List MCP Tools",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 60
+    },
+    {
+      "description": "Execute the Call MCP Tool operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Call MCP Tool operation.",
+          "name": "Call MCP Tool"
+        },
+        "zh-CN": {
+          "description": "执行“调用工具”操作。",
+          "name": "调用工具"
+        }
+      },
+      "input": [
+        {
+          "key": "tool_name",
+          "name": "Tool Name",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "arguments",
+          "name": "Arguments",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "key": "approved",
+          "name": "Approved",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "key": "call_tool",
+      "method": "POST",
+      "name": "Call MCP Tool",
+      "side_effect": "write",
+      "test_supported": true,
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 300
+    }
+  ],
+  "provider": "mcp",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for allowed tools.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for allowed tools.",
+              "name": "allowed tools"
+            },
+            "zh-CN": {
+              "description": "allowed tools 配置项。",
+              "name": "allowed tools"
+            }
+          },
+          "key": "allowed_tools",
+          "name": "allowed tools",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for approval policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval policy key.",
+              "name": "approval policy key"
+            },
+            "zh-CN": {
+              "description": "approval policy key 配置项。",
+              "name": "approval policy key"
+            }
+          },
+          "key": "approval_policy_key",
+          "name": "approval policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for args.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for args.",
+              "name": "args"
+            },
+            "zh-CN": {
+              "description": "args 配置项。",
+              "name": "args"
+            }
+          },
+          "key": "args",
+          "name": "args",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for command.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for command.",
+              "name": "command"
+            },
+            "zh-CN": {
+              "description": "command 配置项。",
+              "name": "command"
+            }
+          },
+          "key": "command",
+          "name": "command",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for dead letter queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for dead letter queue.",
+              "name": "dead letter queue"
+            },
+            "zh-CN": {
+              "description": "dead letter queue 配置项。",
+              "name": "dead letter queue"
+            }
+          },
+          "key": "dead_letter_queue",
+          "name": "dead letter queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for dry run required.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for dry run required.",
+              "name": "dry run required"
+            },
+            "zh-CN": {
+              "description": "dry run required 配置项。",
+              "name": "dry run required"
+            }
+          },
+          "key": "dry_run_required",
+          "name": "dry run required",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for external principal.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for external principal.",
+              "name": "external principal"
+            },
+            "zh-CN": {
+              "description": "external principal 配置项。",
+              "name": "external principal"
+            }
+          },
+          "key": "external_principal",
+          "name": "external principal",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "config": {
+            "json_shape": "object"
+          },
+          "default": {},
+          "description": "Configuration value for headers.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for headers.",
+              "name": "headers"
+            },
+            "zh-CN": {
+              "description": "headers 配置项。",
+              "name": "headers"
+            }
+          },
+          "key": "headers",
+          "name": "headers",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "description": "Configuration value for rate limit policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for rate limit policy.",
+              "name": "rate limit policy"
+            },
+            "zh-CN": {
+              "description": "rate limit policy 配置项。",
+              "name": "rate limit policy"
+            }
+          },
+          "key": "rate_limit_policy",
+          "name": "rate limit policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for requires approval.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for requires approval.",
+              "name": "requires approval"
+            },
+            "zh-CN": {
+              "description": "requires approval 配置项。",
+              "name": "requires approval"
+            }
+          },
+          "key": "requires_approval",
+          "name": "requires approval",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for risk policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for risk policy key.",
+              "name": "risk policy key"
+            },
+            "zh-CN": {
+              "description": "risk policy key 配置项。",
+              "name": "risk policy key"
+            }
+          },
+          "key": "risk_policy_key",
+          "name": "risk policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for rollback strategy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for rollback strategy.",
+              "name": "rollback strategy"
+            },
+            "zh-CN": {
+              "description": "rollback strategy 配置项。",
+              "name": "rollback strategy"
+            }
+          },
+          "key": "rollback_strategy",
+          "name": "rollback strategy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for timeout seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for timeout seconds.",
+              "name": "timeout seconds"
+            },
+            "zh-CN": {
+              "description": "timeout seconds 配置项。",
+              "name": "timeout seconds"
+            }
+          },
+          "key": "timeout_seconds",
+          "name": "timeout seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for transport.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for transport.",
+              "name": "transport"
+            },
+            "zh-CN": {
+              "description": "transport 配置项。",
+              "name": "transport"
+            }
+          },
+          "key": "transport",
+          "name": "transport",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for url.",
+              "name": "url"
+            },
+            "zh-CN": {
+              "description": "url 配置项。",
+              "name": "url"
+            }
+          },
+          "key": "url",
+          "name": "url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider mcp",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider mcp",
+          "name": "mcp"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider mcp",
+          "name": "mcp"
+        }
+      },
+      "key": "mcp",
+      "name": "mcp",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for authorization.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for authorization.",
+              "name": "authorization"
+            },
+            "zh-CN": {
+              "description": "authorization 敏感凭据。",
+              "name": "authorization"
+            }
+          },
+          "key": "authorization",
+          "name": "authorization",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for header authorization.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for header authorization.",
+              "name": "header authorization"
+            },
+            "zh-CN": {
+              "description": "header authorization 敏感凭据。",
+              "name": "header authorization"
+            }
+          },
+          "key": "header_authorization",
+          "name": "header authorization",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_key",
+    "authorization",
+    "header_authorization"
+  ],
+  "source": "connectors:mcp_tool",
+  "type": "tool",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

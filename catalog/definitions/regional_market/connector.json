@@ -1,0 +1,397 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "japan_b2b_entry",
+    "brazil_whatsapp_revenue",
+    "brazil_local_entry_plan",
+    "sso_directory_preset",
+    "enterprise_identity_preset",
+    "regional_identity_scope_policy",
+    "login_communication_preset",
+    "messaging_entrypoint_preset",
+    "pix_boleto_collection",
+    "nota_fiscal_review",
+    "open_banking_reconciliation",
+    "lgpd_consent_review",
+    "payment_invoice_preset",
+    "data_migration_handoff",
+    "workflow_intents",
+    "regional_copy"
+  ],
+  "config": {
+    "adjacent_connectors": [
+      "sso",
+      "whatsapp",
+      "microsoft_365",
+      "google_workspace",
+      "payment",
+      "accounting",
+      "bank_reconciliation",
+      "data_migration",
+      "collaboration"
+    ],
+    "default_connection_key": "regional_market_primary",
+    "enterprise_identity_preset_path": "/integrations/regional-market/enterprise-identity-preset",
+    "login_communication_preset_path": "/integrations/regional-market/login-communication-preset",
+    "onboarding_path": "/integrations/regional-market/onboarding-plan",
+    "options_path": "/integrations/regional-market/options",
+    "regions": [
+      "JP",
+      "BR"
+    ]
+  },
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Regional Market Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Regional Market Connector definitions, Provider choices, and operation contracts.",
+      "name": "Regional Market"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方区域市场连接器定义、Provider 选项与操作契约。",
+      "name": "区域市场"
+    }
+  },
+  "key": "regional_market",
+  "classification": "runtime_native",
+  "lifecycle_status": "reclassified",
+  "replacement_capability": "frontend.regionalization",
+  "name": "Regional Market",
+  "operations": [],
+  "provider": "generated",
+  "providers": [
+    {
+      "config_fields": [],
+      "description": "Runtime Provider belvo",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider belvo",
+          "name": "belvo"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider belvo",
+          "name": "belvo"
+        }
+      },
+      "key": "belvo",
+      "name": "belvo",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider boleto",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider boleto",
+          "name": "boleto"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider boleto",
+          "name": "boleto"
+        }
+      },
+      "key": "boleto",
+      "name": "boleto",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider cybozu",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider cybozu",
+          "name": "cybozu"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider cybozu",
+          "name": "cybozu"
+        }
+      },
+      "key": "cybozu",
+      "name": "cybozu",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider gmo_trustlogin",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider gmo_trustlogin",
+          "name": "gmo_trustlogin"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider gmo_trustlogin",
+          "name": "gmo_trustlogin"
+        }
+      },
+      "key": "gmo_trustlogin",
+      "name": "gmo_trustlogin",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider google_directory",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider google_directory",
+          "name": "google_directory"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider google_directory",
+          "name": "google_directory"
+        }
+      },
+      "key": "google_directory",
+      "name": "google_directory",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider gov_br",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider gov_br",
+          "name": "gov_br"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider gov_br",
+          "name": "gov_br"
+        }
+      },
+      "key": "gov_br",
+      "name": "gov_br",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider hennge_one",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider hennge_one",
+          "name": "hennge_one"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider hennge_one",
+          "name": "hennge_one"
+        }
+      },
+      "key": "hennge_one",
+      "name": "hennge_one",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider iij_id",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider iij_id",
+          "name": "iij_id"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider iij_id",
+          "name": "iij_id"
+        }
+      },
+      "key": "iij_id",
+      "name": "iij_id",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider keycloak",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider keycloak",
+          "name": "keycloak"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider keycloak",
+          "name": "keycloak"
+        }
+      },
+      "key": "keycloak",
+      "name": "keycloak",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider lgpd",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider lgpd",
+          "name": "lgpd"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider lgpd",
+          "name": "lgpd"
+        }
+      },
+      "key": "lgpd",
+      "name": "lgpd",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider line_works",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider line_works",
+          "name": "line_works"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider line_works",
+          "name": "line_works"
+        }
+      },
+      "key": "line_works",
+      "name": "line_works",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider mercado_pago",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider mercado_pago",
+          "name": "mercado_pago"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider mercado_pago",
+          "name": "mercado_pago"
+        }
+      },
+      "key": "mercado_pago",
+      "name": "mercado_pago",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider microsoft_entra",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider microsoft_entra",
+          "name": "microsoft_entra"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider microsoft_entra",
+          "name": "microsoft_entra"
+        }
+      },
+      "key": "microsoft_entra",
+      "name": "microsoft_entra",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider nota_fiscal",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider nota_fiscal",
+          "name": "nota_fiscal"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider nota_fiscal",
+          "name": "nota_fiscal"
+        }
+      },
+      "key": "nota_fiscal",
+      "name": "nota_fiscal",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider open_banking",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider open_banking",
+          "name": "open_banking"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider open_banking",
+          "name": "open_banking"
+        }
+      },
+      "key": "open_banking",
+      "name": "open_banking",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider pix",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider pix",
+          "name": "pix"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider pix",
+          "name": "pix"
+        }
+      },
+      "key": "pix",
+      "name": "pix",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider senior_x",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider senior_x",
+          "name": "senior_x"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider senior_x",
+          "name": "senior_x"
+        }
+      },
+      "key": "senior_x",
+      "name": "senior_x",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider totvs_identity",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider totvs_identity",
+          "name": "totvs_identity"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider totvs_identity",
+          "name": "totvs_identity"
+        }
+      },
+      "key": "totvs_identity",
+      "name": "totvs_identity",
+      "readiness": "provider_available",
+      "secret_fields": []
+    }
+  ],
+  "readiness": "catalog_only",
+  "source": "connectors:regional_market",
+  "type": "regional_onboarding",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "provider_catalog"
+  ]
+}

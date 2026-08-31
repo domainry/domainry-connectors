@@ -1,0 +1,1974 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "identity_verification",
+    "provider_request",
+    "status_webhook",
+    "webhook_signature_verification",
+    "idempotency",
+    "replay_protection",
+    "subject_resolution",
+    "evidence_archive",
+    "retention_policy",
+    "legal_hold",
+    "download_permission",
+    "risk_writeback",
+    "admission_workflow",
+    "permission_explanation",
+    "document_check",
+    "liveness_check",
+    "address_check",
+    "business_registry",
+    "ubo",
+    "sanctions_screening",
+    "pep_screening",
+    "risk_scoring",
+    "manual_review",
+    "business_writeback"
+  ],
+  "config": {
+    "config_fields": [
+      "provider",
+      "country",
+      "entity_type",
+      "verification_level",
+      "risk_policy_key",
+      "default_reviewer_role",
+      "writeback_object",
+      "periodic_review_days"
+    ],
+    "default_connection_key": "kyc_risk_primary",
+    "evidence_archive_path": "/integrations/kyc-risk/evidence-archive-plan",
+    "onboarding_path": "/integrations/kyc-risk/onboarding-plan",
+    "options_path": "/integrations/kyc-risk/options",
+    "provider_request_path": "/integrations/kyc-risk/provider-request-plan",
+    "risk_writeback_admission_path": "/integrations/kyc-risk/risk-writeback-admission-plan",
+    "secret_refs": [
+      "api_key",
+      "webhook_secret",
+      "client_secret",
+      "private_key"
+    ],
+    "status_webhook_path": "/integrations/kyc-risk/status-webhook-plan"
+  },
+  "config_fields": [
+    "provider",
+    "country",
+    "entity_type",
+    "verification_level",
+    "risk_policy_key",
+    "default_reviewer_role",
+    "writeback_object",
+    "periodic_review_days"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry KYC Risk Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry KYC Risk Connector definitions, Provider choices, and operation contracts.",
+      "name": "KYC Risk"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方KYC 风险连接器定义、Provider 选项与操作契约。",
+      "name": "KYC 风险"
+    }
+  },
+  "key": "kyc_risk",
+  "name": "KYC Risk",
+  "operations": [
+    {"key":"test_connection","name":"Test connection","description":"Verify Persona inquiry access.","i18n":{"en-US":{"name":"Test connection","description":"Verify Persona inquiry access."},"zh-CN":{"name":"测试连接","description":"验证 Persona 核验访问。"}},"method":"GET","execution_mode":"sync","side_effect":"read","test_supported":true,"timeout_default_seconds":15,"timeout_max_seconds":30,"output":[{"key":"connected","name":"Connected","type":"boolean","required":true}]},
+    {"key":"get_inquiry","name":"Get inquiry","description":"Read a Persona verification inquiry.","i18n":{"en-US":{"name":"Get inquiry","description":"Read a Persona verification inquiry."},"zh-CN":{"name":"读取核验请求","description":"读取 Persona 身份核验请求。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"inquiry_id","name":"Inquiry ID","type":"text","required":true}],"output":[{"key":"data","name":"Inquiry","type":"json","required":true}]},
+    {"key":"create_inquiry","name":"Create inquiry","description":"Create an idempotent Persona verification inquiry.","i18n":{"en-US":{"name":"Create inquiry","description":"Create an idempotent Persona verification inquiry."},"zh-CN":{"name":"创建核验请求","description":"以幂等方式创建 Persona 身份核验请求。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":false,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"inquiry_template_id","name":"Inquiry template ID","type":"text","required":false},{"key":"reference-id","name":"Reference ID","type":"text","required":false},{"key":"note","name":"Note","type":"text","required":false},{"key":"redirect-uri","name":"Redirect URI","type":"text","required":false}],"output":[{"key":"data","name":"Inquiry","type":"json","required":true}]}
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default reviewer role.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default reviewer role.",
+              "name": "default reviewer role"
+            },
+            "zh-CN": {
+              "description": "default reviewer role 配置项。",
+              "name": "default reviewer role"
+            }
+          },
+          "key": "default_reviewer_role",
+          "name": "default reviewer role",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for entity type.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for entity type.",
+              "name": "entity type"
+            },
+            "zh-CN": {
+              "description": "entity type 配置项。",
+              "name": "entity type"
+            }
+          },
+          "key": "entity_type",
+          "name": "entity type",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 90,
+          "description": "Configuration value for periodic review days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for periodic review days.",
+              "name": "periodic review days"
+            },
+            "zh-CN": {
+              "description": "periodic review days 配置项。",
+              "name": "periodic review days"
+            }
+          },
+          "key": "periodic_review_days",
+          "name": "periodic review days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for risk policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for risk policy key.",
+              "name": "risk policy key"
+            },
+            "zh-CN": {
+              "description": "risk policy key 配置项。",
+              "name": "risk policy key"
+            }
+          },
+          "key": "risk_policy_key",
+          "name": "risk policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for verification level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for verification level.",
+              "name": "verification level"
+            },
+            "zh-CN": {
+              "description": "verification level 配置项。",
+              "name": "verification level"
+            }
+          },
+          "key": "verification_level",
+          "name": "verification level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object.",
+              "name": "writeback object"
+            },
+            "zh-CN": {
+              "description": "writeback object 配置项。",
+              "name": "writeback object"
+            }
+          },
+          "key": "writeback_object",
+          "name": "writeback object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider clearbit",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider clearbit",
+          "name": "clearbit"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider clearbit",
+          "name": "clearbit"
+        }
+      },
+      "key": "clearbit",
+      "name": "clearbit",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default reviewer role.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default reviewer role.",
+              "name": "default reviewer role"
+            },
+            "zh-CN": {
+              "description": "default reviewer role 配置项。",
+              "name": "default reviewer role"
+            }
+          },
+          "key": "default_reviewer_role",
+          "name": "default reviewer role",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for entity type.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for entity type.",
+              "name": "entity type"
+            },
+            "zh-CN": {
+              "description": "entity type 配置项。",
+              "name": "entity type"
+            }
+          },
+          "key": "entity_type",
+          "name": "entity type",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 90,
+          "description": "Configuration value for periodic review days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for periodic review days.",
+              "name": "periodic review days"
+            },
+            "zh-CN": {
+              "description": "periodic review days 配置项。",
+              "name": "periodic review days"
+            }
+          },
+          "key": "periodic_review_days",
+          "name": "periodic review days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for risk policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for risk policy key.",
+              "name": "risk policy key"
+            },
+            "zh-CN": {
+              "description": "risk policy key 配置项。",
+              "name": "risk policy key"
+            }
+          },
+          "key": "risk_policy_key",
+          "name": "risk policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for verification level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for verification level.",
+              "name": "verification level"
+            },
+            "zh-CN": {
+              "description": "verification level 配置项。",
+              "name": "verification level"
+            }
+          },
+          "key": "verification_level",
+          "name": "verification level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object.",
+              "name": "writeback object"
+            },
+            "zh-CN": {
+              "description": "writeback object 配置项。",
+              "name": "writeback object"
+            }
+          },
+          "key": "writeback_object",
+          "name": "writeback object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider company_registry",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider company_registry",
+          "name": "company_registry"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider company_registry",
+          "name": "company_registry"
+        }
+      },
+      "key": "company_registry",
+      "name": "company_registry",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default reviewer role.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default reviewer role.",
+              "name": "default reviewer role"
+            },
+            "zh-CN": {
+              "description": "default reviewer role 配置项。",
+              "name": "default reviewer role"
+            }
+          },
+          "key": "default_reviewer_role",
+          "name": "default reviewer role",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for entity type.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for entity type.",
+              "name": "entity type"
+            },
+            "zh-CN": {
+              "description": "entity type 配置项。",
+              "name": "entity type"
+            }
+          },
+          "key": "entity_type",
+          "name": "entity type",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 90,
+          "description": "Configuration value for periodic review days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for periodic review days.",
+              "name": "periodic review days"
+            },
+            "zh-CN": {
+              "description": "periodic review days 配置项。",
+              "name": "periodic review days"
+            }
+          },
+          "key": "periodic_review_days",
+          "name": "periodic review days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for risk policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for risk policy key.",
+              "name": "risk policy key"
+            },
+            "zh-CN": {
+              "description": "risk policy key 配置项。",
+              "name": "risk policy key"
+            }
+          },
+          "key": "risk_policy_key",
+          "name": "risk policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for verification level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for verification level.",
+              "name": "verification level"
+            },
+            "zh-CN": {
+              "description": "verification level 配置项。",
+              "name": "verification level"
+            }
+          },
+          "key": "verification_level",
+          "name": "verification level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object.",
+              "name": "writeback object"
+            },
+            "zh-CN": {
+              "description": "writeback object 配置项。",
+              "name": "writeback object"
+            }
+          },
+          "key": "writeback_object",
+          "name": "writeback object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider local_registry",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider local_registry",
+          "name": "local_registry"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider local_registry",
+          "name": "local_registry"
+        }
+      },
+      "key": "local_registry",
+      "name": "local_registry",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default reviewer role.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default reviewer role.",
+              "name": "default reviewer role"
+            },
+            "zh-CN": {
+              "description": "default reviewer role 配置项。",
+              "name": "default reviewer role"
+            }
+          },
+          "key": "default_reviewer_role",
+          "name": "default reviewer role",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for entity type.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for entity type.",
+              "name": "entity type"
+            },
+            "zh-CN": {
+              "description": "entity type 配置项。",
+              "name": "entity type"
+            }
+          },
+          "key": "entity_type",
+          "name": "entity type",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 90,
+          "description": "Configuration value for periodic review days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for periodic review days.",
+              "name": "periodic review days"
+            },
+            "zh-CN": {
+              "description": "periodic review days 配置项。",
+              "name": "periodic review days"
+            }
+          },
+          "key": "periodic_review_days",
+          "name": "periodic review days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for risk policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for risk policy key.",
+              "name": "risk policy key"
+            },
+            "zh-CN": {
+              "description": "risk policy key 配置项。",
+              "name": "risk policy key"
+            }
+          },
+          "key": "risk_policy_key",
+          "name": "risk policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for verification level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for verification level.",
+              "name": "verification level"
+            },
+            "zh-CN": {
+              "description": "verification level 配置项。",
+              "name": "verification level"
+            }
+          },
+          "key": "verification_level",
+          "name": "verification level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object.",
+              "name": "writeback object"
+            },
+            "zh-CN": {
+              "description": "writeback object 配置项。",
+              "name": "writeback object"
+            }
+          },
+          "key": "writeback_object",
+          "name": "writeback object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider onfido",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider onfido",
+          "name": "onfido"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider onfido",
+          "name": "onfido"
+        }
+      },
+      "key": "onfido",
+      "name": "onfido",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default reviewer role.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default reviewer role.",
+              "name": "default reviewer role"
+            },
+            "zh-CN": {
+              "description": "default reviewer role 配置项。",
+              "name": "default reviewer role"
+            }
+          },
+          "key": "default_reviewer_role",
+          "name": "default reviewer role",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for entity type.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for entity type.",
+              "name": "entity type"
+            },
+            "zh-CN": {
+              "description": "entity type 配置项。",
+              "name": "entity type"
+            }
+          },
+          "key": "entity_type",
+          "name": "entity type",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 90,
+          "description": "Configuration value for periodic review days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for periodic review days.",
+              "name": "periodic review days"
+            },
+            "zh-CN": {
+              "description": "periodic review days 配置项。",
+              "name": "periodic review days"
+            }
+          },
+          "key": "periodic_review_days",
+          "name": "periodic review days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for risk policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for risk policy key.",
+              "name": "risk policy key"
+            },
+            "zh-CN": {
+              "description": "risk policy key 配置项。",
+              "name": "risk policy key"
+            }
+          },
+          "key": "risk_policy_key",
+          "name": "risk policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for verification level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for verification level.",
+              "name": "verification level"
+            },
+            "zh-CN": {
+              "description": "verification level 配置项。",
+              "name": "verification level"
+            }
+          },
+          "key": "verification_level",
+          "name": "verification level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object.",
+              "name": "writeback object"
+            },
+            "zh-CN": {
+              "description": "writeback object 配置项。",
+              "name": "writeback object"
+            }
+          },
+          "key": "writeback_object",
+          "name": "writeback object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider persona",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider persona",
+          "name": "persona"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider persona",
+          "name": "persona"
+        }
+      },
+      "key": "persona",
+      "name": "persona",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default reviewer role.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default reviewer role.",
+              "name": "default reviewer role"
+            },
+            "zh-CN": {
+              "description": "default reviewer role 配置项。",
+              "name": "default reviewer role"
+            }
+          },
+          "key": "default_reviewer_role",
+          "name": "default reviewer role",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for entity type.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for entity type.",
+              "name": "entity type"
+            },
+            "zh-CN": {
+              "description": "entity type 配置项。",
+              "name": "entity type"
+            }
+          },
+          "key": "entity_type",
+          "name": "entity type",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 90,
+          "description": "Configuration value for periodic review days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for periodic review days.",
+              "name": "periodic review days"
+            },
+            "zh-CN": {
+              "description": "periodic review days 配置项。",
+              "name": "periodic review days"
+            }
+          },
+          "key": "periodic_review_days",
+          "name": "periodic review days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for risk policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for risk policy key.",
+              "name": "risk policy key"
+            },
+            "zh-CN": {
+              "description": "risk policy key 配置项。",
+              "name": "risk policy key"
+            }
+          },
+          "key": "risk_policy_key",
+          "name": "risk policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for verification level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for verification level.",
+              "name": "verification level"
+            },
+            "zh-CN": {
+              "description": "verification level 配置项。",
+              "name": "verification level"
+            }
+          },
+          "key": "verification_level",
+          "name": "verification level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object.",
+              "name": "writeback object"
+            },
+            "zh-CN": {
+              "description": "writeback object 配置项。",
+              "name": "writeback object"
+            }
+          },
+          "key": "writeback_object",
+          "name": "writeback object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider stripe_identity",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider stripe_identity",
+          "name": "stripe_identity"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider stripe_identity",
+          "name": "stripe_identity"
+        }
+      },
+      "key": "stripe_identity",
+      "name": "stripe_identity",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default reviewer role.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default reviewer role.",
+              "name": "default reviewer role"
+            },
+            "zh-CN": {
+              "description": "default reviewer role 配置项。",
+              "name": "default reviewer role"
+            }
+          },
+          "key": "default_reviewer_role",
+          "name": "default reviewer role",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for entity type.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for entity type.",
+              "name": "entity type"
+            },
+            "zh-CN": {
+              "description": "entity type 配置项。",
+              "name": "entity type"
+            }
+          },
+          "key": "entity_type",
+          "name": "entity type",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 90,
+          "description": "Configuration value for periodic review days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for periodic review days.",
+              "name": "periodic review days"
+            },
+            "zh-CN": {
+              "description": "periodic review days 配置项。",
+              "name": "periodic review days"
+            }
+          },
+          "key": "periodic_review_days",
+          "name": "periodic review days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for risk policy key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for risk policy key.",
+              "name": "risk policy key"
+            },
+            "zh-CN": {
+              "description": "risk policy key 配置项。",
+              "name": "risk policy key"
+            }
+          },
+          "key": "risk_policy_key",
+          "name": "risk policy key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for verification level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for verification level.",
+              "name": "verification level"
+            },
+            "zh-CN": {
+              "description": "verification level 配置项。",
+              "name": "verification level"
+            }
+          },
+          "key": "verification_level",
+          "name": "verification level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback object.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object.",
+              "name": "writeback object"
+            },
+            "zh-CN": {
+              "description": "writeback object 配置项。",
+              "name": "writeback object"
+            }
+          },
+          "key": "writeback_object",
+          "name": "writeback object",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider trulioo",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider trulioo",
+          "name": "trulioo"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider trulioo",
+          "name": "trulioo"
+        }
+      },
+      "key": "trulioo",
+      "name": "trulioo",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_key",
+    "webhook_secret",
+    "client_secret",
+    "private_key"
+  ],
+  "source": "connectors:kyc_risk",
+  "type": "kyc_risk",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

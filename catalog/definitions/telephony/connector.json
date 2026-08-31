@@ -1,0 +1,1643 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "twilio",
+    "vonage",
+    "aws_sns",
+    "regional_sms",
+    "setup_readiness",
+    "call_logs",
+    "sms_messages",
+    "delivery_status",
+    "recordings",
+    "missed_calls",
+    "callback_tasks",
+    "payment_reminder_sms",
+    "dunning_sms",
+    "opt_out",
+    "blocklist",
+    "consent",
+    "phone_identity_merge",
+    "number_normalization",
+    "call_archive_closeout",
+    "provider_native_archive",
+    "recording_archive_handoff",
+    "delivery_receipt_repair",
+    "manual_takeover",
+    "contactability_repair_handoff",
+    "contactability_gate_handoff",
+    "data_migration_handoff"
+  ],
+  "config": {
+    "call_archive_closeout_path": "/integrations/telephony/call-archive-closeout-plan",
+    "channel_adapter": true,
+    "channel_connection_channel": "phone",
+    "channel_connection_external_account_field": "external_account_id",
+    "channel_connection_key_field": "connection_key",
+    "channel_connection_object": "channel_connection",
+    "channel_connection_secret_boundary": "secret_refs_only",
+    "channel_connection_status_field": "status",
+    "channel_connection_webhook_status_field": "webhook_status",
+    "channel_writeback_objects": [
+      "conversation",
+      "message",
+      "channel_connection"
+    ],
+    "config_fields": [
+      "provider",
+      "account_id",
+      "from_number",
+      "webhook_url",
+      "default_country",
+      "default_owner_queue",
+      "callback_workflow_key",
+      "callback_sla_hours",
+      "recording_archive_policy",
+      "use_cases"
+    ],
+    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "default_connection_key": "telephony_primary",
+    "identity_merge_path": "/integrations/telephony/identity-merge-plan",
+    "options_path": "/integrations/telephony/options",
+    "outbound_contact_plan_path": "/integrations/telephony/outbound-contact-plan",
+    "secret_refs": [
+      "account_sid",
+      "auth_token",
+      "api_key",
+      "api_secret",
+      "webhook_secret",
+      "sns_topic_arn"
+    ],
+    "setup_readiness_path": "/integrations/telephony/setup-readiness",
+    "timeline_onboarding_path": "/integrations/telephony/timeline-onboarding"
+  },
+  "config_fields": [
+    "provider",
+    "account_id",
+    "from_number",
+    "webhook_url",
+    "default_country",
+    "default_owner_queue",
+    "callback_workflow_key",
+    "callback_sla_hours",
+    "recording_archive_policy",
+    "use_cases"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Telephony Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Telephony Connector definitions, Provider choices, and operation contracts.",
+      "name": "Telephony"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方电话通信连接器定义、Provider 选项与操作契约。",
+      "name": "电话通信"
+    }
+  },
+  "key": "telephony",
+  "name": "Telephony",
+  "operations": [
+    {
+      "key": "test_connection",
+      "name": "test connection",
+      "description": "Verify Twilio account credentials.",
+      "i18n": {
+        "en-US": {
+          "name": "Test connection",
+          "description": "Verify Twilio account credentials."
+        },
+        "zh-CN": {
+          "name": "测试连接",
+          "description": "验证 Twilio 账户凭据。"
+        }
+      },
+      "method": "GET",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30,
+      "output": [
+        {
+          "key": "connected",
+          "name": "Connected",
+          "type": "boolean",
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "send_sms",
+      "name": "send SMS",
+      "description": "Send an idempotent SMS message through the selected telephony Provider.",
+      "i18n": {
+        "en-US": {
+          "name": "Send SMS",
+          "description": "Send an idempotent SMS message through the selected telephony Provider."
+        },
+        "zh-CN": {
+          "name": "发送短信",
+          "description": "通过所选通信服务商发送具有幂等保护的短信。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "write",
+      "idempotency_supported": true,
+      "test_supported": true,
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 60,
+      "input": [
+        {
+          "key": "to",
+          "name": "Recipient",
+          "type": "phone",
+          "required": true
+        },
+        {
+          "key": "body",
+          "name": "Message body",
+          "type": "long_text",
+          "required": true
+        },
+        {
+          "key": "from",
+          "name": "Sender",
+          "type": "phone",
+          "required": false
+        }
+      ],
+      "output": [
+        {
+          "key": "sid",
+          "name": "Message SID",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "status",
+          "name": "Status",
+          "type": "text",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for callback sla hours.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for callback sla hours.",
+              "name": "callback sla hours"
+            },
+            "zh-CN": {
+              "description": "callback sla hours 配置项。",
+              "name": "callback sla hours"
+            }
+          },
+          "key": "callback_sla_hours",
+          "name": "callback sla hours",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for callback workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for callback workflow key.",
+              "name": "callback workflow key"
+            },
+            "zh-CN": {
+              "description": "callback workflow key 配置项。",
+              "name": "callback workflow key"
+            }
+          },
+          "key": "callback_workflow_key",
+          "name": "callback workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from number.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from number.",
+              "name": "from number"
+            },
+            "zh-CN": {
+              "description": "from number 配置项。",
+              "name": "from number"
+            }
+          },
+          "key": "from_number",
+          "name": "from number",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for recording archive policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for recording archive policy.",
+              "name": "recording archive policy"
+            },
+            "zh-CN": {
+              "description": "recording archive policy 配置项。",
+              "name": "recording archive policy"
+            }
+          },
+          "key": "recording_archive_policy",
+          "name": "recording archive policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for use cases.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for use cases.",
+              "name": "use cases"
+            },
+            "zh-CN": {
+              "description": "use cases 配置项。",
+              "name": "use cases"
+            }
+          },
+          "key": "use_cases",
+          "name": "use cases",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for webhook url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook url.",
+              "name": "webhook url"
+            },
+            "zh-CN": {
+              "description": "webhook url 配置项。",
+              "name": "webhook url"
+            }
+          },
+          "key": "webhook_url",
+          "name": "webhook url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        }
+      ],
+      "description": "Runtime Provider aws_sns",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider aws_sns",
+          "name": "aws_sns"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider aws_sns",
+          "name": "aws_sns"
+        }
+      },
+      "key": "aws_sns",
+      "name": "aws_sns",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for account sid.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for account sid.",
+              "name": "account sid"
+            },
+            "zh-CN": {
+              "description": "account sid 敏感凭据。",
+              "name": "account sid"
+            }
+          },
+          "key": "account_sid",
+          "name": "account sid",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api secret.",
+              "name": "api secret"
+            },
+            "zh-CN": {
+              "description": "api secret 敏感凭据。",
+              "name": "api secret"
+            }
+          },
+          "key": "api_secret",
+          "name": "api secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for auth token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for auth token.",
+              "name": "auth token"
+            },
+            "zh-CN": {
+              "description": "auth token 敏感凭据。",
+              "name": "auth token"
+            }
+          },
+          "key": "auth_token",
+          "name": "auth token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for sns topic arn.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for sns topic arn.",
+              "name": "sns topic arn"
+            },
+            "zh-CN": {
+              "description": "sns topic arn 敏感凭据。",
+              "name": "sns topic arn"
+            }
+          },
+          "key": "sns_topic_arn",
+          "name": "sns topic arn",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for callback sla hours.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for callback sla hours.",
+              "name": "callback sla hours"
+            },
+            "zh-CN": {
+              "description": "callback sla hours 配置项。",
+              "name": "callback sla hours"
+            }
+          },
+          "key": "callback_sla_hours",
+          "name": "callback sla hours",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for callback workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for callback workflow key.",
+              "name": "callback workflow key"
+            },
+            "zh-CN": {
+              "description": "callback workflow key 配置项。",
+              "name": "callback workflow key"
+            }
+          },
+          "key": "callback_workflow_key",
+          "name": "callback workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from number.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from number.",
+              "name": "from number"
+            },
+            "zh-CN": {
+              "description": "from number 配置项。",
+              "name": "from number"
+            }
+          },
+          "key": "from_number",
+          "name": "from number",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for recording archive policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for recording archive policy.",
+              "name": "recording archive policy"
+            },
+            "zh-CN": {
+              "description": "recording archive policy 配置项。",
+              "name": "recording archive policy"
+            }
+          },
+          "key": "recording_archive_policy",
+          "name": "recording archive policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for use cases.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for use cases.",
+              "name": "use cases"
+            },
+            "zh-CN": {
+              "description": "use cases 配置项。",
+              "name": "use cases"
+            }
+          },
+          "key": "use_cases",
+          "name": "use cases",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for webhook url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook url.",
+              "name": "webhook url"
+            },
+            "zh-CN": {
+              "description": "webhook url 配置项。",
+              "name": "webhook url"
+            }
+          },
+          "key": "webhook_url",
+          "name": "webhook url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        }
+      ],
+      "description": "Runtime Provider regional_sms",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider regional_sms",
+          "name": "regional_sms"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider regional_sms",
+          "name": "regional_sms"
+        }
+      },
+      "key": "regional_sms",
+      "name": "regional_sms",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for account sid.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for account sid.",
+              "name": "account sid"
+            },
+            "zh-CN": {
+              "description": "account sid 敏感凭据。",
+              "name": "account sid"
+            }
+          },
+          "key": "account_sid",
+          "name": "account sid",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api secret.",
+              "name": "api secret"
+            },
+            "zh-CN": {
+              "description": "api secret 敏感凭据。",
+              "name": "api secret"
+            }
+          },
+          "key": "api_secret",
+          "name": "api secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for auth token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for auth token.",
+              "name": "auth token"
+            },
+            "zh-CN": {
+              "description": "auth token 敏感凭据。",
+              "name": "auth token"
+            }
+          },
+          "key": "auth_token",
+          "name": "auth token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for sns topic arn.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for sns topic arn.",
+              "name": "sns topic arn"
+            },
+            "zh-CN": {
+              "description": "sns topic arn 敏感凭据。",
+              "name": "sns topic arn"
+            }
+          },
+          "key": "sns_topic_arn",
+          "name": "sns topic arn",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for callback sla hours.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for callback sla hours.",
+              "name": "callback sla hours"
+            },
+            "zh-CN": {
+              "description": "callback sla hours 配置项。",
+              "name": "callback sla hours"
+            }
+          },
+          "key": "callback_sla_hours",
+          "name": "callback sla hours",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for callback workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for callback workflow key.",
+              "name": "callback workflow key"
+            },
+            "zh-CN": {
+              "description": "callback workflow key 配置项。",
+              "name": "callback workflow key"
+            }
+          },
+          "key": "callback_workflow_key",
+          "name": "callback workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from number.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from number.",
+              "name": "from number"
+            },
+            "zh-CN": {
+              "description": "from number 配置项。",
+              "name": "from number"
+            }
+          },
+          "key": "from_number",
+          "name": "from number",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for recording archive policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for recording archive policy.",
+              "name": "recording archive policy"
+            },
+            "zh-CN": {
+              "description": "recording archive policy 配置项。",
+              "name": "recording archive policy"
+            }
+          },
+          "key": "recording_archive_policy",
+          "name": "recording archive policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for use cases.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for use cases.",
+              "name": "use cases"
+            },
+            "zh-CN": {
+              "description": "use cases 配置项。",
+              "name": "use cases"
+            }
+          },
+          "key": "use_cases",
+          "name": "use cases",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for webhook url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook url.",
+              "name": "webhook url"
+            },
+            "zh-CN": {
+              "description": "webhook url 配置项。",
+              "name": "webhook url"
+            }
+          },
+          "key": "webhook_url",
+          "name": "webhook url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        }
+      ],
+      "description": "Runtime Provider twilio",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider twilio",
+          "name": "twilio"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider twilio",
+          "name": "twilio"
+        }
+      },
+      "key": "twilio",
+      "name": "twilio",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for account sid.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for account sid.",
+              "name": "account sid"
+            },
+            "zh-CN": {
+              "description": "account sid 敏感凭据。",
+              "name": "account sid"
+            }
+          },
+          "key": "account_sid",
+          "name": "account sid",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api secret.",
+              "name": "api secret"
+            },
+            "zh-CN": {
+              "description": "api secret 敏感凭据。",
+              "name": "api secret"
+            }
+          },
+          "key": "api_secret",
+          "name": "api secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for auth token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for auth token.",
+              "name": "auth token"
+            },
+            "zh-CN": {
+              "description": "auth token 敏感凭据。",
+              "name": "auth token"
+            }
+          },
+          "key": "auth_token",
+          "name": "auth token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for sns topic arn.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for sns topic arn.",
+              "name": "sns topic arn"
+            },
+            "zh-CN": {
+              "description": "sns topic arn 敏感凭据。",
+              "name": "sns topic arn"
+            }
+          },
+          "key": "sns_topic_arn",
+          "name": "sns topic arn",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for callback sla hours.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for callback sla hours.",
+              "name": "callback sla hours"
+            },
+            "zh-CN": {
+              "description": "callback sla hours 配置项。",
+              "name": "callback sla hours"
+            }
+          },
+          "key": "callback_sla_hours",
+          "name": "callback sla hours",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for callback workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for callback workflow key.",
+              "name": "callback workflow key"
+            },
+            "zh-CN": {
+              "description": "callback workflow key 配置项。",
+              "name": "callback workflow key"
+            }
+          },
+          "key": "callback_workflow_key",
+          "name": "callback workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default country.",
+              "name": "default country"
+            },
+            "zh-CN": {
+              "description": "default country 配置项。",
+              "name": "default country"
+            }
+          },
+          "key": "default_country",
+          "name": "default country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for from number.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for from number.",
+              "name": "from number"
+            },
+            "zh-CN": {
+              "description": "from number 配置项。",
+              "name": "from number"
+            }
+          },
+          "key": "from_number",
+          "name": "from number",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for recording archive policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for recording archive policy.",
+              "name": "recording archive policy"
+            },
+            "zh-CN": {
+              "description": "recording archive policy 配置项。",
+              "name": "recording archive policy"
+            }
+          },
+          "key": "recording_archive_policy",
+          "name": "recording archive policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for use cases.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for use cases.",
+              "name": "use cases"
+            },
+            "zh-CN": {
+              "description": "use cases 配置项。",
+              "name": "use cases"
+            }
+          },
+          "key": "use_cases",
+          "name": "use cases",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for webhook url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook url.",
+              "name": "webhook url"
+            },
+            "zh-CN": {
+              "description": "webhook url 配置项。",
+              "name": "webhook url"
+            }
+          },
+          "key": "webhook_url",
+          "name": "webhook url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        }
+      ],
+      "description": "Runtime Provider vonage",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider vonage",
+          "name": "vonage"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider vonage",
+          "name": "vonage"
+        }
+      },
+      "key": "vonage",
+      "name": "vonage",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for account sid.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for account sid.",
+              "name": "account sid"
+            },
+            "zh-CN": {
+              "description": "account sid 敏感凭据。",
+              "name": "account sid"
+            }
+          },
+          "key": "account_sid",
+          "name": "account sid",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api secret.",
+              "name": "api secret"
+            },
+            "zh-CN": {
+              "description": "api secret 敏感凭据。",
+              "name": "api secret"
+            }
+          },
+          "key": "api_secret",
+          "name": "api secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for auth token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for auth token.",
+              "name": "auth token"
+            },
+            "zh-CN": {
+              "description": "auth token 敏感凭据。",
+              "name": "auth token"
+            }
+          },
+          "key": "auth_token",
+          "name": "auth token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for sns topic arn.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for sns topic arn.",
+              "name": "sns topic arn"
+            },
+            "zh-CN": {
+              "description": "sns topic arn 敏感凭据。",
+              "name": "sns topic arn"
+            }
+          },
+          "key": "sns_topic_arn",
+          "name": "sns topic arn",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "account_sid",
+    "auth_token",
+    "api_key",
+    "api_secret",
+    "webhook_secret",
+    "sns_topic_arn"
+  ],
+  "source": "connectors:telephony",
+  "type": "telephony",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

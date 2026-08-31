@@ -1,0 +1,2794 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "feishu",
+    "enterprise_wechat",
+    "dingtalk",
+    "line",
+    "line_works",
+    "slack",
+    "teams",
+    "discord",
+    "google_workspace",
+    "microsoft_365",
+    "receive_event",
+    "send_message",
+    "external_identity",
+    "chat_command",
+    "directory_sync",
+    "department_sync",
+    "approval_chain",
+    "group_member_sync",
+    "message_entry",
+    "reply_outbox",
+    "event_ingress",
+    "meeting_reference",
+    "file_reference",
+    "mailbox_backfill",
+    "calendar_backfill",
+    "task_backfill",
+    "group_backfill",
+    "incremental_cursor",
+    "attachment_evidence",
+    "scope_minimization",
+    "workspace_backfill_closeout",
+    "business_system_onboarding",
+    "messaging_setup_readiness",
+    "org_approval_message_entry",
+    "customer_timeline_entry",
+    "run_action",
+    "run_workflow",
+    "approval_policy",
+    "approval_execution_plan",
+    "community_signal_onboarding",
+    "data_migration_handoff"
+  ],
+  "config": {
+    "approval_execution_plan_path": "/integrations/collaboration/approval-execution-plan",
+    "approval_policy_path": "/integrations/collaboration/approval-policy",
+    "business_system_assets": [
+      "directory_users",
+      "departments",
+      "approval_chain",
+      "groups",
+      "messages",
+      "meetings",
+      "mailbox_messages",
+      "calendar_events",
+      "tasks",
+      "file_references"
+    ],
+    "business_system_onboarding_path": "/integrations/collaboration/business-system-onboarding",
+    "channel_adapter": true,
+    "channel_connection_channel": "system",
+    "channel_connection_external_account_field": "external_account_id",
+    "channel_connection_key_field": "connection_key",
+    "channel_connection_object": "channel_connection",
+    "channel_connection_secret_boundary": "secret_refs_only",
+    "channel_connection_status_field": "status",
+    "channel_connection_webhook_status_field": "webhook_status",
+    "channel_writeback_objects": [
+      "conversation",
+      "message",
+      "channel_connection"
+    ],
+    "command_path": "/integrations/collaboration/command",
+    "command_prefixes": [
+      "/crm",
+      "/erp",
+      "/operations"
+    ],
+    "community_signal_onboarding_path": "/integrations/collaboration/community-signal-onboarding",
+    "default_connection_key": "collaboration_primary",
+    "identity_mapping_path": "/integrations/collaboration/identity-mapping",
+    "identity_subjects": [
+      "user_id",
+      "open_id",
+      "union_id",
+      "email",
+      "team_user_id",
+      "aad_object_id"
+    ],
+    "messaging_setup_readiness_path": "/integrations/collaboration/messaging-setup-readiness",
+    "options_path": "/integrations/collaboration/options",
+    "org_approval_message_entry_path": "/integrations/collaboration/org-approval-message-entry-plan",
+    "regional_presets": [
+      "cn:feishu",
+      "cn:enterprise_wechat",
+      "cn:dingtalk",
+      "global:line",
+      "jp:line_works",
+      "global:slack",
+      "global:teams",
+      "global:discord",
+      "global:google_workspace",
+      "global:microsoft_365"
+    ],
+    "secret_refs": [
+      "app_secret",
+      "bot_token",
+      "signing_secret",
+      "verification_token",
+      "encrypt_key",
+      "webhook_secret",
+      "discord_bot_token",
+      "tenant_key",
+      "client_id",
+      "client_secret"
+    ],
+    "send_path": "/integrations/collaboration/send",
+    "webhook_events_path": "/integrations/webhooks/collaboration/events",
+    "workspace_backfill_closeout_plan_path": "/integrations/collaboration/workspace-backfill-closeout-plan"
+  },
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Enterprise Collaboration Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Enterprise Collaboration Connector definitions, Provider choices, and operation contracts.",
+      "name": "Enterprise Collaboration"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方企业协作连接器定义、Provider 选项与操作契约。",
+      "name": "企业协作"
+    }
+  },
+  "key": "collaboration",
+  "name": "Enterprise Collaboration",
+  "operations": [
+    {
+      "description": "Execute the Send Message operation.",
+      "execution_mode": "async",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Send Message operation.",
+          "name": "Send Message"
+        },
+        "zh-CN": {
+          "description": "执行“发送消息”操作。",
+          "name": "发送消息"
+        }
+      },
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "recipient",
+          "name": "Recipient",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "message",
+          "name": "Message",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "provider_payload",
+          "name": "Provider Payload",
+          "description": "Deprecated immutable native payload retained only for previously persisted outbox messages.",
+          "type": "json"
+        },
+        {
+          "key": "notification_content",
+          "name": "Notification Content",
+          "description": "Versioned provider-neutral rendered notification snapshot compiled by the selected provider.",
+          "type": "json"
+        }
+      ],
+      "key": "send_message",
+      "method": "POST",
+      "name": "Send Message",
+      "side_effect": "write",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 60
+    },
+    {
+      "description": "Execute the Test Collaboration Connection operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Test Collaboration Connection operation.",
+          "name": "Test Collaboration Connection"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "GET",
+      "name": "Test Collaboration Connection",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 10,
+      "timeout_max_seconds": 30
+    }
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [],
+      "description": "Runtime Provider dingtalk",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider dingtalk",
+          "name": "dingtalk"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider dingtalk",
+          "name": "dingtalk"
+        }
+      },
+      "key": "dingtalk",
+      "name": "dingtalk",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bot token.",
+              "name": "bot token"
+            },
+            "zh-CN": {
+              "description": "bot token 敏感凭据。",
+              "name": "bot token"
+            }
+          },
+          "key": "bot_token",
+          "name": "bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for discord bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for discord bot token.",
+              "name": "discord bot token"
+            },
+            "zh-CN": {
+              "description": "discord bot token 敏感凭据。",
+              "name": "discord bot token"
+            }
+          },
+          "key": "discord_bot_token",
+          "name": "discord bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for encrypt key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for encrypt key.",
+              "name": "encrypt key"
+            },
+            "zh-CN": {
+              "description": "encrypt key 敏感凭据。",
+              "name": "encrypt key"
+            }
+          },
+          "key": "encrypt_key",
+          "name": "encrypt key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tenant key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tenant key.",
+              "name": "tenant key"
+            },
+            "zh-CN": {
+              "description": "tenant key 敏感凭据。",
+              "name": "tenant key"
+            }
+          },
+          "key": "tenant_key",
+          "name": "tenant key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for verification token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for verification token.",
+              "name": "verification token"
+            },
+            "zh-CN": {
+              "description": "verification token 敏感凭据。",
+              "name": "verification token"
+            }
+          },
+          "key": "verification_token",
+          "name": "verification token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider discord",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider discord",
+          "name": "discord"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider discord",
+          "name": "discord"
+        }
+      },
+      "key": "discord",
+      "name": "discord",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bot token.",
+              "name": "bot token"
+            },
+            "zh-CN": {
+              "description": "bot token 敏感凭据。",
+              "name": "bot token"
+            }
+          },
+          "key": "bot_token",
+          "name": "bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for discord bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for discord bot token.",
+              "name": "discord bot token"
+            },
+            "zh-CN": {
+              "description": "discord bot token 敏感凭据。",
+              "name": "discord bot token"
+            }
+          },
+          "key": "discord_bot_token",
+          "name": "discord bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for encrypt key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for encrypt key.",
+              "name": "encrypt key"
+            },
+            "zh-CN": {
+              "description": "encrypt key 敏感凭据。",
+              "name": "encrypt key"
+            }
+          },
+          "key": "encrypt_key",
+          "name": "encrypt key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tenant key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tenant key.",
+              "name": "tenant key"
+            },
+            "zh-CN": {
+              "description": "tenant key 敏感凭据。",
+              "name": "tenant key"
+            }
+          },
+          "key": "tenant_key",
+          "name": "tenant key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for verification token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for verification token.",
+              "name": "verification token"
+            },
+            "zh-CN": {
+              "description": "verification token 敏感凭据。",
+              "name": "verification token"
+            }
+          },
+          "key": "verification_token",
+          "name": "verification token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider enterprise_wechat",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider enterprise_wechat",
+          "name": "enterprise_wechat"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider enterprise_wechat",
+          "name": "enterprise_wechat"
+        }
+      },
+      "key": "enterprise_wechat",
+      "name": "enterprise_wechat",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bot token.",
+              "name": "bot token"
+            },
+            "zh-CN": {
+              "description": "bot token 敏感凭据。",
+              "name": "bot token"
+            }
+          },
+          "key": "bot_token",
+          "name": "bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for discord bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for discord bot token.",
+              "name": "discord bot token"
+            },
+            "zh-CN": {
+              "description": "discord bot token 敏感凭据。",
+              "name": "discord bot token"
+            }
+          },
+          "key": "discord_bot_token",
+          "name": "discord bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for encrypt key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for encrypt key.",
+              "name": "encrypt key"
+            },
+            "zh-CN": {
+              "description": "encrypt key 敏感凭据。",
+              "name": "encrypt key"
+            }
+          },
+          "key": "encrypt_key",
+          "name": "encrypt key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tenant key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tenant key.",
+              "name": "tenant key"
+            },
+            "zh-CN": {
+              "description": "tenant key 敏感凭据。",
+              "name": "tenant key"
+            }
+          },
+          "key": "tenant_key",
+          "name": "tenant key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for verification token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for verification token.",
+              "name": "verification token"
+            },
+            "zh-CN": {
+              "description": "verification token 敏感凭据。",
+              "name": "verification token"
+            }
+          },
+          "key": "verification_token",
+          "name": "verification token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider feishu",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider feishu",
+          "name": "feishu"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider feishu",
+          "name": "feishu"
+        }
+      },
+      "key": "feishu",
+      "name": "feishu",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bot token.",
+              "name": "bot token"
+            },
+            "zh-CN": {
+              "description": "bot token 敏感凭据。",
+              "name": "bot token"
+            }
+          },
+          "key": "bot_token",
+          "name": "bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for discord bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for discord bot token.",
+              "name": "discord bot token"
+            },
+            "zh-CN": {
+              "description": "discord bot token 敏感凭据。",
+              "name": "discord bot token"
+            }
+          },
+          "key": "discord_bot_token",
+          "name": "discord bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for encrypt key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for encrypt key.",
+              "name": "encrypt key"
+            },
+            "zh-CN": {
+              "description": "encrypt key 敏感凭据。",
+              "name": "encrypt key"
+            }
+          },
+          "key": "encrypt_key",
+          "name": "encrypt key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tenant key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tenant key.",
+              "name": "tenant key"
+            },
+            "zh-CN": {
+              "description": "tenant key 敏感凭据。",
+              "name": "tenant key"
+            }
+          },
+          "key": "tenant_key",
+          "name": "tenant key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for verification token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for verification token.",
+              "name": "verification token"
+            },
+            "zh-CN": {
+              "description": "verification token 敏感凭据。",
+              "name": "verification token"
+            }
+          },
+          "key": "verification_token",
+          "name": "verification token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider google_workspace",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider google_workspace",
+          "name": "google_workspace"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider google_workspace",
+          "name": "google_workspace"
+        }
+      },
+      "key": "google_workspace",
+      "name": "google_workspace",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bot token.",
+              "name": "bot token"
+            },
+            "zh-CN": {
+              "description": "bot token 敏感凭据。",
+              "name": "bot token"
+            }
+          },
+          "key": "bot_token",
+          "name": "bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for discord bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for discord bot token.",
+              "name": "discord bot token"
+            },
+            "zh-CN": {
+              "description": "discord bot token 敏感凭据。",
+              "name": "discord bot token"
+            }
+          },
+          "key": "discord_bot_token",
+          "name": "discord bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for encrypt key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for encrypt key.",
+              "name": "encrypt key"
+            },
+            "zh-CN": {
+              "description": "encrypt key 敏感凭据。",
+              "name": "encrypt key"
+            }
+          },
+          "key": "encrypt_key",
+          "name": "encrypt key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tenant key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tenant key.",
+              "name": "tenant key"
+            },
+            "zh-CN": {
+              "description": "tenant key 敏感凭据。",
+              "name": "tenant key"
+            }
+          },
+          "key": "tenant_key",
+          "name": "tenant key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for verification token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for verification token.",
+              "name": "verification token"
+            },
+            "zh-CN": {
+              "description": "verification token 敏感凭据。",
+              "name": "verification token"
+            }
+          },
+          "key": "verification_token",
+          "name": "verification token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider line_works",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider line_works",
+          "name": "line_works"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider line_works",
+          "name": "line_works"
+        }
+      },
+      "key": "line_works",
+      "name": "line_works",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bot token.",
+              "name": "bot token"
+            },
+            "zh-CN": {
+              "description": "bot token 敏感凭据。",
+              "name": "bot token"
+            }
+          },
+          "key": "bot_token",
+          "name": "bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for discord bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for discord bot token.",
+              "name": "discord bot token"
+            },
+            "zh-CN": {
+              "description": "discord bot token 敏感凭据。",
+              "name": "discord bot token"
+            }
+          },
+          "key": "discord_bot_token",
+          "name": "discord bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for encrypt key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for encrypt key.",
+              "name": "encrypt key"
+            },
+            "zh-CN": {
+              "description": "encrypt key 敏感凭据。",
+              "name": "encrypt key"
+            }
+          },
+          "key": "encrypt_key",
+          "name": "encrypt key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tenant key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tenant key.",
+              "name": "tenant key"
+            },
+            "zh-CN": {
+              "description": "tenant key 敏感凭据。",
+              "name": "tenant key"
+            }
+          },
+          "key": "tenant_key",
+          "name": "tenant key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for verification token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for verification token.",
+              "name": "verification token"
+            },
+            "zh-CN": {
+              "description": "verification token 敏感凭据。",
+              "name": "verification token"
+            }
+          },
+          "key": "verification_token",
+          "name": "verification token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider microsoft_365",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider microsoft_365",
+          "name": "microsoft_365"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider microsoft_365",
+          "name": "microsoft_365"
+        }
+      },
+      "key": "microsoft_365",
+      "name": "microsoft_365",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bot token.",
+              "name": "bot token"
+            },
+            "zh-CN": {
+              "description": "bot token 敏感凭据。",
+              "name": "bot token"
+            }
+          },
+          "key": "bot_token",
+          "name": "bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for discord bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for discord bot token.",
+              "name": "discord bot token"
+            },
+            "zh-CN": {
+              "description": "discord bot token 敏感凭据。",
+              "name": "discord bot token"
+            }
+          },
+          "key": "discord_bot_token",
+          "name": "discord bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for encrypt key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for encrypt key.",
+              "name": "encrypt key"
+            },
+            "zh-CN": {
+              "description": "encrypt key 敏感凭据。",
+              "name": "encrypt key"
+            }
+          },
+          "key": "encrypt_key",
+          "name": "encrypt key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tenant key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tenant key.",
+              "name": "tenant key"
+            },
+            "zh-CN": {
+              "description": "tenant key 敏感凭据。",
+              "name": "tenant key"
+            }
+          },
+          "key": "tenant_key",
+          "name": "tenant key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for verification token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for verification token.",
+              "name": "verification token"
+            },
+            "zh-CN": {
+              "description": "verification token 敏感凭据。",
+              "name": "verification token"
+            }
+          },
+          "key": "verification_token",
+          "name": "verification token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider slack",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider slack",
+          "name": "slack"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider slack",
+          "name": "slack"
+        }
+      },
+      "key": "slack",
+      "name": "slack",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bot token.",
+              "name": "bot token"
+            },
+            "zh-CN": {
+              "description": "bot token 敏感凭据。",
+              "name": "bot token"
+            }
+          },
+          "key": "bot_token",
+          "name": "bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for discord bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for discord bot token.",
+              "name": "discord bot token"
+            },
+            "zh-CN": {
+              "description": "discord bot token 敏感凭据。",
+              "name": "discord bot token"
+            }
+          },
+          "key": "discord_bot_token",
+          "name": "discord bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for encrypt key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for encrypt key.",
+              "name": "encrypt key"
+            },
+            "zh-CN": {
+              "description": "encrypt key 敏感凭据。",
+              "name": "encrypt key"
+            }
+          },
+          "key": "encrypt_key",
+          "name": "encrypt key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tenant key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tenant key.",
+              "name": "tenant key"
+            },
+            "zh-CN": {
+              "description": "tenant key 敏感凭据。",
+              "name": "tenant key"
+            }
+          },
+          "key": "tenant_key",
+          "name": "tenant key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for verification token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for verification token.",
+              "name": "verification token"
+            },
+            "zh-CN": {
+              "description": "verification token 敏感凭据。",
+              "name": "verification token"
+            }
+          },
+          "key": "verification_token",
+          "name": "verification token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider teams",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider teams",
+          "name": "teams"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider teams",
+          "name": "teams"
+        }
+      },
+      "key": "teams",
+      "name": "teams",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bot token.",
+              "name": "bot token"
+            },
+            "zh-CN": {
+              "description": "bot token 敏感凭据。",
+              "name": "bot token"
+            }
+          },
+          "key": "bot_token",
+          "name": "bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for discord bot token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for discord bot token.",
+              "name": "discord bot token"
+            },
+            "zh-CN": {
+              "description": "discord bot token 敏感凭据。",
+              "name": "discord bot token"
+            }
+          },
+          "key": "discord_bot_token",
+          "name": "discord bot token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for encrypt key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for encrypt key.",
+              "name": "encrypt key"
+            },
+            "zh-CN": {
+              "description": "encrypt key 敏感凭据。",
+              "name": "encrypt key"
+            }
+          },
+          "key": "encrypt_key",
+          "name": "encrypt key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tenant key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tenant key.",
+              "name": "tenant key"
+            },
+            "zh-CN": {
+              "description": "tenant key 敏感凭据。",
+              "name": "tenant key"
+            }
+          },
+          "key": "tenant_key",
+          "name": "tenant key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for verification token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for verification token.",
+              "name": "verification token"
+            },
+            "zh-CN": {
+              "description": "verification token 敏感凭据。",
+              "name": "verification token"
+            }
+          },
+          "key": "verification_token",
+          "name": "verification token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "LINE Messaging API base URL.",
+          "i18n": {
+            "en-US": { "description": "LINE Messaging API base URL.", "name": "API base URL" },
+            "zh-CN": { "description": "LINE Messaging API 根地址。", "name": "API 根地址" }
+          },
+          "key": "api_base_url",
+          "name": "API base URL",
+          "required": true,
+          "type": "text",
+          "validation": { "max_length": 2048, "pattern": "^https?://[^\\s]+$" }
+        }
+      ],
+      "description": "LINE Messaging API provider for push notifications and Flex Messages.",
+      "i18n": {
+        "en-US": { "description": "LINE Messaging API provider for push notifications and Flex Messages.", "name": "LINE" },
+        "zh-CN": { "description": "用于推送通知和 Flex Message 的 LINE Messaging API。", "name": "LINE" }
+      },
+      "key": "line",
+      "name": "LINE",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "LINE channel access token.",
+          "i18n": {
+            "en-US": { "description": "LINE channel access token.", "name": "Channel access token" },
+            "zh-CN": { "description": "LINE 频道访问令牌。", "name": "频道访问令牌" }
+          },
+          "key": "channel_access_token",
+          "name": "Channel access token",
+          "required": true,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "app_secret",
+    "bot_token",
+    "signing_secret",
+    "verification_token",
+    "encrypt_key",
+    "webhook_secret",
+    "discord_bot_token",
+    "tenant_key",
+    "client_id",
+    "client_secret",
+    "channel_access_token"
+  ],
+  "source": "connectors:collaboration",
+  "type": "collaboration",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

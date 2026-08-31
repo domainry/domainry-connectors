@@ -1,0 +1,2345 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "zapier",
+    "make",
+    "n8n",
+    "scheduler",
+    "cron_trigger",
+    "event_bus",
+    "event_subscription",
+    "workflow_action",
+    "legacy_workflow_import",
+    "migration_cutover",
+    "shadow_run",
+    "payload_replay",
+    "old_platform_pause",
+    "marketing_journey_import",
+    "marketing_lists",
+    "campaign_membership",
+    "email_engagement",
+    "unsubscribe_consent",
+    "sales_handoff_review",
+    "marketing_journey_contactability_gate",
+    "auditable_ops_closeout",
+    "bi_metric_writeback_handoff",
+    "incident_timeline_handoff",
+    "privacy_evidence_handoff",
+    "data_migration_handoff",
+    "webhook_chain_discovery",
+    "form_chain_discovery",
+    "notification_chain_discovery",
+    "approval_chain_discovery",
+    "outbox_delivery"
+  ],
+  "config": {
+    "app_connection_path": "/integrations/automation/app-connection",
+    "auditable_ops_closeout_path": "/integrations/automation/auditable-ops-closeout-plan",
+    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "default_connection_key": "automation_primary",
+    "dispatch_path": "/integrations/automation/dispatch",
+    "event_bus_path": "/integrations/automation/event-bus",
+    "legacy_sources": [
+      "zapier_zaps",
+      "make_scenarios",
+      "n8n_workflows",
+      "webhook_chains",
+      "form_chains",
+      "notification_chains",
+      "approval_chains"
+    ],
+    "legacy_workflow_import_path": "/integrations/automation/legacy-workflow-import-plan",
+    "marketing_journey_import_path": "/integrations/automation/marketing-journey-import-plan",
+    "migration_cutover_path": "/integrations/automation/migration-cutover-plan",
+    "options_path": "/integrations/automation/options",
+    "schedule_presets": [
+      "manual",
+      "hourly",
+      "daily",
+      "weekly",
+      "cron"
+    ],
+    "scheduler_path": "/integrations/automation/scheduler",
+    "secret_refs": [
+      "webhook_secret",
+      "api_key",
+      "bearer_token",
+      "basic_auth_password",
+      "event_bus_credentials"
+    ],
+    "subscription_path": "/integrations/automation/subscription"
+  },
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Automation Platform Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Automation Platform Connector definitions, Provider choices, and operation contracts.",
+      "name": "Automation Platform"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方自动化平台连接器定义、Provider 选项与操作契约。",
+      "name": "自动化平台"
+    }
+  },
+  "key": "automation",
+  "classification": "runtime_native",
+  "lifecycle_status": "reclassified",
+  "replacement_capability": "automation.record_lifecycle",
+  "name": "Automation Platform",
+  "operations": [],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [],
+      "description": "Runtime Provider event_bus",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider event_bus",
+          "name": "event_bus"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider event_bus",
+          "name": "event_bus"
+        }
+      },
+      "key": "event_bus",
+      "name": "event_bus",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider hubspot_marketing",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider hubspot_marketing",
+          "name": "hubspot_marketing"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider hubspot_marketing",
+          "name": "hubspot_marketing"
+        }
+      },
+      "key": "hubspot_marketing",
+      "name": "hubspot_marketing",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider internal",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider internal",
+          "name": "internal"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider internal",
+          "name": "internal"
+        }
+      },
+      "key": "internal",
+      "name": "internal",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider kafka",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider kafka",
+          "name": "kafka"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider kafka",
+          "name": "kafka"
+        }
+      },
+      "key": "kafka",
+      "name": "kafka",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider klaviyo",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider klaviyo",
+          "name": "klaviyo"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider klaviyo",
+          "name": "klaviyo"
+        }
+      },
+      "key": "klaviyo",
+      "name": "klaviyo",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider mailchimp",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider mailchimp",
+          "name": "mailchimp"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider mailchimp",
+          "name": "mailchimp"
+        }
+      },
+      "key": "mailchimp",
+      "name": "mailchimp",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider make",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider make",
+          "name": "make"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider make",
+          "name": "make"
+        }
+      },
+      "key": "make",
+      "name": "make",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider marketo",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider marketo",
+          "name": "marketo"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider marketo",
+          "name": "marketo"
+        }
+      },
+      "key": "marketo",
+      "name": "marketo",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider n8n",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider n8n",
+          "name": "n8n"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider n8n",
+          "name": "n8n"
+        }
+      },
+      "key": "n8n",
+      "name": "n8n",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider pubsub",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider pubsub",
+          "name": "pubsub"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider pubsub",
+          "name": "pubsub"
+        }
+      },
+      "key": "pubsub",
+      "name": "pubsub",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider rabbitmq",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider rabbitmq",
+          "name": "rabbitmq"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider rabbitmq",
+          "name": "rabbitmq"
+        }
+      },
+      "key": "rabbitmq",
+      "name": "rabbitmq",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider scheduler",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider scheduler",
+          "name": "scheduler"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider scheduler",
+          "name": "scheduler"
+        }
+      },
+      "key": "scheduler",
+      "name": "scheduler",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider sns_sqs",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider sns_sqs",
+          "name": "sns_sqs"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider sns_sqs",
+          "name": "sns_sqs"
+        }
+      },
+      "key": "sns_sqs",
+      "name": "sns_sqs",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider webhook",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider webhook",
+          "name": "webhook"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider webhook",
+          "name": "webhook"
+        }
+      },
+      "key": "webhook",
+      "name": "webhook",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Runtime Provider zapier",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider zapier",
+          "name": "zapier"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider zapier",
+          "name": "zapier"
+        }
+      },
+      "key": "zapier",
+      "name": "zapier",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for basic auth password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for basic auth password.",
+              "name": "basic auth password"
+            },
+            "zh-CN": {
+              "description": "basic auth password 敏感凭据。",
+              "name": "basic auth password"
+            }
+          },
+          "key": "basic_auth_password",
+          "name": "basic auth password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for bearer token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for bearer token.",
+              "name": "bearer token"
+            },
+            "zh-CN": {
+              "description": "bearer token 敏感凭据。",
+              "name": "bearer token"
+            }
+          },
+          "key": "bearer_token",
+          "name": "bearer token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for event bus credentials.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for event bus credentials.",
+              "name": "event bus credentials"
+            },
+            "zh-CN": {
+              "description": "event bus credentials 敏感凭据。",
+              "name": "event bus credentials"
+            }
+          },
+          "key": "event_bus_credentials",
+          "name": "event bus credentials",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "webhook_secret",
+    "api_key",
+    "bearer_token",
+    "basic_auth_password",
+    "event_bus_credentials"
+  ],
+  "source": "connectors:automation",
+  "type": "automation_platform",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "provider_catalog",
+    "typed_secrets"
+  ]
+}

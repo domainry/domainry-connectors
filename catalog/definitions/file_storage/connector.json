@@ -1,0 +1,2281 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "local",
+    "s3",
+    "oss",
+    "cos",
+    "gcs",
+    "google_drive",
+    "onedrive",
+    "dropbox",
+    "box",
+    "upload",
+    "download",
+    "signed_url",
+    "delete",
+    "multipart_upload",
+    "large_file",
+    "multi_file_field",
+    "attachment_archive_plan",
+    "object_ownership_plan",
+    "content_safety_plan",
+    "evidence_base_plan",
+    "signed_upload_download",
+    "pdf_archive",
+    "esign_certificate_archive",
+    "retention_legal_hold",
+    "permissioned_timeline",
+    "permission_inheritance",
+    "retention_policy",
+    "virus_scan_hook",
+    "content_review_hook",
+    "quarantine_review",
+    "missing_reference_review",
+    "audit"
+  ],
+  "config": {
+    "archive_request_path": "/integrations/file-storage/archive-request",
+    "attachment_archive_plan_path": "/integrations/file-storage/attachment-archive-plan",
+    "config_fields": [
+      "provider",
+      "bucket",
+      "region",
+      "endpoint",
+      "prefix",
+      "public_base_url",
+      "max_file_bytes",
+      "max_files_per_field",
+      "multipart_part_bytes",
+      "multipart_max_parts",
+      "virus_scan",
+      "content_review"
+    ],
+    "connection_request_path": "/integrations/file-storage/connection-request",
+    "content_safety_plan_path": "/integrations/file-storage/content-safety-plan",
+    "default_connection_key": "file_storage_primary",
+    "evidence_base_plan_path": "/integrations/file-storage/evidence-base-plan",
+    "multi_file_field_policy_path": "/integrations/file-storage/multi-file-field-policy",
+    "multipart_session_path": "/integrations/file-storage/multipart-session",
+    "object_ownership_plan_path": "/integrations/file-storage/object-ownership-plan",
+    "options_path": "/integrations/file-storage/options",
+    "secret_refs": [
+      "access_key_id",
+      "secret_access_key",
+      "session_token",
+      "service_account_json",
+      "signing_secret"
+    ],
+    "signed_operation_path": "/integrations/file-storage/signed-operation"
+  },
+  "config_fields": [
+    "provider",
+    "bucket",
+    "region",
+    "endpoint",
+    "prefix",
+    "public_base_url",
+    "max_file_bytes",
+    "max_files_per_field",
+    "multipart_part_bytes",
+    "multipart_max_parts",
+    "virus_scan",
+    "content_review",
+    "storage_root"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry File Storage Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry File Storage Connector definitions, Provider choices, and operation contracts.",
+      "name": "File Storage"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方文件存储连接器定义、Provider 选项与操作契约。",
+      "name": "文件存储"
+    }
+  },
+  "key": "file_storage",
+  "name": "File Storage",
+  "operations": [
+    {
+      "description": "Execute the Write Text File operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Write Text File operation.",
+          "name": "Write Text File"
+        },
+        "zh-CN": {
+          "description": "执行“写入文本”操作。",
+          "name": "写入文本"
+        }
+      },
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "path",
+          "name": "Path",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "content",
+          "name": "Content",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "content_type",
+          "name": "Content Type",
+          "required": false,
+          "type": "text"
+        }
+      ],
+      "key": "put_text",
+      "method": "PUT",
+      "name": "Write Text File",
+      "output": [
+        {
+          "key": "path",
+          "name": "Path",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "bytes",
+          "name": "Bytes",
+          "required": true,
+          "type": "integer"
+        },
+        {
+          "key": "content_type",
+          "name": "Content Type",
+          "required": true,
+          "type": "text"
+        }
+      ],
+      "side_effect": "write",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the Read Text File operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Read Text File operation.",
+          "name": "Read Text File"
+        },
+        "zh-CN": {
+          "description": "执行“读取文本”操作。",
+          "name": "读取文本"
+        }
+      },
+      "input": [
+        {
+          "key": "path",
+          "name": "Path",
+          "required": true,
+          "type": "text"
+        }
+      ],
+      "key": "get_text",
+      "method": "GET",
+      "name": "Read Text File",
+      "output": [
+        {
+          "key": "content",
+          "name": "Content",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "content_type",
+          "name": "Content Type",
+          "required": true,
+          "type": "text"
+        }
+      ],
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the Delete File operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Delete File operation.",
+          "name": "Delete File"
+        },
+        "zh-CN": {
+          "description": "执行“删除”操作。",
+          "name": "删除"
+        }
+      },
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "path",
+          "name": "Path",
+          "required": true,
+          "type": "text"
+        }
+      ],
+      "key": "delete",
+      "method": "DELETE",
+      "name": "Delete File",
+      "output": [
+        {
+          "key": "deleted",
+          "name": "Deleted",
+          "required": true,
+          "type": "boolean"
+        }
+      ],
+      "side_effect": "write",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "description": "Execute the Test Storage Root operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Test Storage Root operation.",
+          "name": "Test Storage Root"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "GET",
+      "name": "Test Storage Root",
+      "output": [
+        {
+          "key": "connected",
+          "name": "Connected",
+          "required": true,
+          "type": "boolean"
+        }
+      ],
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    }
+  ],
+  "provider": "local",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for bucket.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for bucket.",
+              "name": "bucket"
+            },
+            "zh-CN": {
+              "description": "bucket 配置项。",
+              "name": "bucket"
+            }
+          },
+          "key": "bucket",
+          "name": "bucket",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for content review.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for content review.",
+              "name": "content review"
+            },
+            "zh-CN": {
+              "description": "content review 配置项。",
+              "name": "content review"
+            }
+          },
+          "key": "content_review",
+          "name": "content review",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for endpoint.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for endpoint.",
+              "name": "endpoint"
+            },
+            "zh-CN": {
+              "description": "endpoint 配置项。",
+              "name": "endpoint"
+            }
+          },
+          "key": "endpoint",
+          "name": "endpoint",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 26214400,
+          "description": "Configuration value for max file bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max file bytes.",
+              "name": "max file bytes"
+            },
+            "zh-CN": {
+              "description": "max file bytes 配置项。",
+              "name": "max file bytes"
+            }
+          },
+          "key": "max_file_bytes",
+          "name": "max file bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "default": 10,
+          "description": "Configuration value for max files per field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max files per field.",
+              "name": "max files per field"
+            },
+            "zh-CN": {
+              "description": "max files per field 配置项。",
+              "name": "max files per field"
+            }
+          },
+          "key": "max_files_per_field",
+          "name": "max files per field",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1000000,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for multipart max parts.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for multipart max parts.",
+              "name": "multipart max parts"
+            },
+            "zh-CN": {
+              "description": "multipart max parts 配置项。",
+              "name": "multipart max parts"
+            }
+          },
+          "key": "multipart_max_parts",
+          "name": "multipart max parts",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 5242880,
+          "description": "Configuration value for multipart part bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for multipart part bytes.",
+              "name": "multipart part bytes"
+            },
+            "zh-CN": {
+              "description": "multipart part bytes 配置项。",
+              "name": "multipart part bytes"
+            }
+          },
+          "key": "multipart_part_bytes",
+          "name": "multipart part bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for prefix.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for prefix.",
+              "name": "prefix"
+            },
+            "zh-CN": {
+              "description": "prefix 配置项。",
+              "name": "prefix"
+            }
+          },
+          "key": "prefix",
+          "name": "prefix",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for public base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for public base url.",
+              "name": "public base url"
+            },
+            "zh-CN": {
+              "description": "public base url 配置项。",
+              "name": "public base url"
+            }
+          },
+          "key": "public_base_url",
+          "name": "public base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for storage root.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for storage root.",
+              "name": "storage root"
+            },
+            "zh-CN": {
+              "description": "storage root 配置项。",
+              "name": "storage root"
+            }
+          },
+          "key": "storage_root",
+          "name": "storage root",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for virus scan.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for virus scan.",
+              "name": "virus scan"
+            },
+            "zh-CN": {
+              "description": "virus scan 配置项。",
+              "name": "virus scan"
+            }
+          },
+          "key": "virus_scan",
+          "name": "virus scan",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider cos",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider cos",
+          "name": "cos"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider cos",
+          "name": "cos"
+        }
+      },
+      "key": "cos",
+      "name": "cos",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access key id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access key id.",
+              "name": "access key id"
+            },
+            "zh-CN": {
+              "description": "access key id 敏感凭据。",
+              "name": "access key id"
+            }
+          },
+          "key": "access_key_id",
+          "name": "access key id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for secret access key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for secret access key.",
+              "name": "secret access key"
+            },
+            "zh-CN": {
+              "description": "secret access key 敏感凭据。",
+              "name": "secret access key"
+            }
+          },
+          "key": "secret_access_key",
+          "name": "secret access key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for session token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for session token.",
+              "name": "session token"
+            },
+            "zh-CN": {
+              "description": "session token 敏感凭据。",
+              "name": "session token"
+            }
+          },
+          "key": "session_token",
+          "name": "session token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for bucket.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for bucket.",
+              "name": "bucket"
+            },
+            "zh-CN": {
+              "description": "bucket 配置项。",
+              "name": "bucket"
+            }
+          },
+          "key": "bucket",
+          "name": "bucket",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for content review.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for content review.",
+              "name": "content review"
+            },
+            "zh-CN": {
+              "description": "content review 配置项。",
+              "name": "content review"
+            }
+          },
+          "key": "content_review",
+          "name": "content review",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for endpoint.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for endpoint.",
+              "name": "endpoint"
+            },
+            "zh-CN": {
+              "description": "endpoint 配置项。",
+              "name": "endpoint"
+            }
+          },
+          "key": "endpoint",
+          "name": "endpoint",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 26214400,
+          "description": "Configuration value for max file bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max file bytes.",
+              "name": "max file bytes"
+            },
+            "zh-CN": {
+              "description": "max file bytes 配置项。",
+              "name": "max file bytes"
+            }
+          },
+          "key": "max_file_bytes",
+          "name": "max file bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "default": 10,
+          "description": "Configuration value for max files per field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max files per field.",
+              "name": "max files per field"
+            },
+            "zh-CN": {
+              "description": "max files per field 配置项。",
+              "name": "max files per field"
+            }
+          },
+          "key": "max_files_per_field",
+          "name": "max files per field",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1000000,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for multipart max parts.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for multipart max parts.",
+              "name": "multipart max parts"
+            },
+            "zh-CN": {
+              "description": "multipart max parts 配置项。",
+              "name": "multipart max parts"
+            }
+          },
+          "key": "multipart_max_parts",
+          "name": "multipart max parts",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 5242880,
+          "description": "Configuration value for multipart part bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for multipart part bytes.",
+              "name": "multipart part bytes"
+            },
+            "zh-CN": {
+              "description": "multipart part bytes 配置项。",
+              "name": "multipart part bytes"
+            }
+          },
+          "key": "multipart_part_bytes",
+          "name": "multipart part bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for prefix.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for prefix.",
+              "name": "prefix"
+            },
+            "zh-CN": {
+              "description": "prefix 配置项。",
+              "name": "prefix"
+            }
+          },
+          "key": "prefix",
+          "name": "prefix",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for public base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for public base url.",
+              "name": "public base url"
+            },
+            "zh-CN": {
+              "description": "public base url 配置项。",
+              "name": "public base url"
+            }
+          },
+          "key": "public_base_url",
+          "name": "public base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for storage root.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for storage root.",
+              "name": "storage root"
+            },
+            "zh-CN": {
+              "description": "storage root 配置项。",
+              "name": "storage root"
+            }
+          },
+          "key": "storage_root",
+          "name": "storage root",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for virus scan.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for virus scan.",
+              "name": "virus scan"
+            },
+            "zh-CN": {
+              "description": "virus scan 配置项。",
+              "name": "virus scan"
+            }
+          },
+          "key": "virus_scan",
+          "name": "virus scan",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider gcs",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider gcs",
+          "name": "gcs"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider gcs",
+          "name": "gcs"
+        }
+      },
+      "key": "gcs",
+      "name": "gcs",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access key id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access key id.",
+              "name": "access key id"
+            },
+            "zh-CN": {
+              "description": "access key id 敏感凭据。",
+              "name": "access key id"
+            }
+          },
+          "key": "access_key_id",
+          "name": "access key id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for secret access key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for secret access key.",
+              "name": "secret access key"
+            },
+            "zh-CN": {
+              "description": "secret access key 敏感凭据。",
+              "name": "secret access key"
+            }
+          },
+          "key": "secret_access_key",
+          "name": "secret access key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for session token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for session token.",
+              "name": "session token"
+            },
+            "zh-CN": {
+              "description": "session token 敏感凭据。",
+              "name": "session token"
+            }
+          },
+          "key": "session_token",
+          "name": "session token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for bucket.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for bucket.",
+              "name": "bucket"
+            },
+            "zh-CN": {
+              "description": "bucket 配置项。",
+              "name": "bucket"
+            }
+          },
+          "key": "bucket",
+          "name": "bucket",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for content review.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for content review.",
+              "name": "content review"
+            },
+            "zh-CN": {
+              "description": "content review 配置项。",
+              "name": "content review"
+            }
+          },
+          "key": "content_review",
+          "name": "content review",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for endpoint.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for endpoint.",
+              "name": "endpoint"
+            },
+            "zh-CN": {
+              "description": "endpoint 配置项。",
+              "name": "endpoint"
+            }
+          },
+          "key": "endpoint",
+          "name": "endpoint",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 26214400,
+          "description": "Configuration value for max file bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max file bytes.",
+              "name": "max file bytes"
+            },
+            "zh-CN": {
+              "description": "max file bytes 配置项。",
+              "name": "max file bytes"
+            }
+          },
+          "key": "max_file_bytes",
+          "name": "max file bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "default": 10,
+          "description": "Configuration value for max files per field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max files per field.",
+              "name": "max files per field"
+            },
+            "zh-CN": {
+              "description": "max files per field 配置项。",
+              "name": "max files per field"
+            }
+          },
+          "key": "max_files_per_field",
+          "name": "max files per field",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1000000,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for multipart max parts.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for multipart max parts.",
+              "name": "multipart max parts"
+            },
+            "zh-CN": {
+              "description": "multipart max parts 配置项。",
+              "name": "multipart max parts"
+            }
+          },
+          "key": "multipart_max_parts",
+          "name": "multipart max parts",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 5242880,
+          "description": "Configuration value for multipart part bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for multipart part bytes.",
+              "name": "multipart part bytes"
+            },
+            "zh-CN": {
+              "description": "multipart part bytes 配置项。",
+              "name": "multipart part bytes"
+            }
+          },
+          "key": "multipart_part_bytes",
+          "name": "multipart part bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for prefix.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for prefix.",
+              "name": "prefix"
+            },
+            "zh-CN": {
+              "description": "prefix 配置项。",
+              "name": "prefix"
+            }
+          },
+          "key": "prefix",
+          "name": "prefix",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for public base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for public base url.",
+              "name": "public base url"
+            },
+            "zh-CN": {
+              "description": "public base url 配置项。",
+              "name": "public base url"
+            }
+          },
+          "key": "public_base_url",
+          "name": "public base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for storage root.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for storage root.",
+              "name": "storage root"
+            },
+            "zh-CN": {
+              "description": "storage root 配置项。",
+              "name": "storage root"
+            }
+          },
+          "key": "storage_root",
+          "name": "storage root",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for virus scan.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for virus scan.",
+              "name": "virus scan"
+            },
+            "zh-CN": {
+              "description": "virus scan 配置项。",
+              "name": "virus scan"
+            }
+          },
+          "key": "virus_scan",
+          "name": "virus scan",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider local",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider local",
+          "name": "local"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider local",
+          "name": "local"
+        }
+      },
+      "key": "local",
+      "name": "local",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access key id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access key id.",
+              "name": "access key id"
+            },
+            "zh-CN": {
+              "description": "access key id 敏感凭据。",
+              "name": "access key id"
+            }
+          },
+          "key": "access_key_id",
+          "name": "access key id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for secret access key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for secret access key.",
+              "name": "secret access key"
+            },
+            "zh-CN": {
+              "description": "secret access key 敏感凭据。",
+              "name": "secret access key"
+            }
+          },
+          "key": "secret_access_key",
+          "name": "secret access key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for session token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for session token.",
+              "name": "session token"
+            },
+            "zh-CN": {
+              "description": "session token 敏感凭据。",
+              "name": "session token"
+            }
+          },
+          "key": "session_token",
+          "name": "session token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for bucket.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for bucket.",
+              "name": "bucket"
+            },
+            "zh-CN": {
+              "description": "bucket 配置项。",
+              "name": "bucket"
+            }
+          },
+          "key": "bucket",
+          "name": "bucket",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for content review.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for content review.",
+              "name": "content review"
+            },
+            "zh-CN": {
+              "description": "content review 配置项。",
+              "name": "content review"
+            }
+          },
+          "key": "content_review",
+          "name": "content review",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for endpoint.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for endpoint.",
+              "name": "endpoint"
+            },
+            "zh-CN": {
+              "description": "endpoint 配置项。",
+              "name": "endpoint"
+            }
+          },
+          "key": "endpoint",
+          "name": "endpoint",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 26214400,
+          "description": "Configuration value for max file bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max file bytes.",
+              "name": "max file bytes"
+            },
+            "zh-CN": {
+              "description": "max file bytes 配置项。",
+              "name": "max file bytes"
+            }
+          },
+          "key": "max_file_bytes",
+          "name": "max file bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "default": 10,
+          "description": "Configuration value for max files per field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max files per field.",
+              "name": "max files per field"
+            },
+            "zh-CN": {
+              "description": "max files per field 配置项。",
+              "name": "max files per field"
+            }
+          },
+          "key": "max_files_per_field",
+          "name": "max files per field",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1000000,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for multipart max parts.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for multipart max parts.",
+              "name": "multipart max parts"
+            },
+            "zh-CN": {
+              "description": "multipart max parts 配置项。",
+              "name": "multipart max parts"
+            }
+          },
+          "key": "multipart_max_parts",
+          "name": "multipart max parts",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 5242880,
+          "description": "Configuration value for multipart part bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for multipart part bytes.",
+              "name": "multipart part bytes"
+            },
+            "zh-CN": {
+              "description": "multipart part bytes 配置项。",
+              "name": "multipart part bytes"
+            }
+          },
+          "key": "multipart_part_bytes",
+          "name": "multipart part bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for prefix.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for prefix.",
+              "name": "prefix"
+            },
+            "zh-CN": {
+              "description": "prefix 配置项。",
+              "name": "prefix"
+            }
+          },
+          "key": "prefix",
+          "name": "prefix",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for public base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for public base url.",
+              "name": "public base url"
+            },
+            "zh-CN": {
+              "description": "public base url 配置项。",
+              "name": "public base url"
+            }
+          },
+          "key": "public_base_url",
+          "name": "public base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for storage root.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for storage root.",
+              "name": "storage root"
+            },
+            "zh-CN": {
+              "description": "storage root 配置项。",
+              "name": "storage root"
+            }
+          },
+          "key": "storage_root",
+          "name": "storage root",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for virus scan.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for virus scan.",
+              "name": "virus scan"
+            },
+            "zh-CN": {
+              "description": "virus scan 配置项。",
+              "name": "virus scan"
+            }
+          },
+          "key": "virus_scan",
+          "name": "virus scan",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider oss",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider oss",
+          "name": "oss"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider oss",
+          "name": "oss"
+        }
+      },
+      "key": "oss",
+      "name": "oss",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access key id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access key id.",
+              "name": "access key id"
+            },
+            "zh-CN": {
+              "description": "access key id 敏感凭据。",
+              "name": "access key id"
+            }
+          },
+          "key": "access_key_id",
+          "name": "access key id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for secret access key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for secret access key.",
+              "name": "secret access key"
+            },
+            "zh-CN": {
+              "description": "secret access key 敏感凭据。",
+              "name": "secret access key"
+            }
+          },
+          "key": "secret_access_key",
+          "name": "secret access key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for session token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for session token.",
+              "name": "session token"
+            },
+            "zh-CN": {
+              "description": "session token 敏感凭据。",
+              "name": "session token"
+            }
+          },
+          "key": "session_token",
+          "name": "session token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for bucket.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for bucket.",
+              "name": "bucket"
+            },
+            "zh-CN": {
+              "description": "bucket 配置项。",
+              "name": "bucket"
+            }
+          },
+          "key": "bucket",
+          "name": "bucket",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for content review.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for content review.",
+              "name": "content review"
+            },
+            "zh-CN": {
+              "description": "content review 配置项。",
+              "name": "content review"
+            }
+          },
+          "key": "content_review",
+          "name": "content review",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for endpoint.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for endpoint.",
+              "name": "endpoint"
+            },
+            "zh-CN": {
+              "description": "endpoint 配置项。",
+              "name": "endpoint"
+            }
+          },
+          "key": "endpoint",
+          "name": "endpoint",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 26214400,
+          "description": "Configuration value for max file bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max file bytes.",
+              "name": "max file bytes"
+            },
+            "zh-CN": {
+              "description": "max file bytes 配置项。",
+              "name": "max file bytes"
+            }
+          },
+          "key": "max_file_bytes",
+          "name": "max file bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "default": 10,
+          "description": "Configuration value for max files per field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max files per field.",
+              "name": "max files per field"
+            },
+            "zh-CN": {
+              "description": "max files per field 配置项。",
+              "name": "max files per field"
+            }
+          },
+          "key": "max_files_per_field",
+          "name": "max files per field",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1000000,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for multipart max parts.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for multipart max parts.",
+              "name": "multipart max parts"
+            },
+            "zh-CN": {
+              "description": "multipart max parts 配置项。",
+              "name": "multipart max parts"
+            }
+          },
+          "key": "multipart_max_parts",
+          "name": "multipart max parts",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 5242880,
+          "description": "Configuration value for multipart part bytes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for multipart part bytes.",
+              "name": "multipart part bytes"
+            },
+            "zh-CN": {
+              "description": "multipart part bytes 配置项。",
+              "name": "multipart part bytes"
+            }
+          },
+          "key": "multipart_part_bytes",
+          "name": "multipart part bytes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1073741824,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for prefix.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for prefix.",
+              "name": "prefix"
+            },
+            "zh-CN": {
+              "description": "prefix 配置项。",
+              "name": "prefix"
+            }
+          },
+          "key": "prefix",
+          "name": "prefix",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for public base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for public base url.",
+              "name": "public base url"
+            },
+            "zh-CN": {
+              "description": "public base url 配置项。",
+              "name": "public base url"
+            }
+          },
+          "key": "public_base_url",
+          "name": "public base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for storage root.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for storage root.",
+              "name": "storage root"
+            },
+            "zh-CN": {
+              "description": "storage root 配置项。",
+              "name": "storage root"
+            }
+          },
+          "key": "storage_root",
+          "name": "storage root",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for virus scan.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for virus scan.",
+              "name": "virus scan"
+            },
+            "zh-CN": {
+              "description": "virus scan 配置项。",
+              "name": "virus scan"
+            }
+          },
+          "key": "virus_scan",
+          "name": "virus scan",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider s3",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider s3",
+          "name": "s3"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider s3",
+          "name": "s3"
+        }
+      },
+      "key": "s3",
+      "name": "s3",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access key id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access key id.",
+              "name": "access key id"
+            },
+            "zh-CN": {
+              "description": "access key id 敏感凭据。",
+              "name": "access key id"
+            }
+          },
+          "key": "access_key_id",
+          "name": "access key id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for secret access key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for secret access key.",
+              "name": "secret access key"
+            },
+            "zh-CN": {
+              "description": "secret access key 敏感凭据。",
+              "name": "secret access key"
+            }
+          },
+          "key": "secret_access_key",
+          "name": "secret access key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "service_account",
+            "expiry_policy": "optional",
+            "material_format": "json_object",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for service account json.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for service account json.",
+              "name": "service account json"
+            },
+            "zh-CN": {
+              "description": "service account json 敏感凭据。",
+              "name": "service account json"
+            }
+          },
+          "key": "service_account_json",
+          "name": "service account json",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for session token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for session token.",
+              "name": "session token"
+            },
+            "zh-CN": {
+              "description": "session token 敏感凭据。",
+              "name": "session token"
+            }
+          },
+          "key": "session_token",
+          "name": "session token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for signing secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for signing secret.",
+              "name": "signing secret"
+            },
+            "zh-CN": {
+              "description": "signing secret 敏感凭据。",
+              "name": "signing secret"
+            }
+          },
+          "key": "signing_secret",
+          "name": "signing secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "access_key_id",
+    "secret_access_key",
+    "session_token",
+    "service_account_json",
+    "signing_secret"
+  ],
+  "source": "connectors:file_storage",
+  "type": "file_storage",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

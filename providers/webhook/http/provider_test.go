@@ -79,6 +79,25 @@ func TestRejectsRemotePlaintextAndSupportsFeishuSignature(t *testing.T) {
 		t.Fatalf("err=%v request=%+v", err, transport.requests)
 	}
 }
+
+func TestProviderOwnedSignatureAlgorithmsMatchKnownVectors(t *testing.T) {
+	body := []byte(`{"ok":true}`)
+	tests := []struct {
+		algorithm string
+		want      string
+	}{
+		{algorithm: "feishu_sha256_hex", want: "06db0dfc1df6a60b5b2485e1d3596f5296dce8f36af2acde8eb91f1023088cdc"},
+		{algorithm: "hmac_sha256_hex", want: "52f0ccccd1c897ca03df1aab748f9c00519740fb2c2eb803d422ae9115f17b03"},
+	}
+	for _, test := range tests {
+		t.Run(test.algorithm, func(t *testing.T) {
+			if got := computeSignature(test.algorithm, "secret", "1700000000", "nonce-1", body); got != test.want {
+				t.Fatalf("computeSignature()=%q, want %q", got, test.want)
+			}
+		})
+	}
+}
+
 func validConnection() connector.Connection {
 	return connector.Connection{Config: map[string]any{"url": "http://127.0.0.1:8080/hook", "method": "POST", "signature_algorithm": "hmac_sha256_hex", "signature_secret_ref_name": "webhook_secret"}, SecretRefs: map[string]string{"webhook_secret": "secret:webhook"}}
 }

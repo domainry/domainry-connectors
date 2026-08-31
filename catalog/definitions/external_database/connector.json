@@ -1,0 +1,1611 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "postgres",
+    "mysql",
+    "sqlserver",
+    "bigquery",
+    "snowflake",
+    "readonly_table_mapping",
+    "readonly_sampling_readiness",
+    "sample_query_allowlist",
+    "no_write_guard",
+    "pii_summary",
+    "index_suggestion_plan",
+    "legacy_database_takeover",
+    "customer_360_sync_plan",
+    "multi_table_join_graph",
+    "source_of_truth_planning",
+    "schema_profile",
+    "business_semantic_profile",
+    "schema_sampling",
+    "fact_table_detection",
+    "enum_detection",
+    "object_model_suggestion",
+    "batch_plan",
+    "readonly_mirror",
+    "continuous_mirror",
+    "cdc_incremental_migration_plan",
+    "cdc_wal_binlog_change_tracking",
+    "cdc_checkpoint_guard",
+    "cdc_lag_health",
+    "cutover_delta_window",
+    "field_lock_plan",
+    "health_gate",
+    "write_cutover",
+    "cutover_readiness_plan",
+    "rollback_window",
+    "scheduled_sync",
+    "incremental_cursor",
+    "field_mapping",
+    "conflict_strategy",
+    "sync_log",
+    "sync_repair_plan",
+    "error_row_repair"
+  ],
+  "config": {
+    "business_semantic_profile_path": "/integrations/external-databases/business-semantic-profile",
+    "cdc_incremental_plan_path": "/integrations/external-databases/cdc-incremental-plan",
+    "cdc_modes": [
+      "wal",
+      "binlog",
+      "change_tracking",
+      "timestamp_cursor",
+      "snapshot_plus_incremental",
+      "manual_cursor"
+    ],
+    "config_fields": [
+      "provider",
+      "host",
+      "port",
+      "database",
+      "schema",
+      "ssl_mode",
+      "readonly"
+    ],
+    "conflict_strategies": [
+      "source_wins",
+      "target_wins",
+      "manual_review",
+      "skip_conflicts"
+    ],
+    "connection_request_path": "/integrations/external-databases/connection-request",
+    "customer_360_sync_plan_path": "/integrations/external-databases/customer-360-sync-plan",
+    "cutover_readiness_plan_path": "/integrations/external-databases/cutover-readiness-plan",
+    "default_connection_key": "external_database_primary",
+    "error_row_path": "/integrations/external-databases/error-row",
+    "mirror_modes": [
+      "readonly_mirror",
+      "dual_read",
+      "snapshot_only",
+      "cdc_incremental"
+    ],
+    "options_path": "/integrations/external-databases/options",
+    "readonly_sampling_readiness_plan_path": "/integrations/external-databases/readonly-sampling-readiness-plan",
+    "schema_sampling_plan_path": "/integrations/external-databases/schema-sampling-plan",
+    "secret_refs": [
+      "username",
+      "password",
+      "connection_string",
+      "tls_ca",
+      "ssh_private_key"
+    ],
+    "source_discovery_compat_path": "/integrations/external-database/source-discovery",
+    "source_discovery_path": "/integrations/external-databases/source-discovery",
+    "sync_plan_path": "/integrations/external-databases/sync-plan",
+    "sync_repair_plan_path": "/integrations/external-databases/sync-repair-plan",
+    "table_mapping_path": "/integrations/external-databases/table-mapping",
+    "takeover_plan_path": "/integrations/external-databases/takeover-plan"
+  },
+  "config_fields": [
+    "provider",
+    "host",
+    "port",
+    "database",
+    "schema",
+    "ssl_mode",
+    "readonly"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry External Database Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry External Database Connector definitions, Provider choices, and operation contracts.",
+      "name": "External Database"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方外部数据库连接器定义、Provider 选项与操作契约。",
+      "name": "外部数据库"
+    }
+  },
+  "key": "external_database",
+  "name": "External Database",
+  "operations": [
+    {
+      "description": "Execute the Test Read-only Database Connection operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Test Read-only Database Connection operation.",
+          "name": "Test Read-only Database Connection"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "POST",
+      "name": "Test Read-only Database Connection",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 60
+    },
+    {
+      "description": "Execute the List Database Tables operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the List Database Tables operation.",
+          "name": "List Database Tables"
+        },
+        "zh-CN": {
+          "description": "执行“列出数据表”操作。",
+          "name": "列出数据表"
+        }
+      },
+      "key": "list_tables",
+      "method": "POST",
+      "name": "List Database Tables",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 60
+    },
+    {
+      "description": "Execute the Run Read-only Sample Query operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Run Read-only Sample Query operation.",
+          "name": "Run Read-only Sample Query"
+        },
+        "zh-CN": {
+          "description": "执行“样例查询”操作。",
+          "name": "样例查询"
+        }
+      },
+      "input": [
+        {
+          "key": "query",
+          "name": "Read-only SQL",
+          "required": true,
+          "type": "long_text"
+        },
+        {
+          "key": "args",
+          "name": "Query Arguments",
+          "required": false,
+          "type": "json"
+        },
+        {
+          "key": "max_rows",
+          "name": "Maximum Rows",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "key": "sample_query",
+      "method": "POST",
+      "name": "Run Read-only Sample Query",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 60
+    }
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for database.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for database.",
+              "name": "database"
+            },
+            "zh-CN": {
+              "description": "database 配置项。",
+              "name": "database"
+            }
+          },
+          "key": "database",
+          "name": "database",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for host.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for host.",
+              "name": "host"
+            },
+            "zh-CN": {
+              "description": "host 配置项。",
+              "name": "host"
+            }
+          },
+          "key": "host",
+          "name": "host",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "config": {
+            "required_with": [
+              "host"
+            ]
+          },
+          "description": "Configuration value for port.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for port.",
+              "name": "port"
+            },
+            "zh-CN": {
+              "description": "port 配置项。",
+              "name": "port"
+            }
+          },
+          "key": "port",
+          "name": "port",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 65535,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for readonly.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for readonly.",
+              "name": "readonly"
+            },
+            "zh-CN": {
+              "description": "readonly 配置项。",
+              "name": "readonly"
+            }
+          },
+          "key": "readonly",
+          "name": "readonly",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for schema.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for schema.",
+              "name": "schema"
+            },
+            "zh-CN": {
+              "description": "schema 配置项。",
+              "name": "schema"
+            }
+          },
+          "key": "schema",
+          "name": "schema",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for ssl mode.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for ssl mode.",
+              "name": "ssl mode"
+            },
+            "zh-CN": {
+              "description": "ssl mode 配置项。",
+              "name": "ssl mode"
+            }
+          },
+          "key": "ssl_mode",
+          "name": "ssl mode",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider bigquery",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider bigquery",
+          "name": "bigquery"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider bigquery",
+          "name": "bigquery"
+        }
+      },
+      "key": "bigquery",
+      "name": "bigquery",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "connection_string",
+            "expiry_policy": "optional",
+            "material_format": "uri_or_dsn",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for connection string.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for connection string.",
+              "name": "connection string"
+            },
+            "zh-CN": {
+              "description": "connection string 敏感凭据。",
+              "name": "connection string"
+            }
+          },
+          "key": "connection_string",
+          "name": "connection string",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for password.",
+              "name": "password"
+            },
+            "zh-CN": {
+              "description": "password 敏感凭据。",
+              "name": "password"
+            }
+          },
+          "key": "password",
+          "name": "password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for ssh private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for ssh private key.",
+              "name": "ssh private key"
+            },
+            "zh-CN": {
+              "description": "ssh private key 敏感凭据。",
+              "name": "ssh private key"
+            }
+          },
+          "key": "ssh_private_key",
+          "name": "ssh private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tls ca.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tls ca.",
+              "name": "tls ca"
+            },
+            "zh-CN": {
+              "description": "tls ca 敏感凭据。",
+              "name": "tls ca"
+            }
+          },
+          "key": "tls_ca",
+          "name": "tls ca",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for username.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for username.",
+              "name": "username"
+            },
+            "zh-CN": {
+              "description": "username 敏感凭据。",
+              "name": "username"
+            }
+          },
+          "key": "username",
+          "name": "username",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for database.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for database.",
+              "name": "database"
+            },
+            "zh-CN": {
+              "description": "database 配置项。",
+              "name": "database"
+            }
+          },
+          "key": "database",
+          "name": "database",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for host.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for host.",
+              "name": "host"
+            },
+            "zh-CN": {
+              "description": "host 配置项。",
+              "name": "host"
+            }
+          },
+          "key": "host",
+          "name": "host",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "config": {
+            "required_with": [
+              "host"
+            ]
+          },
+          "description": "Configuration value for port.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for port.",
+              "name": "port"
+            },
+            "zh-CN": {
+              "description": "port 配置项。",
+              "name": "port"
+            }
+          },
+          "key": "port",
+          "name": "port",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 65535,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for readonly.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for readonly.",
+              "name": "readonly"
+            },
+            "zh-CN": {
+              "description": "readonly 配置项。",
+              "name": "readonly"
+            }
+          },
+          "key": "readonly",
+          "name": "readonly",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for schema.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for schema.",
+              "name": "schema"
+            },
+            "zh-CN": {
+              "description": "schema 配置项。",
+              "name": "schema"
+            }
+          },
+          "key": "schema",
+          "name": "schema",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for ssl mode.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for ssl mode.",
+              "name": "ssl mode"
+            },
+            "zh-CN": {
+              "description": "ssl mode 配置项。",
+              "name": "ssl mode"
+            }
+          },
+          "key": "ssl_mode",
+          "name": "ssl mode",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider mysql",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider mysql",
+          "name": "mysql"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider mysql",
+          "name": "mysql"
+        }
+      },
+      "key": "mysql",
+      "name": "mysql",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "connection_string",
+            "expiry_policy": "optional",
+            "material_format": "uri_or_dsn",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for connection string.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for connection string.",
+              "name": "connection string"
+            },
+            "zh-CN": {
+              "description": "connection string 敏感凭据。",
+              "name": "connection string"
+            }
+          },
+          "key": "connection_string",
+          "name": "connection string",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for password.",
+              "name": "password"
+            },
+            "zh-CN": {
+              "description": "password 敏感凭据。",
+              "name": "password"
+            }
+          },
+          "key": "password",
+          "name": "password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for ssh private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for ssh private key.",
+              "name": "ssh private key"
+            },
+            "zh-CN": {
+              "description": "ssh private key 敏感凭据。",
+              "name": "ssh private key"
+            }
+          },
+          "key": "ssh_private_key",
+          "name": "ssh private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tls ca.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tls ca.",
+              "name": "tls ca"
+            },
+            "zh-CN": {
+              "description": "tls ca 敏感凭据。",
+              "name": "tls ca"
+            }
+          },
+          "key": "tls_ca",
+          "name": "tls ca",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for username.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for username.",
+              "name": "username"
+            },
+            "zh-CN": {
+              "description": "username 敏感凭据。",
+              "name": "username"
+            }
+          },
+          "key": "username",
+          "name": "username",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for database.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for database.",
+              "name": "database"
+            },
+            "zh-CN": {
+              "description": "database 配置项。",
+              "name": "database"
+            }
+          },
+          "key": "database",
+          "name": "database",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for host.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for host.",
+              "name": "host"
+            },
+            "zh-CN": {
+              "description": "host 配置项。",
+              "name": "host"
+            }
+          },
+          "key": "host",
+          "name": "host",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "config": {
+            "required_with": [
+              "host"
+            ]
+          },
+          "description": "Configuration value for port.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for port.",
+              "name": "port"
+            },
+            "zh-CN": {
+              "description": "port 配置项。",
+              "name": "port"
+            }
+          },
+          "key": "port",
+          "name": "port",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 65535,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for readonly.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for readonly.",
+              "name": "readonly"
+            },
+            "zh-CN": {
+              "description": "readonly 配置项。",
+              "name": "readonly"
+            }
+          },
+          "key": "readonly",
+          "name": "readonly",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for schema.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for schema.",
+              "name": "schema"
+            },
+            "zh-CN": {
+              "description": "schema 配置项。",
+              "name": "schema"
+            }
+          },
+          "key": "schema",
+          "name": "schema",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for ssl mode.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for ssl mode.",
+              "name": "ssl mode"
+            },
+            "zh-CN": {
+              "description": "ssl mode 配置项。",
+              "name": "ssl mode"
+            }
+          },
+          "key": "ssl_mode",
+          "name": "ssl mode",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider postgres",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider postgres",
+          "name": "postgres"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider postgres",
+          "name": "postgres"
+        }
+      },
+      "key": "postgres",
+      "name": "postgres",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "connection_string",
+            "expiry_policy": "optional",
+            "material_format": "uri_or_dsn",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for connection string.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for connection string.",
+              "name": "connection string"
+            },
+            "zh-CN": {
+              "description": "connection string 敏感凭据。",
+              "name": "connection string"
+            }
+          },
+          "key": "connection_string",
+          "name": "connection string",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for password.",
+              "name": "password"
+            },
+            "zh-CN": {
+              "description": "password 敏感凭据。",
+              "name": "password"
+            }
+          },
+          "key": "password",
+          "name": "password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for ssh private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for ssh private key.",
+              "name": "ssh private key"
+            },
+            "zh-CN": {
+              "description": "ssh private key 敏感凭据。",
+              "name": "ssh private key"
+            }
+          },
+          "key": "ssh_private_key",
+          "name": "ssh private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tls ca.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tls ca.",
+              "name": "tls ca"
+            },
+            "zh-CN": {
+              "description": "tls ca 敏感凭据。",
+              "name": "tls ca"
+            }
+          },
+          "key": "tls_ca",
+          "name": "tls ca",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for username.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for username.",
+              "name": "username"
+            },
+            "zh-CN": {
+              "description": "username 敏感凭据。",
+              "name": "username"
+            }
+          },
+          "key": "username",
+          "name": "username",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for database.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for database.",
+              "name": "database"
+            },
+            "zh-CN": {
+              "description": "database 配置项。",
+              "name": "database"
+            }
+          },
+          "key": "database",
+          "name": "database",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for host.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for host.",
+              "name": "host"
+            },
+            "zh-CN": {
+              "description": "host 配置项。",
+              "name": "host"
+            }
+          },
+          "key": "host",
+          "name": "host",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "config": {
+            "required_with": [
+              "host"
+            ]
+          },
+          "description": "Configuration value for port.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for port.",
+              "name": "port"
+            },
+            "zh-CN": {
+              "description": "port 配置项。",
+              "name": "port"
+            }
+          },
+          "key": "port",
+          "name": "port",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 65535,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for readonly.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for readonly.",
+              "name": "readonly"
+            },
+            "zh-CN": {
+              "description": "readonly 配置项。",
+              "name": "readonly"
+            }
+          },
+          "key": "readonly",
+          "name": "readonly",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for schema.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for schema.",
+              "name": "schema"
+            },
+            "zh-CN": {
+              "description": "schema 配置项。",
+              "name": "schema"
+            }
+          },
+          "key": "schema",
+          "name": "schema",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for ssl mode.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for ssl mode.",
+              "name": "ssl mode"
+            },
+            "zh-CN": {
+              "description": "ssl mode 配置项。",
+              "name": "ssl mode"
+            }
+          },
+          "key": "ssl_mode",
+          "name": "ssl mode",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider snowflake",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider snowflake",
+          "name": "snowflake"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider snowflake",
+          "name": "snowflake"
+        }
+      },
+      "key": "snowflake",
+      "name": "snowflake",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "connection_string",
+            "expiry_policy": "optional",
+            "material_format": "uri_or_dsn",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for connection string.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for connection string.",
+              "name": "connection string"
+            },
+            "zh-CN": {
+              "description": "connection string 敏感凭据。",
+              "name": "connection string"
+            }
+          },
+          "key": "connection_string",
+          "name": "connection string",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for password.",
+              "name": "password"
+            },
+            "zh-CN": {
+              "description": "password 敏感凭据。",
+              "name": "password"
+            }
+          },
+          "key": "password",
+          "name": "password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for ssh private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for ssh private key.",
+              "name": "ssh private key"
+            },
+            "zh-CN": {
+              "description": "ssh private key 敏感凭据。",
+              "name": "ssh private key"
+            }
+          },
+          "key": "ssh_private_key",
+          "name": "ssh private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tls ca.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tls ca.",
+              "name": "tls ca"
+            },
+            "zh-CN": {
+              "description": "tls ca 敏感凭据。",
+              "name": "tls ca"
+            }
+          },
+          "key": "tls_ca",
+          "name": "tls ca",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for username.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for username.",
+              "name": "username"
+            },
+            "zh-CN": {
+              "description": "username 敏感凭据。",
+              "name": "username"
+            }
+          },
+          "key": "username",
+          "name": "username",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for database.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for database.",
+              "name": "database"
+            },
+            "zh-CN": {
+              "description": "database 配置项。",
+              "name": "database"
+            }
+          },
+          "key": "database",
+          "name": "database",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for host.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for host.",
+              "name": "host"
+            },
+            "zh-CN": {
+              "description": "host 配置项。",
+              "name": "host"
+            }
+          },
+          "key": "host",
+          "name": "host",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "config": {
+            "required_with": [
+              "host"
+            ]
+          },
+          "description": "Configuration value for port.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for port.",
+              "name": "port"
+            },
+            "zh-CN": {
+              "description": "port 配置项。",
+              "name": "port"
+            }
+          },
+          "key": "port",
+          "name": "port",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 65535,
+            "min": 1
+          }
+        },
+        {
+          "description": "Configuration value for readonly.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for readonly.",
+              "name": "readonly"
+            },
+            "zh-CN": {
+              "description": "readonly 配置项。",
+              "name": "readonly"
+            }
+          },
+          "key": "readonly",
+          "name": "readonly",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for schema.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for schema.",
+              "name": "schema"
+            },
+            "zh-CN": {
+              "description": "schema 配置项。",
+              "name": "schema"
+            }
+          },
+          "key": "schema",
+          "name": "schema",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for ssl mode.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for ssl mode.",
+              "name": "ssl mode"
+            },
+            "zh-CN": {
+              "description": "ssl mode 配置项。",
+              "name": "ssl mode"
+            }
+          },
+          "key": "ssl_mode",
+          "name": "ssl mode",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider sqlserver",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider sqlserver",
+          "name": "sqlserver"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider sqlserver",
+          "name": "sqlserver"
+        }
+      },
+      "key": "sqlserver",
+      "name": "sqlserver",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "connection_string",
+            "expiry_policy": "optional",
+            "material_format": "uri_or_dsn",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for connection string.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for connection string.",
+              "name": "connection string"
+            },
+            "zh-CN": {
+              "description": "connection string 敏感凭据。",
+              "name": "connection string"
+            }
+          },
+          "key": "connection_string",
+          "name": "connection string",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for password.",
+              "name": "password"
+            },
+            "zh-CN": {
+              "description": "password 敏感凭据。",
+              "name": "password"
+            }
+          },
+          "key": "password",
+          "name": "password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for ssh private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for ssh private key.",
+              "name": "ssh private key"
+            },
+            "zh-CN": {
+              "description": "ssh private key 敏感凭据。",
+              "name": "ssh private key"
+            }
+          },
+          "key": "ssh_private_key",
+          "name": "ssh private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for tls ca.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for tls ca.",
+              "name": "tls ca"
+            },
+            "zh-CN": {
+              "description": "tls ca 敏感凭据。",
+              "name": "tls ca"
+            }
+          },
+          "key": "tls_ca",
+          "name": "tls ca",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for username.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for username.",
+              "name": "username"
+            },
+            "zh-CN": {
+              "description": "username 敏感凭据。",
+              "name": "username"
+            }
+          },
+          "key": "username",
+          "name": "username",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "username",
+    "password",
+    "connection_string",
+    "tls_ca",
+    "ssh_private_key"
+  ],
+  "source": "connectors:external_database",
+  "type": "database",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

@@ -1,0 +1,602 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "model_config",
+    "api_key_secret_ref",
+    "base_url",
+    "organization",
+    "agent_tool_provider",
+    "agent_run_plan",
+    "approved_external_action",
+    "tool_handoff",
+    "approval_gate",
+    "policy_rate_limit",
+    "dry_run_execute",
+    "result_summary",
+    "rollback_dead_letter",
+    "redaction_policy",
+    "audit_plan",
+    "fallback_plan"
+  ],
+  "config": {
+    "agent_run_plan_path": "/integrations/openai/agent-run-plan",
+    "approved_external_action_plan_path": "/integrations/openai/approved-external-action-plan",
+    "config_fields": [
+      "provider",
+      "model",
+      "base_url",
+      "organization",
+      "project",
+      "timeout_seconds",
+      "max_output_tokens",
+      "temperature"
+    ],
+    "connection_request_path": "/integrations/openai/connection-request",
+    "default_base_url": "https://api.openai.com/v1",
+    "default_connection_key": "openai_primary",
+    "default_model": "gpt-4.1-mini",
+    "options_path": "/integrations/openai/options",
+    "secret_refs": [
+      "api_key"
+    ],
+    "test_path": "/integrations/openai/test"
+  },
+  "config_fields": [
+    "provider",
+    "model",
+    "base_url",
+    "organization",
+    "project",
+    "timeout_seconds",
+    "max_output_tokens",
+    "temperature"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry OpenAI Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry OpenAI Connector definitions, Provider choices, and operation contracts.",
+      "name": "OpenAI"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方OpenAI连接器定义、Provider 选项与操作契约。",
+      "name": "OpenAI"
+    }
+  },
+  "key": "openai",
+  "name": "OpenAI",
+  "operations": [
+    {
+      "description": "Execute the Generate Response operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Generate Response operation.",
+          "name": "Generate Response"
+        },
+        "zh-CN": {
+          "description": "执行“生成响应”操作。",
+          "name": "生成响应"
+        }
+      },
+      "input": [
+        {
+          "key": "input",
+          "name": "Input",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "instructions",
+          "name": "Instructions",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "key": "max_output_tokens",
+          "name": "Maximum Output Tokens",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "key": "generate_response",
+      "method": "POST",
+      "name": "Generate Response",
+      "output": [
+        {
+          "key": "id",
+          "name": "Response ID",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "output_text",
+          "name": "Output Text",
+          "required": false,
+          "type": "text"
+        }
+      ],
+      "side_effect": "write",
+      "test_supported": true,
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 300
+    },
+    {
+      "description": "Execute the Create Response operation.",
+      "execution_mode": "async",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Create Response operation.",
+          "name": "Create Response"
+        },
+        "zh-CN": {
+          "description": "执行“创建响应”操作。",
+          "name": "创建响应"
+        }
+      },
+      "input": [
+        {
+          "key": "input",
+          "name": "Input",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "instructions",
+          "name": "Instructions",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "key": "max_output_tokens",
+          "name": "Maximum Output Tokens",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "key": "create_response",
+      "method": "POST",
+      "name": "Create Response",
+      "output": [
+        {
+          "key": "id",
+          "name": "Response ID",
+          "required": true,
+          "type": "text"
+        },
+        {
+          "key": "output_text",
+          "name": "Output Text",
+          "required": false,
+          "type": "text"
+        }
+      ],
+      "side_effect": "write",
+      "test_supported": true,
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 300
+    },
+    {
+      "description": "Execute the Test OpenAI Connection operation.",
+      "execution_mode": "sync",
+      "i18n": {
+        "en-US": {
+          "description": "Execute the Test OpenAI Connection operation.",
+          "name": "Test OpenAI Connection"
+        },
+        "zh-CN": {
+          "description": "执行“测试连接”操作。",
+          "name": "测试连接"
+        }
+      },
+      "key": "test_connection",
+      "method": "GET",
+      "name": "Test OpenAI Connection",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 10,
+      "timeout_max_seconds": 30
+    }
+  ],
+  "provider": "openai",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 4096,
+          "description": "Configuration value for max output tokens.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max output tokens.",
+              "name": "max output tokens"
+            },
+            "zh-CN": {
+              "description": "max output tokens 配置项。",
+              "name": "max output tokens"
+            }
+          },
+          "key": "max_output_tokens",
+          "name": "max output tokens",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1000000,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for model.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for model.",
+              "name": "model"
+            },
+            "zh-CN": {
+              "description": "model 配置项。",
+              "name": "model"
+            }
+          },
+          "key": "model",
+          "name": "model",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for organization.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for organization.",
+              "name": "organization"
+            },
+            "zh-CN": {
+              "description": "organization 配置项。",
+              "name": "organization"
+            }
+          },
+          "key": "organization",
+          "name": "organization",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for project.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for project.",
+              "name": "project"
+            },
+            "zh-CN": {
+              "description": "project 配置项。",
+              "name": "project"
+            }
+          },
+          "key": "project",
+          "name": "project",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for temperature.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for temperature.",
+              "name": "temperature"
+            },
+            "zh-CN": {
+              "description": "temperature 配置项。",
+              "name": "temperature"
+            }
+          },
+          "key": "temperature",
+          "name": "temperature",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for timeout seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for timeout seconds.",
+              "name": "timeout seconds"
+            },
+            "zh-CN": {
+              "description": "timeout seconds 配置项。",
+              "name": "timeout seconds"
+            }
+          },
+          "key": "timeout_seconds",
+          "name": "timeout seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider openai",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider openai",
+          "name": "openai"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider openai",
+          "name": "openai"
+        }
+      },
+      "key": "openai",
+      "name": "openai",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 4096,
+          "description": "Configuration value for max output tokens.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for max output tokens.",
+              "name": "max output tokens"
+            },
+            "zh-CN": {
+              "description": "max output tokens 配置项。",
+              "name": "max output tokens"
+            }
+          },
+          "key": "max_output_tokens",
+          "name": "max output tokens",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 1000000,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for model.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for model.",
+              "name": "model"
+            },
+            "zh-CN": {
+              "description": "model 配置项。",
+              "name": "model"
+            }
+          },
+          "key": "model",
+          "name": "model",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for organization.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for organization.",
+              "name": "organization"
+            },
+            "zh-CN": {
+              "description": "organization 配置项。",
+              "name": "organization"
+            }
+          },
+          "key": "organization",
+          "name": "organization",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for project.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for project.",
+              "name": "project"
+            },
+            "zh-CN": {
+              "description": "project 配置项。",
+              "name": "project"
+            }
+          },
+          "key": "project",
+          "name": "project",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for temperature.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for temperature.",
+              "name": "temperature"
+            },
+            "zh-CN": {
+              "description": "temperature 配置项。",
+              "name": "temperature"
+            }
+          },
+          "key": "temperature",
+          "name": "temperature",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for timeout seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for timeout seconds.",
+              "name": "timeout seconds"
+            },
+            "zh-CN": {
+              "description": "timeout seconds 配置项。",
+              "name": "timeout seconds"
+            }
+          },
+          "key": "timeout_seconds",
+          "name": "timeout seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider openai_compatible",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider openai_compatible",
+          "name": "openai_compatible"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider openai_compatible",
+          "name": "openai_compatible"
+        }
+      },
+      "key": "openai_compatible",
+      "name": "openai_compatible",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_key"
+  ],
+  "source": "connectors:openai",
+  "type": "ai_model",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

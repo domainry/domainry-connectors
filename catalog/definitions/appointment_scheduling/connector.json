@@ -1,0 +1,1278 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "calendly",
+    "google_calendar",
+    "microsoft_booking",
+    "cal_com",
+    "bookings",
+    "reschedules",
+    "cancellations",
+    "no_show",
+    "attendees",
+    "intake_forms",
+    "appointment_writeback",
+    "sales_next_step",
+    "appointment_followup_contactability_gate",
+    "contactability_gate_handoff",
+    "data_migration_handoff"
+  ],
+  "config": {
+    "appointment_onboarding_path": "/integrations/appointment-scheduling/appointment-onboarding",
+    "config_fields": [
+      "provider",
+      "calendar_id",
+      "event_type_id",
+      "booking_page_url",
+      "sync_window_days",
+      "default_timezone",
+      "default_owner_queue",
+      "no_show_window_minutes"
+    ],
+    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "default_connection_key": "appointment_scheduling_primary",
+    "options_path": "/integrations/appointment-scheduling/options",
+    "secret_refs": [
+      "api_token",
+      "oauth_client_id",
+      "oauth_client_secret",
+      "webhook_secret"
+    ]
+  },
+  "config_fields": [
+    "provider",
+    "calendar_id",
+    "event_type_id",
+    "booking_page_url",
+    "sync_window_days",
+    "default_timezone",
+    "default_owner_queue",
+    "no_show_window_minutes"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Appointment Scheduling Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Appointment Scheduling Connector definitions, Provider choices, and operation contracts.",
+      "name": "Appointment Scheduling"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方预约排程连接器定义、Provider 选项与操作契约。",
+      "name": "预约排程"
+    }
+  },
+  "key": "appointment_scheduling",
+  "name": "Appointment Scheduling",
+  "operations": [
+    {"key":"test_connection","name":"test connection","description":"Verify Calendly API credentials against the current user endpoint.","i18n":{"en-US":{"name":"Test connection","description":"Verify Calendly API credentials against the current user endpoint."},"zh-CN":{"name":"测试连接","description":"通过当前用户接口验证 Calendly API 凭据。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":15,"timeout_max_seconds":30},
+    {"key":"list_event_types","name":"list event types","description":"List Calendly event types available for booking.","i18n":{"en-US":{"name":"List event types","description":"List Calendly event types available for booking."},"zh-CN":{"name":"查询预约类型","description":"查询可用于预约的 Calendly 事件类型。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"user","name":"User URI","type":"text"},{"key":"organization","name":"Organization URI","type":"text"},{"key":"active","name":"Active","type":"boolean"},{"key":"count","name":"Count","type":"integer"},{"key":"page_token","name":"Page token","type":"text"}],"output":[{"key":"collection","name":"Event types","type":"json"}]},
+    {"key":"list_scheduled_events","name":"list scheduled events","description":"List scheduled appointments using bounded status and time filters.","i18n":{"en-US":{"name":"List scheduled events","description":"List scheduled appointments using bounded status and time filters."},"zh-CN":{"name":"查询预约","description":"使用状态与时间条件查询已安排的预约。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"user","name":"User URI","type":"text"},{"key":"organization","name":"Organization URI","type":"text"},{"key":"invitee_email","name":"Invitee email","type":"text"},{"key":"status","name":"Status","type":"text"},{"key":"min_start_time","name":"Minimum start time","type":"text"},{"key":"max_start_time","name":"Maximum start time","type":"text"},{"key":"count","name":"Count","type":"integer"},{"key":"page_token","name":"Page token","type":"text"}],"output":[{"key":"collection","name":"Scheduled events","type":"json"}]},
+    {"key":"create_scheduling_link","name":"create scheduling link","description":"Create a single-use Calendly scheduling link.","i18n":{"en-US":{"name":"Create scheduling link","description":"Create a single-use Calendly scheduling link."},"zh-CN":{"name":"创建预约链接","description":"创建一次性 Calendly 预约链接。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":false,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"owner","name":"Owner URI","type":"text","required":true},{"key":"owner_type","name":"Owner type","type":"text","required":true},{"key":"max_event_count","name":"Maximum event count","type":"integer"}],"output":[{"key":"resource","name":"Scheduling link","type":"json"}]},
+    {"key":"cancel_scheduled_event","name":"cancel scheduled event","description":"Cancel a scheduled appointment with a reason.","i18n":{"en-US":{"name":"Cancel scheduled event","description":"Cancel a scheduled appointment with a reason."},"zh-CN":{"name":"取消预约","description":"携带原因取消已安排的预约。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":false,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"event_uuid","name":"Event UUID","type":"text"},{"key":"booking_uid","name":"Booking UID","type":"text"},{"key":"reason","name":"Reason","type":"text"}],"output":[{"key":"resource","name":"Cancellation","type":"json"}]},
+    {"key":"create_booking","name":"create booking","description":"Create a booking when the selected Provider supports direct booking creation.","i18n":{"en-US":{"name":"Create booking","description":"Create a booking when the selected Provider supports direct booking creation."},"zh-CN":{"name":"创建预约","description":"当所选 Provider 支持时直接创建预约。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"start","name":"Start time","type":"text","required":true},{"key":"end","name":"End time","type":"text"},{"key":"timeZone","name":"Time zone","type":"text"},{"key":"attendee","name":"Attendee","type":"json"},{"key":"attendees","name":"Attendees","type":"json"},{"key":"summary","name":"Summary","type":"text"},{"key":"description","name":"Description","type":"text"},{"key":"location","name":"Location","type":"text"},{"key":"eventTypeId","name":"Event type ID","type":"integer"},{"key":"eventTypeSlug","name":"Event type slug","type":"text"},{"key":"username","name":"Username","type":"text"},{"key":"teamSlug","name":"Team slug","type":"text"},{"key":"organizationSlug","name":"Organization slug","type":"text"},{"key":"metadata","name":"Metadata","type":"json"},{"key":"serviceId","name":"Booking service ID","type":"text"},{"key":"serviceName","name":"Booking service name","type":"text"},{"key":"customerEmailAddress","name":"Customer email","type":"text"},{"key":"customerName","name":"Customer name","type":"text"},{"key":"customerPhone","name":"Customer phone","type":"text"},{"key":"customerTimeZone","name":"Customer time zone","type":"text"},{"key":"staffMemberIds","name":"Staff member IDs","type":"json"},{"key":"isLocationOnline","name":"Online appointment","type":"boolean"},{"key":"createOnlineMeeting","name":"Create online meeting","type":"boolean"},{"key":"conferenceRequestId","name":"Conference request ID","type":"text"}],"output":[{"key":"data","name":"Booking","type":"json"}]},
+    {"key":"enqueue_booking","name":"enqueue booking","description":"Durably enqueue an online meeting booking for project business workflows.","i18n":{"en-US":{"name":"Enqueue booking","description":"Durably enqueue an online meeting booking for project business workflows."},"zh-CN":{"name":"异步创建预约","description":"为项目业务流程持久化入队一次在线视频会议预约。"}},"method":"POST","execution_mode":"async","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"start","name":"Start time","type":"text","required":true},{"key":"end","name":"End time","type":"text","required":true},{"key":"time_zone","name":"Time zone","type":"text"},{"key":"attendees","name":"Attendees","type":"json","required":true},{"key":"summary","name":"Summary","type":"text"},{"key":"description","name":"Description","type":"text"},{"key":"metadata","name":"Business correlation metadata","type":"json","required":true},{"key":"create_online_meeting","name":"Create online meeting","type":"boolean"},{"key":"conference_request_id","name":"Conference request ID","type":"text"}],"output":[{"key":"data","name":"Booking","type":"json"}]},
+    {"key":"reschedule_scheduled_event","name":"reschedule scheduled event","description":"Reschedule an existing booking to a new start time.","i18n":{"en-US":{"name":"Reschedule scheduled event","description":"Reschedule an existing booking to a new start time."},"zh-CN":{"name":"改期预约","description":"将现有预约改到新的开始时间。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"booking_uid","name":"Booking UID","type":"text"},{"key":"event_uuid","name":"Event UUID","type":"text"},{"key":"start","name":"New start time","type":"text","required":true},{"key":"end","name":"New end time","type":"text"},{"key":"timeZone","name":"Time zone","type":"text"},{"key":"reschedulingReason","name":"Rescheduling reason","type":"text"}],"output":[{"key":"data","name":"Booking","type":"json"}]},
+    {"key":"watch_scheduled_events","name":"watch scheduled events","description":"Create a Provider push channel for appointment changes.","i18n":{"en-US":{"name":"Watch scheduled events","description":"Create a Provider push channel for appointment changes."},"zh-CN":{"name":"订阅预约变更","description":"创建用于接收预约变更的 Provider 推送通道。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"channel_id","name":"Channel ID","type":"text","required":true},{"key":"address","name":"Webhook address","type":"text","required":true},{"key":"expiration","name":"Expiration milliseconds","type":"integer"}],"output":[{"key":"id","name":"Channel ID","type":"text"},{"key":"resourceId","name":"Resource ID","type":"text"},{"key":"expiration","name":"Expiration","type":"integer"}]}
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for booking page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for booking page url.",
+              "name": "booking page url"
+            },
+            "zh-CN": {
+              "description": "booking page url 配置项。",
+              "name": "booking page url"
+            }
+          },
+          "key": "booking_page_url",
+          "name": "booking page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for calendar id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for calendar id.",
+              "name": "calendar id"
+            },
+            "zh-CN": {
+              "description": "calendar id 配置项。",
+              "name": "calendar id"
+            }
+          },
+          "key": "calendar_id",
+          "name": "calendar id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default timezone.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default timezone.",
+              "name": "default timezone"
+            },
+            "zh-CN": {
+              "description": "default timezone 配置项。",
+              "name": "default timezone"
+            }
+          },
+          "key": "default_timezone",
+          "name": "default timezone",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for event type id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for event type id.",
+              "name": "event type id"
+            },
+            "zh-CN": {
+              "description": "event type id 配置项。",
+              "name": "event type id"
+            }
+          },
+          "key": "event_type_id",
+          "name": "event type id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 60,
+          "description": "Configuration value for no show window minutes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for no show window minutes.",
+              "name": "no show window minutes"
+            },
+            "zh-CN": {
+              "description": "no show window minutes 配置项。",
+              "name": "no show window minutes"
+            }
+          },
+          "key": "no_show_window_minutes",
+          "name": "no show window minutes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider cal_com",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider cal_com",
+          "name": "cal_com"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider cal_com",
+          "name": "cal_com"
+        }
+      },
+      "key": "cal_com",
+      "name": "cal_com",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for booking page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for booking page url.",
+              "name": "booking page url"
+            },
+            "zh-CN": {
+              "description": "booking page url 配置项。",
+              "name": "booking page url"
+            }
+          },
+          "key": "booking_page_url",
+          "name": "booking page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for calendar id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for calendar id.",
+              "name": "calendar id"
+            },
+            "zh-CN": {
+              "description": "calendar id 配置项。",
+              "name": "calendar id"
+            }
+          },
+          "key": "calendar_id",
+          "name": "calendar id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default timezone.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default timezone.",
+              "name": "default timezone"
+            },
+            "zh-CN": {
+              "description": "default timezone 配置项。",
+              "name": "default timezone"
+            }
+          },
+          "key": "default_timezone",
+          "name": "default timezone",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for event type id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for event type id.",
+              "name": "event type id"
+            },
+            "zh-CN": {
+              "description": "event type id 配置项。",
+              "name": "event type id"
+            }
+          },
+          "key": "event_type_id",
+          "name": "event type id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 60,
+          "description": "Configuration value for no show window minutes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for no show window minutes.",
+              "name": "no show window minutes"
+            },
+            "zh-CN": {
+              "description": "no show window minutes 配置项。",
+              "name": "no show window minutes"
+            }
+          },
+          "key": "no_show_window_minutes",
+          "name": "no show window minutes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider calendly",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider calendly",
+          "name": "calendly"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider calendly",
+          "name": "calendly"
+        }
+      },
+      "key": "calendly",
+      "name": "calendly",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for booking page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for booking page url.",
+              "name": "booking page url"
+            },
+            "zh-CN": {
+              "description": "booking page url 配置项。",
+              "name": "booking page url"
+            }
+          },
+          "key": "booking_page_url",
+          "name": "booking page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for calendar id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for calendar id.",
+              "name": "calendar id"
+            },
+            "zh-CN": {
+              "description": "calendar id 配置项。",
+              "name": "calendar id"
+            }
+          },
+          "key": "calendar_id",
+          "name": "calendar id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default timezone.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default timezone.",
+              "name": "default timezone"
+            },
+            "zh-CN": {
+              "description": "default timezone 配置项。",
+              "name": "default timezone"
+            }
+          },
+          "key": "default_timezone",
+          "name": "default timezone",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for event type id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for event type id.",
+              "name": "event type id"
+            },
+            "zh-CN": {
+              "description": "event type id 配置项。",
+              "name": "event type id"
+            }
+          },
+          "key": "event_type_id",
+          "name": "event type id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 60,
+          "description": "Configuration value for no show window minutes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for no show window minutes.",
+              "name": "no show window minutes"
+            },
+            "zh-CN": {
+              "description": "no show window minutes 配置项。",
+              "name": "no show window minutes"
+            }
+          },
+          "key": "no_show_window_minutes",
+          "name": "no show window minutes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider google_calendar",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider google_calendar",
+          "name": "google_calendar"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider google_calendar",
+          "name": "google_calendar"
+        }
+      },
+      "key": "google_calendar",
+      "name": "google_calendar",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for booking page url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for booking page url.",
+              "name": "booking page url"
+            },
+            "zh-CN": {
+              "description": "booking page url 配置项。",
+              "name": "booking page url"
+            }
+          },
+          "key": "booking_page_url",
+          "name": "booking page url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for calendar id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for calendar id.",
+              "name": "calendar id"
+            },
+            "zh-CN": {
+              "description": "calendar id 配置项。",
+              "name": "calendar id"
+            }
+          },
+          "key": "calendar_id",
+          "name": "calendar id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default owner queue.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default owner queue.",
+              "name": "default owner queue"
+            },
+            "zh-CN": {
+              "description": "default owner queue 配置项。",
+              "name": "default owner queue"
+            }
+          },
+          "key": "default_owner_queue",
+          "name": "default owner queue",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default timezone.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default timezone.",
+              "name": "default timezone"
+            },
+            "zh-CN": {
+              "description": "default timezone 配置项。",
+              "name": "default timezone"
+            }
+          },
+          "key": "default_timezone",
+          "name": "default timezone",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for event type id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for event type id.",
+              "name": "event type id"
+            },
+            "zh-CN": {
+              "description": "event type id 配置项。",
+              "name": "event type id"
+            }
+          },
+          "key": "event_type_id",
+          "name": "event type id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 60,
+          "description": "Configuration value for no show window minutes.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for no show window minutes.",
+              "name": "no show window minutes"
+            },
+            "zh-CN": {
+              "description": "no show window minutes 配置项。",
+              "name": "no show window minutes"
+            }
+          },
+          "key": "no_show_window_minutes",
+          "name": "no show window minutes",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for sync window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for sync window days.",
+              "name": "sync window days"
+            },
+            "zh-CN": {
+              "description": "sync window days 配置项。",
+              "name": "sync window days"
+            }
+          },
+          "key": "sync_window_days",
+          "name": "sync window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        }
+      ],
+      "description": "Runtime Provider microsoft_booking",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider microsoft_booking",
+          "name": "microsoft_booking"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider microsoft_booking",
+          "name": "microsoft_booking"
+        }
+      },
+      "key": "microsoft_booking",
+      "name": "microsoft_booking",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "key": "calendar_id",
+          "name": "Calendar ID",
+          "description": "Writable Feishu primary or shared calendar ID.",
+      "required": false,
+          "type": "text",
+          "validation": {"max_length": 2048},
+          "i18n": {
+            "en-US": {"name": "Calendar ID", "description": "Writable Feishu primary or shared calendar ID."},
+            "zh-CN": {"name": "日历 ID", "description": "飞书可写的主日历或共享日历 ID。"}
+          }
+        },
+        {
+          "key": "app_id",
+          "name": "App ID",
+          "description": "Feishu custom application ID when tenant authentication is used.",
+          "required": false,
+          "type": "text",
+          "validation": {"max_length": 2048},
+          "i18n": {
+            "en-US": {"name": "App ID", "description": "Feishu custom application ID when tenant authentication is used."},
+            "zh-CN": {"name": "应用 ID", "description": "使用租户身份时的飞书自建应用 ID。"}
+          }
+        },
+        {
+          "key": "base_url",
+          "name": "Feishu API Base URL",
+          "description": "Base URL for Feishu OpenAPI requests.",
+          "required": false,
+          "type": "text",
+          "default": "https://open.feishu.cn",
+          "validation": {"max_length": 2048, "pattern": "^https?://[^\\s]+$"},
+          "i18n": {
+            "en-US": {"name": "Feishu API Base URL", "description": "Base URL for Feishu OpenAPI requests."},
+            "zh-CN": {"name": "飞书 API 根地址", "description": "飞书开放平台请求的根地址。"}
+          }
+        },
+        {
+          "key": "default_timezone",
+          "name": "Default timezone",
+          "description": "Default timezone used by meeting invitations.",
+          "required": false,
+          "type": "text",
+          "default": "Asia/Shanghai",
+          "validation": {"max_length": 2048},
+          "i18n": {
+            "en-US": {"name": "Default timezone", "description": "Default timezone used by meeting invitations."},
+            "zh-CN": {"name": "默认时区", "description": "会议邀请使用的默认时区。"}
+          }
+        },
+        {
+          "key": "timeout_seconds",
+          "name": "Timeout seconds",
+          "description": "Maximum duration of one Feishu API request.",
+          "required": false,
+          "type": "integer",
+          "default": 30,
+          "validation": {"min": 1, "max": 120},
+          "i18n": {
+            "en-US": {"name": "Timeout seconds", "description": "Maximum duration of one Feishu API request."},
+            "zh-CN": {"name": "超时秒数", "description": "单次飞书 API 请求的最长时间。"}
+          }
+        }
+      ],
+      "description": "Runtime Provider feishu_calendar",
+      "i18n": {
+        "en-US": {"name": "Feishu Calendar Meeting", "description": "Create a Feishu event, invite attendees, and return its meeting URL."},
+        "zh-CN": {"name": "飞书日历会议", "description": "创建飞书日程、邀请参与人并返回会议链接。"}
+      },
+      "key": "feishu_calendar",
+      "name": "Feishu Calendar Meeting",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "key": "access_token",
+          "name": "User access token",
+          "description": "Feishu user access token for creating meetings as the organizer.",
+          "required": false,
+          "type": "text",
+          "config": {"credential_kind": "bearer_token", "material_format": "opaque", "rotation_policy": "manual", "expiry_policy": "optional", "test_requirement": "when_bound", "sensitive": true, "write_only": true},
+          "i18n": {
+            "en-US": {"name": "User access token", "description": "Feishu user access token for creating meetings as the organizer."},
+            "zh-CN": {"name": "用户访问令牌", "description": "以组织者身份创建会议的飞书用户访问令牌。"}
+          }
+        },
+        {
+          "key": "app_secret",
+          "name": "App secret",
+          "description": "Feishu custom application secret for tenant authentication.",
+          "required": false,
+          "type": "text",
+          "config": {"credential_kind": "oauth_client_secret", "material_format": "opaque", "rotation_policy": "manual", "expiry_policy": "optional", "test_requirement": "when_bound", "sensitive": true, "write_only": true},
+          "i18n": {
+            "en-US": {"name": "App secret", "description": "Feishu custom application secret for tenant authentication."},
+            "zh-CN": {"name": "应用密钥", "description": "飞书租户身份鉴权使用的自建应用密钥。"}
+          }
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "access_token",
+    "app_secret",
+    "api_token",
+    "oauth_client_id",
+    "oauth_client_secret",
+    "webhook_secret"
+  ],
+  "source": "connectors:appointment_scheduling",
+  "type": "appointment_scheduling",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

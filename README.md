@@ -1,12 +1,14 @@
 # Domainry Connectors
 
-This repository owns official Domainry Connector Provider implementations.
-Each Provider is an independently importable Go package and is linked into a
-project Runtime only when generated project composition imports its factory.
+This repository owns official Domainry Connector product definitions and
+Provider implementations. Each Provider is an independently importable Go
+package and is linked into a project Runtime only when generated project
+composition imports its factory.
 
 The repository does not own Runtime governance or the public Connector SPI.
-Providers depend on `github.com/domainry/domainry-connector-sdk` and use
-Runtime-owned transports for outbound effects.
+Providers depend on `github.com/domainry/domainry-connector-sdk` and receive
+bounded outbound transport capabilities from deployment composition; Runtime
+does not own their product definitions or implementations.
 
 ## Package rules
 
@@ -25,7 +27,7 @@ Runtime-owned transports for outbound effects.
 - `internal/infrastructure/catalog`: embedded catalog repository implementation.
 - `module`: stable public in-process factory facade.
 - `providers/<connector-key>/<provider-key>`: stable, independently importable Provider entrypoints.
-- `catalog`: backward-compatible public catalog contract and embedded artifact.
+- `catalog`: public Connector definition and Provider release catalog contracts.
 
 ## Development
 

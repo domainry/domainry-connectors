@@ -1,0 +1,2002 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "quickbooks",
+    "xero",
+    "kingdee",
+    "yonyou",
+    "invoice_sync",
+    "customer_sync",
+    "journal_entry",
+    "tax_mapping",
+    "account_mapping",
+    "reconciliation",
+    "finance_close_plan",
+    "tax_id_review",
+    "tax_rate_review",
+    "open_receivable_collection",
+    "bad_debt_review",
+    "invoice_reissue_workflow",
+    "payment_difference_review",
+    "business_writeback"
+  ],
+  "config": {
+    "account_mapping_path": "/integrations/accounting/account-mapping",
+    "config_fields": [
+      "provider",
+      "company_id",
+      "tenant_id",
+      "base_url",
+      "locale",
+      "currency",
+      "tax_region",
+      "invoice_object_key",
+      "customer_object_key",
+      "writeback_status_field",
+      "reconciliation_workflow_key"
+    ],
+    "connection_request_path": "/integrations/accounting/connection-request",
+    "customer_sync_path": "/integrations/accounting/customer-sync",
+    "default_connection_key": "accounting_primary",
+    "finance_close_plan_path": "/integrations/accounting/finance-close-plan",
+    "invoice_sync_path": "/integrations/accounting/invoice-sync",
+    "journal_entry_path": "/integrations/accounting/journal-entry",
+    "options_path": "/integrations/accounting/options",
+    "reconciliation_path": "/integrations/accounting/reconciliation",
+    "regional_presets": [
+      "us:quickbooks",
+      "global:xero",
+      "cn:kingdee",
+      "cn:yonyou"
+    ],
+    "secret_refs": [
+      "client_id",
+      "client_secret",
+      "access_token",
+      "refresh_token",
+      "api_key",
+      "app_key",
+      "app_secret",
+      "certificate",
+      "webhook_secret"
+    ],
+    "tax_mapping_path": "/integrations/accounting/tax-mapping"
+  },
+  "config_fields": [
+    "provider",
+    "company_id",
+    "tenant_id",
+    "base_url",
+    "locale",
+    "currency",
+    "tax_region",
+    "invoice_object_key",
+    "customer_object_key",
+    "writeback_status_field",
+    "reconciliation_workflow_key"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Accounting Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Accounting Connector definitions, Provider choices, and operation contracts.",
+      "name": "Accounting"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方财务会计连接器定义、Provider 选项与操作契约。",
+      "name": "财务会计"
+    }
+  },
+  "key": "accounting",
+  "name": "Accounting",
+  "operations": [
+    {"key":"test_connection","name":"test connection","description":"Verify QuickBooks OAuth credentials and realm company access.","i18n":{"en-US":{"name":"Test connection","description":"Verify QuickBooks OAuth credentials and realm company access."},"zh-CN":{"name":"测试连接","description":"验证 QuickBooks OAuth 凭据与公司 Realm 访问。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":15,"timeout_max_seconds":30},
+    {"key":"list_customers","name":"list customers","description":"Query QuickBooks customers with bounded incremental filters.","i18n":{"en-US":{"name":"List customers","description":"Query QuickBooks customers with bounded incremental filters."},"zh-CN":{"name":"查询客户","description":"使用有界增量条件查询 QuickBooks 客户。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"changed_since","name":"Changed since","type":"text"},{"key":"limit","name":"Limit","type":"integer"}],"output":[{"key":"QueryResponse","name":"Query response","type":"json"}]},
+    {"key":"list_invoices","name":"list invoices","description":"Query QuickBooks invoices for synchronization and reconciliation.","i18n":{"en-US":{"name":"List invoices","description":"Query QuickBooks invoices for synchronization and reconciliation."},"zh-CN":{"name":"查询发票","description":"查询用于同步与对账的 QuickBooks 发票。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"changed_since","name":"Changed since","type":"text"},{"key":"limit","name":"Limit","type":"integer"}],"output":[{"key":"QueryResponse","name":"Query response","type":"json"}]},
+    {"key":"list_payments","name":"list payments","description":"Query received payments for invoice settlement reconciliation.","i18n":{"en-US":{"name":"List payments","description":"Query received payments for invoice settlement reconciliation."},"zh-CN":{"name":"查询收款","description":"查询用于发票结算对账的收款。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"changed_since","name":"Changed since","type":"text"},{"key":"limit","name":"Limit","type":"integer"}],"output":[{"key":"QueryResponse","name":"Query response","type":"json"}]},
+    {"key":"list_accounts","name":"list accounts","description":"Query chart-of-accounts records for account mapping.","i18n":{"en-US":{"name":"List accounts","description":"Query chart-of-accounts records for account mapping."},"zh-CN":{"name":"查询科目","description":"查询用于科目映射的会计科目表。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"changed_since","name":"Changed since","type":"text"},{"key":"limit","name":"Limit","type":"integer"}],"output":[{"key":"QueryResponse","name":"Query response","type":"json"}]},
+    {"key":"list_tax_codes","name":"list tax codes","description":"Query QuickBooks tax codes for tax mapping.","i18n":{"en-US":{"name":"List tax codes","description":"Query QuickBooks tax codes for tax mapping."},"zh-CN":{"name":"查询税码","description":"查询用于税务映射的 QuickBooks 税码。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"limit","name":"Limit","type":"integer"}],"output":[{"key":"QueryResponse","name":"Query response","type":"json"}]},
+    {"key":"create_customer","name":"create customer","description":"Create a QuickBooks customer from a business customer record.","i18n":{"en-US":{"name":"Create customer","description":"Create a QuickBooks customer from a business customer record."},"zh-CN":{"name":"创建客户","description":"根据业务客户记录创建 QuickBooks 客户。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":false,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"DisplayName","name":"Display name","type":"text","required":true}],"output":[{"key":"Customer","name":"Customer","type":"json"}]},
+    {"key":"update_customer","name":"update customer","description":"Update a QuickBooks customer with optimistic SyncToken concurrency.","i18n":{"en-US":{"name":"Update customer","description":"Update a QuickBooks customer with optimistic SyncToken concurrency."},"zh-CN":{"name":"更新客户","description":"使用 SyncToken 乐观并发更新 QuickBooks 客户。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":false,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"Id","name":"Customer ID","type":"text","required":true},{"key":"SyncToken","name":"Sync token","type":"text","required":true}],"output":[{"key":"Customer","name":"Customer","type":"json"}]},
+    {"key":"create_invoice","name":"create invoice","description":"Create a QuickBooks sales invoice with customer and line details.","i18n":{"en-US":{"name":"Create invoice","description":"Create a QuickBooks sales invoice with customer and line details."},"zh-CN":{"name":"创建发票","description":"使用客户与明细创建 QuickBooks 销售发票。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":false,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"CustomerRef","name":"Customer reference","type":"json","required":true},{"key":"Line","name":"Invoice lines","type":"json","required":true}],"output":[{"key":"Invoice","name":"Invoice","type":"json"}]},
+    {"key":"update_invoice","name":"update invoice","description":"Update a QuickBooks invoice with optimistic SyncToken concurrency.","i18n":{"en-US":{"name":"Update invoice","description":"Update a QuickBooks invoice with optimistic SyncToken concurrency."},"zh-CN":{"name":"更新发票","description":"使用 SyncToken 乐观并发更新 QuickBooks 发票。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":false,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"Id","name":"Invoice ID","type":"text","required":true},{"key":"SyncToken","name":"Sync token","type":"text","required":true}],"output":[{"key":"Invoice","name":"Invoice","type":"json"}]},
+    {"key":"create_payment","name":"create payment","description":"Record a customer payment and link it to QuickBooks transactions.","i18n":{"en-US":{"name":"Create payment","description":"Record a customer payment and link it to QuickBooks transactions."},"zh-CN":{"name":"创建收款","description":"记录客户收款并关联 QuickBooks 交易。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":false,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"CustomerRef","name":"Customer reference","type":"json","required":true},{"key":"TotalAmt","name":"Total amount","type":"integer","required":true},{"key":"Line","name":"Linked transactions","type":"json"}],"output":[{"key":"Payment","name":"Payment","type":"json"}]},
+    {"key":"create_journal_entry","name":"create journal entry","description":"Durably create one provider-neutral balanced journal entry and quarantine uncertain remote outcomes for reconciliation.","i18n":{"en-US":{"name":"Create journal entry","description":"Durably create one provider-neutral balanced journal entry and quarantine uncertain remote outcomes for reconciliation."},"zh-CN":{"name":"创建会计分录","description":"持久创建一笔渠道中立的借贷平衡分录；远端结果不确定时隔离并等待对账。"}},"method":"POST","execution_mode":"async","side_effect":"write","idempotency_supported":false,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"batch_key","name":"Posting batch key","type":"text","required":true},{"key":"entry_key","name":"Posting entry key","type":"text","required":true},{"key":"transaction_date","name":"Transaction date","type":"text","required":true},{"key":"currency","name":"Currency","type":"text","required":true},{"key":"memo","name":"Memo","type":"text"},{"key":"lines","name":"Balanced journal lines","type":"json","required":true}],"output":[{"key":"journal_id","name":"Provider journal ID","type":"text","required":true},{"key":"transaction_id","name":"Provider transaction ID","type":"text"},{"key":"status","name":"Posting status","type":"text","required":true}]},
+    {"key":"cdc_sync","name":"CDC sync","description":"Fetch QuickBooks change-data-capture records since a timestamp.","i18n":{"en-US":{"name":"CDC sync","description":"Fetch QuickBooks change-data-capture records since a timestamp."},"zh-CN":{"name":"增量同步","description":"获取指定时间后的 QuickBooks 变更数据。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"entities","name":"Entities","type":"text","required":true},{"key":"changed_since","name":"Changed since","type":"text","required":true}],"output":[{"key":"CDCResponse","name":"CDC response","type":"json"}]}
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "description": "Runtime adapter for freee Accounting journal posting.",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime adapter for freee Accounting journal posting.",
+          "name": "freee Accounting"
+        },
+        "zh-CN": {
+          "description": "用于 freee 会计分录过账的 Runtime 适配器。",
+          "name": "freee 会计"
+        }
+      },
+      "key": "freee",
+      "name": "freee Accounting",
+      "operation_keys": [
+        "test_connection",
+        "create_journal_entry"
+      ],
+      "readiness": "provider_available"
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for company id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for company id.",
+              "name": "company id"
+            },
+            "zh-CN": {
+              "description": "company id 配置项。",
+              "name": "company id"
+            }
+          },
+          "key": "company_id",
+          "name": "company id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for customer object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for customer object key.",
+              "name": "customer object key"
+            },
+            "zh-CN": {
+              "description": "customer object key 配置项。",
+              "name": "customer object key"
+            }
+          },
+          "key": "customer_object_key",
+          "name": "customer object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invoice object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invoice object key.",
+              "name": "invoice object key"
+            },
+            "zh-CN": {
+              "description": "invoice object key 配置项。",
+              "name": "invoice object key"
+            }
+          },
+          "key": "invoice_object_key",
+          "name": "invoice object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for locale.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for locale.",
+              "name": "locale"
+            },
+            "zh-CN": {
+              "description": "locale 配置项。",
+              "name": "locale"
+            }
+          },
+          "key": "locale",
+          "name": "locale",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tax region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tax region.",
+              "name": "tax region"
+            },
+            "zh-CN": {
+              "description": "tax region 配置项。",
+              "name": "tax region"
+            }
+          },
+          "key": "tax_region",
+          "name": "tax region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tenant id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tenant id.",
+              "name": "tenant id"
+            },
+            "zh-CN": {
+              "description": "tenant id 配置项。",
+              "name": "tenant id"
+            }
+          },
+          "key": "tenant_id",
+          "name": "tenant id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider kingdee",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider kingdee",
+          "name": "kingdee"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider kingdee",
+          "name": "kingdee"
+        }
+      },
+      "key": "kingdee",
+      "name": "kingdee",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app key.",
+              "name": "app key"
+            },
+            "zh-CN": {
+              "description": "app key 敏感凭据。",
+              "name": "app key"
+            }
+          },
+          "key": "app_key",
+          "name": "app key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for certificate.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for certificate.",
+              "name": "certificate"
+            },
+            "zh-CN": {
+              "description": "certificate 敏感凭据。",
+              "name": "certificate"
+            }
+          },
+          "key": "certificate",
+          "name": "certificate",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "description": "Runtime adapter for Money Forward Cloud Accounting V3 journal posting.",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime adapter for Money Forward Cloud Accounting V3 journal posting.",
+          "name": "Money Forward Cloud Accounting V3"
+        },
+        "zh-CN": {
+          "description": "用于 Money Forward 云会计 V3 分录过账的 Runtime 适配器。",
+          "name": "Money Forward 云会计 V3"
+        }
+      },
+      "key": "money_forward",
+      "name": "Money Forward Cloud Accounting V3",
+      "operation_keys": [
+        "test_connection",
+        "create_journal_entry"
+      ],
+      "readiness": "provider_available"
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for company id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for company id.",
+              "name": "company id"
+            },
+            "zh-CN": {
+              "description": "company id 配置项。",
+              "name": "company id"
+            }
+          },
+          "key": "company_id",
+          "name": "company id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for customer object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for customer object key.",
+              "name": "customer object key"
+            },
+            "zh-CN": {
+              "description": "customer object key 配置项。",
+              "name": "customer object key"
+            }
+          },
+          "key": "customer_object_key",
+          "name": "customer object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invoice object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invoice object key.",
+              "name": "invoice object key"
+            },
+            "zh-CN": {
+              "description": "invoice object key 配置项。",
+              "name": "invoice object key"
+            }
+          },
+          "key": "invoice_object_key",
+          "name": "invoice object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for locale.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for locale.",
+              "name": "locale"
+            },
+            "zh-CN": {
+              "description": "locale 配置项。",
+              "name": "locale"
+            }
+          },
+          "key": "locale",
+          "name": "locale",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tax region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tax region.",
+              "name": "tax region"
+            },
+            "zh-CN": {
+              "description": "tax region 配置项。",
+              "name": "tax region"
+            }
+          },
+          "key": "tax_region",
+          "name": "tax region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tenant id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tenant id.",
+              "name": "tenant id"
+            },
+            "zh-CN": {
+              "description": "tenant id 配置项。",
+              "name": "tenant id"
+            }
+          },
+          "key": "tenant_id",
+          "name": "tenant id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider quickbooks",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider quickbooks",
+          "name": "quickbooks"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider quickbooks",
+          "name": "quickbooks"
+        }
+      },
+      "key": "quickbooks",
+      "name": "quickbooks",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app key.",
+              "name": "app key"
+            },
+            "zh-CN": {
+              "description": "app key 敏感凭据。",
+              "name": "app key"
+            }
+          },
+          "key": "app_key",
+          "name": "app key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for certificate.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for certificate.",
+              "name": "certificate"
+            },
+            "zh-CN": {
+              "description": "certificate 敏感凭据。",
+              "name": "certificate"
+            }
+          },
+          "key": "certificate",
+          "name": "certificate",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for company id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for company id.",
+              "name": "company id"
+            },
+            "zh-CN": {
+              "description": "company id 配置项。",
+              "name": "company id"
+            }
+          },
+          "key": "company_id",
+          "name": "company id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for customer object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for customer object key.",
+              "name": "customer object key"
+            },
+            "zh-CN": {
+              "description": "customer object key 配置项。",
+              "name": "customer object key"
+            }
+          },
+          "key": "customer_object_key",
+          "name": "customer object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invoice object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invoice object key.",
+              "name": "invoice object key"
+            },
+            "zh-CN": {
+              "description": "invoice object key 配置项。",
+              "name": "invoice object key"
+            }
+          },
+          "key": "invoice_object_key",
+          "name": "invoice object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for locale.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for locale.",
+              "name": "locale"
+            },
+            "zh-CN": {
+              "description": "locale 配置项。",
+              "name": "locale"
+            }
+          },
+          "key": "locale",
+          "name": "locale",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tax region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tax region.",
+              "name": "tax region"
+            },
+            "zh-CN": {
+              "description": "tax region 配置项。",
+              "name": "tax region"
+            }
+          },
+          "key": "tax_region",
+          "name": "tax region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tenant id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tenant id.",
+              "name": "tenant id"
+            },
+            "zh-CN": {
+              "description": "tenant id 配置项。",
+              "name": "tenant id"
+            }
+          },
+          "key": "tenant_id",
+          "name": "tenant id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider xero",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider xero",
+          "name": "xero"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider xero",
+          "name": "xero"
+        }
+      },
+      "key": "xero",
+      "name": "xero",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app key.",
+              "name": "app key"
+            },
+            "zh-CN": {
+              "description": "app key 敏感凭据。",
+              "name": "app key"
+            }
+          },
+          "key": "app_key",
+          "name": "app key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for certificate.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for certificate.",
+              "name": "certificate"
+            },
+            "zh-CN": {
+              "description": "certificate 敏感凭据。",
+              "name": "certificate"
+            }
+          },
+          "key": "certificate",
+          "name": "certificate",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for base url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for base url.",
+              "name": "base url"
+            },
+            "zh-CN": {
+              "description": "base url 配置项。",
+              "name": "base url"
+            }
+          },
+          "key": "base_url",
+          "name": "base url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for company id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for company id.",
+              "name": "company id"
+            },
+            "zh-CN": {
+              "description": "company id 配置项。",
+              "name": "company id"
+            }
+          },
+          "key": "company_id",
+          "name": "company id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for customer object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for customer object key.",
+              "name": "customer object key"
+            },
+            "zh-CN": {
+              "description": "customer object key 配置项。",
+              "name": "customer object key"
+            }
+          },
+          "key": "customer_object_key",
+          "name": "customer object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for invoice object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for invoice object key.",
+              "name": "invoice object key"
+            },
+            "zh-CN": {
+              "description": "invoice object key 配置项。",
+              "name": "invoice object key"
+            }
+          },
+          "key": "invoice_object_key",
+          "name": "invoice object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for locale.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for locale.",
+              "name": "locale"
+            },
+            "zh-CN": {
+              "description": "locale 配置项。",
+              "name": "locale"
+            }
+          },
+          "key": "locale",
+          "name": "locale",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tax region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tax region.",
+              "name": "tax region"
+            },
+            "zh-CN": {
+              "description": "tax region 配置项。",
+              "name": "tax region"
+            }
+          },
+          "key": "tax_region",
+          "name": "tax region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tenant id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tenant id.",
+              "name": "tenant id"
+            },
+            "zh-CN": {
+              "description": "tenant id 配置项。",
+              "name": "tenant id"
+            }
+          },
+          "key": "tenant_id",
+          "name": "tenant id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider yonyou",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider yonyou",
+          "name": "yonyou"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider yonyou",
+          "name": "yonyou"
+        }
+      },
+      "key": "yonyou",
+      "name": "yonyou",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app key.",
+              "name": "app key"
+            },
+            "zh-CN": {
+              "description": "app key 敏感凭据。",
+              "name": "app key"
+            }
+          },
+          "key": "app_key",
+          "name": "app key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for app secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for app secret.",
+              "name": "app secret"
+            },
+            "zh-CN": {
+              "description": "app secret 敏感凭据。",
+              "name": "app secret"
+            }
+          },
+          "key": "app_secret",
+          "name": "app secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for certificate.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for certificate.",
+              "name": "certificate"
+            },
+            "zh-CN": {
+              "description": "certificate 敏感凭据。",
+              "name": "certificate"
+            }
+          },
+          "key": "certificate",
+          "name": "certificate",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "client_id",
+    "client_secret",
+    "access_token",
+    "refresh_token",
+    "api_key",
+    "app_key",
+    "app_secret",
+    "certificate",
+    "webhook_secret"
+  ],
+  "source": "connectors:accounting",
+  "type": "accounting",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

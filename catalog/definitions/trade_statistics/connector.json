@@ -1,0 +1,104 @@
+{
+  "adapter_ready": true,
+  "capabilities": [
+    "official_trade_statistics",
+    "import_statistics",
+    "ncm_unit_value_reference",
+    "publication_freshness",
+    "raw_response_evidence"
+  ],
+  "config": {
+    "config_fields": ["provider", "base_url", "language", "timeout_seconds"],
+    "default_connection_key": "trade_statistics_primary",
+    "secret_refs": []
+  },
+  "config_fields": ["provider", "base_url", "language", "timeout_seconds"],
+  "connection_ready": true,
+  "definition_ready": true,
+  "description": "Queries official foreign-trade statistics with publication and raw-response evidence.",
+  "i18n": {
+    "en-US": {
+      "description": "Queries official foreign-trade statistics with publication and raw-response evidence.",
+      "name": "Trade Statistics"
+    },
+    "zh-CN": {
+      "description": "查询带官方发布时间与原始响应证据的对外贸易统计数据。",
+      "name": "贸易统计"
+    }
+  },
+  "key": "trade_statistics",
+  "name": "Trade Statistics",
+  "operations": [
+    {
+      "key": "test_connection",
+      "name": "Test connection",
+      "description": "Verify access to the official publication metadata endpoint.",
+      "i18n": {
+        "en-US": {"name": "Test connection", "description": "Verify access to the official publication metadata endpoint."},
+        "zh-CN": {"name": "测试连接", "description": "验证官方数据发布时间接口是否可访问。"}
+      },
+      "method": "GET",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 20,
+      "timeout_max_seconds": 60,
+      "output": [
+        {"key": "publication", "name": "Publication metadata", "type": "json", "required": true}
+      ]
+    },
+    {
+      "key": "query_import_statistics",
+      "name": "Query import statistics",
+      "description": "Query official import statistics by NCM, period, UF, customs unit and transport mode.",
+      "i18n": {
+        "en-US": {"name": "Query import statistics", "description": "Query official import statistics by NCM, period, UF, customs unit and transport mode."},
+        "zh-CN": {"name": "查询进口统计", "description": "按 NCM、期间、UF、海关单位和运输方式查询官方进口统计。"}
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 90,
+      "input": [
+        {"key": "ncm", "name": "NCM", "type": "text", "required": true},
+        {"key": "period_from", "name": "Period from", "type": "text", "required": true},
+        {"key": "period_to", "name": "Period to", "type": "text", "required": true},
+        {"key": "uf_code", "name": "UF code", "type": "text", "required": true},
+        {"key": "urf_code", "name": "Customs unit code", "type": "text", "required": true},
+        {"key": "via_code", "name": "Transport mode code", "type": "text", "required": true}
+      ],
+      "output": [
+        {"key": "result", "name": "Official statistics and evidence", "type": "json", "required": true}
+      ]
+    }
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "key": "comex_stat",
+      "name": "Comex Stat",
+      "description": "Brazil MDIC official Comex Stat API.",
+      "i18n": {
+        "en-US": {"name": "Comex Stat", "description": "Brazil MDIC official Comex Stat API."},
+        "zh-CN": {"name": "Comex Stat", "description": "巴西 MDIC 官方 Comex Stat API。"}
+      },
+      "readiness": "provider_available",
+      "config_fields": [
+        {"key": "base_url", "name": "Official API base URL", "description": "The official MDIC Comex Stat API origin.", "i18n": {"en-US": {"name": "Official API base URL", "description": "The official MDIC Comex Stat API origin."}, "zh-CN": {"name": "官方 API 地址", "description": "MDIC Comex Stat 官方 API 地址。"}}, "type": "text", "required": true, "default": "https://api-comexstat.mdic.gov.br", "validation": {"max_length": 2048}},
+        {"key": "language", "name": "Response language", "description": "Language requested from the official API.", "i18n": {"en-US": {"name": "Response language", "description": "Language requested from the official API."}, "zh-CN": {"name": "响应语言", "description": "向官方 API 请求的响应语言。"}}, "type": "select", "required": true, "default": "pt", "options": ["pt", "en", "es"]},
+        {"key": "timeout_seconds", "name": "Timeout seconds", "description": "Maximum request duration in seconds.", "i18n": {"en-US": {"name": "Timeout seconds", "description": "Maximum request duration in seconds."}, "zh-CN": {"name": "超时秒数", "description": "请求允许的最长秒数。"}}, "type": "integer", "required": false, "default": 30, "validation": {"min": 1, "max": 90}}
+      ],
+      "secret_fields": []
+    }
+  ],
+  "readiness": "adapter_available",
+  "classification": "external_connector",
+  "lifecycle_status": "active",
+  "source": "connectors:trade_statistics",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0"
+  ,"secret_refs": []
+  ,"type": "external_connector"
+  ,"feature_flags": ["connection_test", "operations", "provider_catalog", "typed_config"]
+}

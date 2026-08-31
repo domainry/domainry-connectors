@@ -1,0 +1,136 @@
+{
+  "adapter_ready": true,
+  "capabilities": [
+    "brazil_official_ncm_catalog",
+    "china_hs_candidate_search",
+    "human_confirmation_required",
+    "manual_fallback",
+    "raw_response_evidence"
+  ],
+  "config": {
+    "config_fields": ["base_url", "timeout_seconds", "max_response_bytes"],
+    "default_connection_key": "tariff_classification_primary",
+    "secret_refs": []
+  },
+  "config_fields": ["base_url", "timeout_seconds", "max_response_bytes"],
+  "connection_ready": true,
+  "definition_ready": true,
+  "description": "Retrieves governed tariff-classification candidates while preserving source jurisdiction, trust, evidence, and mandatory human confirmation.",
+  "i18n": {
+    "en-US": {
+      "description": "Retrieves governed tariff-classification candidates while preserving source jurisdiction, trust, evidence, and mandatory human confirmation.",
+      "name": "Tariff Classification"
+    },
+    "zh-CN": {
+      "description": "检索受治理的税则分类候选，并保留来源法域、可信边界、证据和强制人工确认。",
+      "name": "税则分类"
+    }
+  },
+  "key": "tariff_classification",
+  "name": "Tariff Classification",
+  "operations": [
+    {
+      "key": "test_connection",
+      "name": "Test source connection",
+      "description": "Verify source reachability and response evidence without producing a business classification candidate.",
+      "i18n": {
+        "en-US": {"name": "Test source connection", "description": "Verify source reachability and response evidence without producing a business classification candidate."},
+        "zh-CN": {"name": "测试来源连接", "description": "验证来源可访问性与响应证据，但不产出业务分类候选。"}
+      },
+      "method": "GET",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "test_supported": true,
+      "timeout_default_seconds": 20,
+      "timeout_max_seconds": 60,
+      "output": [
+        {"key": "result", "name": "Connection evidence", "description": "Reachability evidence only; never a classification result.", "type": "json", "required": true}
+      ]
+    },
+    {
+      "key": "search_china_hs_candidates",
+      "name": "Search China HS candidates",
+      "description": "Search an optional untrusted China source for 10-digit China customs-code candidates; never returns Brazil NCM or a final classification.",
+      "i18n": {
+        "en-US": {"name": "Search China HS candidates", "description": "Search an optional untrusted China source for 10-digit China customs-code candidates; never returns Brazil NCM or a final classification."},
+        "zh-CN": {"name": "检索中国 HS 候选", "description": "从可选且不可信的中国来源检索中国 10 位海关编码候选；绝不作为巴西 NCM 或最终归类。"}
+      },
+      "method": "GET",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 20,
+      "timeout_max_seconds": 60,
+      "input": [
+        {"key": "query", "name": "Product query", "description": "Chinese product name or description used only for auxiliary candidate search.", "type": "text", "required": true, "validation": {"max_length": 500}}
+      ],
+      "output": [
+        {"key": "result", "name": "China HS candidate result", "description": "Untrusted 10-digit China candidates, trust boundary, and request/response evidence.", "type": "json", "required": true}
+      ]
+    },
+    {
+      "key": "match_brazil_ncm_candidates",
+      "name": "Match Brazil NCM candidates",
+      "description": "Load the official current Classif/Portal Unico NCM catalog and return every 8-digit NCM under a shared HS6 with non-excluding attribute-match evidence.",
+      "i18n": {
+        "en-US": {"name": "Match Brazil NCM candidates", "description": "Load the official current Classif/Portal Unico NCM catalog and return every 8-digit NCM under a shared HS6 with non-excluding attribute-match evidence."},
+        "zh-CN": {"name": "匹配巴西 NCM 候选", "description": "加载 Classif/Portal Único 官方现行 NCM 目录，返回共享 HS6 下全部 8 位 NCM，并提供不排除候选的属性匹配证据。"}
+      },
+      "method": "GET",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 90,
+      "input": [
+        {"key": "hs6", "name": "Shared HS6", "description": "Six digits shared by the source-country code and Brazil NCM candidates.", "type": "text", "required": true, "validation": {"pattern": "^[0-9]{6}$"}},
+        {"key": "product_attributes", "name": "Product attributes", "description": "Optional object of product attribute names and values used only for deterministic non-excluding match evidence.", "type": "json", "required": false, "config": {"json_shape": "object"}}
+      ],
+      "output": [
+        {"key": "result", "name": "Official Brazil NCM candidate result", "description": "All current official 8-digit candidates under HS6, attribute evidence, catalog version/effective data, and raw-response evidence.", "type": "json", "required": true}
+      ]
+    }
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "key": "brazil_portal_unico_classif",
+      "name": "Brazil Portal Unico Classif",
+      "description": "Official public current NCM catalog published by Classif/Portal Unico Siscomex.",
+      "i18n": {
+        "en-US": {"name": "Brazil Portal Unico Classif", "description": "Official public current NCM catalog published by Classif/Portal Unico Siscomex."},
+        "zh-CN": {"name": "巴西 Portal Único Classif", "description": "Classif/Portal Único Siscomex 发布的官方现行 NCM 公共目录。"}
+      },
+      "readiness": "provider_available",
+      "config_fields": [
+        {"key": "base_url", "name": "Official Classif origin", "description": "Official Portal Unico origin used for the public current-NCM JSON download.", "i18n": {"en-US": {"name": "Official Classif origin", "description": "Official Portal Unico origin used for the public current-NCM JSON download."}, "zh-CN": {"name": "Classif 官方地址", "description": "用于下载现行 NCM 公共 JSON 的 Portal Único 官方地址。"}}, "type": "text", "required": true, "default": "https://portalunico.siscomex.gov.br", "validation": {"max_length": 2048}},
+        {"key": "timeout_seconds", "name": "Timeout seconds", "description": "Maximum request duration in seconds.", "i18n": {"en-US": {"name": "Timeout seconds", "description": "Maximum request duration in seconds."}, "zh-CN": {"name": "超时秒数", "description": "请求允许的最长秒数。"}}, "type": "integer", "required": false, "default": 30, "validation": {"min": 1, "max": 90}},
+        {"key": "max_response_bytes", "name": "Maximum response bytes", "description": "Maximum accepted official catalog response size.", "i18n": {"en-US": {"name": "Maximum response bytes", "description": "Maximum accepted official catalog response size."}, "zh-CN": {"name": "最大响应字节数", "description": "可接受的官方目录响应大小上限。"}}, "type": "integer", "required": false, "default": 8388608, "validation": {"min": 1048576, "max": 16777216}}
+      ],
+      "secret_fields": []
+    },
+    {
+      "key": "china_hs_bianma",
+      "name": "China HS Bianma",
+      "description": "Optional untrusted HTML source for auxiliary 10-digit China customs-code candidates.",
+      "i18n": {
+        "en-US": {"name": "China HS Bianma", "description": "Optional untrusted HTML source for auxiliary 10-digit China customs-code candidates."},
+        "zh-CN": {"name": "中国 HS 编码辅助来源", "description": "用于辅助检索中国 10 位海关编码候选的可选、不可信 HTML 来源。"}
+      },
+      "readiness": "provider_available",
+      "config_fields": [
+        {"key": "base_url", "name": "Source origin", "description": "HS Bianma origin; remote connections are restricted to hs-bianma.com.", "i18n": {"en-US": {"name": "Source origin", "description": "HS Bianma origin; remote connections are restricted to hs-bianma.com."}, "zh-CN": {"name": "来源地址", "description": "HS Bianma 地址；远程连接仅允许 hs-bianma.com。"}}, "type": "text", "required": true, "default": "https://hs-bianma.com", "validation": {"max_length": 2048}},
+        {"key": "timeout_seconds", "name": "Timeout seconds", "description": "Maximum request duration in seconds.", "i18n": {"en-US": {"name": "Timeout seconds", "description": "Maximum request duration in seconds."}, "zh-CN": {"name": "超时秒数", "description": "请求允许的最长秒数。"}}, "type": "integer", "required": false, "default": 20, "validation": {"min": 1, "max": 60}},
+        {"key": "max_response_bytes", "name": "Maximum response bytes", "description": "Maximum accepted HTML response size.", "i18n": {"en-US": {"name": "Maximum response bytes", "description": "Maximum accepted HTML response size."}, "zh-CN": {"name": "最大响应字节数", "description": "可接受的 HTML 响应大小上限。"}}, "type": "integer", "required": false, "default": 1048576, "validation": {"min": 65536, "max": 4194304}}
+      ],
+      "secret_fields": []
+    }
+  ],
+  "readiness": "adapter_available",
+  "classification": "external_connector",
+  "lifecycle_status": "active",
+  "source": "connectors:tariff_classification",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "secret_refs": [],
+  "type": "external_connector",
+  "feature_flags": ["connection_test", "operations", "provider_catalog", "typed_config"]
+}

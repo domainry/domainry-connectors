@@ -1,0 +1,1873 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "ups",
+    "fedex",
+    "dhl",
+    "sf_express",
+    "shopify_fulfillment",
+    "rate_quote",
+    "shipment_label",
+    "tracking",
+    "pickup",
+    "webhook",
+    "fulfillment_onboarding",
+    "fulfillment_exception",
+    "delivery_exception",
+    "rma",
+    "returns",
+    "estimated_delivery",
+    "proof_of_delivery",
+    "customer_notification_gate",
+    "data_migration_handoff",
+    "business_writeback",
+    "idempotency"
+  ],
+  "config": {
+    "config_fields": [
+      "provider",
+      "account_number",
+      "shipper_country",
+      "default_service_level",
+      "label_format",
+      "tracking_object_key",
+      "writeback_status_field",
+      "pickup_cutoff_time"
+    ],
+    "connection_request_path": "/integrations/logistics/connection-request",
+    "default_connection_key": "logistics_primary",
+    "fulfillment_exception_path": "/integrations/logistics/fulfillment-exception-plan",
+    "fulfillment_onboarding_path": "/integrations/logistics/fulfillment-onboarding",
+    "options_path": "/integrations/logistics/options",
+    "pickup_path": "/integrations/logistics/pickup",
+    "rate_quote_path": "/integrations/logistics/rate-quote",
+    "regional_presets": [
+      "us:ups",
+      "us:fedex",
+      "global:dhl",
+      "cn:sf_express",
+      "ecommerce:shopify_fulfillment"
+    ],
+    "route_handoff_path": "/integrations/logistics/route-handoff",
+    "secret_refs": [
+      "api_key",
+      "client_id",
+      "client_secret",
+      "access_token",
+      "account_password",
+      "webhook_secret",
+      "private_key"
+    ],
+    "shipment_label_path": "/integrations/logistics/shipment-label",
+    "tracking_path": "/integrations/logistics/tracking"
+  },
+  "config_fields": [
+    "provider",
+    "account_number",
+    "shipper_country",
+    "default_service_level",
+    "label_format",
+    "tracking_object_key",
+    "writeback_status_field",
+    "pickup_cutoff_time"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Logistics Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Logistics Connector definitions, Provider choices, and operation contracts.",
+      "name": "Logistics"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方物流连接器定义、Provider 选项与操作契约。",
+      "name": "物流"
+    }
+  },
+  "key": "logistics",
+  "name": "Logistics",
+  "operations": [
+    {"key":"test_connection","name":"test connection","description":"Verify access to the selected logistics Provider.","i18n":{"en-US":{"name":"Test connection","description":"Verify access to the selected logistics Provider."},"zh-CN":{"name":"测试连接","description":"验证所选物流 Provider 的访问权限。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":20,"timeout_max_seconds":60},
+    {"key":"quote_rates","name":"quote rates","description":"Request available logistics products, rates, and estimated delivery dates.","i18n":{"en-US":{"name":"Quote rates","description":"Request available logistics products, rates, and estimated delivery dates."},"zh-CN":{"name":"物流报价","description":"查询可用物流产品、费率与预计送达时间。"}},"method":"POST","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":90,"input":[{"key":"input","name":"Provider request","type":"json","required":true}],"output":[{"key":"products","name":"Products and rates","type":"json"}]},
+    {"key":"create_shipment","name":"create shipment","description":"Create a shipment and its shipping documents or label.","i18n":{"en-US":{"name":"Create shipment","description":"Create a shipment and its shipping documents or label."},"zh-CN":{"name":"创建货件","description":"创建货件及其运输文件或面单。"}},"method":"POST","execution_mode":"sync","side_effect":"write","timeout_default_seconds":60,"timeout_max_seconds":120,"input":[{"key":"input","name":"Provider request","type":"json","required":true}],"output":[{"key":"shipmentTrackingNumber","name":"Tracking number","type":"text"},{"key":"documents","name":"Shipping documents","type":"json"}]},
+    {"key":"create_shipment_operation","name":"create shipment operation","description":"Durably create a shipment and its shipping documents or label.","i18n":{"en-US":{"name":"Create shipment operation","description":"Durably create a shipment and its shipping documents or label."},"zh-CN":{"name":"创建货件长操作","description":"以持久化长操作创建货件及运输文件或面单。"}},"method":"POST","execution_mode":"operation","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":60,"timeout_max_seconds":120,"input":[{"key":"input","name":"Provider request","type":"json","required":true}],"output":[{"key":"shipmentTrackingNumber","name":"Tracking number","type":"text"},{"key":"documents","name":"Shipping documents","type":"json"}]},
+    {"key":"track_shipment","name":"track shipment","description":"Retrieve the current shipment status and tracking events.","i18n":{"en-US":{"name":"Track shipment","description":"Retrieve the current shipment status and tracking events."},"zh-CN":{"name":"追踪货件","description":"查询货件当前状态与追踪事件。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"tracking_number","name":"Tracking number","type":"text","required":true}],"output":[{"key":"shipments","name":"Tracking details","type":"json"}]},
+    {"key":"create_pickup","name":"create pickup","description":"Book a courier pickup for prepared shipments.","i18n":{"en-US":{"name":"Create pickup","description":"Book a courier pickup for prepared shipments."},"zh-CN":{"name":"预约取件","description":"为已准备货件预约快递员取件。"}},"method":"POST","execution_mode":"sync","side_effect":"write","timeout_default_seconds":30,"timeout_max_seconds":90,"input":[{"key":"input","name":"Provider request","type":"json","required":true}],"output":[{"key":"dispatchConfirmationNumber","name":"Pickup confirmation","type":"text"}]},
+    {"key":"update_pickup","name":"update pickup","description":"Update an existing courier pickup booking.","i18n":{"en-US":{"name":"Update pickup","description":"Update an existing courier pickup booking."},"zh-CN":{"name":"更新取件","description":"更新已有快递员取件预约。"}},"method":"PATCH","execution_mode":"sync","side_effect":"write","timeout_default_seconds":30,"timeout_max_seconds":90,"input":[{"key":"pickup_id","name":"Pickup confirmation","type":"text","required":true},{"key":"input","name":"Provider request","type":"json","required":true}]},
+    {"key":"cancel_pickup","name":"cancel pickup","description":"Cancel an existing courier pickup booking.","i18n":{"en-US":{"name":"Cancel pickup","description":"Cancel an existing courier pickup booking."},"zh-CN":{"name":"取消取件","description":"取消已有快递员取件预约。"}},"method":"DELETE","execution_mode":"sync","side_effect":"write","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"pickup_id","name":"Pickup confirmation","type":"text","required":true}]},
+    {"key":"list_fulfillment_orders","name":"list fulfillment orders","description":"List fulfillment work created by an ecommerce platform for an order.","i18n":{"en-US":{"name":"List fulfillment orders","description":"List fulfillment work created by an ecommerce platform for an order."},"zh-CN":{"name":"查询履约单","description":"查询电商平台为订单创建的履约工作。"}},"method":"POST","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"order_id","name":"Order ID","type":"text","required":true},{"key":"page_size","name":"Page size","type":"integer"},{"key":"cursor","name":"Cursor","type":"text"}],"output":[{"key":"fulfillmentOrders","name":"Fulfillment orders","type":"json"}]},
+    {"key":"create_fulfillment","name":"create fulfillment","description":"Create a fulfillment from one or more fulfillment orders.","i18n":{"en-US":{"name":"Create fulfillment","description":"Create a fulfillment from one or more fulfillment orders."},"zh-CN":{"name":"创建履约","description":"根据一个或多个履约单创建履约记录。"}},"method":"POST","execution_mode":"sync","side_effect":"write","timeout_default_seconds":30,"timeout_max_seconds":90,"input":[{"key":"input","name":"Provider request","type":"json","required":true}],"output":[{"key":"fulfillment","name":"Fulfillment","type":"json"}]},
+    {"key":"update_fulfillment_tracking","name":"update fulfillment tracking","description":"Update carrier tracking information on an ecommerce fulfillment.","i18n":{"en-US":{"name":"Update fulfillment tracking","description":"Update carrier tracking information on an ecommerce fulfillment."},"zh-CN":{"name":"更新履约追踪","description":"更新电商履约记录上的承运商追踪信息。"}},"method":"POST","execution_mode":"sync","side_effect":"write","timeout_default_seconds":30,"timeout_max_seconds":90,"input":[{"key":"fulfillment_id","name":"Fulfillment ID","type":"text","required":true},{"key":"input","name":"Tracking information","type":"json","required":true}]},
+    {"key":"cancel_fulfillment","name":"cancel fulfillment","description":"Cancel an ecommerce fulfillment and reopen its fulfillment work.","i18n":{"en-US":{"name":"Cancel fulfillment","description":"Cancel an ecommerce fulfillment and reopen its fulfillment work."},"zh-CN":{"name":"取消履约","description":"取消电商履约并重新打开对应履约工作。"}},"method":"POST","execution_mode":"sync","side_effect":"write","timeout_default_seconds":30,"timeout_max_seconds":90,"input":[{"key":"fulfillment_id","name":"Fulfillment ID","type":"text","required":true}]}
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account number.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account number.",
+              "name": "account number"
+            },
+            "zh-CN": {
+              "description": "account number 配置项。",
+              "name": "account number"
+            }
+          },
+          "key": "account_number",
+          "name": "account number",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default service level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default service level.",
+              "name": "default service level"
+            },
+            "zh-CN": {
+              "description": "default service level 配置项。",
+              "name": "default service level"
+            }
+          },
+          "key": "default_service_level",
+          "name": "default service level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for label format.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for label format.",
+              "name": "label format"
+            },
+            "zh-CN": {
+              "description": "label format 配置项。",
+              "name": "label format"
+            }
+          },
+          "key": "label_format",
+          "name": "label format",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for pickup cutoff time.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for pickup cutoff time.",
+              "name": "pickup cutoff time"
+            },
+            "zh-CN": {
+              "description": "pickup cutoff time 配置项。",
+              "name": "pickup cutoff time"
+            }
+          },
+          "key": "pickup_cutoff_time",
+          "name": "pickup cutoff time",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for shipper country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for shipper country.",
+              "name": "shipper country"
+            },
+            "zh-CN": {
+              "description": "shipper country 配置项。",
+              "name": "shipper country"
+            }
+          },
+          "key": "shipper_country",
+          "name": "shipper country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tracking object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tracking object key.",
+              "name": "tracking object key"
+            },
+            "zh-CN": {
+              "description": "tracking object key 配置项。",
+              "name": "tracking object key"
+            }
+          },
+          "key": "tracking_object_key",
+          "name": "tracking object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider dhl",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider dhl",
+          "name": "dhl"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider dhl",
+          "name": "dhl"
+        }
+      },
+      "key": "dhl",
+      "name": "dhl",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for account password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for account password.",
+              "name": "account password"
+            },
+            "zh-CN": {
+              "description": "account password 敏感凭据。",
+              "name": "account password"
+            }
+          },
+          "key": "account_password",
+          "name": "account password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account number.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account number.",
+              "name": "account number"
+            },
+            "zh-CN": {
+              "description": "account number 配置项。",
+              "name": "account number"
+            }
+          },
+          "key": "account_number",
+          "name": "account number",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default service level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default service level.",
+              "name": "default service level"
+            },
+            "zh-CN": {
+              "description": "default service level 配置项。",
+              "name": "default service level"
+            }
+          },
+          "key": "default_service_level",
+          "name": "default service level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for label format.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for label format.",
+              "name": "label format"
+            },
+            "zh-CN": {
+              "description": "label format 配置项。",
+              "name": "label format"
+            }
+          },
+          "key": "label_format",
+          "name": "label format",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for pickup cutoff time.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for pickup cutoff time.",
+              "name": "pickup cutoff time"
+            },
+            "zh-CN": {
+              "description": "pickup cutoff time 配置项。",
+              "name": "pickup cutoff time"
+            }
+          },
+          "key": "pickup_cutoff_time",
+          "name": "pickup cutoff time",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for shipper country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for shipper country.",
+              "name": "shipper country"
+            },
+            "zh-CN": {
+              "description": "shipper country 配置项。",
+              "name": "shipper country"
+            }
+          },
+          "key": "shipper_country",
+          "name": "shipper country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tracking object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tracking object key.",
+              "name": "tracking object key"
+            },
+            "zh-CN": {
+              "description": "tracking object key 配置项。",
+              "name": "tracking object key"
+            }
+          },
+          "key": "tracking_object_key",
+          "name": "tracking object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider fedex",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider fedex",
+          "name": "fedex"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider fedex",
+          "name": "fedex"
+        }
+      },
+      "key": "fedex",
+      "name": "fedex",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for account password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for account password.",
+              "name": "account password"
+            },
+            "zh-CN": {
+              "description": "account password 敏感凭据。",
+              "name": "account password"
+            }
+          },
+          "key": "account_password",
+          "name": "account password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account number.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account number.",
+              "name": "account number"
+            },
+            "zh-CN": {
+              "description": "account number 配置项。",
+              "name": "account number"
+            }
+          },
+          "key": "account_number",
+          "name": "account number",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default service level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default service level.",
+              "name": "default service level"
+            },
+            "zh-CN": {
+              "description": "default service level 配置项。",
+              "name": "default service level"
+            }
+          },
+          "key": "default_service_level",
+          "name": "default service level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for label format.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for label format.",
+              "name": "label format"
+            },
+            "zh-CN": {
+              "description": "label format 配置项。",
+              "name": "label format"
+            }
+          },
+          "key": "label_format",
+          "name": "label format",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for pickup cutoff time.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for pickup cutoff time.",
+              "name": "pickup cutoff time"
+            },
+            "zh-CN": {
+              "description": "pickup cutoff time 配置项。",
+              "name": "pickup cutoff time"
+            }
+          },
+          "key": "pickup_cutoff_time",
+          "name": "pickup cutoff time",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for shipper country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for shipper country.",
+              "name": "shipper country"
+            },
+            "zh-CN": {
+              "description": "shipper country 配置项。",
+              "name": "shipper country"
+            }
+          },
+          "key": "shipper_country",
+          "name": "shipper country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tracking object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tracking object key.",
+              "name": "tracking object key"
+            },
+            "zh-CN": {
+              "description": "tracking object key 配置项。",
+              "name": "tracking object key"
+            }
+          },
+          "key": "tracking_object_key",
+          "name": "tracking object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider sf_express",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider sf_express",
+          "name": "sf_express"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider sf_express",
+          "name": "sf_express"
+        }
+      },
+      "key": "sf_express",
+      "name": "sf_express",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for account password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for account password.",
+              "name": "account password"
+            },
+            "zh-CN": {
+              "description": "account password 敏感凭据。",
+              "name": "account password"
+            }
+          },
+          "key": "account_password",
+          "name": "account password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account number.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account number.",
+              "name": "account number"
+            },
+            "zh-CN": {
+              "description": "account number 配置项。",
+              "name": "account number"
+            }
+          },
+          "key": "account_number",
+          "name": "account number",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default service level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default service level.",
+              "name": "default service level"
+            },
+            "zh-CN": {
+              "description": "default service level 配置项。",
+              "name": "default service level"
+            }
+          },
+          "key": "default_service_level",
+          "name": "default service level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for label format.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for label format.",
+              "name": "label format"
+            },
+            "zh-CN": {
+              "description": "label format 配置项。",
+              "name": "label format"
+            }
+          },
+          "key": "label_format",
+          "name": "label format",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for pickup cutoff time.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for pickup cutoff time.",
+              "name": "pickup cutoff time"
+            },
+            "zh-CN": {
+              "description": "pickup cutoff time 配置项。",
+              "name": "pickup cutoff time"
+            }
+          },
+          "key": "pickup_cutoff_time",
+          "name": "pickup cutoff time",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for shipper country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for shipper country.",
+              "name": "shipper country"
+            },
+            "zh-CN": {
+              "description": "shipper country 配置项。",
+              "name": "shipper country"
+            }
+          },
+          "key": "shipper_country",
+          "name": "shipper country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tracking object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tracking object key.",
+              "name": "tracking object key"
+            },
+            "zh-CN": {
+              "description": "tracking object key 配置项。",
+              "name": "tracking object key"
+            }
+          },
+          "key": "tracking_object_key",
+          "name": "tracking object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider shopify_fulfillment",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider shopify_fulfillment",
+          "name": "shopify_fulfillment"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider shopify_fulfillment",
+          "name": "shopify_fulfillment"
+        }
+      },
+      "key": "shopify_fulfillment",
+      "name": "shopify_fulfillment",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for account password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for account password.",
+              "name": "account password"
+            },
+            "zh-CN": {
+              "description": "account password 敏感凭据。",
+              "name": "account password"
+            }
+          },
+          "key": "account_password",
+          "name": "account password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account number.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account number.",
+              "name": "account number"
+            },
+            "zh-CN": {
+              "description": "account number 配置项。",
+              "name": "account number"
+            }
+          },
+          "key": "account_number",
+          "name": "account number",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for default service level.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default service level.",
+              "name": "default service level"
+            },
+            "zh-CN": {
+              "description": "default service level 配置项。",
+              "name": "default service level"
+            }
+          },
+          "key": "default_service_level",
+          "name": "default service level",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for label format.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for label format.",
+              "name": "label format"
+            },
+            "zh-CN": {
+              "description": "label format 配置项。",
+              "name": "label format"
+            }
+          },
+          "key": "label_format",
+          "name": "label format",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for pickup cutoff time.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for pickup cutoff time.",
+              "name": "pickup cutoff time"
+            },
+            "zh-CN": {
+              "description": "pickup cutoff time 配置项。",
+              "name": "pickup cutoff time"
+            }
+          },
+          "key": "pickup_cutoff_time",
+          "name": "pickup cutoff time",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for shipper country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for shipper country.",
+              "name": "shipper country"
+            },
+            "zh-CN": {
+              "description": "shipper country 配置项。",
+              "name": "shipper country"
+            }
+          },
+          "key": "shipper_country",
+          "name": "shipper country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for tracking object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for tracking object key.",
+              "name": "tracking object key"
+            },
+            "zh-CN": {
+              "description": "tracking object key 配置项。",
+              "name": "tracking object key"
+            }
+          },
+          "key": "tracking_object_key",
+          "name": "tracking object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider ups",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider ups",
+          "name": "ups"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider ups",
+          "name": "ups"
+        }
+      },
+      "key": "ups",
+      "name": "ups",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "basic_auth_password",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for account password.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for account password.",
+              "name": "account password"
+            },
+            "zh-CN": {
+              "description": "account password 敏感凭据。",
+              "name": "account password"
+            }
+          },
+          "key": "account_password",
+          "name": "account password",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [],
+      "description": "Production-authorized private ocean freight rates from a Freightos Custom Site.",
+      "i18n": {
+        "en-US": {
+          "description": "Production-authorized private ocean freight rates from a Freightos Custom Site.",
+          "name": "Freightos Custom Site"
+        },
+        "zh-CN": {
+          "description": "从 Freightos 私有 Custom Site 查询经生产授权的海运费率。",
+          "name": "Freightos 私有站点"
+        }
+      },
+      "key": "freightos",
+      "name": "Freightos Custom Site",
+      "readiness": "provider_available",
+      "secret_fields": []
+    },
+    {
+      "config_fields": [],
+      "description": "Customer-authorized carrier or aggregator gateway for current ocean FCL quotes.",
+      "i18n": {
+        "en-US": {
+          "description": "Customer-authorized carrier or aggregator gateway for current ocean FCL quotes.",
+          "name": "Authorized carrier rate gateway"
+        },
+        "zh-CN": {
+          "description": "连接客户已授权的船司或聚合网关，查询当前整柜海运报价。",
+          "name": "授权船司报价网关"
+        }
+      },
+      "key": "authorized_carrier_gateway",
+      "name": "Authorized carrier rate gateway",
+      "readiness": "provider_available",
+      "secret_fields": []
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_key",
+    "client_id",
+    "client_secret",
+    "access_token",
+    "account_password",
+    "webhook_secret",
+    "private_key"
+  ],
+  "source": "connectors:logistics",
+  "type": "logistics",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

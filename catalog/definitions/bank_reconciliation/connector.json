@@ -1,0 +1,1488 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "open_banking",
+    "plaid",
+    "belvo",
+    "bank_direct",
+    "bank_accounts",
+    "bank_transactions",
+    "payouts",
+    "refunds",
+    "fees",
+    "invoice_matching",
+    "customer_matching",
+    "payment_truth",
+    "payment_status_writeback",
+    "partial_payment_review",
+    "duplicate_deposit_review",
+    "payer_mismatch_review",
+    "unmatched_cash",
+    "reconciliation_review",
+    "data_migration_handoff",
+    "accounting_handoff",
+    "payment_handoff"
+  ],
+  "config": {
+    "config_fields": [
+      "provider",
+      "institution_id",
+      "account_id",
+      "default_currency",
+      "country",
+      "matching_window_days",
+      "fee_policy",
+      "reconciliation_workflow_key"
+    ],
+    "default_connection_key": "bank_reconciliation_primary",
+    "options_path": "/integrations/bank-reconciliation/options",
+    "secret_refs": [
+      "client_id",
+      "client_secret",
+      "access_token",
+      "refresh_token",
+      "webhook_secret",
+      "certificate_ref",
+      "private_key"
+    ],
+    "transaction_onboarding_path": "/integrations/bank-reconciliation/transaction-onboarding"
+  },
+  "config_fields": [
+    "provider",
+    "institution_id",
+    "account_id",
+    "default_currency",
+    "country",
+    "matching_window_days",
+    "fee_policy",
+    "reconciliation_workflow_key"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Bank Reconciliation Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Bank Reconciliation Connector definitions, Provider choices, and operation contracts.",
+      "name": "Bank Reconciliation"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方银行对账连接器定义、Provider 选项与操作契约。",
+      "name": "银行对账"
+    }
+  },
+  "key": "bank_reconciliation",
+  "name": "Bank Reconciliation",
+  "operations": [
+    {"key":"test_connection","name":"Test connection","description":"Verify Plaid Item credentials and account access.","i18n":{"en-US":{"name":"Test connection","description":"Verify Plaid Item credentials and account access."},"zh-CN":{"name":"测试连接","description":"验证 Plaid Item 凭据与账户访问。"}},"method":"POST","execution_mode":"sync","side_effect":"read","test_supported":true,"timeout_default_seconds":15,"timeout_max_seconds":30,"output":[{"key":"connected","name":"Connected","type":"boolean","required":true},{"key":"accounts","name":"Accounts","type":"json","required":true}]},
+    {"key":"get_accounts","name":"Get accounts","description":"Read accounts for the configured Plaid Item.","i18n":{"en-US":{"name":"Get accounts","description":"Read accounts for the configured Plaid Item."},"zh-CN":{"name":"读取银行账户","description":"读取已配置 Plaid Item 的银行账户。"}},"method":"POST","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"output":[{"key":"accounts","name":"Accounts","type":"json","required":true}]},
+    {"key":"sync_transactions","name":"Sync transactions","description":"Incrementally synchronize Plaid transactions.","i18n":{"en-US":{"name":"Sync transactions","description":"Incrementally synchronize Plaid transactions."},"zh-CN":{"name":"增量同步交易","description":"增量同步 Plaid 银行交易。"}},"method":"POST","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"cursor","name":"Cursor","type":"text","required":false},{"key":"count","name":"Count","type":"integer","required":false}],"output":[{"key":"added","name":"Added transactions","type":"json","required":true},{"key":"modified","name":"Modified transactions","type":"json","required":true},{"key":"removed","name":"Removed transactions","type":"json","required":true},{"key":"next_cursor","name":"Next cursor","type":"text","required":true}]}
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default currency.",
+              "name": "default currency"
+            },
+            "zh-CN": {
+              "description": "default currency 配置项。",
+              "name": "default currency"
+            }
+          },
+          "key": "default_currency",
+          "name": "default currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for fee policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for fee policy.",
+              "name": "fee policy"
+            },
+            "zh-CN": {
+              "description": "fee policy 配置项。",
+              "name": "fee policy"
+            }
+          },
+          "key": "fee_policy",
+          "name": "fee policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for institution id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for institution id.",
+              "name": "institution id"
+            },
+            "zh-CN": {
+              "description": "institution id 配置项。",
+              "name": "institution id"
+            }
+          },
+          "key": "institution_id",
+          "name": "institution id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for matching window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for matching window days.",
+              "name": "matching window days"
+            },
+            "zh-CN": {
+              "description": "matching window days 配置项。",
+              "name": "matching window days"
+            }
+          },
+          "key": "matching_window_days",
+          "name": "matching window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider bank_direct",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider bank_direct",
+          "name": "bank_direct"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider bank_direct",
+          "name": "bank_direct"
+        }
+      },
+      "key": "bank_direct",
+      "name": "bank_direct",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for certificate ref.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for certificate ref.",
+              "name": "certificate ref"
+            },
+            "zh-CN": {
+              "description": "certificate ref 敏感凭据。",
+              "name": "certificate ref"
+            }
+          },
+          "key": "certificate_ref",
+          "name": "certificate ref",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default currency.",
+              "name": "default currency"
+            },
+            "zh-CN": {
+              "description": "default currency 配置项。",
+              "name": "default currency"
+            }
+          },
+          "key": "default_currency",
+          "name": "default currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for fee policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for fee policy.",
+              "name": "fee policy"
+            },
+            "zh-CN": {
+              "description": "fee policy 配置项。",
+              "name": "fee policy"
+            }
+          },
+          "key": "fee_policy",
+          "name": "fee policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for institution id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for institution id.",
+              "name": "institution id"
+            },
+            "zh-CN": {
+              "description": "institution id 配置项。",
+              "name": "institution id"
+            }
+          },
+          "key": "institution_id",
+          "name": "institution id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for matching window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for matching window days.",
+              "name": "matching window days"
+            },
+            "zh-CN": {
+              "description": "matching window days 配置项。",
+              "name": "matching window days"
+            }
+          },
+          "key": "matching_window_days",
+          "name": "matching window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider belvo",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider belvo",
+          "name": "belvo"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider belvo",
+          "name": "belvo"
+        }
+      },
+      "key": "belvo",
+      "name": "belvo",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for certificate ref.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for certificate ref.",
+              "name": "certificate ref"
+            },
+            "zh-CN": {
+              "description": "certificate ref 敏感凭据。",
+              "name": "certificate ref"
+            }
+          },
+          "key": "certificate_ref",
+          "name": "certificate ref",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default currency.",
+              "name": "default currency"
+            },
+            "zh-CN": {
+              "description": "default currency 配置项。",
+              "name": "default currency"
+            }
+          },
+          "key": "default_currency",
+          "name": "default currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for fee policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for fee policy.",
+              "name": "fee policy"
+            },
+            "zh-CN": {
+              "description": "fee policy 配置项。",
+              "name": "fee policy"
+            }
+          },
+          "key": "fee_policy",
+          "name": "fee policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for institution id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for institution id.",
+              "name": "institution id"
+            },
+            "zh-CN": {
+              "description": "institution id 配置项。",
+              "name": "institution id"
+            }
+          },
+          "key": "institution_id",
+          "name": "institution id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for matching window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for matching window days.",
+              "name": "matching window days"
+            },
+            "zh-CN": {
+              "description": "matching window days 配置项。",
+              "name": "matching window days"
+            }
+          },
+          "key": "matching_window_days",
+          "name": "matching window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider open_banking",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider open_banking",
+          "name": "open_banking"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider open_banking",
+          "name": "open_banking"
+        }
+      },
+      "key": "open_banking",
+      "name": "open_banking",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for certificate ref.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for certificate ref.",
+              "name": "certificate ref"
+            },
+            "zh-CN": {
+              "description": "certificate ref 敏感凭据。",
+              "name": "certificate ref"
+            }
+          },
+          "key": "certificate_ref",
+          "name": "certificate ref",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for account id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for account id.",
+              "name": "account id"
+            },
+            "zh-CN": {
+              "description": "account id 配置项。",
+              "name": "account id"
+            }
+          },
+          "key": "account_id",
+          "name": "account id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for country.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for country.",
+              "name": "country"
+            },
+            "zh-CN": {
+              "description": "country 配置项。",
+              "name": "country"
+            }
+          },
+          "key": "country",
+          "name": "country",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{2}$"
+          }
+        },
+        {
+          "description": "Configuration value for default currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default currency.",
+              "name": "default currency"
+            },
+            "zh-CN": {
+              "description": "default currency 配置项。",
+              "name": "default currency"
+            }
+          },
+          "key": "default_currency",
+          "name": "default currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for fee policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for fee policy.",
+              "name": "fee policy"
+            },
+            "zh-CN": {
+              "description": "fee policy 配置项。",
+              "name": "fee policy"
+            }
+          },
+          "key": "fee_policy",
+          "name": "fee policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for institution id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for institution id.",
+              "name": "institution id"
+            },
+            "zh-CN": {
+              "description": "institution id 配置项。",
+              "name": "institution id"
+            }
+          },
+          "key": "institution_id",
+          "name": "institution id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "default": 30,
+          "description": "Configuration value for matching window days.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for matching window days.",
+              "name": "matching window days"
+            },
+            "zh-CN": {
+              "description": "matching window days 配置项。",
+              "name": "matching window days"
+            }
+          },
+          "key": "matching_window_days",
+          "name": "matching window days",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 3650,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider plaid",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider plaid",
+          "name": "plaid"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider plaid",
+          "name": "plaid"
+        }
+      },
+      "key": "plaid",
+      "name": "plaid",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for access token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for access token.",
+              "name": "access token"
+            },
+            "zh-CN": {
+              "description": "access token 敏感凭据。",
+              "name": "access token"
+            }
+          },
+          "key": "access_token",
+          "name": "access token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for certificate ref.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for certificate ref.",
+              "name": "certificate ref"
+            },
+            "zh-CN": {
+              "description": "certificate ref 敏感凭据。",
+              "name": "certificate ref"
+            }
+          },
+          "key": "certificate_ref",
+          "name": "certificate ref",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for private key.",
+              "name": "private key"
+            },
+            "zh-CN": {
+              "description": "private key 敏感凭据。",
+              "name": "private key"
+            }
+          },
+          "key": "private_key",
+          "name": "private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "refresh_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for refresh token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for refresh token.",
+              "name": "refresh token"
+            },
+            "zh-CN": {
+              "description": "refresh token 敏感凭据。",
+              "name": "refresh token"
+            }
+          },
+          "key": "refresh_token",
+          "name": "refresh token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "client_id",
+    "client_secret",
+    "access_token",
+    "refresh_token",
+    "webhook_secret",
+    "certificate_ref",
+    "private_key"
+  ],
+  "source": "connectors:bank_reconciliation",
+  "type": "bank_reconciliation",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

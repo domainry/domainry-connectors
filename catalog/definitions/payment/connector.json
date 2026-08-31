@@ -1,0 +1,4694 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "stripe",
+    "stripe_billing",
+    "paypal",
+    "mercado_pago",
+    "pix",
+    "boleto",
+    "razorpay",
+    "chargebee",
+    "paddle",
+    "recurly",
+    "wechat_pay",
+    "alipay",
+    "payment_link",
+    "checkout_session",
+    "webhook",
+    "verified_webhook_writeback",
+    "refund",
+    "idempotency",
+    "business_writeback",
+    "status_writeback",
+    "reviewed_writeback_executor",
+    "runtime_writeback_executor",
+    "live_provider_closeout",
+    "secret_rotation",
+    "subscription_invoice_customer_writeback",
+    "reconciliation",
+    "customer_import",
+    "subscription_revenue",
+    "customer_success_loop",
+    "collection_follow_up",
+    "local_method_routing",
+    "payment_fallback",
+    "regional_payment_onboarding",
+    "connection_onboarding",
+    "provider_adapter_readiness",
+    "real_provider_adapter",
+    "provider_worker_executor",
+    "customer_finance_timeline",
+    "settlement_reconciliation",
+    "tax_invoice_handoff",
+    "china_payment",
+    "brazil_payment",
+    "dunning_workflow",
+    "refund_recovery",
+    "dispute_review",
+    "renewal_risk",
+    "data_migration_handoff"
+  ],
+  "config": {
+    "checkout_session_path": "/integrations/payments/checkout-session",
+    "collection_follow_up_path": "/integrations/payments/collection-follow-up-plan",
+    "config_fields": [
+      "provider",
+      "currency",
+      "success_url",
+      "cancel_url",
+      "webhook_tolerance_seconds",
+      "writeback_object_key",
+      "writeback_status_field",
+      "reconciliation_workflow_key",
+      "status_apply_policy",
+      "approval_required_statuses"
+    ],
+    "connection_onboarding_path": "/integrations/payments/connection-onboarding",
+    "customer_import_path": "/integrations/payments/customer-import",
+    "customer_success_loop_path": "/integrations/payments/customer-success-loop",
+    "default_connection_key": "payment_primary",
+    "link_path": "/integrations/payments/link",
+    "live_provider_closeout_path": "/integrations/payments/live-provider-closeout-plan",
+    "local_method_routing_path": "/integrations/payments/local-method-routing-plan",
+    "options_path": "/integrations/payments/options",
+    "provider_adapter_readiness_path": "/integrations/payments/provider-adapter-readiness",
+    "real_adapter_plan_path": "/integrations/payments/real-adapter-plan",
+    "real_loop_rehearsal_path": "/integrations/payments/real-loop-rehearsal",
+    "refund_path": "/integrations/payments/refund",
+    "regional_payment_onboarding_path": "/integrations/payments/regional-payment-onboarding",
+    "secret_refs": [
+      "api_key",
+      "client_id",
+      "client_secret",
+      "webhook_secret",
+      "merchant_private_key",
+      "platform_public_key"
+    ],
+    "status_apply_plan_path": "/integrations/payments/status-apply-plan",
+    "subscription_revenue_path": "/integrations/payments/subscription-revenue-onboarding",
+    "webhook_verified_writeback_path": "/integrations/payments/webhook-verified-writeback-plan",
+    "worker_executor_apply_path": "/integrations/payments/worker-executor/apply",
+    "worker_executor_binding_plan_path": "/integrations/payments/worker-executor-binding-plan"
+  },
+  "config_fields": [
+    "provider",
+    "currency",
+    "success_url",
+    "cancel_url",
+    "webhook_tolerance_seconds",
+    "writeback_object_key",
+    "writeback_status_field",
+    "reconciliation_workflow_key",
+    "status_apply_policy",
+    "approval_required_statuses"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry Payment Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry Payment Connector definitions, Provider choices, and operation contracts.",
+      "name": "Payment"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方支付连接器定义、Provider 选项与操作契约。",
+      "name": "支付"
+    }
+  },
+  "key": "payment",
+  "name": "Payment",
+  "operations": [
+    {
+      "key": "test_connection",
+      "name": "test connection",
+      "description": "Verify Stripe API credentials against the balance endpoint.",
+      "i18n": {
+        "en-US": {
+          "name": "Test connection",
+          "description": "Verify Stripe API credentials against the balance endpoint."
+        },
+        "zh-CN": {
+          "name": "测试连接",
+          "description": "通过余额接口验证 Stripe API 凭据。"
+        }
+      },
+      "method": "GET",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30
+    },
+    {
+      "key": "create_payment_intent",
+      "name": "create payment intent",
+      "description": "Create an idempotent payment intent for an amount in the smallest currency unit.",
+      "i18n": {
+        "en-US": {
+          "name": "Create payment intent",
+          "description": "Create an idempotent payment intent for an amount in the smallest currency unit."
+        },
+        "zh-CN": {
+          "name": "创建支付意图",
+          "description": "按货币最小单位创建具有幂等保护的支付意图。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "write",
+      "idempotency_supported": true,
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 60,
+      "input": [
+        {
+          "key": "amount",
+          "name": "Amount",
+          "type": "integer",
+          "required": true
+        },
+        {
+          "key": "currency",
+          "name": "Currency",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "customer",
+          "name": "Customer",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "description",
+          "name": "Description",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "payment_method",
+          "name": "Payment method",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "output": [
+        {
+          "key": "id",
+          "name": "Payment intent ID",
+          "type": "text"
+        },
+        {
+          "key": "status",
+          "name": "Status",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "key": "process_card_payment",
+      "name": "process card payment",
+      "description": "Durably create and confirm an idempotent card payment intent.",
+      "i18n": {
+        "en-US": {
+          "name": "Process card payment",
+          "description": "Durably create and confirm an idempotent card payment intent."
+        },
+        "zh-CN": {
+          "name": "处理银行卡支付",
+          "description": "以持久化长操作创建并确认具有幂等保护的银行卡支付意图。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "operation",
+      "side_effect": "write",
+      "idempotency_supported": true,
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 60,
+      "input": [
+        {"key":"amount","name":"Amount","type":"integer","required":true},
+        {"key":"currency","name":"Currency","type":"text","required":true},
+        {"key":"payment_method","name":"Payment method","type":"text","required":true},
+        {"key":"receipt_email","name":"Receipt email","type":"text","required":false},
+        {"key":"description","name":"Description","type":"text","required":false}
+      ],
+      "output": [
+        {"key":"id","name":"Payment intent ID","type":"text"},
+        {"key":"status","name":"Status","type":"text"},
+        {"key":"client_secret","name":"Client secret","type":"text"}
+      ]
+    },
+    {
+      "key": "retrieve_payment_intent",
+      "name": "retrieve payment intent",
+      "description": "Retrieve one payment intent for durable payment reconciliation.",
+      "i18n": {
+        "en-US": {"name":"Retrieve payment intent","description":"Retrieve one payment intent for durable payment reconciliation."},
+        "zh-CN": {"name":"查询支付意图","description":"查询支付意图以完成持久化支付对账。"}
+      },
+      "method": "GET",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 15,
+      "timeout_max_seconds": 30,
+      "input": [{"key":"payment_intent","name":"Payment intent ID","type":"text","required":true}],
+      "output": [
+        {"key":"id","name":"Payment intent ID","type":"text"},
+        {"key":"status","name":"Status","type":"text"},
+        {"key":"amount","name":"Amount","type":"integer"},
+        {"key":"currency","name":"Currency","type":"text"}
+      ]
+    },
+    {
+      "key": "create_refund",
+      "name": "create refund",
+      "description": "Create an idempotent full or partial refund for a payment intent.",
+      "i18n": {
+        "en-US": {
+          "name": "Create refund",
+          "description": "Create an idempotent full or partial refund for a payment intent."
+        },
+        "zh-CN": {
+          "name": "创建退款",
+          "description": "为支付意图创建具有幂等保护的全额或部分退款。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "write",
+      "idempotency_supported": true,
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 60,
+      "input": [
+        {
+          "key": "payment_intent",
+          "name": "Payment intent ID",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "amount",
+          "name": "Amount",
+          "type": "integer",
+          "required": false
+        }
+      ],
+      "output": [
+        {
+          "key": "id",
+          "name": "Refund ID",
+          "type": "text"
+        },
+        {
+          "key": "status",
+          "name": "Status",
+          "type": "text"
+        }
+      ]
+    },
+    {"key":"create_customer","name":"create customer","description":"Create a Stripe customer for reusable payment and billing flows.","i18n":{"en-US":{"name":"Create customer","description":"Create a Stripe customer for reusable payment and billing flows."},"zh-CN":{"name":"创建客户","description":"创建用于复用支付与账单流程的 Stripe 客户。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"email","name":"Email","type":"text"},{"key":"name","name":"Name","type":"text"},{"key":"phone","name":"Phone","type":"text"},{"key":"description","name":"Description","type":"text"}],"output":[{"key":"id","name":"Customer ID","type":"text"}]},
+    {"key":"update_customer","name":"update customer","description":"Update a Stripe customer profile.","i18n":{"en-US":{"name":"Update customer","description":"Update a Stripe customer profile."},"zh-CN":{"name":"更新客户","description":"更新 Stripe 客户资料。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"customer","name":"Customer ID","type":"text","required":true},{"key":"email","name":"Email","type":"text"},{"key":"name","name":"Name","type":"text"},{"key":"phone","name":"Phone","type":"text"},{"key":"description","name":"Description","type":"text"}],"output":[{"key":"id","name":"Customer ID","type":"text"}]},
+    {"key":"attach_payment_method","name":"attach payment method","description":"Attach an existing payment method to a customer.","i18n":{"en-US":{"name":"Attach payment method","description":"Attach an existing payment method to a customer."},"zh-CN":{"name":"绑定支付方式","description":"将已有支付方式绑定到客户。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"payment_method","name":"Payment method ID","type":"text","required":true},{"key":"customer","name":"Customer ID","type":"text","required":true}],"output":[{"key":"id","name":"Payment method ID","type":"text"}]},
+    {"key":"create_checkout_session","name":"create checkout session","description":"Create a hosted Stripe Checkout session.","i18n":{"en-US":{"name":"Create Checkout session","description":"Create a hosted Stripe Checkout session."},"zh-CN":{"name":"创建 Checkout 会话","description":"创建 Stripe 托管收银台会话。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"mode","name":"Mode","type":"text","required":true},{"key":"price","name":"Price ID","type":"text","required":true},{"key":"quantity","name":"Quantity","type":"integer"},{"key":"success_url","name":"Success URL","type":"text"},{"key":"cancel_url","name":"Cancel URL","type":"text"},{"key":"customer","name":"Customer ID","type":"text"},{"key":"customer_email","name":"Customer email","type":"text"},{"key":"client_reference_id","name":"Client reference ID","type":"text"}],"output":[{"key":"id","name":"Session ID","type":"text"},{"key":"url","name":"Checkout URL","type":"text"}]},
+    {"key":"create_subscription","name":"create subscription","description":"Create a recurring subscription for a customer and price.","i18n":{"en-US":{"name":"Create subscription","description":"Create a recurring subscription for a customer and price."},"zh-CN":{"name":"创建订阅","description":"为客户与价格创建周期订阅。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"customer","name":"Customer ID","type":"text","required":true},{"key":"price","name":"Price ID","type":"text","required":true},{"key":"default_payment_method","name":"Default payment method","type":"text"},{"key":"trial_end","name":"Trial end","type":"text"}],"output":[{"key":"id","name":"Subscription ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"cancel_subscription","name":"cancel subscription","description":"Cancel a recurring subscription.","i18n":{"en-US":{"name":"Cancel subscription","description":"Cancel a recurring subscription."},"zh-CN":{"name":"取消订阅","description":"取消周期订阅。"}},"method":"DELETE","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"subscription","name":"Subscription ID","type":"text","required":true}],"output":[{"key":"id","name":"Subscription ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"create_invoice","name":"create invoice","description":"Create a draft invoice for a customer.","i18n":{"en-US":{"name":"Create invoice","description":"Create a draft invoice for a customer."},"zh-CN":{"name":"创建账单","description":"为客户创建草稿账单。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"customer","name":"Customer ID","type":"text","required":true},{"key":"subscription","name":"Subscription ID","type":"text"},{"key":"description","name":"Description","type":"text"},{"key":"collection_method","name":"Collection method","type":"text"},{"key":"days_until_due","name":"Days until due","type":"integer"}],"output":[{"key":"id","name":"Invoice ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"finalize_invoice","name":"finalize invoice","description":"Finalize a draft invoice.","i18n":{"en-US":{"name":"Finalize invoice","description":"Finalize a draft invoice."},"zh-CN":{"name":"确认账单","description":"确认一张草稿账单。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"invoice","name":"Invoice ID","type":"text","required":true}],"output":[{"key":"id","name":"Invoice ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"pay_invoice","name":"pay invoice","description":"Attempt payment for an invoice.","i18n":{"en-US":{"name":"Pay invoice","description":"Attempt payment for an invoice."},"zh-CN":{"name":"支付账单","description":"尝试支付账单。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"invoice","name":"Invoice ID","type":"text","required":true}],"output":[{"key":"id","name":"Invoice ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"void_invoice","name":"void invoice","description":"Void an invoice without deleting its audit trail.","i18n":{"en-US":{"name":"Void invoice","description":"Void an invoice without deleting its audit trail."},"zh-CN":{"name":"作废账单","description":"作废账单并保留审计轨迹。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"invoice","name":"Invoice ID","type":"text","required":true}],"output":[{"key":"id","name":"Invoice ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"list_disputes","name":"list disputes","description":"List disputes for payment operations review.","i18n":{"en-US":{"name":"List disputes","description":"List disputes for payment operations review."},"zh-CN":{"name":"查询争议","description":"查询支付运营需要处理的争议。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"payment_intent","name":"Payment intent ID","type":"text"},{"key":"charge","name":"Charge ID","type":"text"},{"key":"limit","name":"Limit","type":"integer"}],"output":[{"key":"data","name":"Disputes","type":"json"}]},
+    {"key":"update_dispute","name":"update dispute","description":"Submit dispute evidence fields.","i18n":{"en-US":{"name":"Update dispute","description":"Submit dispute evidence fields."},"zh-CN":{"name":"更新争议","description":"提交争议举证字段。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"dispute","name":"Dispute ID","type":"text","required":true},{"key":"evidence[customer_name]","name":"Customer name","type":"text"},{"key":"evidence[customer_email_address]","name":"Customer email","type":"text"},{"key":"evidence[product_description]","name":"Product description","type":"text"},{"key":"submit","name":"Submit evidence","type":"boolean"}],"output":[{"key":"id","name":"Dispute ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"list_balance_transactions","name":"list balance transactions","description":"List Stripe balance transactions for reconciliation.","i18n":{"en-US":{"name":"List balance transactions","description":"List Stripe balance transactions for reconciliation."},"zh-CN":{"name":"查询余额流水","description":"查询用于对账的 Stripe 余额流水。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"type","name":"Type","type":"text"},{"key":"payout","name":"Payout ID","type":"text"},{"key":"source","name":"Source ID","type":"text"},{"key":"limit","name":"Limit","type":"integer"}],"output":[{"key":"data","name":"Balance transactions","type":"json"}]},
+    {"key":"retrieve_connect_account","name":"retrieve Connect account","description":"Retrieve a connected Stripe account and capability status.","i18n":{"en-US":{"name":"Retrieve Connect account","description":"Retrieve a connected Stripe account and capability status."},"zh-CN":{"name":"查询 Connect 账户","description":"查询 Stripe Connect 账户及能力状态。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"account","name":"Account ID","type":"text","required":true}],"output":[{"key":"id","name":"Account ID","type":"text"},{"key":"charges_enabled","name":"Charges enabled","type":"boolean"},{"key":"payouts_enabled","name":"Payouts enabled","type":"boolean"}]},
+    {"key":"confirm_payment_intent","name":"confirm payment intent","description":"Confirm a PaymentIntent with an optional payment method.","i18n":{"en-US":{"name":"Confirm payment intent","description":"Confirm a PaymentIntent with an optional payment method."},"zh-CN":{"name":"确认支付意图","description":"使用可选支付方式确认支付意图。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"payment_intent","name":"Payment intent ID","type":"text","required":true},{"key":"payment_method","name":"Payment method ID","type":"text"},{"key":"receipt_email","name":"Receipt email","type":"text"}],"output":[{"key":"id","name":"Payment intent ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"capture_payment_intent","name":"capture payment intent","description":"Capture an authorized PaymentIntent fully or partially.","i18n":{"en-US":{"name":"Capture payment intent","description":"Capture an authorized PaymentIntent fully or partially."},"zh-CN":{"name":"捕获支付意图","description":"全额或部分捕获已授权的支付意图。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"payment_intent","name":"Payment intent ID","type":"text","required":true},{"key":"amount_to_capture","name":"Amount to capture","type":"integer"}],"output":[{"key":"id","name":"Payment intent ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"cancel_payment_intent","name":"cancel payment intent","description":"Cancel a PaymentIntent before completion.","i18n":{"en-US":{"name":"Cancel payment intent","description":"Cancel a PaymentIntent before completion."},"zh-CN":{"name":"取消支付意图","description":"在支付完成前取消支付意图。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"payment_intent","name":"Payment intent ID","type":"text","required":true},{"key":"cancellation_reason","name":"Cancellation reason","type":"text"}],"output":[{"key":"id","name":"Payment intent ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"detach_payment_method","name":"detach payment method","description":"Detach a reusable payment method from its customer.","i18n":{"en-US":{"name":"Detach payment method","description":"Detach a reusable payment method from its customer."},"zh-CN":{"name":"解绑支付方式","description":"从客户解绑可复用支付方式。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"payment_method","name":"Payment method ID","type":"text","required":true}],"output":[{"key":"id","name":"Payment method ID","type":"text"}]},
+    {"key":"expire_checkout_session","name":"expire checkout session","description":"Expire an open hosted Checkout session.","i18n":{"en-US":{"name":"Expire Checkout session","description":"Expire an open hosted Checkout session."},"zh-CN":{"name":"关闭 Checkout 会话","description":"关闭尚未完成的托管收银台会话。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"session","name":"Session ID","type":"text","required":true}],"output":[{"key":"id","name":"Session ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"update_subscription","name":"update subscription","description":"Update recurring subscription payment and lifecycle settings.","i18n":{"en-US":{"name":"Update subscription","description":"Update recurring subscription payment and lifecycle settings."},"zh-CN":{"name":"更新订阅","description":"更新周期订阅的支付与生命周期设置。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"subscription","name":"Subscription ID","type":"text","required":true},{"key":"default_payment_method","name":"Default payment method","type":"text"},{"key":"cancel_at_period_end","name":"Cancel at period end","type":"boolean"},{"key":"trial_end","name":"Trial end","type":"text"},{"key":"proration_behavior","name":"Proration behavior","type":"text"}],"output":[{"key":"id","name":"Subscription ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"create_invoice_item","name":"create invoice item","description":"Add a monetary line item to a customer or draft invoice.","i18n":{"en-US":{"name":"Create invoice item","description":"Add a monetary line item to a customer or draft invoice."},"zh-CN":{"name":"创建账单明细","description":"向客户或草稿账单添加金额明细。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"customer","name":"Customer ID","type":"text","required":true},{"key":"amount","name":"Amount","type":"integer","required":true},{"key":"currency","name":"Currency","type":"text"},{"key":"invoice","name":"Invoice ID","type":"text"},{"key":"description","name":"Description","type":"text"}],"output":[{"key":"id","name":"Invoice item ID","type":"text"}]},
+    {"key":"list_refunds","name":"list refunds","description":"List refunds for reconciliation and customer support.","i18n":{"en-US":{"name":"List refunds","description":"List refunds for reconciliation and customer support."},"zh-CN":{"name":"查询退款","description":"查询用于对账与客户支持的退款。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"payment_intent","name":"Payment intent ID","type":"text"},{"key":"charge","name":"Charge ID","type":"text"},{"key":"limit","name":"Limit","type":"integer"}],"output":[{"key":"data","name":"Refunds","type":"json"}]},
+    {"key":"create_payout","name":"create payout","description":"Create an idempotent payout to an external account.","i18n":{"en-US":{"name":"Create payout","description":"Create an idempotent payout to an external account."},"zh-CN":{"name":"创建出款","description":"向外部账户创建具有幂等保护的出款。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"amount","name":"Amount","type":"integer","required":true},{"key":"currency","name":"Currency","type":"text"},{"key":"description","name":"Description","type":"text"},{"key":"destination","name":"Destination","type":"text"},{"key":"method","name":"Method","type":"text"}],"output":[{"key":"id","name":"Payout ID","type":"text"},{"key":"status","name":"Status","type":"text"}]},
+    {"key":"list_payouts","name":"list payouts","description":"List payouts and their settlement status.","i18n":{"en-US":{"name":"List payouts","description":"List payouts and their settlement status."},"zh-CN":{"name":"查询出款","description":"查询出款及其结算状态。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"status","name":"Status","type":"text"},{"key":"destination","name":"Destination","type":"text"},{"key":"limit","name":"Limit","type":"integer"}],"output":[{"key":"data","name":"Payouts","type":"json"}]},
+    {"key":"create_connect_account_link","name":"create Connect account link","description":"Create a Stripe-hosted onboarding link for a connected account.","i18n":{"en-US":{"name":"Create Connect account link","description":"Create a Stripe-hosted onboarding link for a connected account."},"zh-CN":{"name":"创建 Connect 开通链接","description":"为连接账户创建 Stripe 托管的开通链接。"}},"method":"POST","execution_mode":"sync","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":30,"timeout_max_seconds":60,"input":[{"key":"account","name":"Account ID","type":"text","required":true},{"key":"refresh_url","name":"Refresh URL","type":"text","required":true},{"key":"return_url","name":"Return URL","type":"text","required":true}],"output":[{"key":"url","name":"Onboarding URL","type":"text"},{"key":"expires_at","name":"Expires at","type":"integer"}]},
+    {"key":"create_native_payment_order","name":"create native payment order","description":"Create a durable QR-code payment order in the configured China payment provider.","i18n":{"en-US":{"name":"Create native payment order","description":"Create a durable QR-code payment order in the configured China payment provider."},"zh-CN":{"name":"创建扫码支付单","description":"在已配置的中国支付渠道中创建可持久追踪的扫码支付单。"}},"method":"POST","execution_mode":"async","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":15,"timeout_max_seconds":30,"input":[{"key":"merchant_order_no","name":"Merchant order number","type":"text","required":true},{"key":"amount_minor","name":"Amount in minor units","type":"integer","required":true},{"key":"currency","name":"Currency","type":"text","required":true},{"key":"subject","name":"Payment subject","type":"text","required":true},{"key":"description","name":"Payment description","type":"text"},{"key":"expires_at","name":"Expires at","type":"datetime"}],"output":[{"key":"provider_order_no","name":"Provider order number","type":"text"},{"key":"code_url","name":"QR code URL","type":"text"},{"key":"status","name":"Payment status","type":"text"}]},
+    {"key":"query_payment_order","name":"query payment order","description":"Query one payment order by merchant order number without changing provider state.","i18n":{"en-US":{"name":"Query payment order","description":"Query one payment order by merchant order number without changing provider state."},"zh-CN":{"name":"查询支付单","description":"按商户订单号查询支付单且不改变渠道状态。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":10,"timeout_max_seconds":30,"input":[{"key":"merchant_order_no","name":"Merchant order number","type":"text","required":true}],"output":[{"key":"provider_order_no","name":"Provider order number","type":"text"},{"key":"merchant_order_no","name":"Merchant order number","type":"text"},{"key":"amount_minor","name":"Amount in minor units","type":"integer"},{"key":"currency","name":"Currency","type":"text"},{"key":"status","name":"Payment status","type":"text"},{"key":"paid_at","name":"Paid at","type":"datetime"}]},
+    {"key":"close_payment_order","name":"close payment order","description":"Durably close an unpaid provider payment order.","i18n":{"en-US":{"name":"Close payment order","description":"Durably close an unpaid provider payment order."},"zh-CN":{"name":"关闭支付单","description":"持久关闭尚未支付的渠道支付单。"}},"method":"POST","execution_mode":"async","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":15,"timeout_max_seconds":30,"input":[{"key":"merchant_order_no","name":"Merchant order number","type":"text","required":true}],"output":[{"key":"merchant_order_no","name":"Merchant order number","type":"text"},{"key":"status","name":"Payment status","type":"text"}]},
+    {"key":"create_payment_refund","name":"create payment refund","description":"Create a durable full or partial refund against an original provider payment.","i18n":{"en-US":{"name":"Create payment refund","description":"Create a durable full or partial refund against an original provider payment."},"zh-CN":{"name":"创建原路退款","description":"针对原渠道支付创建可持久追踪的全额或部分退款。"}},"method":"POST","execution_mode":"async","side_effect":"write","idempotency_supported":true,"timeout_default_seconds":15,"timeout_max_seconds":30,"input":[{"key":"merchant_order_no","name":"Merchant order number","type":"text","required":true},{"key":"merchant_refund_no","name":"Merchant refund number","type":"text","required":true},{"key":"refund_amount_minor","name":"Refund amount in minor units","type":"integer","required":true},{"key":"total_amount_minor","name":"Original amount in minor units","type":"integer","required":true},{"key":"currency","name":"Currency","type":"text","required":true},{"key":"reason","name":"Refund reason","type":"text"}],"output":[{"key":"provider_refund_no","name":"Provider refund number","type":"text"},{"key":"merchant_refund_no","name":"Merchant refund number","type":"text"},{"key":"status","name":"Refund status","type":"text"}]},
+    {"key":"query_payment_refund","name":"query payment refund","description":"Query one refund without changing provider state.","i18n":{"en-US":{"name":"Query payment refund","description":"Query one refund without changing provider state."},"zh-CN":{"name":"查询退款单","description":"查询退款单且不改变渠道状态。"}},"method":"GET","execution_mode":"sync","side_effect":"read","timeout_default_seconds":10,"timeout_max_seconds":30,"input":[{"key":"merchant_refund_no","name":"Merchant refund number","type":"text","required":true},{"key":"merchant_order_no","name":"Merchant order number","type":"text"}],"output":[{"key":"provider_refund_no","name":"Provider refund number","type":"text"},{"key":"merchant_refund_no","name":"Merchant refund number","type":"text"},{"key":"refund_amount_minor","name":"Refund amount in minor units","type":"integer"},{"key":"status","name":"Refund status","type":"text"},{"key":"refunded_at","name":"Refunded at","type":"datetime"}]}
+  ],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider alipay",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider alipay",
+          "name": "alipay"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider alipay",
+          "name": "alipay"
+        }
+      },
+      "key": "alipay",
+      "name": "alipay",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider boleto",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider boleto",
+          "name": "boleto"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider boleto",
+          "name": "boleto"
+        }
+      },
+      "key": "boleto",
+      "name": "boleto",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider chargebee",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider chargebee",
+          "name": "chargebee"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider chargebee",
+          "name": "chargebee"
+        }
+      },
+      "key": "chargebee",
+      "name": "chargebee",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider mercado_pago",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider mercado_pago",
+          "name": "mercado_pago"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider mercado_pago",
+          "name": "mercado_pago"
+        }
+      },
+      "key": "mercado_pago",
+      "name": "mercado_pago",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider paddle",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider paddle",
+          "name": "paddle"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider paddle",
+          "name": "paddle"
+        }
+      },
+      "key": "paddle",
+      "name": "paddle",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider paypal",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider paypal",
+          "name": "paypal"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider paypal",
+          "name": "paypal"
+        }
+      },
+      "key": "paypal",
+      "name": "paypal",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider pix",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider pix",
+          "name": "pix"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider pix",
+          "name": "pix"
+        }
+      },
+      "key": "pix",
+      "name": "pix",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider razorpay",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider razorpay",
+          "name": "razorpay"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider razorpay",
+          "name": "razorpay"
+        }
+      },
+      "key": "razorpay",
+      "name": "razorpay",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider recurly",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider recurly",
+          "name": "recurly"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider recurly",
+          "name": "recurly"
+        }
+      },
+      "key": "recurly",
+      "name": "recurly",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider stripe",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider stripe",
+          "name": "stripe"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider stripe",
+          "name": "stripe"
+        }
+      },
+      "key": "stripe",
+      "name": "stripe",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider stripe_billing",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider stripe_billing",
+          "name": "stripe_billing"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider stripe_billing",
+          "name": "stripe_billing"
+        }
+      },
+      "key": "stripe_billing",
+      "name": "stripe_billing",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval required statuses.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval required statuses.",
+              "name": "approval required statuses"
+            },
+            "zh-CN": {
+              "description": "approval required statuses 配置项。",
+              "name": "approval required statuses"
+            }
+          },
+          "key": "approval_required_statuses",
+          "name": "approval required statuses",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for cancel url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for cancel url.",
+              "name": "cancel url"
+            },
+            "zh-CN": {
+              "description": "cancel url 配置项。",
+              "name": "cancel url"
+            }
+          },
+          "key": "cancel_url",
+          "name": "cancel url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for reconciliation workflow key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for reconciliation workflow key.",
+              "name": "reconciliation workflow key"
+            },
+            "zh-CN": {
+              "description": "reconciliation workflow key 配置项。",
+              "name": "reconciliation workflow key"
+            }
+          },
+          "key": "reconciliation_workflow_key",
+          "name": "reconciliation workflow key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for status apply policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for status apply policy.",
+              "name": "status apply policy"
+            },
+            "zh-CN": {
+              "description": "status apply policy 配置项。",
+              "name": "status apply policy"
+            }
+          },
+          "key": "status_apply_policy",
+          "name": "status apply policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for success url.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for success url.",
+              "name": "success url"
+            },
+            "zh-CN": {
+              "description": "success url 配置项。",
+              "name": "success url"
+            }
+          },
+          "key": "success_url",
+          "name": "success url",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^https?://[^\\s]+$"
+          }
+        },
+        {
+          "default": 300,
+          "description": "Configuration value for webhook tolerance seconds.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for webhook tolerance seconds.",
+              "name": "webhook tolerance seconds"
+            },
+            "zh-CN": {
+              "description": "webhook tolerance seconds 配置项。",
+              "name": "webhook tolerance seconds"
+            }
+          },
+          "key": "webhook_tolerance_seconds",
+          "name": "webhook tolerance seconds",
+          "required": false,
+          "type": "integer",
+          "validation": {
+            "max": 86400,
+            "min": 0
+          }
+        },
+        {
+          "description": "Configuration value for writeback object key.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback object key.",
+              "name": "writeback object key"
+            },
+            "zh-CN": {
+              "description": "writeback object key 配置项。",
+              "name": "writeback object key"
+            }
+          },
+          "key": "writeback_object_key",
+          "name": "writeback object key",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for writeback status field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for writeback status field.",
+              "name": "writeback status field"
+            },
+            "zh-CN": {
+              "description": "writeback status field 配置项。",
+              "name": "writeback status field"
+            }
+          },
+          "key": "writeback_status_field",
+          "name": "writeback status field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider wechat_pay",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider wechat_pay",
+          "name": "wechat_pay"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider wechat_pay",
+          "name": "wechat_pay"
+        }
+      },
+      "key": "wechat_pay",
+      "name": "wechat_pay",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "api_key",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api key.",
+              "name": "api key"
+            },
+            "zh-CN": {
+              "description": "api key 敏感凭据。",
+              "name": "api key"
+            }
+          },
+          "key": "api_key",
+          "name": "api key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client id.",
+              "name": "client id"
+            },
+            "zh-CN": {
+              "description": "client id 敏感凭据。",
+              "name": "client id"
+            }
+          },
+          "key": "client_id",
+          "name": "client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for client secret.",
+              "name": "client secret"
+            },
+            "zh-CN": {
+              "description": "client secret 敏感凭据。",
+              "name": "client secret"
+            }
+          },
+          "key": "client_secret",
+          "name": "client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "private_key",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for merchant private key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for merchant private key.",
+              "name": "merchant private key"
+            },
+            "zh-CN": {
+              "description": "merchant private key 敏感凭据。",
+              "name": "merchant private key"
+            }
+          },
+          "key": "merchant_private_key",
+          "name": "merchant private key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "certificate",
+            "expiry_policy": "optional",
+            "material_format": "pem_or_reference",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for platform public key.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for platform public key.",
+              "name": "platform public key"
+            },
+            "zh-CN": {
+              "description": "platform public key 敏感凭据。",
+              "name": "platform public key"
+            }
+          },
+          "key": "platform_public_key",
+          "name": "platform public key",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_key",
+    "client_id",
+    "client_secret",
+    "webhook_secret",
+    "merchant_private_key",
+    "platform_public_key"
+  ],
+  "source": "connectors:payment",
+  "type": "payment",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}

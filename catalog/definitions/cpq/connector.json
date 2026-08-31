@@ -1,0 +1,1516 @@
+{
+  "adapter_ready": false,
+  "capabilities": [
+    "salesforce_cpq",
+    "hubspot_quotes",
+    "pandadoc",
+    "chargebee_catalog",
+    "erp_price_list",
+    "cpq_products",
+    "cpq_price_books",
+    "cpq_discount_rules",
+    "cpq_quotes",
+    "cpq_approvals",
+    "cpq_quote_documents",
+    "quote_pdf_archive",
+    "discount_review",
+    "renewal_requote_workflow",
+    "data_migration_handoff"
+  ],
+  "config": {
+    "config_fields": [
+      "provider",
+      "catalog_id",
+      "pricebook_id",
+      "currency",
+      "region",
+      "default_discount_policy",
+      "quote_owner_field",
+      "approval_owner_field",
+      "renewal_date_field"
+    ],
+    "default_connection_key": "cpq_primary",
+    "options_path": "/integrations/cpq/options",
+    "quote_onboarding_path": "/integrations/cpq/quote-onboarding",
+    "secret_refs": [
+      "api_token",
+      "oauth_client_id",
+      "oauth_client_secret",
+      "webhook_secret"
+    ]
+  },
+  "config_fields": [
+    "provider",
+    "catalog_id",
+    "pricebook_id",
+    "currency",
+    "region",
+    "default_discount_policy",
+    "quote_owner_field",
+    "approval_owner_field",
+    "renewal_date_field"
+  ],
+  "connection_ready": false,
+  "definition_ready": true,
+  "description": "Provides official Domainry CPQ Connector definitions, Provider choices, and operation contracts.",
+  "i18n": {
+    "en-US": {
+      "description": "Provides official Domainry CPQ Connector definitions, Provider choices, and operation contracts.",
+      "name": "CPQ"
+    },
+    "zh-CN": {
+      "description": "提供 Domainry 官方配置、定价与报价连接器定义、Provider 选项与操作契约。",
+      "name": "配置、定价与报价"
+    }
+  },
+  "key": "cpq",
+  "classification": "runtime_native",
+  "lifecycle_status": "reclassified",
+  "replacement_capability": "frontend.business_workbench",
+  "name": "CPQ",
+  "operations": [],
+  "provider": "multi",
+  "providers": [
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval owner field.",
+              "name": "approval owner field"
+            },
+            "zh-CN": {
+              "description": "approval owner field 配置项。",
+              "name": "approval owner field"
+            }
+          },
+          "key": "approval_owner_field",
+          "name": "approval owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for catalog id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for catalog id.",
+              "name": "catalog id"
+            },
+            "zh-CN": {
+              "description": "catalog id 配置项。",
+              "name": "catalog id"
+            }
+          },
+          "key": "catalog_id",
+          "name": "catalog id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for default discount policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default discount policy.",
+              "name": "default discount policy"
+            },
+            "zh-CN": {
+              "description": "default discount policy 配置项。",
+              "name": "default discount policy"
+            }
+          },
+          "key": "default_discount_policy",
+          "name": "default discount policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for pricebook id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for pricebook id.",
+              "name": "pricebook id"
+            },
+            "zh-CN": {
+              "description": "pricebook id 配置项。",
+              "name": "pricebook id"
+            }
+          },
+          "key": "pricebook_id",
+          "name": "pricebook id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for quote owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for quote owner field.",
+              "name": "quote owner field"
+            },
+            "zh-CN": {
+              "description": "quote owner field 配置项。",
+              "name": "quote owner field"
+            }
+          },
+          "key": "quote_owner_field",
+          "name": "quote owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for renewal date field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for renewal date field.",
+              "name": "renewal date field"
+            },
+            "zh-CN": {
+              "description": "renewal date field 配置项。",
+              "name": "renewal date field"
+            }
+          },
+          "key": "renewal_date_field",
+          "name": "renewal date field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider chargebee_catalog",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider chargebee_catalog",
+          "name": "chargebee_catalog"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider chargebee_catalog",
+          "name": "chargebee_catalog"
+        }
+      },
+      "key": "chargebee_catalog",
+      "name": "chargebee_catalog",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval owner field.",
+              "name": "approval owner field"
+            },
+            "zh-CN": {
+              "description": "approval owner field 配置项。",
+              "name": "approval owner field"
+            }
+          },
+          "key": "approval_owner_field",
+          "name": "approval owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for catalog id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for catalog id.",
+              "name": "catalog id"
+            },
+            "zh-CN": {
+              "description": "catalog id 配置项。",
+              "name": "catalog id"
+            }
+          },
+          "key": "catalog_id",
+          "name": "catalog id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for default discount policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default discount policy.",
+              "name": "default discount policy"
+            },
+            "zh-CN": {
+              "description": "default discount policy 配置项。",
+              "name": "default discount policy"
+            }
+          },
+          "key": "default_discount_policy",
+          "name": "default discount policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for pricebook id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for pricebook id.",
+              "name": "pricebook id"
+            },
+            "zh-CN": {
+              "description": "pricebook id 配置项。",
+              "name": "pricebook id"
+            }
+          },
+          "key": "pricebook_id",
+          "name": "pricebook id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for quote owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for quote owner field.",
+              "name": "quote owner field"
+            },
+            "zh-CN": {
+              "description": "quote owner field 配置项。",
+              "name": "quote owner field"
+            }
+          },
+          "key": "quote_owner_field",
+          "name": "quote owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for renewal date field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for renewal date field.",
+              "name": "renewal date field"
+            },
+            "zh-CN": {
+              "description": "renewal date field 配置项。",
+              "name": "renewal date field"
+            }
+          },
+          "key": "renewal_date_field",
+          "name": "renewal date field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider erp_price_list",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider erp_price_list",
+          "name": "erp_price_list"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider erp_price_list",
+          "name": "erp_price_list"
+        }
+      },
+      "key": "erp_price_list",
+      "name": "erp_price_list",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval owner field.",
+              "name": "approval owner field"
+            },
+            "zh-CN": {
+              "description": "approval owner field 配置项。",
+              "name": "approval owner field"
+            }
+          },
+          "key": "approval_owner_field",
+          "name": "approval owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for catalog id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for catalog id.",
+              "name": "catalog id"
+            },
+            "zh-CN": {
+              "description": "catalog id 配置项。",
+              "name": "catalog id"
+            }
+          },
+          "key": "catalog_id",
+          "name": "catalog id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for default discount policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default discount policy.",
+              "name": "default discount policy"
+            },
+            "zh-CN": {
+              "description": "default discount policy 配置项。",
+              "name": "default discount policy"
+            }
+          },
+          "key": "default_discount_policy",
+          "name": "default discount policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for pricebook id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for pricebook id.",
+              "name": "pricebook id"
+            },
+            "zh-CN": {
+              "description": "pricebook id 配置项。",
+              "name": "pricebook id"
+            }
+          },
+          "key": "pricebook_id",
+          "name": "pricebook id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for quote owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for quote owner field.",
+              "name": "quote owner field"
+            },
+            "zh-CN": {
+              "description": "quote owner field 配置项。",
+              "name": "quote owner field"
+            }
+          },
+          "key": "quote_owner_field",
+          "name": "quote owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for renewal date field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for renewal date field.",
+              "name": "renewal date field"
+            },
+            "zh-CN": {
+              "description": "renewal date field 配置项。",
+              "name": "renewal date field"
+            }
+          },
+          "key": "renewal_date_field",
+          "name": "renewal date field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider hubspot_quotes",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider hubspot_quotes",
+          "name": "hubspot_quotes"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider hubspot_quotes",
+          "name": "hubspot_quotes"
+        }
+      },
+      "key": "hubspot_quotes",
+      "name": "hubspot_quotes",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval owner field.",
+              "name": "approval owner field"
+            },
+            "zh-CN": {
+              "description": "approval owner field 配置项。",
+              "name": "approval owner field"
+            }
+          },
+          "key": "approval_owner_field",
+          "name": "approval owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for catalog id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for catalog id.",
+              "name": "catalog id"
+            },
+            "zh-CN": {
+              "description": "catalog id 配置项。",
+              "name": "catalog id"
+            }
+          },
+          "key": "catalog_id",
+          "name": "catalog id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for default discount policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default discount policy.",
+              "name": "default discount policy"
+            },
+            "zh-CN": {
+              "description": "default discount policy 配置项。",
+              "name": "default discount policy"
+            }
+          },
+          "key": "default_discount_policy",
+          "name": "default discount policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for pricebook id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for pricebook id.",
+              "name": "pricebook id"
+            },
+            "zh-CN": {
+              "description": "pricebook id 配置项。",
+              "name": "pricebook id"
+            }
+          },
+          "key": "pricebook_id",
+          "name": "pricebook id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for quote owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for quote owner field.",
+              "name": "quote owner field"
+            },
+            "zh-CN": {
+              "description": "quote owner field 配置项。",
+              "name": "quote owner field"
+            }
+          },
+          "key": "quote_owner_field",
+          "name": "quote owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for renewal date field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for renewal date field.",
+              "name": "renewal date field"
+            },
+            "zh-CN": {
+              "description": "renewal date field 配置项。",
+              "name": "renewal date field"
+            }
+          },
+          "key": "renewal_date_field",
+          "name": "renewal date field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider pandadoc",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider pandadoc",
+          "name": "pandadoc"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider pandadoc",
+          "name": "pandadoc"
+        }
+      },
+      "key": "pandadoc",
+      "name": "pandadoc",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "config_fields": [
+        {
+          "description": "Configuration value for approval owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for approval owner field.",
+              "name": "approval owner field"
+            },
+            "zh-CN": {
+              "description": "approval owner field 配置项。",
+              "name": "approval owner field"
+            }
+          },
+          "key": "approval_owner_field",
+          "name": "approval owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for catalog id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for catalog id.",
+              "name": "catalog id"
+            },
+            "zh-CN": {
+              "description": "catalog id 配置项。",
+              "name": "catalog id"
+            }
+          },
+          "key": "catalog_id",
+          "name": "catalog id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for currency.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for currency.",
+              "name": "currency"
+            },
+            "zh-CN": {
+              "description": "currency 配置项。",
+              "name": "currency"
+            }
+          },
+          "key": "currency",
+          "name": "currency",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048,
+            "pattern": "^[A-Z]{3}$"
+          }
+        },
+        {
+          "description": "Configuration value for default discount policy.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for default discount policy.",
+              "name": "default discount policy"
+            },
+            "zh-CN": {
+              "description": "default discount policy 配置项。",
+              "name": "default discount policy"
+            }
+          },
+          "key": "default_discount_policy",
+          "name": "default discount policy",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for pricebook id.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for pricebook id.",
+              "name": "pricebook id"
+            },
+            "zh-CN": {
+              "description": "pricebook id 配置项。",
+              "name": "pricebook id"
+            }
+          },
+          "key": "pricebook_id",
+          "name": "pricebook id",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for quote owner field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for quote owner field.",
+              "name": "quote owner field"
+            },
+            "zh-CN": {
+              "description": "quote owner field 配置项。",
+              "name": "quote owner field"
+            }
+          },
+          "key": "quote_owner_field",
+          "name": "quote owner field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for region.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for region.",
+              "name": "region"
+            },
+            "zh-CN": {
+              "description": "region 配置项。",
+              "name": "region"
+            }
+          },
+          "key": "region",
+          "name": "region",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "description": "Configuration value for renewal date field.",
+          "i18n": {
+            "en-US": {
+              "description": "Configuration value for renewal date field.",
+              "name": "renewal date field"
+            },
+            "zh-CN": {
+              "description": "renewal date field 配置项。",
+              "name": "renewal date field"
+            }
+          },
+          "key": "renewal_date_field",
+          "name": "renewal date field",
+          "required": false,
+          "type": "text",
+          "validation": {
+            "max_length": 2048
+          }
+        }
+      ],
+      "description": "Runtime Provider salesforce_cpq",
+      "i18n": {
+        "en-US": {
+          "description": "Runtime Provider salesforce_cpq",
+          "name": "salesforce_cpq"
+        },
+        "zh-CN": {
+          "description": "Runtime Provider salesforce_cpq",
+          "name": "salesforce_cpq"
+        }
+      },
+      "key": "salesforce_cpq",
+      "name": "salesforce_cpq",
+      "readiness": "provider_available",
+      "secret_fields": [
+        {
+          "config": {
+            "credential_kind": "bearer_token",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for api token.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for api token.",
+              "name": "api token"
+            },
+            "zh-CN": {
+              "description": "api token 敏感凭据。",
+              "name": "api token"
+            }
+          },
+          "key": "api_token",
+          "name": "api token",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "identifier",
+            "expiry_policy": "none",
+            "material_format": "text",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client id.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client id.",
+              "name": "oauth client id"
+            },
+            "zh-CN": {
+              "description": "oauth client id 敏感凭据。",
+              "name": "oauth client id"
+            }
+          },
+          "key": "oauth_client_id",
+          "name": "oauth client id",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "oauth_client_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for oauth client secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for oauth client secret.",
+              "name": "oauth client secret"
+            },
+            "zh-CN": {
+              "description": "oauth client secret 敏感凭据。",
+              "name": "oauth client secret"
+            }
+          },
+          "key": "oauth_client_secret",
+          "name": "oauth client secret",
+          "required": false,
+          "type": "text"
+        },
+        {
+          "config": {
+            "credential_kind": "signing_secret",
+            "expiry_policy": "optional",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "sensitive": true,
+            "test_requirement": "when_bound",
+            "write_only": true
+          },
+          "description": "Sensitive credential for webhook secret.",
+          "i18n": {
+            "en-US": {
+              "description": "Sensitive credential for webhook secret.",
+              "name": "webhook secret"
+            },
+            "zh-CN": {
+              "description": "webhook secret 敏感凭据。",
+              "name": "webhook secret"
+            }
+          },
+          "key": "webhook_secret",
+          "name": "webhook secret",
+          "required": false,
+          "type": "text"
+        }
+      ]
+    }
+  ],
+  "readiness": "catalog_only",
+  "secret_refs": [
+    "api_token",
+    "oauth_client_id",
+    "oauth_client_secret",
+    "webhook_secret"
+  ],
+  "source": "connectors:cpq",
+  "type": "cpq",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "feature_flags": [
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ]
+}
