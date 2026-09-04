@@ -62,11 +62,11 @@
       "signature_confidence_threshold",
       "business_card_ocr_enabled"
     ],
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "email_primary",
-    "inbound_path": "/integrations/webhooks/email/inbound",
-    "options_path": "/integrations/email/options",
-    "preview_path": "/integrations/email/preview",
+    "inbound_path": "/integration/webhooks/email/inbound",
+    "options_path": "/integration/email/options",
+    "preview_path": "/integration/email/preview",
     "secret_refs": [
       "password",
       "api_key",
@@ -78,11 +78,11 @@
       "mailgun_webhook_signing_key",
       "ocr_provider_key"
     ],
-    "send_path": "/integrations/email/send",
-    "send_plan_path": "/integrations/email/send-plan",
-    "signature_enrichment_compat_path": "/integrations/email/signature-enrichment",
-    "signature_enrichment_path": "/integrations/email/signature-enrichment-plan",
-    "thread_archive_closeout_path": "/integrations/email/thread-archive-closeout-plan"
+    "send_path": "/integration/email/send",
+    "send_plan_path": "/integration/email/send-plan",
+    "signature_enrichment_compat_path": "/integration/email/signature-enrichment",
+    "signature_enrichment_path": "/integration/email/signature-enrichment-plan",
+    "thread_archive_closeout_path": "/integration/email/thread-archive-closeout-plan"
   },
   "config_fields": [
     "provider",

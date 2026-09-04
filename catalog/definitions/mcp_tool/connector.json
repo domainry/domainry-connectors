@@ -22,9 +22,9 @@
     "audit_plan"
   ],
   "config": {
-    "action_guard_plan_path": "/integrations/mcp-tools/action-guard-plan",
-    "approved_external_action_execute_path": "/integrations/mcp-tools/approved-external-action/execute",
-    "approved_external_action_plan_path": "/integrations/mcp-tools/approved-external-action-plan",
+    "action_guard_plan_path": "/integration/mcp-tools/action-guard-plan",
+    "approved_external_action_execute_path": "/integration/mcp-tools/approved-external-action/execute",
+    "approved_external_action_plan_path": "/integration/mcp-tools/approved-external-action-plan",
     "config_fields": [
       "transport",
       "command",
@@ -42,15 +42,15 @@
       "external_principal",
       "dead_letter_queue"
     ],
-    "connection_request_path": "/integrations/mcp-tools/connection-request",
+    "connection_request_path": "/integration/mcp-tools/connection-request",
     "default_connection_key": "mcp_tools_primary",
-    "options_path": "/integrations/mcp-tools/options",
+    "options_path": "/integration/mcp-tools/options",
     "secret_refs": [
       "api_key",
       "authorization",
       "header_authorization"
     ],
-    "test_path": "/integrations/mcp-tools/test",
+    "test_path": "/integration/mcp-tools/test",
     "transport_types": [
       "stdio",
       "http",

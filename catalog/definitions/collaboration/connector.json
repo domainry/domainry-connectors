@@ -44,8 +44,8 @@
     "data_migration_handoff"
   ],
   "config": {
-    "approval_execution_plan_path": "/integrations/collaboration/approval-execution-plan",
-    "approval_policy_path": "/integrations/collaboration/approval-policy",
+    "approval_execution_plan_path": "/integration/collaboration/approval-execution-plan",
+    "approval_policy_path": "/integration/collaboration/approval-policy",
     "business_system_assets": [
       "directory_users",
       "departments",
@@ -58,7 +58,7 @@
       "tasks",
       "file_references"
     ],
-    "business_system_onboarding_path": "/integrations/collaboration/business-system-onboarding",
+    "business_system_onboarding_path": "/integration/collaboration/business-system-onboarding",
     "channel_adapter": true,
     "channel_connection_channel": "system",
     "channel_connection_external_account_field": "external_account_id",
@@ -72,15 +72,15 @@
       "message",
       "channel_connection"
     ],
-    "command_path": "/integrations/collaboration/command",
+    "command_path": "/integration/collaboration/command",
     "command_prefixes": [
       "/crm",
       "/erp",
       "/operations"
     ],
-    "community_signal_onboarding_path": "/integrations/collaboration/community-signal-onboarding",
+    "community_signal_onboarding_path": "/integration/collaboration/community-signal-onboarding",
     "default_connection_key": "collaboration_primary",
-    "identity_mapping_path": "/integrations/collaboration/identity-mapping",
+    "identity_mapping_path": "/integration/collaboration/identity-mapping",
     "identity_subjects": [
       "user_id",
       "open_id",
@@ -89,9 +89,9 @@
       "team_user_id",
       "aad_object_id"
     ],
-    "messaging_setup_readiness_path": "/integrations/collaboration/messaging-setup-readiness",
-    "options_path": "/integrations/collaboration/options",
-    "org_approval_message_entry_path": "/integrations/collaboration/org-approval-message-entry-plan",
+    "messaging_setup_readiness_path": "/integration/collaboration/messaging-setup-readiness",
+    "options_path": "/integration/collaboration/options",
+    "org_approval_message_entry_path": "/integration/collaboration/org-approval-message-entry-plan",
     "regional_presets": [
       "cn:feishu",
       "cn:enterprise_wechat",
@@ -116,9 +116,9 @@
       "client_id",
       "client_secret"
     ],
-    "send_path": "/integrations/collaboration/send",
-    "webhook_events_path": "/integrations/webhooks/collaboration/events",
-    "workspace_backfill_closeout_plan_path": "/integrations/collaboration/workspace-backfill-closeout-plan"
+    "send_path": "/integration/collaboration/send",
+    "webhook_events_path": "/integration/webhooks/collaboration/events",
+    "workspace_backfill_closeout_plan_path": "/integration/collaboration/workspace-backfill-closeout-plan"
   },
   "connection_ready": false,
   "definition_ready": true,

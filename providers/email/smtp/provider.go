@@ -29,9 +29,8 @@ const (
 
 type SendEmailInput struct {
 	To      []string `json:"to"`
-	Subject string   `json:"subject,omitempty"`
+	Subject string   `json:"subject"`
 	Text    string   `json:"text,omitempty"`
-	HTML    string   `json:"html,omitempty"`
 }
 type SendFileEmailInput struct {
 	To                    []string `json:"to"`
@@ -44,7 +43,7 @@ type SendFileEmailInput struct {
 }
 
 var (
-	SendEmail      = connector.EnqueueOperation[SendEmailInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "send_email", ContractSHA256: "ce81e72365b4f16b75a26909f2e30d8325a88ec305adb11f81d9247714c4968c", Reliability: writeReliability()}
+	SendEmail      = connector.EnqueueOperation[SendEmailInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "send_email", ContractSHA256: "87d29625473521b5201c0110d40191aa1086fcfb75395f250b4173abbcbb274b", Reliability: writeReliability()}
 	SendFileEmail  = connector.EnqueueOperation[SendFileEmailInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "send_file_email", ContractSHA256: "3c91521147ec9c087a6c04612ba0ecd63a30248f3afa6691850437f0ad154483", Reliability: writeReliability()}
 	TestConnection = connector.CallOperation[struct{}, map[string]any]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "test_connection", ContractSHA256: "6f25b4a2fc713dbb566f56a7a1ae5121ea5a3740710f4cdf3618da0492c6eb34", Reliability: readReliability()}
 )
@@ -131,7 +130,7 @@ func (p *provider) send(ctx context.Context, r connector.TypedRequest[SendEmailI
 		return connector.DeliveryResult{}, err
 	}
 	messageID := messageID(r.RequestRef)
-	message := textMessage(from, recipients, r.Input.Subject, r.Input.Text, r.Input.HTML, messageID)
+	message := textMessage(from, recipients, r.Input.Subject, r.Input.Text, "", messageID)
 	return p.deliver(ctx, r.Connection, r.Secrets, from, recipients, message, messageID)
 }
 func (p *provider) sendFile(ctx context.Context, r connector.TypedRequest[SendFileEmailInput]) (connector.DeliveryResult, error) {

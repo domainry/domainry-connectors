@@ -22,7 +22,7 @@
     "data_migration_handoff"
   ],
   "config": {
-    "attendee_onboarding_path": "/integrations/event-webinar/attendee-onboarding",
+    "attendee_onboarding_path": "/integration/event-webinar/attendee-onboarding",
     "config_fields": [
       "provider",
       "event_id",
@@ -35,9 +35,9 @@
       "sales_owner_field",
       "success_owner_field"
     ],
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "event_webinar_primary",
-    "options_path": "/integrations/event-webinar/options",
+    "options_path": "/integration/event-webinar/options",
     "secret_refs": [
       "api_token",
       "oauth_client_id",

@@ -29,10 +29,10 @@
       "logistics_provider"
     ],
     "default_connection_key": "map_address_primary",
-    "distance_path": "/integrations/maps/distance",
-    "geocode_path": "/integrations/maps/geocode",
-    "options_path": "/integrations/maps/options",
-    "route_path": "/integrations/maps/route",
+    "distance_path": "/integration/maps/distance",
+    "geocode_path": "/integration/maps/geocode",
+    "options_path": "/integration/maps/options",
+    "route_path": "/integration/maps/route",
     "secret_refs": [
       "api_key",
       "client_id",

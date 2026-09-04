@@ -33,8 +33,8 @@
     "funnels"
   ],
   "config": {
-    "analytics_event_path": "/integrations/analytics-warehouse/analytics/event",
-    "bi_embed_path": "/integrations/analytics-warehouse/bi/embed",
+    "analytics_event_path": "/integration/analytics-warehouse/analytics/event",
+    "bi_embed_path": "/integration/analytics-warehouse/bi/embed",
     "business_metrics": [
       "customer_segment",
       "ltv",
@@ -43,9 +43,9 @@
       "health_score",
       "renewal_risk"
     ],
-    "crm_metric_writeback_path": "/integrations/analytics/metric-writeback-plan",
+    "crm_metric_writeback_path": "/integration/analytics/metric-writeback-plan",
     "default_connection_key": "analytics_warehouse_primary",
-    "funnel_path": "/integrations/analytics-warehouse/analytics/funnel",
+    "funnel_path": "/integration/analytics-warehouse/analytics/funnel",
     "metric_sources": [
       "bigquery",
       "snowflake",
@@ -54,10 +54,10 @@
       "power_bi",
       "looker"
     ],
-    "metric_writeback_path": "/integrations/analytics-warehouse/bi/metric-writeback-plan",
-    "object_modeling_path": "/integrations/analytics-warehouse/warehouse/object-modeling-plan",
-    "options_path": "/integrations/analytics-warehouse/options",
-    "product_event_onboarding_path": "/integrations/analytics-warehouse/product-events/onboarding-plan",
+    "metric_writeback_path": "/integration/analytics-warehouse/bi/metric-writeback-plan",
+    "object_modeling_path": "/integration/analytics-warehouse/warehouse/object-modeling-plan",
+    "options_path": "/integration/analytics-warehouse/options",
+    "product_event_onboarding_path": "/integration/analytics-warehouse/product-events/onboarding-plan",
     "product_event_signals": [
       "signup",
       "activation",
@@ -65,7 +65,7 @@
       "feature_usage",
       "churn_signal"
     ],
-    "search_index_path": "/integrations/analytics-warehouse/search/index-plan",
+    "search_index_path": "/integration/analytics-warehouse/search/index-plan",
     "secret_refs": [
       "api_key",
       "bearer_token",
@@ -74,7 +74,7 @@
       "database_password",
       "embed_secret"
     ],
-    "warehouse_export_path": "/integrations/analytics-warehouse/warehouse/export-plan"
+    "warehouse_export_path": "/integration/analytics-warehouse/warehouse/export-plan"
   },
   "connection_ready": false,
   "definition_ready": true,

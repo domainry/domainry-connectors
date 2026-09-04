@@ -28,8 +28,8 @@
       "feedback_object_key"
     ],
     "default_connection_key": "customer_feedback_primary",
-    "health_onboarding_path": "/integrations/customer-feedback/health-onboarding",
-    "options_path": "/integrations/customer-feedback/options",
+    "health_onboarding_path": "/integration/customer-feedback/health-onboarding",
+    "options_path": "/integration/customer-feedback/options",
     "secret_refs": [
       "api_token",
       "oauth_client_id",

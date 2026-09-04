@@ -31,10 +31,10 @@
       "collaboration"
     ],
     "default_connection_key": "regional_market_primary",
-    "enterprise_identity_preset_path": "/integrations/regional-market/enterprise-identity-preset",
-    "login_communication_preset_path": "/integrations/regional-market/login-communication-preset",
-    "onboarding_path": "/integrations/regional-market/onboarding-plan",
-    "options_path": "/integrations/regional-market/options",
+    "enterprise_identity_preset_path": "/integration/regional-market/enterprise-identity-preset",
+    "login_communication_preset_path": "/integration/regional-market/login-communication-preset",
+    "onboarding_path": "/integration/regional-market/onboarding-plan",
+    "options_path": "/integration/regional-market/options",
     "regions": [
       "JP",
       "BR"

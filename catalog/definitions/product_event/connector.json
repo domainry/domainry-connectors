@@ -32,7 +32,7 @@
     "data_migration_handoff"
   ],
   "config": {
-    "behavior_onboarding_path": "/integrations/product-events/behavior-onboarding",
+    "behavior_onboarding_path": "/integration/product-events/behavior-onboarding",
     "config_fields": [
       "provider",
       "project_id",
@@ -48,10 +48,10 @@
       "invite_event",
       "billing_intent_event"
     ],
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "product_event_primary",
-    "options_path": "/integrations/product-events/options",
-    "plg_sales_onboarding_path": "/integrations/product-events/plg-sales-onboarding",
+    "options_path": "/integration/product-events/options",
+    "plg_sales_onboarding_path": "/integration/product-events/plg-sales-onboarding",
     "secret_refs": [
       "api_token",
       "project_secret",
@@ -59,7 +59,7 @@
       "oauth_client_secret",
       "database_url"
     ],
-    "usage_expansion_onboarding_path": "/integrations/product-events/usage-expansion-onboarding"
+    "usage_expansion_onboarding_path": "/integration/product-events/usage-expansion-onboarding"
   },
   "config_fields": [
     "provider",

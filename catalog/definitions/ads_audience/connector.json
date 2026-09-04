@@ -33,10 +33,10 @@
       "attribution_model",
       "owner_routing_strategy"
     ],
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "ads_audience_primary",
-    "options_path": "/integrations/ads-audience/options",
-    "remarketing_onboarding_path": "/integrations/ads-audience/remarketing-onboarding",
+    "options_path": "/integration/ads-audience/options",
+    "remarketing_onboarding_path": "/integration/ads-audience/remarketing-onboarding",
     "secret_refs": [
       "access_token",
       "developer_token",

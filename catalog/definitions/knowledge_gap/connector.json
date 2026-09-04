@@ -30,11 +30,11 @@
       "customer_impact_field",
       "writeback_status_field"
     ],
-    "connection_request_path": "/integrations/knowledge-gap/connection-request",
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
-    "content_task_onboarding_path": "/integrations/knowledge-gap/content-task-onboarding",
+    "connection_request_path": "/integration/knowledge-gap/connection-request",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
+    "content_task_onboarding_path": "/integration/knowledge-gap/content-task-onboarding",
     "default_connection_key": "knowledge_gap_primary",
-    "options_path": "/integrations/knowledge-gap/options",
+    "options_path": "/integration/knowledge-gap/options",
     "secret_refs": [
       "api_key",
       "client_id",

@@ -35,8 +35,8 @@
     "audit"
   ],
   "config": {
-    "archive_request_path": "/integrations/file-storage/archive-request",
-    "attachment_archive_plan_path": "/integrations/file-storage/attachment-archive-plan",
+    "archive_request_path": "/integration/file-storage/archive-request",
+    "attachment_archive_plan_path": "/integration/file-storage/attachment-archive-plan",
     "config_fields": [
       "provider",
       "bucket",
@@ -51,14 +51,14 @@
       "virus_scan",
       "content_review"
     ],
-    "connection_request_path": "/integrations/file-storage/connection-request",
-    "content_safety_plan_path": "/integrations/file-storage/content-safety-plan",
+    "connection_request_path": "/integration/file-storage/connection-request",
+    "content_safety_plan_path": "/integration/file-storage/content-safety-plan",
     "default_connection_key": "file_storage_primary",
-    "evidence_base_plan_path": "/integrations/file-storage/evidence-base-plan",
-    "multi_file_field_policy_path": "/integrations/file-storage/multi-file-field-policy",
-    "multipart_session_path": "/integrations/file-storage/multipart-session",
-    "object_ownership_plan_path": "/integrations/file-storage/object-ownership-plan",
-    "options_path": "/integrations/file-storage/options",
+    "evidence_base_plan_path": "/integration/file-storage/evidence-base-plan",
+    "multi_file_field_policy_path": "/integration/file-storage/multi-file-field-policy",
+    "multipart_session_path": "/integration/file-storage/multipart-session",
+    "object_ownership_plan_path": "/integration/file-storage/object-ownership-plan",
+    "options_path": "/integration/file-storage/options",
     "secret_refs": [
       "access_key_id",
       "secret_access_key",
@@ -66,7 +66,7 @@
       "service_account_json",
       "signing_secret"
     ],
-    "signed_operation_path": "/integrations/file-storage/signed-operation"
+    "signed_operation_path": "/integration/file-storage/signed-operation"
   },
   "config_fields": [
     "provider",

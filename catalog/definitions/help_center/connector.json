@@ -26,7 +26,7 @@
     "data_migration_handoff"
   ],
   "config": {
-    "behavior_onboarding_path": "/integrations/help-center/behavior-onboarding",
+    "behavior_onboarding_path": "/integration/help-center/behavior-onboarding",
     "config_fields": [
       "provider",
       "space_id",
@@ -39,9 +39,9 @@
       "product_area_field",
       "support_risk_field"
     ],
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "help_center_primary",
-    "options_path": "/integrations/help-center/options",
+    "options_path": "/integration/help-center/options",
     "secret_refs": [
       "api_token",
       "oauth_client_id",

@@ -27,9 +27,9 @@
       "certificate_policy",
       "renewal_window_days"
     ],
-    "connection_request_path": "/integrations/lms/connection-request",
+    "connection_request_path": "/integration/lms/connection-request",
     "default_connection_key": "lms_primary",
-    "options_path": "/integrations/lms/options",
+    "options_path": "/integration/lms/options",
     "secret_refs": [
       "api_key",
       "client_id",
@@ -56,7 +56,7 @@
       "document",
       "customer_success_case"
     ],
-    "training_onboarding_path": "/integrations/lms/training-onboarding"
+    "training_onboarding_path": "/integration/lms/training-onboarding"
   },
   "config_fields": [
     "provider",

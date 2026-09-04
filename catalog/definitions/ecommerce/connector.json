@@ -48,18 +48,18 @@
       "vip_threshold",
       "churn_window_days"
     ],
-    "customer_lifecycle_onboarding_path": "/integrations/ecommerce/customer-lifecycle-onboarding",
+    "customer_lifecycle_onboarding_path": "/integration/ecommerce/customer-lifecycle-onboarding",
     "default_connection_key": "ecommerce_primary",
-    "lifecycle_followup_path": "/integrations/ecommerce/lifecycle-followup-plan",
-    "options_path": "/integrations/ecommerce/options",
-    "revenue_risk_workflow_path": "/integrations/ecommerce/revenue-risk-workflow-plan",
+    "lifecycle_followup_path": "/integration/ecommerce/lifecycle-followup-plan",
+    "options_path": "/integration/ecommerce/options",
+    "revenue_risk_workflow_path": "/integration/ecommerce/revenue-risk-workflow-plan",
     "secret_refs": [
       "api_token",
       "oauth_client_id",
       "oauth_client_secret",
       "webhook_secret"
     ],
-    "shopify_chargebee_lifecycle_path": "/integrations/ecommerce/shopify-chargebee-lifecycle-plan"
+    "shopify_chargebee_lifecycle_path": "/integration/ecommerce/shopify-chargebee-lifecycle-plan"
   },
   "config_fields": [
     "provider",

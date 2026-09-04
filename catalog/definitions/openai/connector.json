@@ -19,8 +19,8 @@
     "fallback_plan"
   ],
   "config": {
-    "agent_run_plan_path": "/integrations/openai/agent-run-plan",
-    "approved_external_action_plan_path": "/integrations/openai/approved-external-action-plan",
+    "agent_run_plan_path": "/integration/openai/agent-run-plan",
+    "approved_external_action_plan_path": "/integration/openai/approved-external-action-plan",
     "config_fields": [
       "provider",
       "model",
@@ -31,15 +31,15 @@
       "max_output_tokens",
       "temperature"
     ],
-    "connection_request_path": "/integrations/openai/connection-request",
+    "connection_request_path": "/integration/openai/connection-request",
     "default_base_url": "https://api.openai.com/v1",
     "default_connection_key": "openai_primary",
     "default_model": "gpt-4.1-mini",
-    "options_path": "/integrations/openai/options",
+    "options_path": "/integration/openai/options",
     "secret_refs": [
       "api_key"
     ],
-    "test_path": "/integrations/openai/test"
+    "test_path": "/integration/openai/test"
   },
   "config_fields": [
     "provider",

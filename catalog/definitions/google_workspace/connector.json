@@ -32,13 +32,13 @@
     "external_identity"
   ],
   "config": {
-    "crm_onboarding_path": "/integrations/google/crm-onboarding",
+    "crm_onboarding_path": "/integration/google/crm-onboarding",
     "default_connection_key": "google_workspace_primary",
-    "enrichment_review_path": "/integrations/google/enrichment-review",
-    "oauth_callback_path": "/integrations/google/oauth/callback",
-    "oauth_refresh_path": "/integrations/google/oauth/refresh",
-    "oauth_revoke_path": "/integrations/google/oauth/revoke",
-    "oauth_start_path": "/tenant-admin/integrations/connections/{connectionKey}/oauth/google/start",
+    "enrichment_review_path": "/integration/google/enrichment-review",
+    "oauth_callback_path": "/integration/google/oauth/callback",
+    "oauth_refresh_path": "/integration/google/oauth/refresh",
+    "oauth_revoke_path": "/integration/google/oauth/revoke",
+    "oauth_start_path": "/integration/connections/{connectionKey}/oauth/google/start",
     "scopes": [
       "openid",
       "email",
@@ -57,7 +57,7 @@
       "access_token",
       "refresh_token"
     ],
-    "selection_path": "/integrations/google/selection",
+    "selection_path": "/integration/google/selection",
     "sync_options": [
       "email_history_contacts",
       "calendar",
@@ -66,8 +66,8 @@
       "groups_directory",
       "record_enrichment"
     ],
-    "sync_path": "/integrations/google/sync",
-    "workspace_backfill_closeout_path": "/integrations/google/workspace-backfill-closeout-plan",
+    "sync_path": "/integration/google/sync",
+    "workspace_backfill_closeout_path": "/integration/google/workspace-backfill-closeout-plan",
     "writeback_targets": [
       "contact",
       "company",

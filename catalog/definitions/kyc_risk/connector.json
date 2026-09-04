@@ -38,18 +38,18 @@
       "periodic_review_days"
     ],
     "default_connection_key": "kyc_risk_primary",
-    "evidence_archive_path": "/integrations/kyc-risk/evidence-archive-plan",
-    "onboarding_path": "/integrations/kyc-risk/onboarding-plan",
-    "options_path": "/integrations/kyc-risk/options",
-    "provider_request_path": "/integrations/kyc-risk/provider-request-plan",
-    "risk_writeback_admission_path": "/integrations/kyc-risk/risk-writeback-admission-plan",
+    "evidence_archive_path": "/integration/kyc-risk/evidence-archive-plan",
+    "onboarding_path": "/integration/kyc-risk/onboarding-plan",
+    "options_path": "/integration/kyc-risk/options",
+    "provider_request_path": "/integration/kyc-risk/provider-request-plan",
+    "risk_writeback_admission_path": "/integration/kyc-risk/risk-writeback-admission-plan",
     "secret_refs": [
       "api_key",
       "webhook_secret",
       "client_secret",
       "private_key"
     ],
-    "status_webhook_path": "/integrations/kyc-risk/status-webhook-plan"
+    "status_webhook_path": "/integration/kyc-risk/status-webhook-plan"
   },
   "config_fields": [
     "provider",

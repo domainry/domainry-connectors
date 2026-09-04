@@ -16,7 +16,7 @@
     "data_migration_handoff"
   ],
   "config": {
-    "channel_onboarding_path": "/integrations/marketplace/channel-onboarding",
+    "channel_onboarding_path": "/integration/marketplace/channel-onboarding",
     "config_fields": [
       "provider",
       "seller_id",
@@ -28,7 +28,7 @@
       "channel_policy_key"
     ],
     "default_connection_key": "marketplace_primary",
-    "options_path": "/integrations/marketplace/options",
+    "options_path": "/integration/marketplace/options",
     "secret_refs": [
       "api_token",
       "oauth_client_id",

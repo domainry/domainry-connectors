@@ -35,8 +35,8 @@
       "public_reply_policy"
     ],
     "default_connection_key": "app_review_primary",
-    "options_path": "/integrations/app-reviews/options",
-    "review_onboarding_path": "/integrations/app-reviews/review-onboarding",
+    "options_path": "/integration/app-reviews/options",
+    "review_onboarding_path": "/integration/app-reviews/review-onboarding",
     "secret_refs": [
       "api_token",
       "oauth_client_id",

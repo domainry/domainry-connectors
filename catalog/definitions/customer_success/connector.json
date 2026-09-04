@@ -48,13 +48,13 @@
       "csm_owner_field",
       "renewal_date_field"
     ],
-    "connection_request_path": "/integrations/customer-success/connection-request",
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "connection_request_path": "/integration/customer-success/connection-request",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "customer_success_primary",
-    "external_health_signal_plan_path": "/integrations/customer-success/external-health-signal-plan",
-    "health_onboarding_path": "/integrations/customer-success/health-onboarding",
-    "health_score_playbook_plan_path": "/integrations/customer-success/health-score-playbook-plan",
-    "options_path": "/integrations/customer-success/options",
+    "external_health_signal_plan_path": "/integration/customer-success/external-health-signal-plan",
+    "health_onboarding_path": "/integration/customer-success/health-onboarding",
+    "health_score_playbook_plan_path": "/integration/customer-success/health-score-playbook-plan",
+    "options_path": "/integration/customer-success/options",
     "secret_refs": [
       "api_key",
       "client_id",
@@ -63,7 +63,7 @@
       "refresh_token",
       "webhook_secret"
     ],
-    "signal_triage_plan_path": "/integrations/customer-success/signal-triage-plan",
+    "signal_triage_plan_path": "/integration/customer-success/signal-triage-plan",
     "source_objects": [
       "accounts",
       "contacts",
@@ -75,7 +75,7 @@
       "renewals",
       "success_plans"
     ],
-    "support_escalation_playbook_plan_path": "/integrations/customer-success/support-escalation-playbook-plan",
+    "support_escalation_playbook_plan_path": "/integration/customer-success/support-escalation-playbook-plan",
     "target_objects": [
       "customer",
       "contact",
@@ -85,7 +85,7 @@
       "contract",
       "opportunity"
     ],
-    "triage_ui_contact_gate_plan_path": "/integrations/customer-success/triage-ui-contact-gate-plan"
+    "triage_ui_contact_gate_plan_path": "/integration/customer-success/triage-ui-contact-gate-plan"
   },
   "config_fields": [
     "provider",

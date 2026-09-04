@@ -18,7 +18,7 @@
     "data_migration_handoff"
   ],
   "config": {
-    "appointment_onboarding_path": "/integrations/appointment-scheduling/appointment-onboarding",
+    "appointment_onboarding_path": "/integration/appointment-scheduling/appointment-onboarding",
     "config_fields": [
       "provider",
       "calendar_id",
@@ -29,9 +29,9 @@
       "default_owner_queue",
       "no_show_window_minutes"
     ],
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "appointment_scheduling_primary",
-    "options_path": "/integrations/appointment-scheduling/options",
+    "options_path": "/integration/appointment-scheduling/options",
     "secret_refs": [
       "api_token",
       "oauth_client_id",

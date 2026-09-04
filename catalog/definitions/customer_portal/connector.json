@@ -23,7 +23,7 @@
     "data_migration_handoff"
   ],
   "config": {
-    "activity_onboarding_path": "/integrations/customer-portal/activity-onboarding",
+    "activity_onboarding_path": "/integration/customer-portal/activity-onboarding",
     "config_fields": [
       "provider",
       "portal_base_url",
@@ -36,9 +36,9 @@
       "support_ticket_field",
       "community_profile_field"
     ],
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "customer_portal_primary",
-    "options_path": "/integrations/customer-portal/options",
+    "options_path": "/integration/customer-portal/options",
     "secret_refs": [
       "api_token",
       "oauth_client_id",

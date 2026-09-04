@@ -18,7 +18,7 @@
     "data_migration_handoff"
   ],
   "config": {
-    "certificate_archive_path": "/integrations/esign/certificate-archive-plan",
+    "certificate_archive_path": "/integration/esign/certificate-archive-plan",
     "config_fields": [
       "provider",
       "account_id",
@@ -31,12 +31,12 @@
       "writeback_status_field",
       "certificate_archive_connector_key"
     ],
-    "connection_request_path": "/integrations/esign/connection-request",
+    "connection_request_path": "/integration/esign/connection-request",
     "default_connection_key": "esign_primary",
-    "envelope_onboarding_path": "/integrations/esign/envelope-onboarding",
-    "envelope_path": "/integrations/esign/envelope",
-    "options_path": "/integrations/esign/options",
-    "recipient_path": "/integrations/esign/recipient",
+    "envelope_onboarding_path": "/integration/esign/envelope-onboarding",
+    "envelope_path": "/integration/esign/envelope",
+    "options_path": "/integration/esign/options",
+    "recipient_path": "/integration/esign/recipient",
     "regional_presets": [
       "us:docusign",
       "global:adobe_sign",
@@ -52,7 +52,7 @@
       "webhook_secret",
       "api_key"
     ],
-    "status_path": "/integrations/esign/status"
+    "status_path": "/integration/esign/status"
   },
   "config_fields": [
     "provider",

@@ -60,7 +60,7 @@
   ],
   "config": {
     "default_connection_key": "sso_primary",
-    "directory_offboarding_writeback_plan_path": "/integrations/sso/directory-offboarding-writeback-plan",
+    "directory_offboarding_writeback_plan_path": "/integration/sso/directory-offboarding-writeback-plan",
     "directory_subjects": [
       "users",
       "groups",
@@ -68,7 +68,7 @@
       "managers",
       "disabled_users"
     ],
-    "directory_sync_plan_path": "/integrations/sso/directory-sync-plan",
+    "directory_sync_plan_path": "/integration/sso/directory-sync-plan",
     "identity_subjects": [
       "sub",
       "email",
@@ -79,11 +79,11 @@
       "user_id",
       "open_id"
     ],
-    "ldap_sync_plan_path": "/integrations/sso/ldap/sync-plan",
-    "live_directory_access_repair_plan_path": "/integrations/sso/live-directory-access-repair-plan",
-    "oidc_callback_path": "/integrations/sso/oidc/callback",
-    "oidc_start_path": "/integrations/sso/oidc/start",
-    "options_path": "/integrations/sso/options",
+    "ldap_sync_plan_path": "/integration/sso/ldap/sync-plan",
+    "live_directory_access_repair_plan_path": "/integration/sso/live-directory-access-repair-plan",
+    "oidc_callback_path": "/integration/sso/oidc/callback",
+    "oidc_start_path": "/integration/sso/oidc/start",
+    "options_path": "/integration/sso/options",
     "organization_onboarding_fields": [
       "business_card_fields",
       "name_fields",
@@ -92,9 +92,9 @@
       "visibility_rules",
       "existing_connectors"
     ],
-    "permission_conflict_offboarding_plan_path": "/integrations/sso/permission-conflict-offboarding-plan",
-    "protocol_directory_closure_plan_path": "/integrations/sso/protocol-directory-closure-plan",
-    "regional_enterprise_onboarding_plan_path": "/integrations/sso/regional-enterprise-onboarding-plan",
+    "permission_conflict_offboarding_plan_path": "/integration/sso/permission-conflict-offboarding-plan",
+    "protocol_directory_closure_plan_path": "/integration/sso/protocol-directory-closure-plan",
+    "regional_enterprise_onboarding_plan_path": "/integration/sso/regional-enterprise-onboarding-plan",
     "regional_presets": [
       "cn:feishu",
       "cn:feishu_directory",
@@ -122,7 +122,7 @@
       "global:okta",
       "global:onelogin"
     ],
-    "role_mapping_path": "/integrations/sso/role-mapping",
+    "role_mapping_path": "/integration/sso/role-mapping",
     "role_mapping_sources": [
       "groups",
       "claims",
@@ -132,8 +132,8 @@
       "manager",
       "workspace_group"
     ],
-    "saml_acs_path": "/integrations/sso/saml/acs",
-    "saml_metadata_path": "/integrations/sso/saml/metadata",
+    "saml_acs_path": "/integration/sso/saml/acs",
+    "saml_metadata_path": "/integration/sso/saml/metadata",
     "secret_refs": [
       "client_secret",
       "app_secret",

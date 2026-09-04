@@ -31,10 +31,10 @@
       "service_status_field",
       "writeback_status_field"
     ],
-    "connection_request_path": "/integrations/dunning/connection-request",
+    "connection_request_path": "/integration/dunning/connection-request",
     "default_connection_key": "dunning_primary",
-    "options_path": "/integrations/dunning/options",
-    "recovery_onboarding_path": "/integrations/dunning/recovery-onboarding",
+    "options_path": "/integration/dunning/options",
+    "recovery_onboarding_path": "/integration/dunning/recovery-onboarding",
     "secret_refs": [
       "api_key",
       "client_id",

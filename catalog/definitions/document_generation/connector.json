@@ -24,7 +24,7 @@
     "audit_package"
   ],
   "config": {
-    "archive_path": "/integrations/documents/archive",
+    "archive_path": "/integration/documents/archive",
     "config_fields": [
       "default_locale",
       "default_currency",
@@ -37,15 +37,15 @@
       "signature_provider"
     ],
     "default_connection_key": "document_generation_primary",
-    "delivery_closeout_path": "/integrations/documents/delivery-closeout-plan",
-    "evidence_deepening_path": "/integrations/documents/evidence-deepening-plan",
-    "options_path": "/integrations/documents/options",
+    "delivery_closeout_path": "/integration/documents/delivery-closeout-plan",
+    "evidence_deepening_path": "/integration/documents/evidence-deepening-plan",
+    "options_path": "/integration/documents/options",
     "output_formats": [
       "pdf"
     ],
-    "pdf_archive_plan_path": "/integrations/documents/pdf-archive-plan",
-    "render_artifact_path": "/integrations/documents/render-artifact",
-    "render_path": "/integrations/documents/render",
+    "pdf_archive_plan_path": "/integration/documents/pdf-archive-plan",
+    "render_artifact_path": "/integration/documents/render-artifact",
+    "render_path": "/integration/documents/render",
     "secret_refs": [
       "signature_secret",
       "archive_signing_secret"

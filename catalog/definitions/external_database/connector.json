@@ -44,8 +44,8 @@
     "error_row_repair"
   ],
   "config": {
-    "business_semantic_profile_path": "/integrations/external-databases/business-semantic-profile",
-    "cdc_incremental_plan_path": "/integrations/external-databases/cdc-incremental-plan",
+    "business_semantic_profile_path": "/integration/external-databases/business-semantic-profile",
+    "cdc_incremental_plan_path": "/integration/external-databases/cdc-incremental-plan",
     "cdc_modes": [
       "wal",
       "binlog",
@@ -69,20 +69,20 @@
       "manual_review",
       "skip_conflicts"
     ],
-    "connection_request_path": "/integrations/external-databases/connection-request",
-    "customer_360_sync_plan_path": "/integrations/external-databases/customer-360-sync-plan",
-    "cutover_readiness_plan_path": "/integrations/external-databases/cutover-readiness-plan",
+    "connection_request_path": "/integration/external-databases/connection-request",
+    "customer_360_sync_plan_path": "/integration/external-databases/customer-360-sync-plan",
+    "cutover_readiness_plan_path": "/integration/external-databases/cutover-readiness-plan",
     "default_connection_key": "external_database_primary",
-    "error_row_path": "/integrations/external-databases/error-row",
+    "error_row_path": "/integration/external-databases/error-row",
     "mirror_modes": [
       "readonly_mirror",
       "dual_read",
       "snapshot_only",
       "cdc_incremental"
     ],
-    "options_path": "/integrations/external-databases/options",
-    "readonly_sampling_readiness_plan_path": "/integrations/external-databases/readonly-sampling-readiness-plan",
-    "schema_sampling_plan_path": "/integrations/external-databases/schema-sampling-plan",
+    "options_path": "/integration/external-databases/options",
+    "readonly_sampling_readiness_plan_path": "/integration/external-databases/readonly-sampling-readiness-plan",
+    "schema_sampling_plan_path": "/integration/external-databases/schema-sampling-plan",
     "secret_refs": [
       "username",
       "password",
@@ -90,12 +90,12 @@
       "tls_ca",
       "ssh_private_key"
     ],
-    "source_discovery_compat_path": "/integrations/external-database/source-discovery",
-    "source_discovery_path": "/integrations/external-databases/source-discovery",
-    "sync_plan_path": "/integrations/external-databases/sync-plan",
-    "sync_repair_plan_path": "/integrations/external-databases/sync-repair-plan",
-    "table_mapping_path": "/integrations/external-databases/table-mapping",
-    "takeover_plan_path": "/integrations/external-databases/takeover-plan"
+    "source_discovery_compat_path": "/integration/external-database/source-discovery",
+    "source_discovery_path": "/integration/external-databases/source-discovery",
+    "sync_plan_path": "/integration/external-databases/sync-plan",
+    "sync_repair_plan_path": "/integration/external-databases/sync-repair-plan",
+    "table_mapping_path": "/integration/external-databases/table-mapping",
+    "takeover_plan_path": "/integration/external-databases/takeover-plan"
   },
   "config_fields": [
     "provider",

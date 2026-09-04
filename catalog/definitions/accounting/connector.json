@@ -21,7 +21,7 @@
     "business_writeback"
   ],
   "config": {
-    "account_mapping_path": "/integrations/accounting/account-mapping",
+    "account_mapping_path": "/integration/accounting/account-mapping",
     "config_fields": [
       "provider",
       "company_id",
@@ -35,14 +35,14 @@
       "writeback_status_field",
       "reconciliation_workflow_key"
     ],
-    "connection_request_path": "/integrations/accounting/connection-request",
-    "customer_sync_path": "/integrations/accounting/customer-sync",
+    "connection_request_path": "/integration/accounting/connection-request",
+    "customer_sync_path": "/integration/accounting/customer-sync",
     "default_connection_key": "accounting_primary",
-    "finance_close_plan_path": "/integrations/accounting/finance-close-plan",
-    "invoice_sync_path": "/integrations/accounting/invoice-sync",
-    "journal_entry_path": "/integrations/accounting/journal-entry",
-    "options_path": "/integrations/accounting/options",
-    "reconciliation_path": "/integrations/accounting/reconciliation",
+    "finance_close_plan_path": "/integration/accounting/finance-close-plan",
+    "invoice_sync_path": "/integration/accounting/invoice-sync",
+    "journal_entry_path": "/integration/accounting/journal-entry",
+    "options_path": "/integration/accounting/options",
+    "reconciliation_path": "/integration/accounting/reconciliation",
     "regional_presets": [
       "us:quickbooks",
       "global:xero",
@@ -60,7 +60,7 @@
       "certificate",
       "webhook_secret"
     ],
-    "tax_mapping_path": "/integrations/accounting/tax-mapping"
+    "tax_mapping_path": "/integration/accounting/tax-mapping"
   },
   "config_fields": [
     "provider",

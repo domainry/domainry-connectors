@@ -47,19 +47,19 @@
       "export_requested",
       "export_template_rendered"
     ],
-    "closeout_package_path": "/integrations/import-export/import/closeout-package",
+    "closeout_package_path": "/integration/import-export/import/closeout-package",
     "default_connection_key": "import_export_default",
-    "error_rows_path": "/integrations/import-export/import/error-rows",
-    "export_request_path": "/integrations/import-export/export/request",
-    "export_template_path": "/integrations/import-export/export/template",
-    "file_sampling_plan_path": "/integrations/import-export/import/file-sampling-plan",
+    "error_rows_path": "/integration/import-export/import/error-rows",
+    "export_request_path": "/integration/import-export/export/request",
+    "export_template_path": "/integration/import-export/export/template",
+    "file_sampling_plan_path": "/integration/import-export/import/file-sampling-plan",
     "formats": [
       "csv",
       "xlsx"
     ],
-    "import_apply_path": "/integrations/import-export/import/apply",
-    "import_preview_path": "/integrations/import-export/import/preview",
-    "import_repair_plan_path": "/integrations/import-export/import/repair-plan",
+    "import_apply_path": "/integration/import-export/import/apply",
+    "import_preview_path": "/integration/import-export/import/preview",
+    "import_repair_plan_path": "/integration/import-export/import/repair-plan",
     "merge_strategies": [
       "create_only",
       "upsert",
@@ -67,8 +67,8 @@
       "skip_duplicates",
       "manual_review"
     ],
-    "options_path": "/integrations/import-export/options",
-    "post_apply_reconciliation_plan_path": "/integrations/import-export/import/post-apply-reconciliation-plan",
+    "options_path": "/integration/import-export/options",
+    "post_apply_reconciliation_plan_path": "/integration/import-export/import/post-apply-reconciliation-plan",
     "spreadsheet_onboarding_assets": [
       "columns",
       "sample_rows",
@@ -85,8 +85,8 @@
       "error_rows",
       "repair_suggestions"
     ],
-    "spreadsheet_onboarding_path": "/integrations/import-export/spreadsheet-onboarding",
-    "streaming_plan_path": "/integrations/import-export/import/streaming-plan"
+    "spreadsheet_onboarding_path": "/integration/import-export/spreadsheet-onboarding",
+    "streaming_plan_path": "/integration/import-export/import/streaming-plan"
   },
   "connection_ready": false,
   "definition_ready": true,

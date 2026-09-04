@@ -34,13 +34,13 @@
       "writeback_status_field",
       "pickup_cutoff_time"
     ],
-    "connection_request_path": "/integrations/logistics/connection-request",
+    "connection_request_path": "/integration/logistics/connection-request",
     "default_connection_key": "logistics_primary",
-    "fulfillment_exception_path": "/integrations/logistics/fulfillment-exception-plan",
-    "fulfillment_onboarding_path": "/integrations/logistics/fulfillment-onboarding",
-    "options_path": "/integrations/logistics/options",
-    "pickup_path": "/integrations/logistics/pickup",
-    "rate_quote_path": "/integrations/logistics/rate-quote",
+    "fulfillment_exception_path": "/integration/logistics/fulfillment-exception-plan",
+    "fulfillment_onboarding_path": "/integration/logistics/fulfillment-onboarding",
+    "options_path": "/integration/logistics/options",
+    "pickup_path": "/integration/logistics/pickup",
+    "rate_quote_path": "/integration/logistics/rate-quote",
     "regional_presets": [
       "us:ups",
       "us:fedex",
@@ -48,7 +48,7 @@
       "cn:sf_express",
       "ecommerce:shopify_fulfillment"
     ],
-    "route_handoff_path": "/integrations/logistics/route-handoff",
+    "route_handoff_path": "/integration/logistics/route-handoff",
     "secret_refs": [
       "api_key",
       "client_id",
@@ -58,8 +58,8 @@
       "webhook_secret",
       "private_key"
     ],
-    "shipment_label_path": "/integrations/logistics/shipment-label",
-    "tracking_path": "/integrations/logistics/tracking"
+    "shipment_label_path": "/integration/logistics/shipment-label",
+    "tracking_path": "/integration/logistics/tracking"
   },
   "config_fields": [
     "provider",

@@ -18,7 +18,7 @@
     "business_writeback"
   ],
   "config": {
-    "asset_monitoring_onboarding_path": "/integrations/iot-telemetry/asset-monitoring-onboarding",
+    "asset_monitoring_onboarding_path": "/integration/iot-telemetry/asset-monitoring-onboarding",
     "config_fields": [
       "provider",
       "endpoint_url",
@@ -30,9 +30,9 @@
       "maintenance_due_field",
       "writeback_status_field"
     ],
-    "connection_request_path": "/integrations/iot-telemetry/connection-request",
+    "connection_request_path": "/integration/iot-telemetry/connection-request",
     "default_connection_key": "iot_telemetry_primary",
-    "options_path": "/integrations/iot-telemetry/options",
+    "options_path": "/integration/iot-telemetry/options",
     "secret_refs": [
       "api_key",
       "client_id",

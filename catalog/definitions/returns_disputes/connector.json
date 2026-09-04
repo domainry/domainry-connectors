@@ -32,11 +32,11 @@
       "writeback_status_field",
       "evidence_archive_policy"
     ],
-    "connection_request_path": "/integrations/returns-disputes/connection-request",
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "connection_request_path": "/integration/returns-disputes/connection-request",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "returns_disputes_primary",
-    "options_path": "/integrations/returns-disputes/options",
-    "resolution_plan_path": "/integrations/returns-disputes/resolution-plan",
+    "options_path": "/integration/returns-disputes/options",
+    "resolution_plan_path": "/integration/returns-disputes/resolution-plan",
     "secret_refs": [
       "api_key",
       "client_id",

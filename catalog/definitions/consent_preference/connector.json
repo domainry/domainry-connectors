@@ -28,12 +28,12 @@
       "lawful_basis_field",
       "region_field"
     ],
-    "connection_request_path": "/integrations/consent-preferences/connection-request",
-    "contact_compliance_repair_path": "/integrations/consent-preferences/contact-compliance-repair",
-    "contactability_gate_plan_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "connection_request_path": "/integration/consent-preferences/connection-request",
+    "contact_compliance_repair_path": "/integration/consent-preferences/contact-compliance-repair",
+    "contactability_gate_plan_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "consent_preference_primary",
-    "options_path": "/integrations/consent-preferences/options",
-    "preference_onboarding_path": "/integrations/consent-preferences/preference-onboarding",
+    "options_path": "/integration/consent-preferences/options",
+    "preference_onboarding_path": "/integration/consent-preferences/preference-onboarding",
     "secret_refs": [
       "api_key",
       "client_id",

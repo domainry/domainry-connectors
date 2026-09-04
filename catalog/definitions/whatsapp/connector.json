@@ -36,8 +36,8 @@
     "brazil_preset"
   ],
   "config": {
-    "brazil_channel_timeline_closeout_path": "/integrations/whatsapp/brazil-channel-timeline-closeout-plan",
-    "brazil_inbound_support_path": "/integrations/whatsapp/brazil-inbound-support-plan",
+    "brazil_channel_timeline_closeout_path": "/integration/whatsapp/brazil-channel-timeline-closeout-plan",
+    "brazil_inbound_support_path": "/integration/whatsapp/brazil-inbound-support-plan",
     "channel_adapter": true,
     "channel_connection_channel": "whatsapp",
     "channel_connection_external_account_field": "external_account_id",
@@ -62,13 +62,13 @@
       "sales_support_entry",
       "contactability_policy"
     ],
-    "contact_mapping_path": "/integrations/whatsapp/contact-mapping",
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
-    "conversation_onboarding_path": "/integrations/whatsapp/conversation-onboarding",
+    "contact_mapping_path": "/integration/whatsapp/contact-mapping",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
+    "conversation_onboarding_path": "/integration/whatsapp/conversation-onboarding",
     "default_connection_key": "whatsapp_business_primary",
-    "history_media_timeline_path": "/integrations/whatsapp/history-media-timeline-plan",
-    "message_send_plan_path": "/integrations/whatsapp/message-send-plan",
-    "options_path": "/integrations/whatsapp/options",
+    "history_media_timeline_path": "/integration/whatsapp/history-media-timeline-plan",
+    "message_send_plan_path": "/integration/whatsapp/message-send-plan",
+    "options_path": "/integration/whatsapp/options",
     "regional_presets": [
       "br:whatsapp_business"
     ],
@@ -77,11 +77,11 @@
       "app_secret",
       "webhook_verify_token"
     ],
-    "send_path": "/integrations/whatsapp/send",
-    "setup_readiness_path": "/integrations/whatsapp/setup-readiness",
-    "template_send_path": "/integrations/whatsapp/template/send",
-    "webhook_events_path": "/integrations/webhooks/whatsapp/events",
-    "webhook_verify_path": "/integrations/webhooks/whatsapp"
+    "send_path": "/integration/whatsapp/send",
+    "setup_readiness_path": "/integration/whatsapp/setup-readiness",
+    "template_send_path": "/integration/whatsapp/template/send",
+    "webhook_events_path": "/integration/webhooks/whatsapp/events",
+    "webhook_verify_path": "/integration/webhooks/whatsapp"
   },
   "config_fields": [
     "phone_number_id",

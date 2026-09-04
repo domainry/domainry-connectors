@@ -44,12 +44,12 @@
       "writeback_status_field",
       "customer_notification_workflow_key"
     ],
-    "connection_request_path": "/integrations/delivery-operations/connection-request",
-    "customer_visible_fulfillment_plan_path": "/integrations/delivery-operations/customer-visible-fulfillment-plan",
+    "connection_request_path": "/integration/delivery-operations/connection-request",
+    "customer_visible_fulfillment_plan_path": "/integration/delivery-operations/customer-visible-fulfillment-plan",
     "default_connection_key": "delivery_operations_primary",
-    "options_path": "/integrations/delivery-operations/options",
-    "procurement_supplier_blocking_plan_path": "/integrations/delivery-operations/procurement-supplier-blocking-plan",
-    "representative_path_plan_path": "/integrations/delivery-operations/representative-path-plan",
+    "options_path": "/integration/delivery-operations/options",
+    "procurement_supplier_blocking_plan_path": "/integration/delivery-operations/procurement-supplier-blocking-plan",
+    "representative_path_plan_path": "/integration/delivery-operations/representative-path-plan",
     "secret_refs": [
       "api_key",
       "client_id",
@@ -69,7 +69,7 @@
       "supplier_commitments",
       "delivery_risks"
     ],
-    "status_onboarding_path": "/integrations/delivery-operations/status-onboarding",
+    "status_onboarding_path": "/integration/delivery-operations/status-onboarding",
     "target_objects": [
       "account",
       "customer",

@@ -32,10 +32,10 @@
       "default_country",
       "default_language"
     ],
-    "connection_request_path": "/integrations/store-lead-capture/connection-request",
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "connection_request_path": "/integration/store-lead-capture/connection-request",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "store_lead_capture_primary",
-    "options_path": "/integrations/store-lead-capture/options",
+    "options_path": "/integration/store-lead-capture/options",
     "secret_refs": [
       "api_key",
       "client_id",
@@ -63,7 +63,7 @@
       "task",
       "consent"
     ],
-    "visit_lead_onboarding_path": "/integrations/store-lead-capture/visit-lead-onboarding"
+    "visit_lead_onboarding_path": "/integration/store-lead-capture/visit-lead-onboarding"
   },
   "config_fields": [
     "provider",

@@ -35,7 +35,7 @@
       "reconciliation_workflow_key"
     ],
     "default_connection_key": "bank_reconciliation_primary",
-    "options_path": "/integrations/bank-reconciliation/options",
+    "options_path": "/integration/bank-reconciliation/options",
     "secret_refs": [
       "client_id",
       "client_secret",
@@ -45,7 +45,7 @@
       "certificate_ref",
       "private_key"
     ],
-    "transaction_onboarding_path": "/integrations/bank-reconciliation/transaction-onboarding"
+    "transaction_onboarding_path": "/integration/bank-reconciliation/transaction-onboarding"
   },
   "config_fields": [
     "provider",

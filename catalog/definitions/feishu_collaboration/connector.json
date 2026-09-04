@@ -29,7 +29,7 @@
       "union_id",
       "user_id"
     ],
-    "options_path": "/integrations/feishu/options",
+    "options_path": "/integration/feishu/options",
     "reply_adapter": "feishu_bot",
     "secret_refs": [
       "verification_token",
@@ -45,7 +45,7 @@
       "approvals",
       "workflow_outbox"
     ],
-    "workspace_backfill_closeout_path": "/integrations/feishu/workspace-backfill-closeout-plan",
+    "workspace_backfill_closeout_path": "/integration/feishu/workspace-backfill-closeout-plan",
     "workspace_backfill_targets": [
       "person",
       "organization",
@@ -56,7 +56,7 @@
       "document",
       "customer_timeline"
     ],
-    "workspace_sync_runtime_path": "/integrations/feishu/workspace-sync/runtime"
+    "workspace_sync_runtime_path": "/integration/feishu/workspace-sync/runtime"
   },
   "connection_ready": false,
   "definition_ready": true,

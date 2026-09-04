@@ -18,7 +18,7 @@
     "business_writeback"
   ],
   "config": {
-    "attribution_onboarding_path": "/integrations/partner-channel/attribution-onboarding",
+    "attribution_onboarding_path": "/integration/partner-channel/attribution-onboarding",
     "config_fields": [
       "provider",
       "workspace_url",
@@ -27,9 +27,9 @@
       "commission_rule_field",
       "protection_window_days"
     ],
-    "connection_request_path": "/integrations/partner-channel/connection-request",
+    "connection_request_path": "/integration/partner-channel/connection-request",
     "default_connection_key": "partner_channel_primary",
-    "options_path": "/integrations/partner-channel/options",
+    "options_path": "/integration/partner-channel/options",
     "secret_refs": [
       "api_key",
       "client_id",

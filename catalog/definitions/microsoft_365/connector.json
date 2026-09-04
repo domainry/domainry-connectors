@@ -23,10 +23,10 @@
     "external_identity"
   ],
   "config": {
-    "crm_onboarding_path": "/integrations/microsoft-365/crm-onboarding",
+    "crm_onboarding_path": "/integration/microsoft-365/crm-onboarding",
     "default_connection_key": "microsoft_365_primary",
-    "oauth_start_path": "/integrations/microsoft-365/oauth/start",
-    "options_path": "/integrations/microsoft-365/options",
+    "oauth_start_path": "/integration/microsoft-365/oauth/start",
+    "options_path": "/integration/microsoft-365/options",
     "scopes": [
       "openid",
       "email",
@@ -47,7 +47,7 @@
       "access_token",
       "refresh_token"
     ],
-    "selection_path": "/integrations/microsoft-365/selection",
+    "selection_path": "/integration/microsoft-365/selection",
     "sync_options": [
       "outlook_mail_contacts",
       "calendar",
@@ -56,7 +56,7 @@
       "groups_directory",
       "record_enrichment"
     ],
-    "workspace_backfill_closeout_path": "/integrations/microsoft-365/workspace-backfill-closeout-plan",
+    "workspace_backfill_closeout_path": "/integration/microsoft-365/workspace-backfill-closeout-plan",
     "writeback_targets": [
       "contact",
       "company",

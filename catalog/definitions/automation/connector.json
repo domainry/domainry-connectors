@@ -33,12 +33,12 @@
     "outbox_delivery"
   ],
   "config": {
-    "app_connection_path": "/integrations/automation/app-connection",
-    "auditable_ops_closeout_path": "/integrations/automation/auditable-ops-closeout-plan",
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "app_connection_path": "/integration/automation/app-connection",
+    "auditable_ops_closeout_path": "/integration/automation/auditable-ops-closeout-plan",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "automation_primary",
-    "dispatch_path": "/integrations/automation/dispatch",
-    "event_bus_path": "/integrations/automation/event-bus",
+    "dispatch_path": "/integration/automation/dispatch",
+    "event_bus_path": "/integration/automation/event-bus",
     "legacy_sources": [
       "zapier_zaps",
       "make_scenarios",
@@ -48,10 +48,10 @@
       "notification_chains",
       "approval_chains"
     ],
-    "legacy_workflow_import_path": "/integrations/automation/legacy-workflow-import-plan",
-    "marketing_journey_import_path": "/integrations/automation/marketing-journey-import-plan",
-    "migration_cutover_path": "/integrations/automation/migration-cutover-plan",
-    "options_path": "/integrations/automation/options",
+    "legacy_workflow_import_path": "/integration/automation/legacy-workflow-import-plan",
+    "marketing_journey_import_path": "/integration/automation/marketing-journey-import-plan",
+    "migration_cutover_path": "/integration/automation/migration-cutover-plan",
+    "options_path": "/integration/automation/options",
     "schedule_presets": [
       "manual",
       "hourly",
@@ -59,7 +59,7 @@
       "weekly",
       "cron"
     ],
-    "scheduler_path": "/integrations/automation/scheduler",
+    "scheduler_path": "/integration/automation/scheduler",
     "secret_refs": [
       "webhook_secret",
       "api_key",
@@ -67,7 +67,7 @@
       "basic_auth_password",
       "event_bus_credentials"
     ],
-    "subscription_path": "/integrations/automation/subscription"
+    "subscription_path": "/integration/automation/subscription"
   },
   "connection_ready": false,
   "definition_ready": true,

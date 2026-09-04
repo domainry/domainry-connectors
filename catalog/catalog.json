@@ -1,9 +1,9 @@
 {
   "contract_version": "domainry-official-connector-catalog-v2",
   "sdk": {
-    "version": "v0.1.0-dev.12",
-    "contract_version": "connector-contract-v10",
-    "contract_sha256": "46b776e062af85c4b6d39f6d8bfaab08800454a6ab52a1077aaa3eda87f2fdf6"
+    "version": "v0.1.0-dev.14",
+    "contract_version": "connector-contract-v13",
+    "contract_sha256": "74f94a917680e0d87a05b9a9c34a3142405270b5ab0ac4effb2067042b41ba66"
   },
   "providers": [
     {
@@ -1740,7 +1740,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/email/smtp",
       "package_name": "smtp",
       "constructor": "New",
-      "descriptor_sha256": "6514ab20a848355f5b1333b13c62d8eae9850fe82afdcef6e4a362af7ca0ba54",
+      "descriptor_sha256": "78b13cc86010b80c8f60d23ea48ef7f2dd360cbbba1c302a45fd3c1b3967d978",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "email_smtp_deterministic_v1",
@@ -1762,7 +1762,7 @@
         {
           "key": "send_email",
           "mode": "enqueue",
-          "contract_sha256": "ce81e72365b4f16b75a26909f2e30d8325a88ec305adb11f81d9247714c4968c"
+          "contract_sha256": "87d29625473521b5201c0110d40191aa1086fcfb75395f250b4173abbcbb274b"
         },
         {
           "key": "send_file_email",

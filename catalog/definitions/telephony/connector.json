@@ -29,7 +29,7 @@
     "data_migration_handoff"
   ],
   "config": {
-    "call_archive_closeout_path": "/integrations/telephony/call-archive-closeout-plan",
+    "call_archive_closeout_path": "/integration/telephony/call-archive-closeout-plan",
     "channel_adapter": true,
     "channel_connection_channel": "phone",
     "channel_connection_external_account_field": "external_account_id",
@@ -55,11 +55,11 @@
       "recording_archive_policy",
       "use_cases"
     ],
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "telephony_primary",
-    "identity_merge_path": "/integrations/telephony/identity-merge-plan",
-    "options_path": "/integrations/telephony/options",
-    "outbound_contact_plan_path": "/integrations/telephony/outbound-contact-plan",
+    "identity_merge_path": "/integration/telephony/identity-merge-plan",
+    "options_path": "/integration/telephony/options",
+    "outbound_contact_plan_path": "/integration/telephony/outbound-contact-plan",
     "secret_refs": [
       "account_sid",
       "auth_token",
@@ -68,8 +68,8 @@
       "webhook_secret",
       "sns_topic_arn"
     ],
-    "setup_readiness_path": "/integrations/telephony/setup-readiness",
-    "timeline_onboarding_path": "/integrations/telephony/timeline-onboarding"
+    "setup_readiness_path": "/integration/telephony/setup-readiness",
+    "timeline_onboarding_path": "/integration/telephony/timeline-onboarding"
   },
   "config_fields": [
     "provider",

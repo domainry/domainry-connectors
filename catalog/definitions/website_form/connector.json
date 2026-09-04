@@ -30,10 +30,10 @@
       "welcome_email_template_key",
       "sales_task_workflow_key"
     ],
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
     "default_connection_key": "website_form_primary",
-    "inquiry_onboarding_path": "/integrations/website-forms/inquiry-onboarding",
-    "options_path": "/integrations/website-forms/options",
+    "inquiry_onboarding_path": "/integration/website-forms/inquiry-onboarding",
+    "options_path": "/integration/website-forms/options",
     "secret_refs": [
       "api_token",
       "oauth_client_id",

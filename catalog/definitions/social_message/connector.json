@@ -45,10 +45,10 @@
       "default_owner_queue",
       "handoff_policy_key"
     ],
-    "conversation_onboarding_path": "/integrations/social-messages/conversation-onboarding",
+    "conversation_onboarding_path": "/integration/social-messages/conversation-onboarding",
     "default_connection_key": "social_message_primary",
-    "identity_merge_path": "/integrations/social-messages/identity-merge-plan",
-    "options_path": "/integrations/social-messages/options",
+    "identity_merge_path": "/integration/social-messages/identity-merge-plan",
+    "options_path": "/integration/social-messages/options",
     "secret_refs": [
       "access_token",
       "app_secret",
@@ -56,7 +56,7 @@
       "oauth_client_secret",
       "webhook_secret"
     ],
-    "setup_readiness_path": "/integrations/social-messages/setup-readiness"
+    "setup_readiness_path": "/integration/social-messages/setup-readiness"
   },
   "config_fields": [
     "provider",

@@ -32,10 +32,10 @@
       "coupon_field",
       "default_country"
     ],
-    "connection_request_path": "/integrations/pos-loyalty/connection-request",
+    "connection_request_path": "/integration/pos-loyalty/connection-request",
     "default_connection_key": "pos_loyalty_primary",
-    "lifecycle_onboarding_path": "/integrations/pos-loyalty/lifecycle-onboarding",
-    "options_path": "/integrations/pos-loyalty/options",
+    "lifecycle_onboarding_path": "/integration/pos-loyalty/lifecycle-onboarding",
+    "options_path": "/integration/pos-loyalty/options",
     "secret_refs": [
       "api_key",
       "client_id",

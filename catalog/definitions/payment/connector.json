@@ -50,8 +50,8 @@
     "data_migration_handoff"
   ],
   "config": {
-    "checkout_session_path": "/integrations/payments/checkout-session",
-    "collection_follow_up_path": "/integrations/payments/collection-follow-up-plan",
+    "checkout_session_path": "/integration/payments/checkout-session",
+    "collection_follow_up_path": "/integration/payments/collection-follow-up-plan",
     "config_fields": [
       "provider",
       "currency",
@@ -64,19 +64,19 @@
       "status_apply_policy",
       "approval_required_statuses"
     ],
-    "connection_onboarding_path": "/integrations/payments/connection-onboarding",
-    "customer_import_path": "/integrations/payments/customer-import",
-    "customer_success_loop_path": "/integrations/payments/customer-success-loop",
+    "connection_onboarding_path": "/integration/payments/connection-onboarding",
+    "customer_import_path": "/integration/payments/customer-import",
+    "customer_success_loop_path": "/integration/payments/customer-success-loop",
     "default_connection_key": "payment_primary",
-    "link_path": "/integrations/payments/link",
-    "live_provider_closeout_path": "/integrations/payments/live-provider-closeout-plan",
-    "local_method_routing_path": "/integrations/payments/local-method-routing-plan",
-    "options_path": "/integrations/payments/options",
-    "provider_adapter_readiness_path": "/integrations/payments/provider-adapter-readiness",
-    "real_adapter_plan_path": "/integrations/payments/real-adapter-plan",
-    "real_loop_rehearsal_path": "/integrations/payments/real-loop-rehearsal",
-    "refund_path": "/integrations/payments/refund",
-    "regional_payment_onboarding_path": "/integrations/payments/regional-payment-onboarding",
+    "link_path": "/integration/payments/link",
+    "live_provider_closeout_path": "/integration/payments/live-provider-closeout-plan",
+    "local_method_routing_path": "/integration/payments/local-method-routing-plan",
+    "options_path": "/integration/payments/options",
+    "provider_adapter_readiness_path": "/integration/payments/provider-adapter-readiness",
+    "real_adapter_plan_path": "/integration/payments/real-adapter-plan",
+    "real_loop_rehearsal_path": "/integration/payments/real-loop-rehearsal",
+    "refund_path": "/integration/payments/refund",
+    "regional_payment_onboarding_path": "/integration/payments/regional-payment-onboarding",
     "secret_refs": [
       "api_key",
       "client_id",
@@ -85,11 +85,11 @@
       "merchant_private_key",
       "platform_public_key"
     ],
-    "status_apply_plan_path": "/integrations/payments/status-apply-plan",
-    "subscription_revenue_path": "/integrations/payments/subscription-revenue-onboarding",
-    "webhook_verified_writeback_path": "/integrations/payments/webhook-verified-writeback-plan",
-    "worker_executor_apply_path": "/integrations/payments/worker-executor/apply",
-    "worker_executor_binding_plan_path": "/integrations/payments/worker-executor-binding-plan"
+    "status_apply_plan_path": "/integration/payments/status-apply-plan",
+    "subscription_revenue_path": "/integration/payments/subscription-revenue-onboarding",
+    "webhook_verified_writeback_path": "/integration/payments/webhook-verified-writeback-plan",
+    "worker_executor_apply_path": "/integration/payments/worker-executor/apply",
+    "worker_executor_binding_plan_path": "/integration/payments/worker-executor-binding-plan"
   },
   "config_fields": [
     "provider",

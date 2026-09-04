@@ -29,20 +29,20 @@
       "circuit_failure_threshold",
       "circuit_cooldown_seconds"
     ],
-    "connection_request_path": "/integrations/webhooks/connection-request",
-    "dead_letter_alert_path": "/integrations/webhooks/dead-letter-alert-plan",
+    "connection_request_path": "/integration/webhooks/connection-request",
+    "dead_letter_alert_path": "/integration/webhooks/dead-letter-alert-plan",
     "default_connection_key": "webhook_primary",
-    "delivery_diagnostic_compat_path": "/integrations/webhooks/delivery-diagnostic",
-    "delivery_diagnostic_path": "/integrations/webhooks/delivery-diagnostic-plan",
-    "options_path": "/integrations/webhooks/options",
-    "retry_policy_path": "/integrations/webhooks/retry-policy",
+    "delivery_diagnostic_compat_path": "/integration/webhooks/delivery-diagnostic",
+    "delivery_diagnostic_path": "/integration/webhooks/delivery-diagnostic-plan",
+    "options_path": "/integration/webhooks/options",
+    "retry_policy_path": "/integration/webhooks/retry-policy",
     "secret_refs": [
       "webhook_secret",
       "signing_secret",
       "bearer_token",
       "basic_auth_password"
     ],
-    "signature_preview_path": "/integrations/webhooks/signature-preview"
+    "signature_preview_path": "/integration/webhooks/signature-preview"
   },
   "config_fields": [
     "url",

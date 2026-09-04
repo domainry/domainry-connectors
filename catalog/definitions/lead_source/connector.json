@@ -50,18 +50,18 @@
       "campaign_field"
     ],
     "default_connection_key": "lead_source_primary",
-    "distribution_plan_path": "/integrations/lead-sources/distribution-plan",
-    "first_response_workflow_path": "/integrations/lead-sources/first-response-workflow",
-    "lead_onboarding_path": "/integrations/lead-sources/lead-onboarding",
-    "options_path": "/integrations/lead-sources/options",
-    "routing_plan_path": "/integrations/lead-sources/routing-plan",
+    "distribution_plan_path": "/integration/lead-sources/distribution-plan",
+    "first_response_workflow_path": "/integration/lead-sources/first-response-workflow",
+    "lead_onboarding_path": "/integration/lead-sources/lead-onboarding",
+    "options_path": "/integration/lead-sources/options",
+    "routing_plan_path": "/integration/lead-sources/routing-plan",
     "secret_refs": [
       "api_token",
       "oauth_client_id",
       "oauth_client_secret",
       "webhook_secret"
     ],
-    "webhook_intake_path": "/integrations/lead-sources/webhook-intake"
+    "webhook_intake_path": "/integration/lead-sources/webhook-intake"
   },
   "config_fields": [
     "provider",

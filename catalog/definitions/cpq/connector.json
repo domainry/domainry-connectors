@@ -30,8 +30,8 @@
       "renewal_date_field"
     ],
     "default_connection_key": "cpq_primary",
-    "options_path": "/integrations/cpq/options",
-    "quote_onboarding_path": "/integrations/cpq/quote-onboarding",
+    "options_path": "/integration/cpq/options",
+    "quote_onboarding_path": "/integration/cpq/quote-onboarding",
     "secret_refs": [
       "api_token",
       "oauth_client_id",

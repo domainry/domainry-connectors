@@ -30,10 +30,10 @@
       "severity_field",
       "writeback_status_field"
     ],
-    "connection_request_path": "/integrations/incident-sla/connection-request",
+    "connection_request_path": "/integration/incident-sla/connection-request",
     "default_connection_key": "incident_sla_primary",
-    "escalation_onboarding_path": "/integrations/incident-sla/escalation-onboarding",
-    "options_path": "/integrations/incident-sla/options",
+    "escalation_onboarding_path": "/integration/incident-sla/escalation-onboarding",
+    "options_path": "/integration/incident-sla/options",
     "secret_refs": [
       "api_key",
       "client_id",

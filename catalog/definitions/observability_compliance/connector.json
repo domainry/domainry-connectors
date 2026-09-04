@@ -20,8 +20,8 @@
     "dlp_scan"
   ],
   "config": {
-    "audit_evidence_package_path": "/integrations/observability-compliance/audit-sink-plan",
-    "audit_sink_path": "/integrations/compliance/audit-sink",
+    "audit_evidence_package_path": "/integration/observability-compliance/audit-sink-plan",
+    "audit_sink_path": "/integration/compliance/audit-sink",
     "compliance_capabilities": [
       "gdpr_export",
       "gdpr_delete",
@@ -35,16 +35,16 @@
       "dlp_scan"
     ],
     "default_connection_key": "observability_compliance_primary",
-    "dlp_scan_path": "/integrations/compliance/dlp-scan",
-    "error_event_path": "/integrations/observability/error",
-    "gdpr_request_path": "/integrations/compliance/gdpr-request",
-    "log_sink_path": "/integrations/observability/log-sink",
-    "metrics_path": "/integrations/observability/metrics",
-    "observability_audit_sink_path": "/integrations/observability/audit-sink",
-    "options_path": "/integrations/observability-compliance/options",
-    "privacy_evidence_package_closeout_path": "/integrations/privacy/evidence-package-closeout",
-    "privacy_evidence_package_path": "/integrations/compliance/privacy-request/evidence-package-plan",
-    "privacy_request_path": "/integrations/compliance/privacy-request/fulfillment-plan",
+    "dlp_scan_path": "/integration/compliance/dlp-scan",
+    "error_event_path": "/integration/observability/error",
+    "gdpr_request_path": "/integration/compliance/gdpr-request",
+    "log_sink_path": "/integration/observability/log-sink",
+    "metrics_path": "/integration/observability/metrics",
+    "observability_audit_sink_path": "/integration/observability/audit-sink",
+    "options_path": "/integration/observability-compliance/options",
+    "privacy_evidence_package_closeout_path": "/integration/privacy/evidence-package-closeout",
+    "privacy_evidence_package_path": "/integration/compliance/privacy-request/evidence-package-plan",
+    "privacy_request_path": "/integration/compliance/privacy-request/fulfillment-plan",
     "secret_refs": [
       "dsn",
       "api_key",

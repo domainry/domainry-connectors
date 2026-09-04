@@ -39,7 +39,7 @@
     "knowledge_gap_handoff"
   ],
   "config": {
-    "chatbot_history_onboarding_path": "/integrations/support/chatbot-history-onboarding",
+    "chatbot_history_onboarding_path": "/integration/support/chatbot-history-onboarding",
     "config_fields": [
       "provider",
       "subdomain",
@@ -49,13 +49,13 @@
       "health_score_field",
       "sla_policy_key"
     ],
-    "contactability_gate_handoff_path": "/integrations/consent-preferences/contactability-gate-plan",
-    "customer_health_onboarding_path": "/integrations/support/customer-health-onboarding",
+    "contactability_gate_handoff_path": "/integration/consent-preferences/contactability-gate-plan",
+    "customer_health_onboarding_path": "/integration/support/customer-health-onboarding",
     "default_connection_key": "support_primary",
-    "escalation_executor_plan_path": "/integrations/support/escalation-executor-plan",
-    "health_followup_plan_path": "/integrations/support/health-followup-plan",
-    "live_channel_closeout_plan_path": "/integrations/support/live-channel-closeout-plan",
-    "options_path": "/integrations/support/options",
+    "escalation_executor_plan_path": "/integration/support/escalation-executor-plan",
+    "health_followup_plan_path": "/integration/support/health-followup-plan",
+    "live_channel_closeout_plan_path": "/integration/support/live-channel-closeout-plan",
+    "options_path": "/integration/support/options",
     "secret_refs": [
       "api_token",
       "oauth_client_id",
