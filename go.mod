@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/SherClockHolmes/webpush-go v1.4.0
-	github.com/domainry/domainry-connector-sdk v0.1.0-dev.13
+	github.com/domainry/domainry-connector-sdk v0.1.0-dev.14
 	github.com/go-sql-driver/mysql v1.10.0
 )
 
