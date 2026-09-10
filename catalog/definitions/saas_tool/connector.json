@@ -1,0 +1,570 @@
+{
+  "key": "saas_tool",
+  "type": "connector",
+  "provider": "saas",
+  "version": "1.0.0",
+  "minimum_runtime_version": "0.1.12",
+  "source": "connectors:saas_tool",
+  "classification": "external_connector",
+  "lifecycle_status": "active",
+  "name": "SaaS tools",
+  "description": "Execute explicitly mapped, version-pinned SaaS tools through Composio with Runtime-owned authorization and delivery.",
+  "i18n": {
+    "en-US": {
+      "name": "SaaS tools",
+      "description": "Execute explicitly mapped, version-pinned SaaS tools through Composio with Runtime-owned authorization and delivery."
+    },
+    "zh-CN": {
+      "name": "SaaS 工具",
+      "description": "通过 Composio 调用显式映射且固定版本的 SaaS 工具，由 Runtime 管理权限和投递。"
+    }
+  },
+  "feature_flags": [
+    "connection_test",
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ],
+  "capabilities": [
+    "saas_tools",
+    "connected_account_check",
+    "durable_delivery"
+  ],
+  "definition_ready": true,
+  "adapter_ready": true,
+  "connection_ready": false,
+  "readiness": "adapter_available",
+  "config_fields": [
+    "base_url",
+    "connected_account_id",
+    "user_id",
+    "toolkit",
+    "tools",
+    "timeout_seconds"
+  ],
+  "secret_refs": [
+    "api_key"
+  ],
+  "providers": [
+    {
+      "key": "composio",
+      "provider_revision": "1.0.0",
+      "name": "Composio",
+      "description": "Composio v3.1 tools and connected accounts.",
+      "i18n": {
+        "en-US": {
+          "name": "Composio",
+          "description": "Composio v3.1 tools and connected accounts."
+        },
+        "zh-CN": {
+          "name": "Composio",
+          "description": "Composio v3.1 工具与账号连接。"
+        }
+      },
+      "config_fields": [
+        {
+          "key": "base_url",
+          "type": "text",
+          "required": false,
+          "name": "Composio service origin",
+          "description": "Composio service origin",
+          "i18n": {
+            "en-US": {
+              "name": "Composio service origin",
+              "description": "Composio service origin"
+            },
+            "zh-CN": {
+              "name": "Composio 服务地址",
+              "description": "Composio 服务地址"
+            }
+          },
+          "default": "https://backend.composio.dev",
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "key": "connected_account_id",
+          "type": "text",
+          "required": true,
+          "name": "Connected account ID",
+          "description": "Connected account ID",
+          "i18n": {
+            "en-US": {
+              "name": "Connected account ID",
+              "description": "Connected account ID"
+            },
+            "zh-CN": {
+              "name": "已连接账号 ID",
+              "description": "已连接账号 ID"
+            }
+          },
+          "validation": {
+            "max_length": 256
+          }
+        },
+        {
+          "key": "user_id",
+          "type": "text",
+          "required": true,
+          "name": "Composio account owner ID",
+          "description": "Composio account owner ID",
+          "i18n": {
+            "en-US": {
+              "name": "Composio account owner ID",
+              "description": "Composio account owner ID"
+            },
+            "zh-CN": {
+              "name": "Composio 账号所有者 ID",
+              "description": "Composio 账号所有者 ID"
+            }
+          },
+          "validation": {
+            "max_length": 256
+          }
+        },
+        {
+          "key": "toolkit",
+          "type": "text",
+          "required": true,
+          "name": "Toolkit slug",
+          "description": "Toolkit slug",
+          "i18n": {
+            "en-US": {
+              "name": "Toolkit slug",
+              "description": "Toolkit slug"
+            },
+            "zh-CN": {
+              "name": "应用标识",
+              "description": "应用标识"
+            }
+          },
+          "validation": {
+            "max_length": 64
+          }
+        },
+        {
+          "key": "tools",
+          "type": "json",
+          "required": true,
+          "name": "Allowed tool mappings",
+          "description": "Allowed tool mappings",
+          "i18n": {
+            "en-US": {
+              "name": "Allowed tool mappings",
+              "description": "Allowed tool mappings"
+            },
+            "zh-CN": {
+              "name": "允许的工具映射",
+              "description": "允许的工具映射"
+            }
+          },
+          "config": {
+            "json_shape": "object"
+          }
+        },
+        {
+          "key": "timeout_seconds",
+          "type": "integer",
+          "required": false,
+          "name": "Total timeout seconds",
+          "description": "Total timeout seconds",
+          "i18n": {
+            "en-US": {
+              "name": "Total timeout seconds",
+              "description": "Total timeout seconds"
+            },
+            "zh-CN": {
+              "name": "总超时秒数",
+              "description": "总超时秒数"
+            }
+          },
+          "default": 60,
+          "validation": {
+            "min": 1,
+            "max": 300
+          }
+        }
+      ],
+      "secret_fields": [
+        {
+          "key": "api_key",
+          "type": "text",
+          "required": true,
+          "name": "Composio project API key",
+          "description": "Composio project API key",
+          "i18n": {
+            "en-US": {
+              "name": "Composio project API key",
+              "description": "Composio project API key"
+            },
+            "zh-CN": {
+              "name": "Composio 项目 API Key",
+              "description": "Composio 项目 API Key"
+            }
+          },
+          "config": {
+            "sensitive": true,
+            "write_only": true,
+            "credential_kind": "api_key",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "expiry_policy": "optional",
+            "test_requirement": "when_bound"
+          }
+        }
+      ],
+      "operation_keys": [
+        "enqueue_tool",
+        "query_tool",
+        "start_tool",
+        "test_connection"
+      ],
+      "readiness": "provider_available"
+    }
+  ],
+  "operations": [
+    {
+      "key": "enqueue_tool",
+      "name": "Enqueue a mapped write tool",
+      "description": "Enqueue a mapped write tool",
+      "i18n": {
+        "en-US": {
+          "name": "Enqueue a mapped write tool",
+          "description": "Enqueue a mapped write tool"
+        },
+        "zh-CN": {
+          "name": "持久化投递写工具",
+          "description": "持久化投递写工具"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "async",
+      "side_effect": "write",
+      "timeout_default_seconds": 60,
+      "timeout_max_seconds": 300,
+      "idempotency_supported": false,
+      "test_supported": true,
+      "input": [
+        {
+          "key": "tool_key",
+          "type": "text",
+          "required": true,
+          "name": "Configured tool alias",
+          "description": "Configured tool alias",
+          "i18n": {
+            "en-US": {
+              "name": "Configured tool alias",
+              "description": "Configured tool alias"
+            },
+            "zh-CN": {
+              "name": "已配置的工具别名",
+              "description": "已配置的工具别名"
+            }
+          },
+          "validation": {
+            "max_length": 64
+          }
+        },
+        {
+          "key": "arguments",
+          "type": "json",
+          "required": false,
+          "name": "Structured tool arguments",
+          "description": "Structured tool arguments",
+          "i18n": {
+            "en-US": {
+              "name": "Structured tool arguments",
+              "description": "Structured tool arguments"
+            },
+            "zh-CN": {
+              "name": "工具结构化参数",
+              "description": "工具结构化参数"
+            }
+          },
+          "config": {
+            "json_shape": "object"
+          }
+        }
+      ],
+      "output": []
+    },
+    {
+      "key": "query_tool",
+      "name": "Query a mapped read tool",
+      "description": "Query a mapped read tool",
+      "i18n": {
+        "en-US": {
+          "name": "Query a mapped read tool",
+          "description": "Query a mapped read tool"
+        },
+        "zh-CN": {
+          "name": "调用只读工具",
+          "description": "调用只读工具"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 60,
+      "timeout_max_seconds": 300,
+      "idempotency_supported": true,
+      "test_supported": true,
+      "input": [
+        {
+          "key": "tool_key",
+          "type": "text",
+          "required": true,
+          "name": "Configured tool alias",
+          "description": "Configured tool alias",
+          "i18n": {
+            "en-US": {
+              "name": "Configured tool alias",
+              "description": "Configured tool alias"
+            },
+            "zh-CN": {
+              "name": "已配置的工具别名",
+              "description": "已配置的工具别名"
+            }
+          },
+          "validation": {
+            "max_length": 64
+          }
+        },
+        {
+          "key": "arguments",
+          "type": "json",
+          "required": false,
+          "name": "Structured tool arguments",
+          "description": "Structured tool arguments",
+          "i18n": {
+            "en-US": {
+              "name": "Structured tool arguments",
+              "description": "Structured tool arguments"
+            },
+            "zh-CN": {
+              "name": "工具结构化参数",
+              "description": "工具结构化参数"
+            }
+          },
+          "config": {
+            "json_shape": "object"
+          }
+        }
+      ],
+      "output": [
+        {
+          "key": "data",
+          "type": "json",
+          "required": false,
+          "name": "Upstream result",
+          "description": "Upstream result",
+          "i18n": {
+            "en-US": {
+              "name": "Upstream result",
+              "description": "Upstream result"
+            },
+            "zh-CN": {
+              "name": "上游执行结果",
+              "description": "上游执行结果"
+            }
+          }
+        },
+        {
+          "key": "log_id",
+          "type": "text",
+          "required": true,
+          "name": "Composio execution log ID",
+          "description": "Composio execution log ID",
+          "i18n": {
+            "en-US": {
+              "name": "Composio execution log ID",
+              "description": "Composio execution log ID"
+            },
+            "zh-CN": {
+              "name": "Composio 执行日志 ID",
+              "description": "Composio 执行日志 ID"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "start_tool",
+      "name": "Start a mapped write operation",
+      "description": "Start a durable write operation and return the Runtime operation ID.",
+      "i18n": {
+        "en-US": {
+          "name": "Start a mapped write operation",
+          "description": "Start a durable write operation and return the Runtime operation ID."
+        },
+        "zh-CN": {
+          "name": "启动写工具操作",
+          "description": "启动持久化写操作并返回 Runtime 操作 ID。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "operation",
+      "side_effect": "write",
+      "timeout_default_seconds": 60,
+      "timeout_max_seconds": 300,
+      "idempotency_supported": false,
+      "test_supported": true,
+      "input": [
+        {
+          "key": "tool_key",
+          "type": "text",
+          "required": true,
+          "name": "Configured tool alias",
+          "description": "Configured tool alias",
+          "i18n": {
+            "en-US": {
+              "name": "Configured tool alias",
+              "description": "Configured tool alias"
+            },
+            "zh-CN": {
+              "name": "已配置的工具别名",
+              "description": "已配置的工具别名"
+            }
+          },
+          "validation": {
+            "max_length": 64
+          }
+        },
+        {
+          "key": "arguments",
+          "type": "json",
+          "required": false,
+          "name": "Structured tool arguments",
+          "description": "Structured tool arguments",
+          "i18n": {
+            "en-US": {
+              "name": "Structured tool arguments",
+              "description": "Structured tool arguments"
+            },
+            "zh-CN": {
+              "name": "工具结构化参数",
+              "description": "工具结构化参数"
+            }
+          },
+          "config": {
+            "json_shape": "object"
+          }
+        }
+      ],
+      "output": [
+        {
+          "key": "operation_id",
+          "name": "Operation ID",
+          "description": "Runtime durable operation ID.",
+          "type": "text",
+          "required": true,
+          "i18n": {
+            "en-US": {
+              "name": "Operation ID",
+              "description": "Runtime durable operation ID."
+            },
+            "zh-CN": {
+              "name": "操作 ID",
+              "description": "Runtime 持久化操作 ID。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "test_connection",
+      "name": "Check the connected account",
+      "description": "Check the connected account",
+      "i18n": {
+        "en-US": {
+          "name": "Check the connected account",
+          "description": "Check the connected account"
+        },
+        "zh-CN": {
+          "name": "检查已连接账号",
+          "description": "检查已连接账号"
+        }
+      },
+      "method": "GET",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 60,
+      "timeout_max_seconds": 300,
+      "idempotency_supported": true,
+      "test_supported": true,
+      "input": [],
+      "output": [
+        {
+          "key": "connected",
+          "type": "boolean",
+          "required": true,
+          "name": "Connected",
+          "description": "Connected",
+          "i18n": {
+            "en-US": {
+              "name": "Connected",
+              "description": "Connected"
+            },
+            "zh-CN": {
+              "name": "连接正常",
+              "description": "连接正常"
+            }
+          }
+        },
+        {
+          "key": "connected_account_id",
+          "type": "text",
+          "required": true,
+          "name": "Connected account ID",
+          "description": "Connected account ID",
+          "i18n": {
+            "en-US": {
+              "name": "Connected account ID",
+              "description": "Connected account ID"
+            },
+            "zh-CN": {
+              "name": "已连接账号 ID",
+              "description": "已连接账号 ID"
+            }
+          }
+        },
+        {
+          "key": "user_id",
+          "type": "text",
+          "required": true,
+          "name": "Account owner ID",
+          "description": "Account owner ID",
+          "i18n": {
+            "en-US": {
+              "name": "Account owner ID",
+              "description": "Account owner ID"
+            },
+            "zh-CN": {
+              "name": "账号所有者 ID",
+              "description": "账号所有者 ID"
+            }
+          }
+        },
+        {
+          "key": "toolkit",
+          "type": "text",
+          "required": true,
+          "name": "Toolkit slug",
+          "description": "Toolkit slug",
+          "i18n": {
+            "en-US": {
+              "name": "Toolkit slug",
+              "description": "Toolkit slug"
+            },
+            "zh-CN": {
+              "name": "应用标识",
+              "description": "应用标识"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

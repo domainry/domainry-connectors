@@ -1,0 +1,312 @@
+{
+  "key": "expense_ocr",
+  "type": "expense_ocr",
+  "provider": "expense_ocr",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "source": "connectors:expense_ocr",
+  "classification": "external_connector",
+  "lifecycle_status": "active",
+  "name": "Expense OCR",
+  "description": "Extract structured receipt and expense data through the llm-proxy Google Expense Parser API.",
+  "i18n": {
+    "en-US": {
+      "name": "Expense OCR",
+      "description": "Extract structured receipt and expense data through the llm-proxy Google Expense Parser API."
+    },
+    "zh-CN": {
+      "name": "票据 OCR",
+      "description": "通过 llm-proxy 的 Google Expense Parser 接口识别票据全文和结构化费用数据。"
+    }
+  },
+  "feature_flags": [
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ],
+  "capabilities": [
+    "expense_parsing",
+    "document_text",
+    "structured_entities"
+  ],
+  "definition_ready": true,
+  "adapter_ready": true,
+  "connection_ready": false,
+  "readiness": "adapter_available",
+  "config_fields": [
+    "base_url",
+    "timeout_seconds"
+  ],
+  "secret_refs": [
+    "api_token"
+  ],
+  "providers": [
+    {
+      "key": "llm_proxy",
+      "provider_revision": "1.0.0",
+      "name": "llm-proxy",
+      "description": "Authenticated POST /llm/expense/parse; Google processor and credentials remain server-owned.",
+      "i18n": {
+        "en-US": {
+          "name": "llm-proxy",
+          "description": "Authenticated POST /llm/expense/parse; Google processor and credentials remain server-owned."
+        },
+        "zh-CN": {
+          "name": "llm-proxy",
+          "description": "鉴权调用 POST /llm/expense/parse；Google Processor 与凭据由上游服务配置。"
+        }
+      },
+      "config_fields": [
+        {
+          "key": "base_url",
+          "type": "text",
+          "name": "llm-proxy origin",
+          "description": "Service origin without /llm/expense/parse; HTTPS or loopback HTTP.",
+          "i18n": {
+            "en-US": {
+              "name": "llm-proxy origin",
+              "description": "Service origin without /llm/expense/parse; HTTPS or loopback HTTP."
+            },
+            "zh-CN": {
+              "name": "llm-proxy 服务地址",
+              "description": "仅填写服务源地址，不含 /llm/expense/parse；支持 HTTPS 或本机 HTTP。"
+            }
+          },
+          "required": true,
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "key": "timeout_seconds",
+          "type": "integer",
+          "name": "Timeout seconds",
+          "description": "Total request timeout; respects an earlier Runtime deadline.",
+          "i18n": {
+            "en-US": {
+              "name": "Timeout seconds",
+              "description": "Total request timeout; respects an earlier Runtime deadline."
+            },
+            "zh-CN": {
+              "name": "超时秒数",
+              "description": "请求总超时；同时服从 Runtime 更早的截止时间。"
+            }
+          },
+          "required": false,
+          "default": 90,
+          "validation": {
+            "min": 1,
+            "max": 300
+          }
+        }
+      ],
+      "secret_fields": [
+        {
+          "key": "api_token",
+          "type": "text",
+          "name": "llm-proxy API key or access token",
+          "description": "Raw Passport API key or access token; sent in a Runtime-injected Bearer header.",
+          "i18n": {
+            "en-US": {
+              "name": "llm-proxy API key or access token",
+              "description": "Raw Passport API key or access token; sent in a Runtime-injected Bearer header."
+            },
+            "zh-CN": {
+              "name": "llm-proxy API Key 或访问令牌",
+              "description": "填写原始 Passport API Key 或访问令牌，由 Runtime 注入 Bearer 请求头。"
+            }
+          },
+          "required": true,
+          "config": {
+            "sensitive": true,
+            "write_only": true,
+            "credential_kind": "bearer_token",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "expiry_policy": "optional",
+            "test_requirement": "optional"
+          }
+        }
+      ],
+      "operation_keys": [
+        "parse_expense"
+      ],
+      "readiness": "provider_available"
+    }
+  ],
+  "operations": [
+    {
+      "key": "parse_expense",
+      "name": "Parse expense",
+      "description": "Synchronous billable document recognition; timeout outcomes are uncertain and correlation IDs do not authorize replay.",
+      "i18n": {
+        "en-US": {
+          "name": "Parse expense",
+          "description": "Synchronous billable document recognition; timeout outcomes are uncertain and correlation IDs do not authorize replay."
+        },
+        "zh-CN": {
+          "name": "识别票据",
+          "description": "同步调用可能计费；超时结果不确定，关联标识不提供重试幂等性。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "write",
+      "timeout_default_seconds": 90,
+      "timeout_max_seconds": 300,
+      "idempotency_supported": false,
+      "test_supported": true,
+      "input": [
+        {
+          "key": "document",
+          "type": "text",
+          "name": "Document",
+          "description": "Standard base64 or matching data URL; decoded document at most 20 MiB.",
+          "i18n": {
+            "en-US": {
+              "name": "Document",
+              "description": "Standard base64 or matching data URL; decoded document at most 20 MiB."
+            },
+            "zh-CN": {
+              "name": "待识别文档",
+              "description": "标准 Base64 或 MIME 一致的 data URL；解码后最大 20 MiB。"
+            }
+          },
+          "required": true,
+          "validation": {
+            "max_length": 30408704
+          }
+        },
+        {
+          "key": "mime_type",
+          "type": "text",
+          "name": "MIME type",
+          "description": "PDF, TIFF, JPEG, PNG, BMP, GIF or WebP; must match the file signature.",
+          "i18n": {
+            "en-US": {
+              "name": "MIME type",
+              "description": "PDF, TIFF, JPEG, PNG, BMP, GIF or WebP; must match the file signature."
+            },
+            "zh-CN": {
+              "name": "文件 MIME 类型",
+              "description": "支持 PDF、TIFF、JPEG、PNG、BMP、GIF、WebP，须与文件签名一致。"
+            }
+          },
+          "required": true,
+          "validation": {
+            "max_length": 32,
+            "options": [
+              "application/pdf",
+              "image/tiff",
+              "image/jpeg",
+              "image/png",
+              "image/bmp",
+              "image/gif",
+              "image/webp"
+            ]
+          }
+        },
+        {
+          "key": "session_id",
+          "type": "text",
+          "name": "Session ID",
+          "description": "Optional upstream correlation identifier; not an idempotency key.",
+          "i18n": {
+            "en-US": {
+              "name": "Session ID",
+              "description": "Optional upstream correlation identifier; not an idempotency key."
+            },
+            "zh-CN": {
+              "name": "会话 ID",
+              "description": "可选上游关联标识，不提供幂等保证。"
+            }
+          },
+          "required": false,
+          "validation": {
+            "max_length": 256
+          }
+        },
+        {
+          "key": "conv_id",
+          "type": "text",
+          "name": "Conversation ID",
+          "description": "Optional upstream correlation identifier; not an idempotency key.",
+          "i18n": {
+            "en-US": {
+              "name": "Conversation ID",
+              "description": "Optional upstream correlation identifier; not an idempotency key."
+            },
+            "zh-CN": {
+              "name": "对话 ID",
+              "description": "可选上游关联标识，不提供幂等保证。"
+            }
+          },
+          "required": false,
+          "validation": {
+            "max_length": 256
+          }
+        },
+        {
+          "key": "react_id",
+          "type": "text",
+          "name": "Reaction ID",
+          "description": "Optional upstream correlation identifier; not an idempotency key.",
+          "i18n": {
+            "en-US": {
+              "name": "Reaction ID",
+              "description": "Optional upstream correlation identifier; not an idempotency key."
+            },
+            "zh-CN": {
+              "name": "交互 ID",
+              "description": "可选上游关联标识，不提供幂等保证。"
+            }
+          },
+          "required": false,
+          "validation": {
+            "max_length": 256
+          }
+        }
+      ],
+      "output": [
+        {
+          "key": "text",
+          "type": "text",
+          "name": "Recognized text",
+          "description": "Full recognized document text; an empty string is valid.",
+          "i18n": {
+            "en-US": {
+              "name": "Recognized text",
+              "description": "Full recognized document text; an empty string is valid."
+            },
+            "zh-CN": {
+              "name": "识别全文",
+              "description": "完整识别文本，允许为空字符串。"
+            }
+          },
+          "required": true
+        },
+        {
+          "key": "entities",
+          "type": "json",
+          "name": "Expense entities",
+          "description": "Recursive entities with confidence, zero-based page references and lossless normalized values.",
+          "i18n": {
+            "en-US": {
+              "name": "Expense entities",
+              "description": "Recursive entities with confidence, zero-based page references and lossless normalized values."
+            },
+            "zh-CN": {
+              "name": "票据实体",
+              "description": "递归实体、置信度、从零开始的页码及保留精度的标准化值。"
+            }
+          },
+          "required": true,
+          "config": {
+            "json_shape": "array"
+          }
+        }
+      ]
+    }
+  ]
+}

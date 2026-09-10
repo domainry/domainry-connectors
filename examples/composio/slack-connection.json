@@ -1,0 +1,28 @@
+{
+  "key": "slack_tools",
+  "workspace_id": "workspace_1",
+  "connector_key": "saas_tool",
+  "provider_key": "composio",
+  "config": {
+    "base_url": "https://backend.composio.dev",
+    "connected_account_id": "ca_REPLACE_WITH_ACCOUNT_ID",
+    "user_id": "workspace_1:owner_1",
+    "toolkit": "slack",
+    "timeout_seconds": 60,
+    "tools": {
+      "search_messages": {
+        "slug": "SLACK_SEARCH_MESSAGES",
+        "version": "20260826_00",
+        "effect": "read"
+      },
+      "send_message": {
+        "slug": "SLACK_SEND_MESSAGE",
+        "version": "20260826_00",
+        "effect": "write"
+      }
+    }
+  },
+  "secret_refs": {
+    "api_key": "REPLACE_WITH_DOMAINRY_SECRET_REFERENCE"
+  }
+}

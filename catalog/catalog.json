@@ -2062,6 +2062,39 @@
       ]
     },
     {
+      "connector_key": "expense_ocr",
+      "provider_key": "llm_proxy",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/expense_ocr/llm_proxy",
+      "package_name": "llmproxy",
+      "constructor": "New",
+      "descriptor_sha256": "c99acf2edccba1fe583d258b57cffa70b0f5d6e8b9b7b67b5f56a96a04d0d4f6",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "expense_ocr_llm_proxy_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "646964d73e3ef0f4ce8a3676dfd9f01084f9cc3a9883a6150fe15a2fb0310e6f",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/expense_ocr/llm_proxy",
+        "isolated_profile": "expense_ocr_llm_proxy_isolated_v1",
+        "isolated_command": "go test ./providers/expense_ocr/llm_proxy"
+      },
+      "operations": [
+        {
+          "key": "parse_expense",
+          "mode": "call",
+          "contract_sha256": "89bef2cb4a352bc78376493d7cf182aaf313ad70211a745c15c059c17fde7b4b"
+        }
+      ]
+    },
+    {
       "connector_key": "external_database",
       "provider_key": "bigquery",
       "provider_revision": "1.0.0",
@@ -3025,6 +3058,44 @@
           "key": "test_connection",
           "mode": "call",
           "contract_sha256": "dcb85be24768ffdff7ccda9db4c93254baac73b864885b7ad1527d2c48e401ac"
+        }
+      ]
+    },
+    {
+      "connector_key": "knowledge_base",
+      "provider_key": "http_api",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/knowledge_base/http_api",
+      "package_name": "httpapi",
+      "constructor": "New",
+      "descriptor_sha256": "d8a04f4496f232e697076dd6cfb2c5c9f64950a92bbf976ba817a88fd318ce64",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "knowledge_base_http_api_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "2b614aa3f0cccb4e617c034829bd9dc915002bd5d2e8289598a2e7683ea054fa",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/knowledge_base/http_api",
+        "isolated_profile": "knowledge_base_http_api_isolated_v1",
+        "isolated_command": "go test ./providers/knowledge_base/http_api"
+      },
+      "operations": [
+        {
+          "key": "fetch",
+          "mode": "call",
+          "contract_sha256": "31256a5720fc482b2fd0cd0b259936a58f8bc903c712a66f567c934f42a6b80e"
+        },
+        {
+          "key": "search",
+          "mode": "call",
+          "contract_sha256": "573e693a2b63cd71a5f0937f5d1be49124e36d312de707160a5524ec00ab6c6a"
         }
       ]
     },
@@ -4179,6 +4250,54 @@
           "key": "list_events",
           "mode": "call",
           "contract_sha256": "5d6ca4a461d8943d579c3f55599892a5eb2d1023f3b2862aec3029df8a1da588"
+        }
+      ]
+    },
+    {
+      "connector_key": "saas_tool",
+      "provider_key": "composio",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/saas_tool/composio",
+      "package_name": "composio",
+      "constructor": "New",
+      "descriptor_sha256": "479271d1fb368bcdb9db6cf45c6bf2ab400aee9d52d13cdf40e784d1210d9c23",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "saas_tool_composio_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "85cceab75bdc2f0bd44cfc3cf46b71a93c891c45925197527b5313c018c5afd5",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/saas_tool/composio",
+        "isolated_profile": "saas_tool_composio_isolated_v1",
+        "isolated_command": "go test ./providers/saas_tool/composio"
+      },
+      "operations": [
+        {
+          "key": "enqueue_tool",
+          "mode": "enqueue",
+          "contract_sha256": "0cf1d30aaa2dc890e3cb88ab029609de02467193bf830d57a1b05e108303bce2"
+        },
+        {
+          "key": "query_tool",
+          "mode": "call",
+          "contract_sha256": "93cfa61db905c26f8a724e3ee94c927e535992b34943a7e37c788578025fe0fa"
+        },
+        {
+          "key": "start_tool",
+          "mode": "start_operation",
+          "contract_sha256": "cb26e85b978c2c5c8808761c9a7d625e1afe84cf5a79a897eb74fa5d42e90651"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "8c1ecffd82e1a09355ebb88a4e59937367f47b01a7c64c0d91f44f828e7e47f8"
         }
       ]
     },

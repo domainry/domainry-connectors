@@ -47,6 +47,7 @@ import (
 	esign_fadada "github.com/domainry/domainry-connectors/providers/esign/fadada"
 	esign_signnow "github.com/domainry/domainry-connectors/providers/esign/signnow"
 	event_webinar_zoom_webinar "github.com/domainry/domainry-connectors/providers/event_webinar/zoom_webinar"
+	expense_ocr_llm_proxy "github.com/domainry/domainry-connectors/providers/expense_ocr/llm_proxy"
 	external_database_bigquery "github.com/domainry/domainry-connectors/providers/external_database/bigquery"
 	external_database_mysql "github.com/domainry/domainry-connectors/providers/external_database/mysql"
 	external_database_postgres "github.com/domainry/domainry-connectors/providers/external_database/postgres"
@@ -66,6 +67,7 @@ import (
 	iot_telemetry_aws_iot "github.com/domainry/domainry-connectors/providers/iot_telemetry/aws_iot"
 	iot_telemetry_datadog_metrics "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics"
 	iot_telemetry_mqtt "github.com/domainry/domainry-connectors/providers/iot_telemetry/mqtt"
+	knowledge_base_http_api "github.com/domainry/domainry-connectors/providers/knowledge_base/http_api"
 	kyc_risk_persona "github.com/domainry/domainry-connectors/providers/kyc_risk/persona"
 	lead_source_tally "github.com/domainry/domainry-connectors/providers/lead_source/tally"
 	lms_moodle "github.com/domainry/domainry-connectors/providers/lms/moodle"
@@ -88,6 +90,7 @@ import (
 	payment_stripe "github.com/domainry/domainry-connectors/providers/payment/stripe"
 	payment_wechat_pay "github.com/domainry/domainry-connectors/providers/payment/wechat_pay"
 	product_event_posthog "github.com/domainry/domainry-connectors/providers/product_event/posthog"
+	saas_tool_composio "github.com/domainry/domainry-connectors/providers/saas_tool/composio"
 	social_message_facebook_messenger "github.com/domainry/domainry-connectors/providers/social_message/facebook_messenger"
 	sso_oidc "github.com/domainry/domainry-connectors/providers/sso/oidc"
 	support_zendesk "github.com/domainry/domainry-connectors/providers/support/zendesk"
@@ -146,6 +149,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/esign/fadada", packageName: "fadada", constructor: providerConstructor(esign_fadada.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/esign/signnow", packageName: "signnow", constructor: providerConstructor(esign_signnow.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/event_webinar/zoom_webinar", packageName: "zoomwebinar", constructor: providerConstructor(event_webinar_zoom_webinar.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/expense_ocr/llm_proxy", packageName: "llmproxy", constructor: providerConstructor(expense_ocr_llm_proxy.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/bigquery", packageName: "bigquery", constructor: providerConstructor(external_database_bigquery.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/mysql", packageName: "mysql", constructor: providerConstructor(external_database_mysql.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/external_database/postgres", packageName: "postgres", constructor: providerConstructor(external_database_postgres.New)},
@@ -165,6 +169,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/iot_telemetry/aws_iot", packageName: "awsiot", constructor: providerConstructor(iot_telemetry_aws_iot.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/iot_telemetry/datadog_metrics", packageName: "datadogmetrics", constructor: providerConstructor(iot_telemetry_datadog_metrics.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/iot_telemetry/mqtt", packageName: "mqtt", constructor: providerConstructor(iot_telemetry_mqtt.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/knowledge_base/http_api", packageName: "httpapi", constructor: providerConstructor(knowledge_base_http_api.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/kyc_risk/persona", packageName: "persona", constructor: providerConstructor(kyc_risk_persona.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lead_source/tally", packageName: "tally", constructor: providerConstructor(lead_source_tally.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/lms/moodle", packageName: "moodle", constructor: providerConstructor(lms_moodle.New)},
@@ -187,6 +192,7 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/payment/stripe", packageName: "stripe", constructor: providerConstructor(payment_stripe.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/payment/wechat_pay", packageName: "wechatpay", constructor: providerConstructor(payment_wechat_pay.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/product_event/posthog", packageName: "posthog", constructor: providerConstructor(product_event_posthog.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/saas_tool/composio", packageName: "composio", constructor: providerConstructor(saas_tool_composio.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/social_message/facebook_messenger", packageName: "facebookmessenger", constructor: providerConstructor(social_message_facebook_messenger.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/sso/oidc", packageName: "oidc", constructor: providerConstructor(sso_oidc.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/support/zendesk", packageName: "zendesk", constructor: providerConstructor(support_zendesk.New)},

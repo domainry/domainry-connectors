@@ -1,0 +1,417 @@
+{
+  "key": "knowledge_base",
+  "type": "knowledge_base",
+  "provider": "knowledge_base",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "source": "connectors:knowledge_base",
+  "classification": "external_connector",
+  "lifecycle_status": "active",
+  "name": "Knowledge base",
+  "description": "Search indexed documents and fetch source content through external knowledge services.",
+  "i18n": {
+    "en-US": {
+      "name": "Knowledge base",
+      "description": "Search indexed documents and fetch source content through external knowledge services."
+    },
+    "zh-CN": {
+      "name": "知识库",
+      "description": "通过外部知识服务检索已索引文档并读取来源内容。"
+    }
+  },
+  "feature_flags": [
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ],
+  "capabilities": [
+    "document_search",
+    "document_fetch"
+  ],
+  "definition_ready": true,
+  "adapter_ready": true,
+  "connection_ready": false,
+  "readiness": "adapter_available",
+  "config_fields": [
+    "base_url",
+    "team_id",
+    "kb_id",
+    "permission_ids_by_user"
+  ],
+  "secret_refs": [
+    "api_key"
+  ],
+  "providers": [
+    {
+      "key": "http_api",
+      "provider_revision": "1.0.0",
+      "name": "Knowledge HTTP API",
+      "description": "Remote document search and fetch through the configured HTTP API.",
+      "i18n": {
+        "en-US": {
+          "name": "Knowledge HTTP API",
+          "description": "Remote document search and fetch through the configured HTTP API."
+        },
+        "zh-CN": {
+          "name": "知识库 HTTP API",
+          "description": "通过配置的 HTTP API 检索文档并读取全文。"
+        }
+      },
+      "config_fields": [
+        {
+          "key": "base_url",
+          "type": "text",
+          "required": true,
+          "name": "API origin",
+          "description": "API origin for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "API origin",
+              "description": "API origin for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "API 服务地址",
+              "description": "API 服务地址，用于知识库检索。"
+            }
+          },
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "key": "team_id",
+          "type": "text",
+          "required": true,
+          "name": "Knowledge service team ID",
+          "description": "Knowledge service team ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Knowledge service team ID",
+              "description": "Knowledge service team ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "知识服务团队 ID",
+              "description": "知识服务团队 ID，用于知识库检索。"
+            }
+          },
+          "validation": {
+            "max_length": 256
+          }
+        },
+        {
+          "key": "kb_id",
+          "type": "text",
+          "required": true,
+          "name": "Knowledge base ID",
+          "description": "Knowledge base ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Knowledge base ID",
+              "description": "Knowledge base ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "知识库 ID",
+              "description": "知识库 ID，用于知识库检索。"
+            }
+          },
+          "validation": {
+            "max_length": 256
+          }
+        },
+        {
+          "key": "permission_ids_by_user",
+          "type": "json",
+          "required": false,
+          "name": "Server-managed document access by user",
+          "description": "Server-managed document access by user for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Server-managed document access by user",
+              "description": "Server-managed document access by user for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "服务端维护的用户文档权限",
+              "description": "服务端维护的用户文档权限，用于知识库检索。"
+            }
+          },
+          "config": {
+            "json_shape": "object"
+          }
+        }
+      ],
+      "secret_fields": [
+        {
+          "key": "api_key",
+          "type": "text",
+          "required": true,
+          "name": "Knowledge service API key",
+          "description": "Knowledge service API key for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Knowledge service API key",
+              "description": "Knowledge service API key for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "知识服务 API Key",
+              "description": "知识服务 API Key，用于知识库检索。"
+            }
+          },
+          "config": {
+            "sensitive": true,
+            "write_only": true,
+            "credential_kind": "bearer_token",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "expiry_policy": "optional",
+            "test_requirement": "optional"
+          }
+        }
+      ],
+      "operation_keys": [
+        "search",
+        "fetch"
+      ],
+      "readiness": "provider_available"
+    }
+  ],
+  "operations": [
+    {
+      "key": "search",
+      "name": "Search knowledge base",
+      "description": "Search indexed document passages. Permissions come from server-managed connection policy.",
+      "i18n": {
+        "en-US": {
+          "name": "Search knowledge base",
+          "description": "Search indexed document passages. Permissions come from server-managed connection policy."
+        },
+        "zh-CN": {
+          "name": "检索知识库",
+          "description": "检索已索引文档片段；权限来自服务端连接策略。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 30,
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "query",
+          "type": "text",
+          "required": true,
+          "name": "Query",
+          "description": "Query for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Query",
+              "description": "Query for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "查询内容",
+              "description": "查询内容，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "top_k",
+          "type": "integer",
+          "required": false,
+          "name": "Result count",
+          "description": "Result count for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Result count",
+              "description": "Result count for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "检索条数",
+              "description": "检索条数，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "result_content",
+          "type": "text",
+          "required": false,
+          "name": "Result content mode",
+          "description": "Result content mode for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Result content mode",
+              "description": "Result content mode for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "结果内容模式",
+              "description": "结果内容模式，用于知识库检索。"
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "key": "provider",
+          "type": "text",
+          "required": true,
+          "name": "Provider",
+          "description": "Provider for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Provider",
+              "description": "Provider for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "服务商",
+              "description": "服务商，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "kb_id",
+          "type": "text",
+          "required": true,
+          "name": "Knowledge base ID",
+          "description": "Knowledge base ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Knowledge base ID",
+              "description": "Knowledge base ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "知识库 ID",
+              "description": "知识库 ID，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "result",
+          "type": "json",
+          "required": true,
+          "name": "Upstream JSON result",
+          "description": "Upstream JSON result for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Upstream JSON result",
+              "description": "Upstream JSON result for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "上游 JSON 结果",
+              "description": "上游 JSON 结果，用于知识库检索。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "fetch",
+      "name": "Fetch document",
+      "description": "Read a full document using a doc_id returned by search and the same permission policy.",
+      "i18n": {
+        "en-US": {
+          "name": "Fetch document",
+          "description": "Read a full document using a doc_id returned by search and the same permission policy."
+        },
+        "zh-CN": {
+          "name": "读取文档",
+          "description": "使用检索返回的 doc_id 和相同权限策略读取完整文档。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 30,
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "doc_id",
+          "type": "text",
+          "required": true,
+          "name": "Document ID",
+          "description": "Document ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Document ID",
+              "description": "Document ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "文档 ID",
+              "description": "文档 ID，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "result_content",
+          "type": "text",
+          "required": false,
+          "name": "Result content mode",
+          "description": "Result content mode for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Result content mode",
+              "description": "Result content mode for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "结果内容模式",
+              "description": "结果内容模式，用于知识库检索。"
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "key": "provider",
+          "type": "text",
+          "required": true,
+          "name": "Provider",
+          "description": "Provider for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Provider",
+              "description": "Provider for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "服务商",
+              "description": "服务商，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "kb_id",
+          "type": "text",
+          "required": true,
+          "name": "Knowledge base ID",
+          "description": "Knowledge base ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Knowledge base ID",
+              "description": "Knowledge base ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "知识库 ID",
+              "description": "知识库 ID，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "result",
+          "type": "json",
+          "required": true,
+          "name": "Upstream JSON result",
+          "description": "Upstream JSON result for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Upstream JSON result",
+              "description": "Upstream JSON result for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "上游 JSON 结果",
+              "description": "上游 JSON 结果，用于知识库检索。"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

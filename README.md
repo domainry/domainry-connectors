@@ -29,7 +29,16 @@ does not own their product definitions or implementations.
 - `providers/<connector-key>/<provider-key>`: stable, independently importable Provider entrypoints.
 - `catalog`: public Connector definition and Provider release catalog contracts.
 
+The [llm-proxy Expense OCR integration](docs/expense-ocr-llm-proxy.md) describes
+receipt recognition, connection configuration, and the required Runtime release.
+
 ## Development
+
+The [Composio SaaS tools integration](docs/composio.md) covers pinned tool
+mappings, connected accounts, synchronous calls and Runtime durable delivery.
+
+The [Knowledge HTTP API integration](docs/knowledge-base.md) provides
+document search and full-document fetch, reusable by Agent and Runtime hosts.
 
 ```sh
 make fmt-check
