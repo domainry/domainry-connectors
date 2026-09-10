@@ -38,7 +38,8 @@ The [Composio SaaS tools integration](docs/composio.md) covers pinned tool
 mappings, connected accounts, synchronous calls and Runtime durable delivery.
 
 The [Knowledge HTTP API integration](docs/knowledge-base.md) provides
-document search and full-document fetch, reusable by Agent and Runtime hosts.
+document search, source fetch, binary document push, indexing status and deletion,
+reusable by Agent and Runtime hosts. Hosts own document authorization and durable lifecycle work.
 
 ```sh
 make fmt-check

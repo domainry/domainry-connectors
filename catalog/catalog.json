@@ -3064,11 +3064,11 @@
     {
       "connector_key": "knowledge_base",
       "provider_key": "http_api",
-      "provider_revision": "1.0.0",
+      "provider_revision": "1.1.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/knowledge_base/http_api",
       "package_name": "httpapi",
       "constructor": "New",
-      "descriptor_sha256": "d8a04f4496f232e697076dd6cfb2c5c9f64950a92bbf976ba817a88fd318ce64",
+      "descriptor_sha256": "03409fa71cf42e84c6a4fe0b916acb9b14071684b8d4fbf9b109c1dc800f65dd",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "knowledge_base_http_api_deterministic_v1",
@@ -3088,9 +3088,24 @@
       },
       "operations": [
         {
+          "key": "delete_document",
+          "mode": "call",
+          "contract_sha256": "4729fefbfaf34173e5f8d651216f66c293091af7a4f72240004b1557e49054b6"
+        },
+        {
+          "key": "document_status",
+          "mode": "call",
+          "contract_sha256": "7b5608d5de92711c8069d7f0df8e41c789175584f5cd94dbe6e1e714331eb9cb"
+        },
+        {
           "key": "fetch",
           "mode": "call",
           "contract_sha256": "31256a5720fc482b2fd0cd0b259936a58f8bc903c712a66f567c934f42a6b80e"
+        },
+        {
+          "key": "put_document",
+          "mode": "call",
+          "contract_sha256": "ada514ca5026f94fbe6191208dcd185567e2124d0fa04caba9d0ef8795d0f3c1"
         },
         {
           "key": "search",

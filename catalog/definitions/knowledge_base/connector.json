@@ -8,15 +8,15 @@
   "classification": "external_connector",
   "lifecycle_status": "active",
   "name": "Knowledge base",
-  "description": "Search indexed documents and fetch source content through external knowledge services.",
+  "description": "Search indexed documents, read sources, and manage documents through external knowledge services.",
   "i18n": {
     "en-US": {
       "name": "Knowledge base",
-      "description": "Search indexed documents and fetch source content through external knowledge services."
+      "description": "Search indexed documents, read sources, and manage documents through external knowledge services."
     },
     "zh-CN": {
       "name": "知识库",
-      "description": "通过外部知识服务检索已索引文档并读取来源内容。"
+      "description": "通过外部知识服务检索、读取、推送文档并查询索引状态及删除。"
     }
   },
   "feature_flags": [
@@ -27,7 +27,10 @@
   ],
   "capabilities": [
     "document_search",
-    "document_fetch"
+    "document_fetch",
+    "document_put",
+    "document_status",
+    "document_delete"
   ],
   "definition_ready": true,
   "adapter_ready": true,
@@ -45,7 +48,7 @@
   "providers": [
     {
       "key": "http_api",
-      "provider_revision": "1.0.0",
+      "provider_revision": "1.1.0",
       "name": "Knowledge HTTP API",
       "description": "Remote document search and fetch through the configured HTTP API.",
       "i18n": {
@@ -170,7 +173,10 @@
       ],
       "operation_keys": [
         "search",
-        "fetch"
+        "fetch",
+        "put_document",
+        "delete_document",
+        "document_status"
       ],
       "readiness": "provider_available"
     }
@@ -408,6 +414,353 @@
             "zh-CN": {
               "name": "上游 JSON 结果",
               "description": "上游 JSON 结果，用于知识库检索。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "put_document",
+      "name": "Push document",
+      "description": "Push original bytes under a host-authorized stable document ID. Acknowledgement does not mean indexed; ACL updates and exactly-once writes are not provided.",
+      "i18n": {
+        "en-US": {
+          "name": "Push document",
+          "description": "Push original bytes under a host-authorized stable document ID. Acknowledgement does not mean indexed; ACL updates and exactly-once writes are not provided."
+        },
+        "zh-CN": {
+          "name": "推送文档",
+          "description": "按宿主授权的文档 ID 推送原文件。受理不代表索引完成；不提供 ACL 更新或恰好一次写入。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "write",
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 30,
+      "idempotency_supported": false,
+      "input": [
+        {
+          "key": "doc_id",
+          "type": "text",
+          "required": true,
+          "name": "Document ID",
+          "description": "Document ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Document ID",
+              "description": "Document ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "文档 ID",
+              "description": "文档 ID，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "filename",
+          "type": "text",
+          "required": true,
+          "name": "Filename",
+          "description": "Original basename, never a local path.",
+          "i18n": {
+            "en-US": {
+              "name": "Filename",
+              "description": "Original basename, never a local path."
+            },
+            "zh-CN": {
+              "name": "文件名",
+              "description": "原文件名，不接受本地路径。"
+            }
+          }
+        },
+        {
+          "key": "content",
+          "type": "text",
+          "required": true,
+          "name": "Base64 document bytes",
+          "description": "Base64 encoding of up to 16 MiB original bytes; not a URL or server path.",
+          "i18n": {
+            "en-US": {
+              "name": "Base64 document bytes",
+              "description": "Base64 encoding of up to 16 MiB original bytes; not a URL or server path."
+            },
+            "zh-CN": {
+              "name": "Base64 文档内容",
+              "description": "最多 16 MiB 原始字节的 Base64 编码，不接受 URL 或服务器路径。"
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "key": "provider",
+          "type": "text",
+          "required": true,
+          "name": "Provider",
+          "description": "Provider for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Provider",
+              "description": "Provider for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "服务商",
+              "description": "服务商，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "kb_id",
+          "type": "text",
+          "required": true,
+          "name": "Knowledge base ID",
+          "description": "Knowledge base ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Knowledge base ID",
+              "description": "Knowledge base ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "知识库 ID",
+              "description": "知识库 ID，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "result",
+          "type": "json",
+          "required": true,
+          "name": "Upstream JSON result",
+          "description": "Upstream JSON result for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Upstream JSON result",
+              "description": "Upstream JSON result for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "上游 JSON 结果",
+              "description": "上游 JSON 结果，用于知识库检索。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "delete_document",
+      "name": "Delete document",
+      "description": "Request deletion of the host-authorized document. Verify absence with document_status; uncertain writes must be reconciled by the host.",
+      "i18n": {
+        "en-US": {
+          "name": "Delete document",
+          "description": "Request deletion of the host-authorized document. Verify absence with document_status; uncertain writes must be reconciled by the host."
+        },
+        "zh-CN": {
+          "name": "删除文档",
+          "description": "请求删除宿主授权的文档；用 document_status 核对不存在，结果不明时由宿主核查。"
+        }
+      },
+      "method": "DELETE",
+      "execution_mode": "sync",
+      "side_effect": "write",
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 30,
+      "idempotency_supported": false,
+      "input": [
+        {
+          "key": "doc_id",
+          "type": "text",
+          "required": true,
+          "name": "Document ID",
+          "description": "Document ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Document ID",
+              "description": "Document ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "文档 ID",
+              "description": "文档 ID，用于知识库检索。"
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "key": "provider",
+          "type": "text",
+          "required": true,
+          "name": "Provider",
+          "description": "Provider for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Provider",
+              "description": "Provider for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "服务商",
+              "description": "服务商，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "kb_id",
+          "type": "text",
+          "required": true,
+          "name": "Knowledge base ID",
+          "description": "Knowledge base ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Knowledge base ID",
+              "description": "Knowledge base ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "知识库 ID",
+              "description": "知识库 ID，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "result",
+          "type": "json",
+          "required": true,
+          "name": "Upstream JSON result",
+          "description": "Upstream JSON result for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Upstream JSON result",
+              "description": "Upstream JSON result for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "上游 JSON 结果",
+              "description": "上游 JSON 结果，用于知识库检索。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "document_status",
+      "name": "Read document indexing status",
+      "description": "Read current metadata using the same permission policy; preserve unknown upstream states without claiming completion.",
+      "i18n": {
+        "en-US": {
+          "name": "Read document indexing status",
+          "description": "Read current metadata using the same permission policy; preserve unknown upstream states without claiming completion."
+        },
+        "zh-CN": {
+          "name": "查询文档索引状态",
+          "description": "按相同权限策略读取当前元数据；保留未知上游状态，不推断完成。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 30,
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "doc_id",
+          "type": "text",
+          "required": true,
+          "name": "Document ID",
+          "description": "Document ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Document ID",
+              "description": "Document ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "文档 ID",
+              "description": "文档 ID，用于知识库检索。"
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "key": "provider",
+          "type": "text",
+          "required": true,
+          "name": "Provider",
+          "description": "Provider for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Provider",
+              "description": "Provider for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "服务商",
+              "description": "服务商，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "kb_id",
+          "type": "text",
+          "required": true,
+          "name": "Knowledge base ID",
+          "description": "Knowledge base ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Knowledge base ID",
+              "description": "Knowledge base ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "知识库 ID",
+              "description": "知识库 ID，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "doc_id",
+          "type": "text",
+          "required": true,
+          "name": "Document ID",
+          "description": "Document ID for knowledge retrieval.",
+          "i18n": {
+            "en-US": {
+              "name": "Document ID",
+              "description": "Document ID for knowledge retrieval."
+            },
+            "zh-CN": {
+              "name": "文档 ID",
+              "description": "文档 ID，用于知识库检索。"
+            }
+          }
+        },
+        {
+          "key": "exists",
+          "type": "boolean",
+          "required": true,
+          "name": "Document exists",
+          "description": "Whether the document is present in the current permission scope; false alone is not global deletion proof.",
+          "i18n": {
+            "en-US": {
+              "name": "Document exists",
+              "description": "Whether the document is present in the current permission scope; false alone is not global deletion proof."
+            },
+            "zh-CN": {
+              "name": "文档存在",
+              "description": "当前权限范围内是否可见；不可见不单独证明文档已被全局删除。"
+            }
+          }
+        },
+        {
+          "key": "index_status",
+          "type": "text",
+          "required": false,
+          "name": "Index status",
+          "description": "The actual upstream status, absent for a missing document.",
+          "i18n": {
+            "en-US": {
+              "name": "Index status",
+              "description": "The actual upstream status, absent for a missing document."
+            },
+            "zh-CN": {
+              "name": "索引状态",
+              "description": "上游实际索引状态；不存在文档时省略。"
             }
           }
         }

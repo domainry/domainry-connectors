@@ -10,12 +10,19 @@
 | --- | --- | --- |
 | `search` | `SearchInput{Query, TopK, ResultContent}` | `POST /v1/kb/search` |
 | `fetch` | `FetchInput{DocID, ResultContent}` | `POST /v1/kb/fetch` |
+| `put_document` | `PutDocumentInput{DocID, Filename, Content}` | `POST /v1/kb/kbs/{kb_id}/documents?doc_id=…&filename=…` |
+| `document_status` | `DocumentInput{DocID}` | `POST /v1/kb/fetch`，关闭内容与 live |
+| `delete_document` | `DocumentInput{DocID}` | `DELETE /v1/kb/kbs/{kb_id}/documents?doc_id=…` |
 
-均为同步只读操作，默认 30 秒超时，响应上限 512 KiB。`TopK` 默认 5，本地限制 1–20。`ResultContent` 留空返回内容，`metadata` 请求省略文本的结果。
+所有操作调用本身同步，默认 30 秒超时，响应上限 512 KiB；文档推送后的索引仍由上游异步处理。search / fetch / document_status 声明只读与自然幂等；put / delete 声明写入、不承诺幂等键、自动核查或补偿。`TopK` 默认 5，本地限制 1–20。`ResultContent` 留空返回内容，`metadata` 请求省略文本的结果。
 
-两种操作统一使用 `ResultContent`，由 Provider 转换为各自的上游参数：search 发送 `result_content: "metadata"`；fetch 发送 `include_content: false` 和 `live.enabled: false`，同时关闭离线分块和实时内容。
+search / fetch 统一使用 `ResultContent`，由 Provider 转换为各自的上游参数：search 发送 `result_content: "metadata"`；fetch 发送 `include_content: false` 和 `live.enabled: false`，同时关闭离线分块和实时内容。
 
 输出 `Output{Provider, KBID, Result}` 中 `Result` 为完整上游 JSON。控制台没有展示响应字段契约，因此不猜测字段名；已存在的内容、来源、额外字段及大整数都保留。错误状态、无效 JSON、标量结果和超大响应不会作为成功结果返回。
+
+put 的 `Content` 在 SDK JSON 中为 Base64，在实际 HTTP 中发送原始二进制与 `application/octet-stream`；本地上限为 16 MiB，不代表上游公布的最大文件大小。文件名只接受 basename，拒绝路径；库 ID 固定来自 Connection，文档 ID 和文件名通过 URL 编码进入查询参数。put / delete 保留上游受理 JSON，不把 HTTP 成功解释成索引就绪或全部片段已清理。
+
+`document_status` 返回 `DocumentStatusOutput{Provider, KBID, DocID, Exists, IndexStatus}`。读取实际 `/data/status`，保留 `PENDING`、`CHUNKED`、`INDEXED` 或未知状态，不带正文。只有明确的业务 `1004` 转为当前权限范围内 `Exists=false`；权限拒绝、网络故障、未知响应不能当成不存在。上游可能把无权限文档隐藏为不存在，因此该值单独不能证明全局删除。
 
 2026-09-10 真实调用确认 HTTP 200 也可能表示业务失败。顶层 `err_code` 存在时必须是整数：`0` 为成功；已观察到的 `1004`（document not found）映射为 `knowledge_api.not_found`；其他非零值映射为 `knowledge_api.failed`，不猜测重试或授权语义。类型无效则为 `knowledge_api.response_invalid`。失败响应的 `err_msg` 和 `data` 不进入操作结果；成功 JSON 保持完整。
 
@@ -25,7 +32,9 @@
 
 每次调用要求可信的认证 Principal 与 Connection 工作区一致。`team_id`、`kb_id` 和文档权限只能来自宿主连接配置；operation payload 不接受这些字段。
 
-`permission_ids_by_user` 为服务端维护的用户 ID 到精确权限 ID 数组的映射。Provider 根据 Principal.UserID 选择当前用户的权限；没有映射时仅查团队可见文档。search 和 fetch 使用相同规则。宿主必须限制连接配置的修改权限，不能让模型或普通浏览器调用者替换连接、Principal 或该映射。
+`permission_ids_by_user` 为服务端维护的用户 ID 到精确权限 ID 数组的映射。Provider 根据 Principal.UserID 选择当前用户的权限；没有映射时仅查团队可见文档。search、fetch 和 document_status 使用相同规则。宿主必须限制连接配置的修改权限，不能让模型或普通浏览器调用者替换连接、Principal 或该映射。
+
+文档读权限映射不是写权限或上传 ACL。put / delete 不接受 permission_ids，也不猜测上游 ACL 设置字段；宿主必须另外授权具体文档动作和固定目标库。产品还需保存文档归属、原文件、请求状态与代次，处理异步索引、结果不明、删除与迟到写入竞争。不能把接口受理当成这些治理已完成。
 
 ## bcri 与验证
 
@@ -38,4 +47,6 @@ go run ./scripts/verify_provider_release --provider knowledge_base/http_api --mo
 
 确定性测试使用注入的 Transport fake，覆盖请求翻译、SDK/Catalog 身份、权限、内容保留及错误处理，包括 HTTP 200 业务失败。2026-09-10 已使用获准凭证完成成功空结果检索，不存在文档返回 HTTP 200 / `err_code: 1004`。随后从已登录的系统 Chrome 控制台确认推送 / 删除契约，专门创建的合成文档已推送并索引；真实 search 的 `/data/hits` 和 fetch 的 `/data/chunks` 均取得 4 个片段。首次 fetch 可能为 `PENDING` 且 chunks 为空，HTTP 成功不等于索引完成。非空文档字段映射由 Agent 配置并验证，Connector 继续保留完整成功 JSON。真实私有文档 ACL 尚未验收。此前 GET 管理详情探测返回 401，不能据此推断已验证的文档推送能力不可用。
 
-本次提供检索和全文读取，不包括文档推送、删除、索引同步任务或后台管理页面。
+同日新增文档生命周期接口已由 Agent 的实际 SDK / Provider / Transport 链路联调：一个初始确认不存在的合成文件成功推送，观察到 PENDING → CHUNKED → INDEXED，读取实际正文、搜索命中，再删除并检查不可见与该文档不再命中。联调耗时 30.36 秒，测试文档已清理；详细记录在 Agent 的 `docs/testing-2026-09-10-knowledge-document-protocol.md`。没有使用模型，也未上传私有用户资料；不作为私有 ACL 或产品文件管理验收。
+
+Provider revision 为 1.1.0，新增三个操作；原 search / fetch 的契约摘要保持不变。索引同步任务、用户文件归属与后台管理页面由宿主应用继续实现。

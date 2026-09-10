@@ -1,4 +1,4 @@
-// Package httpapi implements workspace-scoped remote knowledge base retrieval.
+// Package httpapi implements workspace-scoped knowledge retrieval and document management.
 package httpapi
 
 import (
@@ -62,7 +62,19 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 	if err != nil {
 		return nil, err
 	}
-	p.Adapter, err = connector.NewProvider(schema(), search, fetch)
+	put, err := connector.BindCall(PutDocument, p.putDocument)
+	if err != nil {
+		return nil, err
+	}
+	remove, err := connector.BindCall(DeleteDocument, p.deleteDocument)
+	if err != nil {
+		return nil, err
+	}
+	status, err := connector.BindCall(DocumentStatus, p.documentStatus)
+	if err != nil {
+		return nil, err
+	}
+	p.Adapter, err = connector.NewProvider(schema(), search, fetch, put, remove, status)
 	return p, err
 }
 
@@ -72,7 +84,7 @@ func readReliability() connector.ReliabilityContract {
 
 func schema() connector.ProviderSchema {
 	return connector.ProviderSchema{
-		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.0",
+		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.1.0",
 		ConfigFields: []connector.ConfigField{
 			{Key: "base_url", Name: "API origin", Type: connector.ConfigFieldText, Required: true, Validation: connector.ConfigValidation{MaxLength: 2048}},
 			{Key: "team_id", Name: "Knowledge service team ID", Type: connector.ConfigFieldText, Required: true, Validation: connector.ConfigValidation{MaxLength: 256}},
@@ -210,14 +222,19 @@ func (p *provider) request(ctx context.Context, connection connector.Connection,
 	if err != nil {
 		return result, permanent("request_invalid")
 	}
+	return p.exchange(ctx, http.MethodPost, base+path, "application/json", raw, token, kb)
+}
+
+func (p *provider) exchange(ctx context.Context, method, target, contentType string, body []byte, token, kb string) (connector.TypedResult[Output], error) {
+	var result connector.TypedResult[Output]
 	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 	if ctx.Err() != nil {
 		return result, ctx.Err()
 	}
 	response, err := p.transport.RoundTripHTTP(ctx, connector.HTTPRequest{
-		Method: http.MethodPost, URL: base + path, Body: raw, MaxResponseBytes: responseLimit,
-		Headers:       map[string][]string{"Content-Type": {"application/json"}, "Accept": {"application/json"}},
+		Method: method, URL: target, Body: body, MaxResponseBytes: responseLimit,
+		Headers:       map[string][]string{"Content-Type": {contentType}, "Accept": {"application/json"}},
 		SecretHeaders: map[string][]string{"Authorization": {"Bearer " + token}},
 	})
 	if err != nil {
@@ -237,7 +254,7 @@ func (p *provider) request(ctx context.Context, connection connector.Connection,
 	if len(response.Body) > responseLimit {
 		return result, permanent("response_invalid")
 	}
-	raw = bytes.TrimSpace(response.Body)
+	raw := bytes.TrimSpace(response.Body)
 	if len(raw) == 0 || !utf8.Valid(raw) || !json.Valid(raw) || (raw[0] != '{' && raw[0] != '[') {
 		return result, permanent("response_invalid")
 	}

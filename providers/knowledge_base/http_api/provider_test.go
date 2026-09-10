@@ -62,7 +62,7 @@ func TestContractAndCatalogIdentity(t *testing.T) {
 			}
 		}
 	}
-	if len(definition.Operations) != 2 {
+	if len(definition.Operations) != 5 {
 		t.Fatal("missing knowledge definition")
 	}
 	for _, operation := range definition.Operations {
@@ -74,7 +74,7 @@ func TestContractAndCatalogIdentity(t *testing.T) {
 		for _, descriptor := range adapter.Descriptor().Operations {
 			if descriptor.Key == operation.Key {
 				found = true
-				if descriptor.ContractSHA256 != hash || descriptor.Reliability.Effect != connector.EffectRead {
+				if descriptor.ContractSHA256 != hash || string(descriptor.Reliability.Effect) != operation.SideEffect {
 					t.Fatal("catalog/Provider operation mismatch")
 				}
 			}
