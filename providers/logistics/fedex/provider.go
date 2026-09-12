@@ -95,7 +95,7 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 
 func schema() connector.ProviderSchema {
 	minimum, maximum := float64(1), float64(maximumTimeout)
-	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.0", ConfigFields: []connector.ConfigField{{Key: "base_url", Name: "FedEx API base URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://apis.fedex.com"`)}, {Key: "token_url", Name: "FedEx OAuth token URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://apis.fedex.com/oauth/token"`)}, {Key: "test_rate_request", Name: "Connection test Rate request", Type: connector.ConfigFieldJSON, Required: true}, {Key: "timeout_seconds", Name: "Timeout seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`30`), Validation: connector.ConfigValidation{Min: &minimum, Max: &maximum}}}, SecretFields: []connector.SecretField{secret("access_token", "FedEx OAuth access token", connector.SecretCredentialBearerToken, connector.SecretRotationOAuthRefresh), secret("client_id", "FedEx API key / client ID", connector.SecretCredentialIdentifier, connector.SecretRotationManual), secret("client_secret", "FedEx secret key / client secret", connector.SecretCredentialOAuthClientSecret, connector.SecretRotationManual)}}
+	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.1", ConfigFields: []connector.ConfigField{{Key: "base_url", Name: "FedEx API base URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://apis.fedex.com"`)}, {Key: "token_url", Name: "FedEx OAuth token URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://apis.fedex.com/oauth/token"`)}, {Key: "test_rate_request", Name: "Connection test Rate request", Type: connector.ConfigFieldJSON, Required: true}, {Key: "timeout_seconds", Name: "Timeout seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`30`), Validation: connector.ConfigValidation{Min: &minimum, Max: &maximum}}}, SecretFields: []connector.SecretField{secret("access_token", "FedEx OAuth access token", connector.SecretCredentialBearerToken, connector.SecretRotationOAuthRefresh), secret("client_id", "FedEx API key / client ID", connector.SecretCredentialIdentifier, connector.SecretRotationManual), secret("client_secret", "FedEx secret key / client secret", connector.SecretCredentialOAuthClientSecret, connector.SecretRotationManual)}}
 }
 
 func secret(key, name string, kind connector.SecretCredentialKind, rotation connector.SecretRotationPolicy) connector.SecretField {
@@ -127,10 +127,10 @@ func (p *provider) test(ctx context.Context, request connector.TypedRequest[stru
 func (p *provider) TestConnection(ctx context.Context, request connector.TestConnectionRequest) (connector.TestConnectionResult, error) {
 	result, err := p.test(ctx, connector.TypedRequest[struct{}]{Connection: request.Connection, Secrets: request.Secrets})
 	if err != nil {
-		return connector.TestConnectionResult{}, err
+		return connector.TestConnectionResult{SecretUpdates: result.SecretUpdates}, err
 	}
 	details, _ := json.Marshal(result.Output)
-	return connector.TestConnectionResult{Connected: true, Details: details}, nil
+	return connector.TestConnectionResult{Connected: true, Details: details, SecretUpdates: result.SecretUpdates}, nil
 }
 
 func (p *provider) quoteRates(ctx context.Context, request connector.TypedRequest[ProviderInput]) (connector.TypedResult[map[string]any], error) {

@@ -83,7 +83,7 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 
 func schema() connector.ProviderSchema {
 	minimum, maximum := float64(1), float64(maximumTimeout)
-	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.0", ConfigFields: []connector.ConfigField{
+	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.1", ConfigFields: []connector.ConfigField{
 		{Key: "base_url", Name: "UPS API base URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://onlinetools.ups.com"`)},
 		{Key: "token_url", Name: "UPS OAuth token URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://onlinetools.ups.com/security/v1/oauth/token"`)},
 		{Key: "rating_version", Name: "Rating API version", Type: connector.ConfigFieldText, Default: json.RawMessage(`"v2409"`)},
@@ -134,10 +134,10 @@ func (p *provider) test(ctx context.Context, request connector.TypedRequest[stru
 func (p *provider) TestConnection(ctx context.Context, request connector.TestConnectionRequest) (connector.TestConnectionResult, error) {
 	result, err := p.test(ctx, connector.TypedRequest[struct{}]{Connection: request.Connection, Secrets: request.Secrets})
 	if err != nil {
-		return connector.TestConnectionResult{}, err
+		return connector.TestConnectionResult{SecretUpdates: result.SecretUpdates}, err
 	}
 	details, _ := json.Marshal(result.Output)
-	return connector.TestConnectionResult{Connected: true, Details: details}, nil
+	return connector.TestConnectionResult{Connected: true, Details: details, SecretUpdates: result.SecretUpdates}, nil
 }
 func (p *provider) quoteRates(ctx context.Context, request connector.TypedRequest[ProviderInput]) (connector.TypedResult[map[string]any], error) {
 	return p.inputOperation(ctx, request, ratingPath(request.Connection), false)

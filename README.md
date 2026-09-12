@@ -41,6 +41,43 @@ The [Knowledge HTTP API integration](docs/knowledge-base.md) provides
 document search, source fetch, binary document push, indexing status and deletion,
 reusable by Agent and Runtime hosts. Hosts own document authorization and durable lifecycle work.
 
+The Google Workspace provider exposes `mail_list`, `mail_search` and `mail_read`
+through Connector SDK's independent `mail-read-v1` contract. Metadata-only grants
+enable listing; searching and body reads require full mail read grants. Search
+uses the explicitly declared `gmail` syntax. Lists fetch only headers, with
+account/query-bound pagination; body reads extract bounded text from MIME,
+exclude attachments and remote resources, and mark incomplete/truncated content.
+All requests use host-owned Transport, including at most four separately stored
+text body parts of at most 256 KiB each. Existing Gmail sync/send contracts retain
+their identities and behavior; these new read operations do not send or save drafts.
+
+Microsoft 365 exposes the same three read contracts with `graph-kql` search.
+Metadata listing accepts delegated Mail.ReadBasic (including Shared); search and
+body reads require delegated Mail.Read/ReadWrite or their Shared variants. Every
+request opts into ImmutableId. Graph continuations preserve the original query
+and can only target the same `/me/messages` endpoint; reaching the 1,000-result
+search cap is explicitly incomplete. Mail.Read requests plain text, with bounded
+HTML text conversion if Graph returns HTML. No attachment or external body link
+is fetched. Application-only `.All`, Mail.Send and User.Read do not enable these
+current-user content reads.
+
+Public web access uses the independent `web/llm_proxy` Provider, selected with
+`module.PublicWebProviders(hostTransport)`. Its `web_search` and `web_fetch`
+operations implement Connector SDK `web`'s `public-web-read-v1` identities; the
+generated Provider Catalog carries those exact hashes. The source definition is
+the management display/configuration projection, not a replacement wire identity.
+The Provider uses only host Transport and the fixed `/tool/web_search` and
+`/tool/web_fetch_jina` routes, and does not depend on the Expense OCR Provider.
+Configure `base_url`, `allowed_source_hosts` (1–16 exact public DNS names), and
+the private `api_token` Passport credential. Optional processor and timeout are
+administrator configuration, never operation input. The caller and host must
+also authorize the service connection and proxy origin. Sources are checked
+before fetch and on returned pages; search filters unauthorized sources. These
+checks do not attest remote DNS or redirect policy. Search is ranked excerpts,
+page completeness stays unknown, and UTF-8 truncation is explicit. Read effects
+do not guarantee upstream billing deduplication; there are no automatic retries
+or fabricated connection probes.
+
 ```sh
 make fmt-check
 make test

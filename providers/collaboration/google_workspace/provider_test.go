@@ -40,7 +40,7 @@ func TestDescriptorEndpointAndSpaceBoundaries(t *testing.T) {
 		t.Fatalf("new=%v validation=%v", err, contracttest.ValidateAdapter(adapter))
 	}
 	descriptor := adapter.Descriptor()
-	if descriptor.ConnectorKey != ConnectorKey || descriptor.ProviderKey != ProviderKey || len(descriptor.Operations) != 2 || len(descriptor.SecretFields) != 1 || descriptor.SecretFields[0].RotationPolicy != connector.SecretRotationOAuthRefresh {
+	if descriptor.ConnectorKey != ConnectorKey || descriptor.ProviderKey != ProviderKey || len(descriptor.Operations) != 2 || len(descriptor.SecretFields) != 1 || descriptor.SecretFields[0].RotationPolicy != connector.SecretRotationManual {
 		t.Fatalf("descriptor=%+v", descriptor)
 	}
 	validator := adapter.(connector.ConfigValidator)

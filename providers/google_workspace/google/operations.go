@@ -19,7 +19,7 @@ func (p *provider) test(ctx context.Context, r connector.TypedRequest[struct{}])
 func (p *provider) TestConnection(ctx context.Context, r connector.TestConnectionRequest) (connector.TestConnectionResult, error) {
 	result, err := p.test(ctx, connector.TypedRequest[struct{}]{Connection: r.Connection, Secrets: r.Secrets})
 	if err != nil {
-		return connector.TestConnectionResult{}, err
+		return connector.TestConnectionResult{SecretUpdates: result.SecretUpdates}, err
 	}
 	details, _ := json.Marshal(result.Output)
 	return connector.TestConnectionResult{Connected: true, Details: details, SecretUpdates: result.SecretUpdates}, nil
@@ -185,11 +185,18 @@ func (p *provider) pubsubDeleteSubscription(ctx context.Context, r connector.Typ
 }
 
 func (p *provider) executeWithRefresh(ctx context.Context, connection connector.Connection, secrets map[string]string, method, endpoint string, query url.Values, body map[string]any, write bool) (connector.TypedResult[Response], error) {
+	return p.executeWithPrecondition(ctx, connection, secrets, method, endpoint, query, body, write, "")
+}
+
+// Only a provider-selected, already validated ETag enters the conditional
+// request. A 401 refresh preserves the same body and precondition; a 412 never
+// refreshes the event version or retries the mutation.
+func (p *provider) executeWithPrecondition(ctx context.Context, connection connector.Connection, secrets map[string]string, method, endpoint string, query url.Values, body map[string]any, write bool, version string) (connector.TypedResult[Response], error) {
 	token := strings.TrimSpace(secrets["access_token"])
 	if token == "" {
 		return empty(), permanent("access_token_required", "resolved access token is required")
 	}
-	result, status, err := p.execute(ctx, connection, method, endpoint, query, body, token, write)
+	result, status, err := p.execute(ctx, connection, method, endpoint, query, body, token, write, version)
 	if status != http.StatusUnauthorized {
 		return result, err
 	}
@@ -201,14 +208,14 @@ func (p *provider) executeWithRefresh(ctx context.Context, connection connector.
 	if refreshErr != nil {
 		return connector.TypedResult[Response]{ResponseRef: "oauth:refresh_failed"}, refreshErr
 	}
-	result, _, err = p.execute(ctx, connection, method, endpoint, query, body, updated.AccessToken, write)
+	result, _, err = p.execute(ctx, connection, method, endpoint, query, body, updated.AccessToken, write, version)
 	result.SecretUpdates = map[string]string{"access_token": updated.AccessToken}
 	if updated.RefreshToken != "" {
 		result.SecretUpdates["refresh_token"] = updated.RefreshToken
 	}
 	return result, err
 }
-func (p *provider) execute(ctx context.Context, connection connector.Connection, method, endpoint string, query url.Values, body map[string]any, token string, write bool) (connector.TypedResult[Response], int, error) {
+func (p *provider) execute(ctx context.Context, connection connector.Connection, method, endpoint string, query url.Values, body map[string]any, token string, write bool, version string) (connector.TypedResult[Response], int, error) {
 	if err := p.ValidateConfig(connection); err != nil {
 		return empty(), 0, err
 	}
@@ -225,6 +232,9 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 		}
 	}
 	headers := map[string][]string{"Accept": {"application/json"}}
+	if version != "" {
+		headers["If-Match"] = []string{version}
+	}
 	if body != nil {
 		headers["Content-Type"] = []string{"application/json"}
 	}

@@ -462,15 +462,15 @@
           "type": "text",
           "required": true,
           "name": "Filename",
-          "description": "Original basename, never a local path.",
+          "description": "ASCII basename (letters, digits, spaces, dot, underscore, hyphen), starting with a letter or digit; never a local path.",
           "i18n": {
             "en-US": {
               "name": "Filename",
-              "description": "Original basename, never a local path."
+              "description": "ASCII basename (letters, digits, spaces, dot, underscore, hyphen), starting with a letter or digit; never a local path."
             },
             "zh-CN": {
               "name": "文件名",
-              "description": "原文件名，不接受本地路径。"
+              "description": "ASCII 文件名（字母、数字、空格、点、下划线、连字符），以字母或数字开头，不接受本地路径。"
             }
           }
         },
@@ -479,15 +479,15 @@
           "type": "text",
           "required": true,
           "name": "Base64 document bytes",
-          "description": "Base64 encoding of up to 16 MiB original bytes; not a URL or server path.",
+          "description": "Base64 encoding of up to 10 MiB original bytes; not a URL or server path.",
           "i18n": {
             "en-US": {
               "name": "Base64 document bytes",
-              "description": "Base64 encoding of up to 16 MiB original bytes; not a URL or server path."
+              "description": "Base64 encoding of up to 10 MiB original bytes; not a URL or server path."
             },
             "zh-CN": {
               "name": "Base64 文档内容",
-              "description": "最多 16 MiB 原始字节的 Base64 编码，不接受 URL 或服务器路径。"
+              "description": "最多 10 MiB 原始字节的 Base64 编码，不接受 URL 或服务器路径。"
             }
           }
         }
@@ -549,15 +549,15 @@
     {
       "key": "delete_document",
       "name": "Delete document",
-      "description": "Request deletion of the host-authorized document. Verify absence with document_status; uncertain writes must be reconciled by the host.",
+      "description": "Delete the same host-authorized document idempotently. The host may repeat this deletion after a lost response, then verify cleanup; permission-scoped absence alone is not proof.",
       "i18n": {
         "en-US": {
           "name": "Delete document",
-          "description": "Request deletion of the host-authorized document. Verify absence with document_status; uncertain writes must be reconciled by the host."
+          "description": "Delete the same host-authorized document idempotently. The host may repeat this deletion after a lost response, then verify cleanup; permission-scoped absence alone is not proof."
         },
         "zh-CN": {
           "name": "删除文档",
-          "description": "请求删除宿主授权的文档；用 document_status 核对不存在，结果不明时由宿主核查。"
+          "description": "幂等删除同一宿主授权文档；回执丢失时宿主可重复该删除并核对清理，权限范围内不可见本身不证明删除成功。"
         }
       },
       "method": "DELETE",
@@ -565,7 +565,7 @@
       "side_effect": "write",
       "timeout_default_seconds": 30,
       "timeout_max_seconds": 30,
-      "idempotency_supported": false,
+      "idempotency_supported": true,
       "input": [
         {
           "key": "doc_id",

@@ -84,12 +84,13 @@ func readReliability() connector.ReliabilityContract {
 
 func schema() connector.ProviderSchema {
 	return connector.ProviderSchema{
-		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.1.0",
+		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.3.0",
 		ConfigFields: []connector.ConfigField{
 			{Key: "base_url", Name: "API origin", Type: connector.ConfigFieldText, Required: true, Validation: connector.ConfigValidation{MaxLength: 2048}},
 			{Key: "team_id", Name: "Knowledge service team ID", Type: connector.ConfigFieldText, Required: true, Validation: connector.ConfigValidation{MaxLength: 256}},
 			{Key: "kb_id", Name: "Knowledge base ID", Type: connector.ConfigFieldText, Required: true, Validation: connector.ConfigValidation{MaxLength: 256}},
 			{Key: "permission_ids_by_user", Name: "Server-managed document access by user", Type: connector.ConfigFieldJSON},
+			{Key: "document_permission_ids", Name: "Server-managed upload document ACL", Type: connector.ConfigFieldJSON},
 		},
 		SecretFields: []connector.SecretField{{Key: "api_key", Name: "Knowledge service API key", Required: true, CredentialKind: connector.SecretCredentialBearerToken, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestOptional}},
 	}
@@ -133,6 +134,9 @@ func (p *provider) ValidateConfig(connection connector.Connection) error {
 		return err
 	}
 	_, err = permissions(connection, "")
+	if err == nil {
+		_, _, err = documentPermissionHeader(connection)
+	}
 	return err
 }
 
@@ -226,15 +230,23 @@ func (p *provider) request(ctx context.Context, connection connector.Connection,
 }
 
 func (p *provider) exchange(ctx context.Context, method, target, contentType string, body []byte, token, kb string) (connector.TypedResult[Output], error) {
+	return p.exchangeHeaders(ctx, method, target, contentType, body, token, kb, nil)
+}
+
+func (p *provider) exchangeHeaders(ctx context.Context, method, target, contentType string, body []byte, token, kb string, extra map[string][]string) (connector.TypedResult[Output], error) {
 	var result connector.TypedResult[Output]
 	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 	if ctx.Err() != nil {
 		return result, ctx.Err()
 	}
+	headers := map[string][]string{"Content-Type": {contentType}, "Accept": {"application/json"}}
+	for name, values := range extra {
+		headers[name] = append([]string(nil), values...)
+	}
 	response, err := p.transport.RoundTripHTTP(ctx, connector.HTTPRequest{
 		Method: method, URL: target, Body: body, MaxResponseBytes: responseLimit,
-		Headers:       map[string][]string{"Content-Type": {contentType}, "Accept": {"application/json"}},
+		Headers:       headers,
 		SecretHeaders: map[string][]string{"Authorization": {"Bearer " + token}},
 	})
 	if err != nil {

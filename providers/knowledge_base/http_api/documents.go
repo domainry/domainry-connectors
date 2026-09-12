@@ -5,18 +5,23 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 
 	connector "github.com/domainry/domainry-connector-sdk"
 )
 
-const MaxDocumentBytes = 16 << 20
+const MaxDocumentBytes = 10 << 20
+
+var documentWriteIDPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$`)
+var documentWriteFilenamePattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9 ._-]{0,254}$`)
 
 // Writes report the upstream acknowledgement, not indexing completion. The
-// API has no verified idempotency/fencing or atomic ACL update contract, so the
-// host must serialize document generations and reconcile uncertain writes.
+// ACL commands use the host's stable RequestRef, but this does not establish
+// full content-write idempotency. Hosts still serialize document generations
+// and reconcile uncertain writes without blindly repeating uploads.
 var PutDocument = connector.CallOperation[PutDocumentInput, Output]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "put_document", ContractSHA256: "ada514ca5026f94fbe6191208dcd185567e2124d0fa04caba9d0ef8795d0f3c1", Reliability: documentWriteReliability()}
-var DeleteDocument = connector.CallOperation[DocumentInput, Output]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "delete_document", ContractSHA256: "4729fefbfaf34173e5f8d651216f66c293091af7a4f72240004b1557e49054b6", Reliability: documentWriteReliability()}
+var DeleteDocument = connector.CallOperation[DocumentInput, Output]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "delete_document", ContractSHA256: "e4bec5d6d992035b91bf019b55a609307dc56f401c89ef78709f74f57e8e8aa8", Reliability: documentDeleteReliability()}
 var DocumentStatus = connector.CallOperation[DocumentInput, DocumentStatusOutput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "document_status", ContractSHA256: "7b5608d5de92711c8069d7f0df8e41c789175584f5cd94dbe6e1e714331eb9cb", Reliability: readReliability()}
 
 type DocumentInput struct {
@@ -43,7 +48,16 @@ func documentWriteReliability() connector.ReliabilityContract {
 	return connector.ReliabilityContract{Effect: connector.EffectWrite, Idempotency: connector.IdempotencyContract{Strategy: connector.IdempotencyNone}, Reconciliation: connector.ReconciliationNone, Compensation: connector.CompensationContract{Mode: connector.CompensationNone}}
 }
 
-func (p *provider) documentWrite(ctx context.Context, connection connector.Connection, secrets map[string]string, principal connector.Principal, method, id, filename string, content []byte) (connector.TypedResult[Output], error) {
+// kb-search-api handler/push.go DeleteKbDocument synchronously invokes purge_doc;
+// the service contract explicitly allows repeated deletion (zero remaining
+// statistics). Keep PUT separate: its request ID only fences ACL commands.
+func documentDeleteReliability() connector.ReliabilityContract {
+	r := documentWriteReliability()
+	r.Idempotency.Strategy = connector.IdempotencyNatural
+	return r
+}
+
+func (p *provider) documentWrite(ctx context.Context, connection connector.Connection, secrets map[string]string, principal connector.Principal, method, id, filename string, content []byte, requestRef string) (connector.TypedResult[Output], error) {
 	var zero connector.TypedResult[Output]
 	if !principal.IsAuthenticated || !validText(principal.UserID, 255) || connection.WorkspaceID == "" || principal.WorkspaceID != connection.WorkspaceID {
 		return zero, permanent("access_denied")
@@ -52,7 +66,7 @@ func (p *provider) documentWrite(ctx context.Context, connection connector.Conne
 	if err != nil {
 		return zero, err
 	}
-	if kb == "." || kb == ".." || strings.ContainsAny(kb, "/\\") || !validText(id, 4096) {
+	if kb == "." || kb == ".." || strings.ContainsAny(kb, "/\\") || !documentWriteIDPattern.MatchString(id) {
 		return zero, permanent("request_invalid")
 	}
 	token := strings.TrimSpace(secrets["api_key"])
@@ -60,21 +74,26 @@ func (p *provider) documentWrite(ctx context.Context, connection connector.Conne
 		return zero, permanent("access_denied")
 	}
 	query := url.Values{"doc_id": {id}}
+	var headers map[string][]string
 	if method == http.MethodPost {
-		if !validText(filename, 255) || filename == "." || filename == ".." || strings.ContainsAny(filename, "/\\\r\n") || len(content) < 1 || len(content) > MaxDocumentBytes {
+		if !documentWriteFilenamePattern.MatchString(filename) || strings.TrimSpace(filename) != filename || len(content) < 1 || len(content) > MaxDocumentBytes {
 			return zero, permanent("request_invalid")
 		}
 		query.Set("filename", filename)
+		headers, err = documentPermissionHeaders(connection, requestRef)
+		if err != nil {
+			return zero, err
+		}
 	}
-	return p.exchange(ctx, method, base+"/v1/kb/kbs/"+url.PathEscape(kb)+"/documents?"+query.Encode(), "application/octet-stream", content, token, kb)
+	return p.exchangeHeaders(ctx, method, base+"/v1/kb/kbs/"+url.PathEscape(kb)+"/documents?"+query.Encode(), "application/octet-stream", content, token, kb, headers)
 }
 
 func (p *provider) putDocument(ctx context.Context, r connector.TypedRequest[PutDocumentInput]) (connector.TypedResult[Output], error) {
-	return p.documentWrite(ctx, r.Connection, r.Secrets, r.Principal, http.MethodPost, r.Input.DocID, r.Input.Filename, r.Input.Content)
+	return p.documentWrite(ctx, r.Connection, r.Secrets, r.Principal, http.MethodPost, r.Input.DocID, r.Input.Filename, r.Input.Content, r.RequestRef)
 }
 
 func (p *provider) deleteDocument(ctx context.Context, r connector.TypedRequest[DocumentInput]) (connector.TypedResult[Output], error) {
-	return p.documentWrite(ctx, r.Connection, r.Secrets, r.Principal, http.MethodDelete, r.Input.DocID, "", nil)
+	return p.documentWrite(ctx, r.Connection, r.Secrets, r.Principal, http.MethodDelete, r.Input.DocID, "", nil, "")
 }
 
 func (p *provider) documentStatus(ctx context.Context, r connector.TypedRequest[DocumentInput]) (connector.TypedResult[DocumentStatusOutput], error) {

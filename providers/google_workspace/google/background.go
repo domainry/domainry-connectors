@@ -103,7 +103,7 @@ func (p *provider) processGmailSync(ctx context.Context, request connector.Backg
 	profile, updates, err := p.backgroundCall(ctx, request, GmailGetProfile.Key, GmailGetProfile.ContractSHA256, map[string]any{}, secrets)
 	mergeStrings(secrets, updates)
 	if err != nil {
-		return connector.BackgroundResult{}, err
+		return connector.BackgroundResult{SecretUpdates: updates}, err
 	}
 	account, currentHistoryID := backgroundString(profile, "emailAddress"), backgroundString(profile, "historyId")
 	if account == "" || currentHistoryID == "" {
@@ -129,7 +129,7 @@ func (p *provider) processGmailSync(ctx context.Context, request connector.Backg
 		}
 	}
 	if err != nil {
-		return connector.BackgroundResult{}, err
+		return connector.BackgroundResult{SecretUpdates: updates}, err
 	}
 	state.AccountEmail, state.HistoryID = account, currentHistoryID
 	raw, _ := json.Marshal(state)
@@ -261,12 +261,12 @@ func (p *provider) processGmailWatch(ctx context.Context, request connector.Back
 		mergeStrings(secrets, currentUpdates)
 		mergeStrings(updates, currentUpdates)
 		if err != nil {
-			return connector.BackgroundResult{}, err
+			return connector.BackgroundResult{SecretUpdates: updates}, err
 		}
 		watch, currentUpdates, err := p.backgroundCall(ctx, request, GmailWatch.Key, GmailWatch.ContractSHA256, map[string]any{"topic_name": "projects/" + projectID + "/topics/" + topicID, "label_id": backgroundConfig(request.Connection.Config, "gmail_ingest_label", "INBOX")}, secrets)
 		mergeStrings(updates, currentUpdates)
 		if err != nil {
-			return connector.BackgroundResult{}, err
+			return connector.BackgroundResult{SecretUpdates: updates}, err
 		}
 		state.ExpiresAt = expirationRFC3339(backgroundString(watch, "expiration"))
 		state.NextRenewAt = request.Now.Add(24 * time.Hour).Format(time.RFC3339)
@@ -278,7 +278,7 @@ func (p *provider) processGmailWatch(ctx context.Context, request connector.Back
 	pull, currentUpdates, err := p.backgroundCall(ctx, request, PubSubPull.Key, PubSubPull.ContractSHA256, map[string]any{"project_id": projectID, "subscription_id": subscriptionID, "max_messages": 25}, secrets)
 	mergeStrings(updates, currentUpdates)
 	if err != nil {
-		return connector.BackgroundResult{}, err
+		return connector.BackgroundResult{SecretUpdates: updates}, err
 	}
 	events, ackIDs := []connector.BackgroundEvent{}, []string{}
 	for _, received := range backgroundMapSlice(pull["receivedMessages"]) {

@@ -113,7 +113,7 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 }
 func schema() connector.ProviderSchema {
 	min, max := float64(1), float64(120)
-	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.0", ConfigFields: []connector.ConfigField{
+	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.1", ConfigFields: []connector.ConfigField{
 		{Key: "base_url", Name: "eSignature REST API base URL", Type: connector.ConfigFieldText, Required: true}, {Key: "account_id", Name: "Docusign account ID", Type: connector.ConfigFieldText, Required: true},
 		{Key: "token_url", Name: "OAuth token URL", Type: connector.ConfigFieldText, Default: json.RawMessage(`"https://account.docusign.com/oauth/token"`)}, {Key: "timeout_seconds", Name: "Timeout seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`30`), Validation: connector.ConfigValidation{Min: &min, Max: &max}},
 	}, SecretFields: []connector.SecretField{
@@ -196,7 +196,7 @@ func (p *provider) testConnection(ctx context.Context, r connector.TypedRequest[
 func (p *provider) TestConnection(ctx context.Context, r connector.TestConnectionRequest) (connector.TestConnectionResult, error) {
 	result, err := p.testConnection(ctx, connector.TypedRequest[struct{}]{Connection: r.Connection, Secrets: r.Secrets})
 	if err != nil {
-		return connector.TestConnectionResult{}, err
+		return connector.TestConnectionResult{SecretUpdates: result.SecretUpdates}, err
 	}
 	details, _ := json.Marshal(result.Output)
 	return connector.TestConnectionResult{Connected: true, Details: details, SecretUpdates: result.SecretUpdates}, nil

@@ -87,6 +87,24 @@ func TestUnauthorizedRefreshUsesBasicAuthAndReturnsSecretUpdate(t *testing.T) {
 	}
 }
 
+func TestConnectionRetainsRotationWhenFollowupFails(t *testing.T) {
+	transport := &recordingTransport{respond: func(request connector.HTTPRequest) (connector.HTTPResponse, error) {
+		if strings.HasSuffix(request.URL, "/oauth/token") {
+			return connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"access_token":"fresh"}`)}, nil
+		}
+		if request.SecretHeaders["Authorization"][0] == "Bearer stale" {
+			return connector.HTTPResponse{StatusCode: 401}, nil
+		}
+		return connector.HTTPResponse{StatusCode: 503}, nil
+	}}
+	adapter, _ := New(transport)
+	result, err := adapter.(connector.ConnectionTester).TestConnection(t.Context(), connector.TestConnectionRequest{Connection: validConnection(), Secrets: map[string]string{"access_token": "stale", "client_id": "client", "client_secret": "secret"}})
+	classification, ok := connector.ErrorClassificationOf(err)
+	if !ok || classification != connector.ErrorRetryable || result.Connected || result.SecretUpdates["access_token"] != "fresh" || len(transport.requests) != 3 {
+		t.Fatalf("result=%+v requests=%d classification=%q err=%v", result, len(transport.requests), classification, err)
+	}
+}
+
 func TestValidationInputsAndFailureClassification(t *testing.T) {
 	adapter, _ := New(&recordingTransport{})
 	validator := adapter.(connector.ConfigValidator)

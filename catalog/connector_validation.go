@@ -193,7 +193,7 @@ func validateConnectorFields(kind string, fields []FieldSchema, secret bool) err
 				return fmt.Errorf("%s field %q requires a boolean default", kind, field.Key)
 			}
 		case "json":
-			if field.Config["json_shape"] != "object" {
+			if field.Config["json_shape"] != "object" && field.Config["json_shape"] != "array" {
 				return fmt.Errorf("%s field %q requires an explicit JSON shape", kind, field.Key)
 			}
 		}
@@ -384,8 +384,18 @@ func providerConfigFieldValueMatchesType(value any, field FieldSchema) bool {
 		_, ok := value.(bool)
 		return ok
 	case "json":
-		_, err := json.Marshal(value)
-		return err == nil
+		raw, err := json.Marshal(value)
+		if err != nil || len(raw) == 0 {
+			return false
+		}
+		switch field.Config["json_shape"] {
+		case "object":
+			return raw[0] == '{'
+		case "array":
+			return raw[0] == '['
+		default:
+			return false
+		}
 	default:
 		return field.Config["contract_owner"] != "connector"
 	}

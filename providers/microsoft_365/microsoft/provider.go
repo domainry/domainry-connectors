@@ -1,4 +1,4 @@
-// Package microsoft implements the official Microsoft 365 synchronization Provider.
+// Package microsoft implements the official Microsoft 365 account Provider.
 package microsoft
 
 import (
@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	connector "github.com/domainry/domainry-connector-sdk"
 	"github.com/domainry/domainry-connectors/internal/oauth2"
@@ -49,13 +50,14 @@ func readReliability() connector.ReliabilityContract {
 type provider struct {
 	connector.Adapter
 	transport connector.Transport
+	now       func() time.Time
 }
 
 func New(transport connector.Transport) (connector.Adapter, error) {
 	if transport == nil {
 		return nil, errors.New("Microsoft 365 transport is required")
 	}
-	p := &provider{transport: transport}
+	p := &provider{transport: transport, now: time.Now}
 	bindings := []func() (connector.BoundOperation, error){func() (connector.BoundOperation, error) {
 		return connector.BindCall(SyncCalendar, p.sync("/me/events"))
 	}, func() (connector.BoundOperation, error) {
@@ -64,7 +66,28 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 		return connector.BindCall(SyncOneDriveFileRefs, p.sync("/me/drive/root/children"))
 	}, func() (connector.BoundOperation, error) {
 		return connector.BindCall(SyncOutlookMail, p.sync("/me/messages"))
-	}, func() (connector.BoundOperation, error) { return connector.BindCall(TestConnection, p.test) }}
+	}, func() (connector.BoundOperation, error) { return connector.BindCall(TestConnection, p.test) },
+		func() (connector.BoundOperation, error) { return connector.BindCall(CalendarList, p.calendarList) },
+		func() (connector.BoundOperation, error) {
+			return connector.BindCall(CalendarEventInspect, p.calendarEventInspect)
+		},
+		func() (connector.BoundOperation, error) {
+			return connector.BindCall(CalendarEventCreate, p.calendarEventCreate)
+		},
+		func() (connector.BoundOperation, error) {
+			return connector.BindCall(CalendarEventUpdate, p.calendarEventUpdate)
+		},
+		func() (connector.BoundOperation, error) { return connector.BindCall(MailSend, p.mailSend) },
+		func() (connector.BoundOperation, error) { return connector.BindCall(MailReply, p.mailReply) },
+		func() (connector.BoundOperation, error) { return connector.BindCall(MailList, p.mailList) },
+		func() (connector.BoundOperation, error) { return connector.BindCall(MailSearch, p.mailSearch) },
+		func() (connector.BoundOperation, error) { return connector.BindCall(MailRead, p.mailRead) },
+		func() (connector.BoundOperation, error) { return connector.BindCall(CalendarEvents, p.calendarEvents) },
+		func() (connector.BoundOperation, error) { return connector.BindCall(CalendarEvent, p.calendarEvent) },
+		func() (connector.BoundOperation, error) {
+			return connector.BindCall(CalendarAvailability, p.calendarAvailability)
+		},
+	}
 	operations := make([]connector.BoundOperation, 0, len(bindings))
 	for _, bind := range bindings {
 		op, err := bind()
@@ -82,7 +105,7 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 }
 func schema() connector.ProviderSchema {
 	minimum, maximum := float64(1), float64(maximumTimeout)
-	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.0", ConfigFields: []connector.ConfigField{{Key: "graph_base_url", Name: "Microsoft Graph Base URL", Type: connector.ConfigFieldText, Default: json.RawMessage(`"https://graph.microsoft.com/v1.0"`)}, {Key: "token_url", Name: "OAuth Token URL", Type: connector.ConfigFieldText}, {Key: "tenant_id", Name: "Tenant ID", Type: connector.ConfigFieldText, Required: true}, {Key: "scope", Name: "OAuth Scope", Type: connector.ConfigFieldText, Default: json.RawMessage(`"https://graph.microsoft.com/.default offline_access"`)}, {Key: "timeout_seconds", Name: "Timeout Seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`30`), Validation: connector.ConfigValidation{Min: &minimum, Max: &maximum}}}, SecretFields: []connector.SecretField{secret("access_token", "Access Token", true, connector.SecretCredentialBearerToken, connector.SecretRotationOAuthRefresh), secret("refresh_token", "Refresh Token", false, connector.SecretCredentialRefreshToken, connector.SecretRotationOAuthRefresh), secret("client_id", "OAuth Client ID", false, connector.SecretCredentialIdentifier, connector.SecretRotationManual), secret("client_secret", "OAuth Client Secret", false, connector.SecretCredentialOAuthClientSecret, connector.SecretRotationManual)}}
+	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.3.0", ConfigFields: []connector.ConfigField{{Key: "graph_base_url", Name: "Microsoft Graph Base URL", Type: connector.ConfigFieldText, Default: json.RawMessage(`"https://graph.microsoft.com/v1.0"`)}, {Key: "token_url", Name: "OAuth Token URL", Type: connector.ConfigFieldText}, {Key: "tenant_id", Name: "Tenant ID", Type: connector.ConfigFieldText, Required: true}, {Key: "scope", Name: "OAuth Scope", Type: connector.ConfigFieldText, Default: json.RawMessage(`"https://graph.microsoft.com/.default offline_access"`)}, {Key: "timeout_seconds", Name: "Timeout Seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`30`), Validation: connector.ConfigValidation{Min: &minimum, Max: &maximum}}}, SecretFields: []connector.SecretField{secret("access_token", "Access Token", true, connector.SecretCredentialBearerToken, connector.SecretRotationOAuthRefresh), secret("refresh_token", "Refresh Token", false, connector.SecretCredentialRefreshToken, connector.SecretRotationOAuthRefresh), secret("client_id", "OAuth Client ID", false, connector.SecretCredentialIdentifier, connector.SecretRotationManual), secret("client_secret", "OAuth Client Secret", false, connector.SecretCredentialOAuthClientSecret, connector.SecretRotationManual)}}
 }
 func secret(key, name string, required bool, kind connector.SecretCredentialKind, rotation connector.SecretRotationPolicy) connector.SecretField {
 	return connector.SecretField{Key: key, Name: name, Required: required, CredentialKind: kind, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: rotation, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}
@@ -126,17 +149,23 @@ func (p *provider) test(ctx context.Context, request connector.TypedRequest[stru
 func (p *provider) TestConnection(ctx context.Context, request connector.TestConnectionRequest) (connector.TestConnectionResult, error) {
 	result, err := p.test(ctx, connector.TypedRequest[struct{}]{Connection: request.Connection, Secrets: request.Secrets})
 	if err != nil {
-		return connector.TestConnectionResult{}, err
+		return connector.TestConnectionResult{SecretUpdates: result.SecretUpdates}, err
 	}
 	details, _ := json.Marshal(result.Output)
 	return connector.TestConnectionResult{Connected: true, Details: details, SecretUpdates: result.SecretUpdates}, nil
 }
-func (p *provider) executeWithRefresh(ctx context.Context, connection connector.Connection, secrets map[string]string, endpoint string, query url.Values) (connector.TypedResult[Response], error) {
+func (p *provider) executeWithRefresh(ctx context.Context, connection connector.Connection, secrets map[string]string, endpoint string, query url.Values, preferences ...string) (connector.TypedResult[Response], error) {
+	return p.executeGraphWithRefresh(ctx, connection, secrets, http.MethodGet, endpoint, query, nil, "", preferences...)
+}
+
+// Existing read operations retain GET semantics. Mutations supply only native
+// provider-owned method/body/ETag, never caller-selected headers or destinations.
+func (p *provider) executeGraphWithRefresh(ctx context.Context, connection connector.Connection, secrets map[string]string, method, endpoint string, query url.Values, body map[string]any, version string, preferences ...string) (connector.TypedResult[Response], error) {
 	token := strings.TrimSpace(secrets["access_token"])
 	if token == "" {
 		return empty(), permanent("access_token_required", "resolved access token is required")
 	}
-	result, status, err := p.execute(ctx, connection, endpoint, query, token)
+	result, status, err := p.execute(ctx, connection, method, endpoint, query, body, version, token, preferences...)
 	if status != http.StatusUnauthorized {
 		return result, err
 	}
@@ -148,14 +177,14 @@ func (p *provider) executeWithRefresh(ctx context.Context, connection connector.
 	if refreshErr != nil {
 		return connector.TypedResult[Response]{ResponseRef: "oauth:refresh_failed"}, refreshErr
 	}
-	result, _, err = p.execute(ctx, connection, endpoint, query, updated.AccessToken)
+	result, _, err = p.execute(ctx, connection, method, endpoint, query, body, version, updated.AccessToken, preferences...)
 	result.SecretUpdates = map[string]string{"access_token": updated.AccessToken}
 	if updated.RefreshToken != "" {
 		result.SecretUpdates["refresh_token"] = updated.RefreshToken
 	}
 	return result, err
 }
-func (p *provider) execute(ctx context.Context, connection connector.Connection, endpoint string, query url.Values, token string) (connector.TypedResult[Response], int, error) {
+func (p *provider) execute(ctx context.Context, connection connector.Connection, method, endpoint string, query url.Values, body map[string]any, version, token string, preferences ...string) (connector.TypedResult[Response], int, error) {
 	if err := p.ValidateConfig(connection); err != nil {
 		return empty(), 0, err
 	}
@@ -164,9 +193,27 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 		return empty(), 0, permanent("endpoint_invalid", "endpoint is invalid")
 	}
 	parsed.RawQuery = query.Encode()
-	response, transportErr := p.transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: http.MethodGet, URL: parsed.String(), Headers: map[string][]string{"Accept": {"application/json"}}, SecretHeaders: map[string][]string{"Authorization": {"Bearer " + token}}, MaxResponseBytes: responseLimit})
+	var raw []byte
+	if body != nil {
+		raw, err = json.Marshal(body)
+		if err != nil {
+			return empty(), 0, permanent("request_invalid", "invalid Graph request")
+		}
+	}
+	headers := map[string][]string{"Accept": {"application/json"}}
+	if body != nil {
+		headers["Content-Type"] = []string{"application/json"}
+	}
+	if version != "" {
+		headers["If-Match"] = []string{version}
+	}
+	if len(preferences) != 0 {
+		headers["Prefer"] = []string{strings.Join(preferences, ", ")}
+	}
+	write := method != http.MethodGet
+	response, transportErr := p.transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: method, URL: parsed.String(), Headers: headers, SecretHeaders: map[string][]string{"Authorization": {"Bearer " + token}}, Body: raw, MaxResponseBytes: responseLimit})
 	if transportErr != nil {
-		return empty(), 0, connector.RetryableError("microsoft.network_error", transportErr)
+		return empty(), 0, graphTransportFailure(write, "microsoft.network_error", transportErr)
 	}
 	status, ref := response.StatusCode, "http:"+strconv.Itoa(response.StatusCode)
 	payload := Response{}
@@ -177,15 +224,25 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 		if status == http.StatusUnauthorized {
 			return connector.TypedResult[Response]{Output: payload, ResponseRef: ref}, status, connector.PermanentError(code, cause)
 		}
-		if status == http.StatusTooManyRequests || status == http.StatusRequestTimeout || status >= 500 {
+		if status == http.StatusTooManyRequests {
 			return connector.TypedResult[Response]{Output: payload, ResponseRef: ref}, status, connector.RetryableError(code, cause)
+		}
+		if status == http.StatusRequestTimeout || status >= 500 {
+			return connector.TypedResult[Response]{Output: payload, ResponseRef: ref}, status, graphTransportFailure(write, code, cause)
 		}
 		return connector.TypedResult[Response]{Output: payload, ResponseRef: ref}, status, connector.PermanentError(code, cause)
 	}
 	if !valid {
-		return connector.TypedResult[Response]{ResponseRef: ref}, status, connector.RetryableError("microsoft.response_invalid", errors.New("Microsoft Graph response is invalid JSON"))
+		return connector.TypedResult[Response]{ResponseRef: ref}, status, graphTransportFailure(write, "microsoft.response_invalid", errors.New("Microsoft Graph response is invalid JSON"))
 	}
 	return connector.TypedResult[Response]{Output: payload, ResponseRef: ref}, status, nil
+}
+
+func graphTransportFailure(write bool, code string, cause error) error {
+	if write {
+		return connector.UncertainError(code, cause)
+	}
+	return connector.RetryableError(code, cause)
 }
 func graphBase(connection connector.Connection) string {
 	return strings.TrimRight(configDefault(connection, "graph_base_url", defaultGraphBaseURL), "/")

@@ -119,7 +119,7 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 
 func schema() connector.ProviderSchema {
 	min, max := float64(1), float64(120)
-	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.0", ConfigFields: []connector.ConfigField{
+	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.1", ConfigFields: []connector.ConfigField{
 		{Key: "business_id", Name: "Booking business ID", Type: connector.ConfigFieldText, Required: true},
 		{Key: "base_url", Name: "Microsoft Graph base URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://graph.microsoft.com/v1.0"`)},
 		{Key: "token_url", Name: "Microsoft identity token URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://login.microsoftonline.com/common/oauth2/v2.0/token"`)},
@@ -236,7 +236,7 @@ func (p *provider) callTestConnection(ctx context.Context, request connector.Typ
 func (p *provider) TestConnection(ctx context.Context, request connector.TestConnectionRequest) (connector.TestConnectionResult, error) {
 	result, err := p.executeWithRefresh(ctx, request.Connection, request.Secrets, http.MethodGet, businessPath(request.Connection), nil, nil, false)
 	if err != nil {
-		return connector.TestConnectionResult{}, err
+		return connector.TestConnectionResult{SecretUpdates: result.SecretUpdates}, err
 	}
 	details, err := json.Marshal(map[string]any{"status": result.Output["status"], "response_ref": result.ResponseRef})
 	if err != nil {

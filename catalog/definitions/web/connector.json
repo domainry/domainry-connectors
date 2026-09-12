@@ -1,0 +1,544 @@
+{
+  "key": "web",
+  "type": "web",
+  "provider": "web",
+  "version": "0.1.0",
+  "minimum_runtime_version": "0.1.0",
+  "source": "connectors:web",
+  "classification": "external_connector",
+  "lifecycle_status": "active",
+  "name": "Public web",
+  "description": "Search and read public sources through a governed llm-proxy connection.",
+  "i18n": {
+    "en-US": {
+      "name": "Public web",
+      "description": "Search and read public sources through a governed llm-proxy connection."
+    },
+    "zh-CN": {
+      "name": "公开网页",
+      "description": "通过受管 llm-proxy 连接搜索和读取公开来源。"
+    }
+  },
+  "feature_flags": [
+    "operations",
+    "provider_catalog",
+    "typed_config",
+    "typed_secrets"
+  ],
+  "capabilities": [
+    "public_web_search",
+    "public_web_read",
+    "bounded_source_evidence"
+  ],
+  "definition_ready": true,
+  "adapter_ready": true,
+  "connection_ready": false,
+  "readiness": "adapter_available",
+  "config_fields": [
+    "base_url",
+    "allowed_source_hosts",
+    "processor",
+    "timeout_seconds"
+  ],
+  "secret_refs": [
+    "api_token"
+  ],
+  "providers": [
+    {
+      "key": "llm_proxy",
+      "provider_revision": "1.0.0",
+      "name": "llm-proxy",
+      "description": "Fixed search and Jina Reader routes. Read effect does not guarantee free retries.",
+      "i18n": {
+        "en-US": {
+          "name": "llm-proxy",
+          "description": "Fixed search and Jina Reader routes. Read effect does not guarantee free retries."
+        },
+        "zh-CN": {
+          "name": "llm-proxy",
+          "description": "固定搜索与 Jina Reader 路由；只读效果不保证重复请求免计费。"
+        }
+      },
+      "config_fields": [
+        {
+          "key": "base_url",
+          "type": "text",
+          "name": "llm-proxy origin",
+          "description": "Exact host-governed origin; HTTPS or explicit loopback HTTP.",
+          "i18n": {
+            "en-US": {
+              "name": "llm-proxy origin",
+              "description": "Exact host-governed origin; HTTPS or explicit loopback HTTP."
+            },
+            "zh-CN": {
+              "name": "llm-proxy 服务地址",
+              "description": "由宿主明确允许的服务原点；HTTPS 或显式本机 HTTP。"
+            }
+          },
+          "required": true,
+          "validation": {
+            "max_length": 2048
+          }
+        },
+        {
+          "key": "allowed_source_hosts",
+          "type": "json",
+          "name": "Allowed source hosts",
+          "description": "One to sixteen exact public DNS hosts; does not attest remote DNS or redirects.",
+          "i18n": {
+            "en-US": {
+              "name": "Allowed source hosts",
+              "description": "One to sixteen exact public DNS hosts; does not attest remote DNS or redirects."
+            },
+            "zh-CN": {
+              "name": "允许的来源域名",
+              "description": "1 至 16 个精确公开 DNS 域名；不证明远端 DNS 或重定向策略。"
+            }
+          },
+          "required": true,
+          "config": {
+            "json_shape": "array"
+          }
+        },
+        {
+          "key": "processor",
+          "type": "select",
+          "name": "Search processor",
+          "description": "Configured by the service administrator; callers cannot override it.",
+          "i18n": {
+            "en-US": {
+              "name": "Search processor",
+              "description": "Configured by the service administrator; callers cannot override it."
+            },
+            "zh-CN": {
+              "name": "搜索处理器",
+              "description": "由服务管理员选择，调用参数不能覆盖。"
+            }
+          },
+          "required": false,
+          "default": "base",
+          "validation": {
+            "options": [
+              "base",
+              "pro"
+            ]
+          }
+        },
+        {
+          "key": "timeout_seconds",
+          "type": "integer",
+          "name": "Timeout seconds",
+          "description": "Total request timeout, bounded by the caller deadline.",
+          "i18n": {
+            "en-US": {
+              "name": "Timeout seconds",
+              "description": "Total request timeout, bounded by the caller deadline."
+            },
+            "zh-CN": {
+              "name": "超时秒数",
+              "description": "请求总超时，同时服从调用方更早的截止时间。"
+            }
+          },
+          "required": false,
+          "default": 40,
+          "validation": {
+            "min": 1,
+            "max": 60
+          }
+        }
+      ],
+      "secret_fields": [
+        {
+          "key": "api_token",
+          "type": "text",
+          "name": "Passport token",
+          "description": "Raw Passport token privately injected by the host.",
+          "i18n": {
+            "en-US": {
+              "name": "Passport token",
+              "description": "Raw Passport token privately injected by the host."
+            },
+            "zh-CN": {
+              "name": "Passport 服务令牌",
+              "description": "原始 Passport 令牌，由宿主在发出请求时私有注入。"
+            }
+          },
+          "required": true,
+          "config": {
+            "sensitive": true,
+            "write_only": true,
+            "credential_kind": "bearer_token",
+            "material_format": "opaque",
+            "rotation_policy": "manual",
+            "expiry_policy": "optional",
+            "test_requirement": "optional"
+          }
+        }
+      ],
+      "operation_keys": [
+        "web_fetch",
+        "web_search"
+      ],
+      "readiness": "provider_available"
+    }
+  ],
+  "operations": [
+    {
+      "key": "web_fetch",
+      "name": "Read public page",
+      "description": "Untrusted extracted page text; source completeness remains unknown.",
+      "i18n": {
+        "en-US": {
+          "name": "Read public page",
+          "description": "Untrusted extracted page text; source completeness remains unknown."
+        },
+        "zh-CN": {
+          "name": "读取公开网页",
+          "description": "返回不可信的页面提取文本，来源完整性保持未知。"
+        }
+      },
+      "input": [
+        {
+          "key": "url",
+          "type": "text",
+          "name": "Page URL",
+          "description": "Public HTTP(S) URL allowed by the configured source policy.",
+          "i18n": {
+            "en-US": {
+              "name": "Page URL",
+              "description": "Public HTTP(S) URL allowed by the configured source policy."
+            },
+            "zh-CN": {
+              "name": "页面 URL",
+              "description": "配置允许来源中的公开 HTTP(S) URL。"
+            }
+          },
+          "required": true,
+          "validation": {
+            "max_length": 4096
+          }
+        },
+        {
+          "key": "max_content_bytes",
+          "type": "integer",
+          "name": "Content bytes",
+          "description": "Default 16384 UTF-8 bytes; explicit 1024 to 65536.",
+          "i18n": {
+            "en-US": {
+              "name": "Content bytes",
+              "description": "Default 16384 UTF-8 bytes; explicit 1024 to 65536."
+            },
+            "zh-CN": {
+              "name": "正文字节数",
+              "description": "默认 16384 个 UTF-8 字节；显式设置为 1024 至 65536。"
+            }
+          },
+          "required": false
+        }
+      ],
+      "output": [
+        {
+          "key": "requested_url",
+          "type": "text",
+          "name": "Requested URL",
+          "description": "Canonical requested URL.",
+          "i18n": {
+            "en-US": {
+              "name": "Requested URL",
+              "description": "Canonical requested URL."
+            },
+            "zh-CN": {
+              "name": "请求 URL",
+              "description": "规范化的请求 URL。"
+            }
+          },
+          "required": true
+        },
+        {
+          "key": "url",
+          "type": "text",
+          "name": "Declared source URL",
+          "description": "Service-declared source, not proof of final network destination.",
+          "i18n": {
+            "en-US": {
+              "name": "Declared source URL",
+              "description": "Service-declared source, not proof of final network destination."
+            },
+            "zh-CN": {
+              "name": "服务声明来源 URL",
+              "description": "服务声明的来源，不证明最终网络目标。"
+            }
+          },
+          "required": true
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "name": "Page title",
+          "description": "Bounded title.",
+          "i18n": {
+            "en-US": {
+              "name": "Page title",
+              "description": "Bounded title."
+            },
+            "zh-CN": {
+              "name": "页面标题",
+              "description": "受限标题。"
+            }
+          },
+          "required": true
+        },
+        {
+          "key": "description",
+          "type": "text",
+          "name": "Description",
+          "description": "Bounded description.",
+          "i18n": {
+            "en-US": {
+              "name": "Description",
+              "description": "Bounded description."
+            },
+            "zh-CN": {
+              "name": "页面描述",
+              "description": "受限描述。"
+            }
+          },
+          "required": true
+        },
+        {
+          "key": "content",
+          "type": "text",
+          "name": "Extracted content",
+          "description": "Untrusted bounded text or Markdown.",
+          "i18n": {
+            "en-US": {
+              "name": "Extracted content",
+              "description": "Untrusted bounded text or Markdown."
+            },
+            "zh-CN": {
+              "name": "提取正文",
+              "description": "不可信且受字节限制的文本或 Markdown。"
+            }
+          },
+          "required": true
+        },
+        {
+          "key": "truncated",
+          "type": "boolean",
+          "name": "Locally shortened",
+          "description": "Local shortening indicator.",
+          "i18n": {
+            "en-US": {
+              "name": "Locally shortened",
+              "description": "Local shortening indicator."
+            },
+            "zh-CN": {
+              "name": "本地截断",
+              "description": "本地缩短标记。"
+            }
+          },
+          "required": true
+        },
+        {
+          "key": "source_completeness",
+          "type": "text",
+          "name": "Source completeness",
+          "description": "Unknown unless an upstream partial-page contract exists.",
+          "i18n": {
+            "en-US": {
+              "name": "Source completeness",
+              "description": "Unknown unless an upstream partial-page contract exists."
+            },
+            "zh-CN": {
+              "name": "来源完整性",
+              "description": "缺少上游部分页面契约时保持 unknown。"
+            }
+          },
+          "required": true
+        },
+        {
+          "key": "warnings",
+          "type": "json",
+          "name": "Source warnings",
+          "description": "Bounded service warnings.",
+          "i18n": {
+            "en-US": {
+              "name": "Source warnings",
+              "description": "Bounded service warnings."
+            },
+            "zh-CN": {
+              "name": "来源警告",
+              "description": "受限的服务警告。"
+            }
+          },
+          "required": true,
+          "config": {
+            "json_shape": "array"
+          }
+        }
+      ],
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 40,
+      "timeout_max_seconds": 60,
+      "idempotency_supported": true,
+      "test_supported": true
+    },
+    {
+      "key": "web_search",
+      "name": "Search public pages",
+      "description": "Ranked source excerpts, not an exhaustive search or complete page.",
+      "i18n": {
+        "en-US": {
+          "name": "Search public pages",
+          "description": "Ranked source excerpts, not an exhaustive search or complete page."
+        },
+        "zh-CN": {
+          "name": "搜索公开网页",
+          "description": "返回排名来源片段，不代表所有匹配结果或完整页面。"
+        }
+      },
+      "input": [
+        {
+          "key": "query",
+          "type": "text",
+          "name": "Search objective",
+          "description": "Plain search objective.",
+          "i18n": {
+            "en-US": {
+              "name": "Search objective",
+              "description": "Plain search objective."
+            },
+            "zh-CN": {
+              "name": "搜索目标",
+              "description": "普通搜索目标。"
+            }
+          },
+          "required": true,
+          "validation": {
+            "max_length": 4096
+          }
+        },
+        {
+          "key": "limit",
+          "type": "integer",
+          "name": "Result limit",
+          "description": "Default five, at most ten.",
+          "i18n": {
+            "en-US": {
+              "name": "Result limit",
+              "description": "Default five, at most ten."
+            },
+            "zh-CN": {
+              "name": "结果数量",
+              "description": "默认五条，最多十条。"
+            }
+          },
+          "required": false,
+          "validation": {
+            "min": 0,
+            "max": 10
+          }
+        },
+        {
+          "key": "max_excerpt_bytes",
+          "type": "integer",
+          "name": "Excerpt bytes",
+          "description": "Per-result total UTF-8 bytes, default 1500; explicit 100 to 8000.",
+          "i18n": {
+            "en-US": {
+              "name": "Excerpt bytes",
+              "description": "Per-result total UTF-8 bytes, default 1500; explicit 100 to 8000."
+            },
+            "zh-CN": {
+              "name": "片段字节数",
+              "description": "每个结果的 UTF-8 总字节数，默认 1500；显式设置为 100 至 8000。"
+            }
+          },
+          "required": false
+        }
+      ],
+      "output": [
+        {
+          "key": "search_id",
+          "type": "text",
+          "name": "Search ID",
+          "description": "Upstream search identifier.",
+          "i18n": {
+            "en-US": {
+              "name": "Search ID",
+              "description": "Upstream search identifier."
+            },
+            "zh-CN": {
+              "name": "搜索 ID",
+              "description": "上游搜索标识。"
+            }
+          },
+          "required": true
+        },
+        {
+          "key": "items",
+          "type": "json",
+          "name": "Ranked sources",
+          "description": "Canonical source URL, title, bounded excerpts and truncation per item.",
+          "i18n": {
+            "en-US": {
+              "name": "Ranked sources",
+              "description": "Canonical source URL, title, bounded excerpts and truncation per item."
+            },
+            "zh-CN": {
+              "name": "排名来源",
+              "description": "每条包含规范来源 URL、标题、受限片段和截断标记。"
+            }
+          },
+          "required": true,
+          "config": {
+            "json_shape": "array"
+          }
+        },
+        {
+          "key": "scope",
+          "type": "text",
+          "name": "Result scope",
+          "description": "Always ranked_results.",
+          "i18n": {
+            "en-US": {
+              "name": "Result scope",
+              "description": "Always ranked_results."
+            },
+            "zh-CN": {
+              "name": "结果范围",
+              "description": "固定为 ranked_results。"
+            }
+          },
+          "required": true
+        },
+        {
+          "key": "truncated",
+          "type": "boolean",
+          "name": "Locally shortened",
+          "description": "Indicates source filtering or local shortening.",
+          "i18n": {
+            "en-US": {
+              "name": "Locally shortened",
+              "description": "Indicates source filtering or local shortening."
+            },
+            "zh-CN": {
+              "name": "本地截断",
+              "description": "表示来源过滤或本地缩短。"
+            }
+          },
+          "required": true
+        }
+      ],
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 40,
+      "timeout_max_seconds": 60,
+      "idempotency_supported": true,
+      "test_supported": true
+    }
+  ]
+}

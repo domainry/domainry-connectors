@@ -13,7 +13,7 @@ import (
 	connector "github.com/domainry/domainry-connector-sdk"
 )
 
-func TestDocumentWritesUseOriginalBytesAndEncodedScope(t *testing.T) {
+func TestDocumentWritesUseOriginalBytesAndValidatedScope(t *testing.T) {
 	body := []byte{'%', 0, 0xff, 0x80, '\n'}
 	tr := &recordingTransport{response: connector.HTTPResponse{StatusCode: 202, Body: []byte(`{"err_code":0,"data":{"status":"PENDING"}}`)}}
 	a, err := New(tr)
@@ -21,24 +21,28 @@ func TestDocumentWritesUseOriginalBytesAndEncodedScope(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, op := range []connector.OperationDescriptor{PutDocument.Descriptor(), DeleteDocument.Descriptor()} {
-		var input any = DocumentInput{DocID: "doc & x/?=中"}
+		var input any = DocumentInput{DocID: "doc.safe-1"}
 		if op.Key == "put_document" {
-			input = PutDocumentInput{DocID: "doc & x/?=中", Filename: "说明 &费用.pdf", Content: body}
+			input = PutDocumentInput{DocID: "doc.safe-1", Filename: "expenses 2026.pdf", Content: body}
 		}
 		out, err := a.Call(t.Context(), request(op, input))
 		if err != nil {
 			t.Fatal(err)
 		}
-		if op.Reliability.Effect != connector.EffectWrite || op.Reliability.Idempotency.Strategy != connector.IdempotencyNone || op.Reliability.Reconciliation != connector.ReconciliationNone {
+		strategy := connector.IdempotencyNone
+		if op.Key == DeleteDocument.Key {
+			strategy = connector.IdempotencyNatural
+		}
+		if op.Reliability.Effect != connector.EffectWrite || op.Reliability.Idempotency.Strategy != strategy || op.Reliability.Reconciliation != connector.ReconciliationNone {
 			t.Fatal("unverified write guarantees advertised")
 		}
 		r := tr.requests[len(tr.requests)-1]
 		u, err := url.Parse(r.URL)
-		if err != nil || u.Path != "/v1/kb/kbs/bcri/documents" || u.Query().Get("doc_id") != "doc & x/?=中" || r.SecretHeaders["Authorization"][0] != "Bearer private-key" {
+		if err != nil || u.Path != "/v1/kb/kbs/bcri/documents" || u.Query().Get("doc_id") != "doc.safe-1" || r.SecretHeaders["Authorization"][0] != "Bearer private-key" {
 			t.Fatal("document scope escaped")
 		}
 		if op.Key == "put_document" {
-			if r.Method != http.MethodPost || u.Query().Get("filename") != "说明 &费用.pdf" || !bytes.Equal(r.Body, body) || r.Headers["Content-Type"][0] != "application/octet-stream" {
+			if r.Method != http.MethodPost || u.Query().Get("filename") != "expenses 2026.pdf" || !bytes.Equal(r.Body, body) || r.Headers["Content-Type"][0] != "application/octet-stream" {
 				t.Fatal("original document bytes or filename changed")
 			}
 		} else if r.Method != http.MethodDelete || len(u.Query()) != 1 || len(r.Body) != 0 {

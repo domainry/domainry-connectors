@@ -72,11 +72,11 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 
 func schema() connector.ProviderSchema {
 	minimum, maximum := float64(1), float64(60)
-	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.0", ConfigFields: []connector.ConfigField{
+	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.1", ConfigFields: []connector.ConfigField{
 		{Key: "api_base_url", Name: "Google Chat API base URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://chat.googleapis.com/v1"`)},
 		{Key: "space_name", Name: "Default Google Chat space name", Type: connector.ConfigFieldText, Required: true},
 		{Key: "timeout_seconds", Name: "Timeout seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`15`), Validation: connector.ConfigValidation{Min: &minimum, Max: &maximum}},
-	}, SecretFields: []connector.SecretField{{Key: "access_token", Name: "Google OAuth access token", Required: true, CredentialKind: connector.SecretCredentialBearerToken, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: connector.SecretRotationOAuthRefresh, ExpiryPolicy: connector.SecretExpiryRequired, TestRequirement: connector.SecretTestWhenBound}}}
+	}, SecretFields: []connector.SecretField{{Key: "access_token", Name: "Google OAuth access token", Required: true, CredentialKind: connector.SecretCredentialBearerToken, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryRequired, TestRequirement: connector.SecretTestWhenBound}}}
 }
 
 func (p *provider) ValidateConfig(connection connector.Connection) error {

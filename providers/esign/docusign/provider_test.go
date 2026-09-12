@@ -81,6 +81,16 @@ func TestOAuthRefreshAndWebhook(t *testing.T) {
 	}
 }
 
+func TestConnectionRetainsRotationWhenFollowupFails(t *testing.T) {
+	transport := &recordingTransport{responses: []connector.HTTPResponse{{StatusCode: http.StatusUnauthorized}, {StatusCode: http.StatusOK, Body: []byte(`{"access_token":"fresh","refresh_token":"rotated"}`)}, {StatusCode: http.StatusServiceUnavailable}}}
+	adapter, _ := New(transport)
+	result, err := adapter.(connector.ConnectionTester).TestConnection(t.Context(), connector.TestConnectionRequest{Connection: validConnection(), Secrets: map[string]string{"access_token": "stale", "refresh_token": "refresh", "client_id": "client", "client_secret": "secret"}})
+	classification, ok := connector.ErrorClassificationOf(err)
+	if !ok || classification != connector.ErrorRetryable || result.Connected || result.SecretUpdates["access_token"] != "fresh" || result.SecretUpdates["refresh_token"] != "rotated" || len(transport.requests) != 3 {
+		t.Fatalf("result=%+v requests=%d classification=%q err=%v", result, len(transport.requests), classification, err)
+	}
+}
+
 func validConnection() connector.Connection {
 	return connector.Connection{Config: map[string]any{"base_url": "https://api.example.test", "account_id": "account/1", "token_url": "https://account.example.test/oauth/token", "timeout_seconds": 30}}
 }

@@ -139,6 +139,16 @@ func TestUnauthorizedRefreshUsesSecretFormScopeAndReturnsRotations(t *testing.T)
 	}
 }
 
+func TestConnectionRetainsRotationWhenFollowupFails(t *testing.T) {
+	transport := &recordingTransport{responses: []connector.HTTPResponse{{StatusCode: http.StatusUnauthorized}, {StatusCode: http.StatusOK, Body: []byte(`{"access_token":"new-access","refresh_token":"new-refresh"}`)}, {StatusCode: http.StatusServiceUnavailable}}}
+	adapter, _ := New(transport)
+	result, err := adapter.(connector.ConnectionTester).TestConnection(t.Context(), connector.TestConnectionRequest{Connection: connection("http://localhost:8080", "http://localhost:8081/token"), Secrets: secrets()})
+	classification, ok := connector.ErrorClassificationOf(err)
+	if !ok || classification != connector.ErrorRetryable || result.Connected || result.SecretUpdates["access_token"] != "new-access" || result.SecretUpdates["refresh_token"] != "new-refresh" || len(transport.requests) != 3 {
+		t.Fatalf("result=%+v requests=%d classification=%q err=%v", result, len(transport.requests), classification, err)
+	}
+}
+
 func TestFailureClassificationAndInputValidation(t *testing.T) {
 	for _, tc := range []struct {
 		name         string
