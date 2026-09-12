@@ -74,7 +74,15 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 	if err != nil {
 		return nil, err
 	}
-	p.Adapter, err = connector.NewProvider(schema(), search, fetch, put, remove, status)
+	catalogTables, err := connector.BindCall(CatalogAnalysisTables, p.catalogAnalysisTables)
+	if err != nil {
+		return nil, err
+	}
+	readTable, err := connector.BindCall(ReadAnalysisTable, p.readAnalysisTable)
+	if err != nil {
+		return nil, err
+	}
+	p.Adapter, err = connector.NewProvider(schema(), search, fetch, put, remove, status, catalogTables, readTable)
 	return p, err
 }
 
@@ -84,13 +92,14 @@ func readReliability() connector.ReliabilityContract {
 
 func schema() connector.ProviderSchema {
 	return connector.ProviderSchema{
-		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.3.0",
+		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.4.0",
 		ConfigFields: []connector.ConfigField{
 			{Key: "base_url", Name: "API origin", Type: connector.ConfigFieldText, Required: true, Validation: connector.ConfigValidation{MaxLength: 2048}},
 			{Key: "team_id", Name: "Knowledge service team ID", Type: connector.ConfigFieldText, Required: true, Validation: connector.ConfigValidation{MaxLength: 256}},
 			{Key: "kb_id", Name: "Knowledge base ID", Type: connector.ConfigFieldText, Required: true, Validation: connector.ConfigValidation{MaxLength: 256}},
 			{Key: "permission_ids_by_user", Name: "Server-managed document access by user", Type: connector.ConfigFieldJSON},
 			{Key: "document_permission_ids", Name: "Server-managed upload document ACL", Type: connector.ConfigFieldJSON},
+			{Key: "analysis_document_ids", Name: "Server-managed structured documents available for analysis", Type: connector.ConfigFieldJSON},
 		},
 		SecretFields: []connector.SecretField{{Key: "api_key", Name: "Knowledge service API key", Required: true, CredentialKind: connector.SecretCredentialBearerToken, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestOptional}},
 	}
@@ -136,6 +145,11 @@ func (p *provider) ValidateConfig(connection connector.Connection) error {
 	_, err = permissions(connection, "")
 	if err == nil {
 		_, _, err = documentPermissionHeader(connection)
+	}
+	if err == nil {
+		if _, present := connection.Config["analysis_document_ids"]; present {
+			_, err = analysisDocumentIDs(connection)
+		}
 	}
 	return err
 }
@@ -285,6 +299,9 @@ func (p *provider) exchangeHeaders(ctx context.Context, method, target, contentT
 			}
 			if status == 1004 {
 				return result, permanent("not_found")
+			}
+			if status == 409 {
+				return result, permanent("source_changed")
 			}
 			if status != 0 {
 				return result, permanent("failed")

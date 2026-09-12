@@ -2,21 +2,21 @@
   "key": "knowledge_base",
   "type": "knowledge_base",
   "provider": "knowledge_base",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "minimum_runtime_version": "0.1.0",
   "source": "connectors:knowledge_base",
   "classification": "external_connector",
   "lifecycle_status": "active",
   "name": "Knowledge base",
-  "description": "Search indexed documents, read sources, and manage documents through external knowledge services.",
+  "description": "Search indexed documents, read sources, manage documents, and expose complete permission-checked structured tables through external knowledge services.",
   "i18n": {
     "en-US": {
       "name": "Knowledge base",
-      "description": "Search indexed documents, read sources, and manage documents through external knowledge services."
+      "description": "Search indexed documents, read sources, manage documents, and expose complete permission-checked structured tables through external knowledge services."
     },
     "zh-CN": {
       "name": "知识库",
-      "description": "通过外部知识服务检索、读取、推送文档并查询索引状态及删除。"
+      "description": "通过外部知识服务检索、读取、推送文档，并公开经过权限检查的完整结构化表格。"
     }
   },
   "feature_flags": [
@@ -30,7 +30,8 @@
     "document_fetch",
     "document_put",
     "document_status",
-    "document_delete"
+    "document_delete",
+    "structured_table_analysis"
   ],
   "definition_ready": true,
   "adapter_ready": true,
@@ -40,7 +41,8 @@
     "base_url",
     "team_id",
     "kb_id",
-    "permission_ids_by_user"
+    "permission_ids_by_user",
+    "analysis_document_ids"
   ],
   "secret_refs": [
     "api_key"
@@ -48,17 +50,17 @@
   "providers": [
     {
       "key": "http_api",
-      "provider_revision": "1.1.0",
+      "provider_revision": "1.4.0",
       "name": "Knowledge HTTP API",
-      "description": "Remote document search and fetch through the configured HTTP API.",
+      "description": "Remote document retrieval, management, and complete structured-table reads through the configured HTTP API.",
       "i18n": {
         "en-US": {
           "name": "Knowledge HTTP API",
-          "description": "Remote document search and fetch through the configured HTTP API."
+          "description": "Remote document retrieval, management, and complete structured-table reads through the configured HTTP API."
         },
         "zh-CN": {
           "name": "知识库 HTTP API",
-          "description": "通过配置的 HTTP API 检索文档并读取全文。"
+          "description": "通过配置的 HTTP API 检索和管理文档，并读取完整结构化表格。"
         }
       },
       "config_fields": [
@@ -141,6 +143,26 @@
           "config": {
             "json_shape": "object"
           }
+        },
+        {
+          "key": "analysis_document_ids",
+          "type": "json",
+          "required": false,
+          "name": "Analysis document IDs",
+          "description": "Trusted document IDs whose complete structured tables may be used for analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Analysis document IDs",
+              "description": "Trusted document IDs whose complete structured tables may be used for analysis."
+            },
+            "zh-CN": {
+              "name": "分析文档 ID",
+              "description": "由宿主配置、可用于完整结构化分析的文档 ID。"
+            }
+          },
+          "config": {
+            "json_shape": "array"
+          }
         }
       ],
       "secret_fields": [
@@ -176,7 +198,9 @@
         "fetch",
         "put_document",
         "delete_document",
-        "document_status"
+        "document_status",
+        "analysis_table_catalog",
+        "analysis_table_read"
       ],
       "readiness": "provider_available"
     }
@@ -761,6 +785,565 @@
             "zh-CN": {
               "name": "索引状态",
               "description": "上游实际索引状态；不存在文档时省略。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "analysis_table_catalog",
+      "name": "List complete analysis tables",
+      "description": "List complete current structured tables from host-configured documents after current permission checks.",
+      "i18n": {
+        "en-US": {
+          "name": "List complete analysis tables",
+          "description": "List complete current structured tables from host-configured documents after current permission checks."
+        },
+        "zh-CN": {
+          "name": "列出完整分析表格",
+          "description": "在当前权限检查后，列出宿主配置文档中的完整当前结构化表格。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 30,
+      "idempotency_supported": true,
+      "input": [],
+      "output": [
+        {
+          "key": "provider",
+          "type": "text",
+          "required": true,
+          "name": "Provider",
+          "description": "Provider for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Provider",
+              "description": "Provider for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Provider",
+              "description": "完整结构化表格分析使用的Provider。"
+            }
+          }
+        },
+        {
+          "key": "kb_id",
+          "type": "text",
+          "required": true,
+          "name": "Kb Id",
+          "description": "Kb Id for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Kb Id",
+              "description": "Kb Id for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Kb Id",
+              "description": "完整结构化表格分析使用的Kb Id。"
+            }
+          }
+        },
+        {
+          "key": "tables",
+          "type": "json",
+          "required": true,
+          "name": "Tables",
+          "description": "Tables for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Tables",
+              "description": "Tables for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Tables",
+              "description": "完整结构化表格分析使用的Tables。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "analysis_table_read",
+      "name": "Read a complete analysis table page",
+      "description": "Read one bounded page from a version-fenced complete table; permission and current source are checked for every page.",
+      "i18n": {
+        "en-US": {
+          "name": "Read a complete analysis table page",
+          "description": "Read one bounded page from a version-fenced complete table; permission and current source are checked for every page."
+        },
+        "zh-CN": {
+          "name": "读取完整分析表格页",
+          "description": "读取带版本约束的完整表格分页；每页都重新检查权限和当前来源。"
+        }
+      },
+      "method": "POST",
+      "execution_mode": "sync",
+      "side_effect": "read",
+      "timeout_default_seconds": 30,
+      "timeout_max_seconds": 30,
+      "idempotency_supported": true,
+      "input": [
+        {
+          "key": "doc_id",
+          "type": "text",
+          "required": true,
+          "name": "Doc Id",
+          "description": "Doc Id for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Doc Id",
+              "description": "Doc Id for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Doc Id",
+              "description": "完整结构化表格分析使用的Doc Id。"
+            }
+          }
+        },
+        {
+          "key": "dataset_key",
+          "type": "text",
+          "required": true,
+          "name": "Dataset Key",
+          "description": "Dataset Key for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Dataset Key",
+              "description": "Dataset Key for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Dataset Key",
+              "description": "完整结构化表格分析使用的Dataset Key。"
+            }
+          }
+        },
+        {
+          "key": "generation",
+          "type": "text",
+          "required": true,
+          "name": "Generation",
+          "description": "Generation for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Generation",
+              "description": "Generation for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Generation",
+              "description": "完整结构化表格分析使用的Generation。"
+            }
+          }
+        },
+        {
+          "key": "definition_version",
+          "type": "text",
+          "required": true,
+          "name": "Definition Version",
+          "description": "Definition Version for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Definition Version",
+              "description": "Definition Version for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Definition Version",
+              "description": "完整结构化表格分析使用的Definition Version。"
+            }
+          }
+        },
+        {
+          "key": "data_version",
+          "type": "text",
+          "required": true,
+          "name": "Data Version",
+          "description": "Data Version for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Data Version",
+              "description": "Data Version for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Data Version",
+              "description": "完整结构化表格分析使用的Data Version。"
+            }
+          }
+        },
+        {
+          "key": "fields",
+          "type": "json",
+          "required": true,
+          "name": "Fields",
+          "description": "Fields for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Fields",
+              "description": "Fields for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Fields",
+              "description": "完整结构化表格分析使用的Fields。"
+            }
+          }
+        },
+        {
+          "key": "offset",
+          "type": "integer",
+          "required": true,
+          "name": "Offset",
+          "description": "Offset for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Offset",
+              "description": "Offset for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Offset",
+              "description": "完整结构化表格分析使用的Offset。"
+            }
+          }
+        },
+        {
+          "key": "limit",
+          "type": "integer",
+          "required": true,
+          "name": "Limit",
+          "description": "Limit for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Limit",
+              "description": "Limit for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Limit",
+              "description": "完整结构化表格分析使用的Limit。"
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "key": "provider",
+          "type": "text",
+          "required": true,
+          "name": "Provider",
+          "description": "Provider for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Provider",
+              "description": "Provider for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Provider",
+              "description": "完整结构化表格分析使用的Provider。"
+            }
+          }
+        },
+        {
+          "key": "kb_id",
+          "type": "text",
+          "required": true,
+          "name": "Kb Id",
+          "description": "Kb Id for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Kb Id",
+              "description": "Kb Id for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Kb Id",
+              "description": "完整结构化表格分析使用的Kb Id。"
+            }
+          }
+        },
+        {
+          "key": "dataset_key",
+          "type": "text",
+          "required": true,
+          "name": "Dataset Key",
+          "description": "Dataset Key for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Dataset Key",
+              "description": "Dataset Key for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Dataset Key",
+              "description": "完整结构化表格分析使用的Dataset Key。"
+            }
+          }
+        },
+        {
+          "key": "doc_id",
+          "type": "text",
+          "required": true,
+          "name": "Doc Id",
+          "description": "Doc Id for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Doc Id",
+              "description": "Doc Id for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Doc Id",
+              "description": "完整结构化表格分析使用的Doc Id。"
+            }
+          }
+        },
+        {
+          "key": "table_ref",
+          "type": "text",
+          "required": true,
+          "name": "Table Ref",
+          "description": "Table Ref for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Table Ref",
+              "description": "Table Ref for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Table Ref",
+              "description": "完整结构化表格分析使用的Table Ref。"
+            }
+          }
+        },
+        {
+          "key": "name",
+          "type": "text",
+          "required": true,
+          "name": "Name",
+          "description": "Name for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Name",
+              "description": "Name for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Name",
+              "description": "完整结构化表格分析使用的Name。"
+            }
+          }
+        },
+        {
+          "key": "sheet",
+          "type": "text",
+          "required": false,
+          "name": "Sheet",
+          "description": "Sheet for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Sheet",
+              "description": "Sheet for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Sheet",
+              "description": "完整结构化表格分析使用的Sheet。"
+            }
+          }
+        },
+        {
+          "key": "definition_version",
+          "type": "text",
+          "required": true,
+          "name": "Definition Version",
+          "description": "Definition Version for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Definition Version",
+              "description": "Definition Version for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Definition Version",
+              "description": "完整结构化表格分析使用的Definition Version。"
+            }
+          }
+        },
+        {
+          "key": "data_version",
+          "type": "text",
+          "required": true,
+          "name": "Data Version",
+          "description": "Data Version for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Data Version",
+              "description": "Data Version for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Data Version",
+              "description": "完整结构化表格分析使用的Data Version。"
+            }
+          }
+        },
+        {
+          "key": "generation",
+          "type": "text",
+          "required": true,
+          "name": "Generation",
+          "description": "Generation for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Generation",
+              "description": "Generation for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Generation",
+              "description": "完整结构化表格分析使用的Generation。"
+            }
+          }
+        },
+        {
+          "key": "doc_version",
+          "type": "integer",
+          "required": true,
+          "name": "Doc Version",
+          "description": "Doc Version for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Doc Version",
+              "description": "Doc Version for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Doc Version",
+              "description": "完整结构化表格分析使用的Doc Version。"
+            }
+          }
+        },
+        {
+          "key": "row_count",
+          "type": "integer",
+          "required": true,
+          "name": "Row Count",
+          "description": "Row Count for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Row Count",
+              "description": "Row Count for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Row Count",
+              "description": "完整结构化表格分析使用的Row Count。"
+            }
+          }
+        },
+        {
+          "key": "complete",
+          "type": "boolean",
+          "required": true,
+          "name": "Complete",
+          "description": "Complete for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Complete",
+              "description": "Complete for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Complete",
+              "description": "完整结构化表格分析使用的Complete。"
+            }
+          }
+        },
+        {
+          "key": "columns",
+          "type": "json",
+          "required": true,
+          "name": "Columns",
+          "description": "Columns for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Columns",
+              "description": "Columns for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Columns",
+              "description": "完整结构化表格分析使用的Columns。"
+            }
+          }
+        },
+        {
+          "key": "fields",
+          "type": "json",
+          "required": true,
+          "name": "Fields",
+          "description": "Fields for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Fields",
+              "description": "Fields for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Fields",
+              "description": "完整结构化表格分析使用的Fields。"
+            }
+          }
+        },
+        {
+          "key": "content_sha256",
+          "type": "text",
+          "required": true,
+          "name": "Content Sha256",
+          "description": "Content Sha256 for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Content Sha256",
+              "description": "Content Sha256 for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Content Sha256",
+              "description": "完整结构化表格分析使用的Content Sha256。"
+            }
+          }
+        },
+        {
+          "key": "offset",
+          "type": "integer",
+          "required": true,
+          "name": "Offset",
+          "description": "Offset for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Offset",
+              "description": "Offset for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Offset",
+              "description": "完整结构化表格分析使用的Offset。"
+            }
+          }
+        },
+        {
+          "key": "rows",
+          "type": "json",
+          "required": true,
+          "name": "Rows",
+          "description": "Rows for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Rows",
+              "description": "Rows for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Rows",
+              "description": "完整结构化表格分析使用的Rows。"
+            }
+          }
+        },
+        {
+          "key": "next_offset",
+          "type": "integer",
+          "required": false,
+          "name": "Next Offset",
+          "description": "Next Offset for complete structured-table analysis.",
+          "i18n": {
+            "en-US": {
+              "name": "Next Offset",
+              "description": "Next Offset for complete structured-table analysis."
+            },
+            "zh-CN": {
+              "name": "Next Offset",
+              "description": "完整结构化表格分析使用的Next Offset。"
             }
           }
         }

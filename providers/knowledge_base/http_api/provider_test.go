@@ -62,7 +62,7 @@ func TestContractAndCatalogIdentity(t *testing.T) {
 			}
 		}
 	}
-	if len(definition.Operations) != 5 {
+	if len(definition.Operations) != 7 {
 		t.Fatal("missing knowledge definition")
 	}
 	for _, operation := range definition.Operations {

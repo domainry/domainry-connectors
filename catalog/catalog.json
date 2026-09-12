@@ -3131,11 +3131,11 @@
     {
       "connector_key": "knowledge_base",
       "provider_key": "http_api",
-      "provider_revision": "1.3.0",
+      "provider_revision": "1.4.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/knowledge_base/http_api",
       "package_name": "httpapi",
       "constructor": "New",
-      "descriptor_sha256": "f22f375fd1eca5539d577aba6e7e3a267520522e2e0d3e167559ffd24cc11e2e",
+      "descriptor_sha256": "084d22b573de58fd50f7ddad73156a35bc05aec9f9b5582c7c358623dd66f1ff",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "knowledge_base_http_api_deterministic_v1",
@@ -3154,6 +3154,16 @@
         "isolated_command": "go test ./providers/knowledge_base/http_api"
       },
       "operations": [
+        {
+          "key": "analysis_table_catalog",
+          "mode": "call",
+          "contract_sha256": "a4cc8ab7e1c7f78a2c17995dece68922d90dfb19e6b1dc5017199074be29b266"
+        },
+        {
+          "key": "analysis_table_read",
+          "mode": "call",
+          "contract_sha256": "292b1dbe23ad36bdbaad40fb4e25af395f7f7ba4aee9630503849d428e09efa0"
+        },
         {
           "key": "delete_document",
           "mode": "call",
