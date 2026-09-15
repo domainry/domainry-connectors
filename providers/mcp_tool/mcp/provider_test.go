@@ -10,11 +10,13 @@ import (
 
 	connector "github.com/domainry/domainry-connector-sdk"
 	"github.com/domainry/domainry-connector-sdk/contracttest"
+	"github.com/domainry/domainry-connector-sdk/mcptool"
 )
 
 type mcpTransport struct {
 	requests []connector.HTTPRequest
 	session  *mcpSession
+	paginate bool
 }
 
 func (transport *mcpTransport) RoundTripHTTP(_ context.Context, request connector.HTTPRequest) (connector.HTTPResponse, error) {
@@ -31,7 +33,14 @@ func (transport *mcpTransport) RoundTripHTTP(_ context.Context, request connecto
 	case "initialize":
 		result = map[string]any{"protocolVersion": defaultProtocolVersion, "serverInfo": map[string]any{"name": "fixture"}}
 	case "tools/list":
-		result = map[string]any{"tools": []any{map[string]any{"name": "allowed"}, map[string]any{"name": "blocked"}}}
+		params, _ := payload["params"].(map[string]any)
+		if transport.paginate && clean(params["cursor"]) == "" {
+			result = map[string]any{"tools": []any{map[string]any{"name": "allowed"}}, "nextCursor": "page-2"}
+		} else if transport.paginate {
+			result = map[string]any{"tools": []any{map[string]any{"name": "second"}}}
+		} else {
+			result = map[string]any{"tools": []any{map[string]any{"name": "allowed"}, map[string]any{"name": "blocked"}}}
+		}
 	case "tools/call":
 		result = map[string]any{"content": []any{map[string]any{"type": "text", "text": "done"}}}
 	}
@@ -100,6 +109,45 @@ func TestHTTPMCPUsesRuntimeTransportFiltersToolsAndProtectsAuthorization(t *test
 		if string(raw) == "" || strings.Contains(string(raw), "runtime-secret") || strings.Contains(string(raw), "Authorization") {
 			t.Fatalf("serialized request leaked authorization: %s", raw)
 		}
+	}
+}
+
+func TestMCPAccountOperationsExplicitlyRequireNoOAuthScope(t *testing.T) {
+	adapter, err := New(&mcpTransport{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider := adapter.(connector.OAuthOperationScopeProvider)
+	for _, key := range []string{mcptool.ListToolsOperationKey, mcptool.CallToolOperationKey} {
+		alternatives, declared := provider.OAuthOperationScopes(key)
+		if !declared || len(alternatives) != 1 || len(alternatives[0]) != 0 {
+			t.Fatalf("%s scopes=%v declared=%v", key, alternatives, declared)
+		}
+	}
+}
+
+func TestMCPListToolsCollectsEveryAllowedPage(t *testing.T) {
+	transport := &mcpTransport{paginate: true}
+	adapter, err := New(transport)
+	if err != nil {
+		t.Fatal(err)
+	}
+	connection := httpConnection()
+	connection.Config["allowed_tools"] = []any{"allowed", "second"}
+	payload, _ := json.Marshal(mcptool.ListToolsRequest{})
+	result, err := adapter.Call(t.Context(), connector.CallRequest{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, OperationKey: ListTools.Key, ContractSHA256: ListTools.ContractSHA256, Mode: connector.ModeCall, Connection: connection, Payload: payload})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var output struct {
+		Tools    []map[string]any `json:"tools"`
+		Complete bool             `json:"complete"`
+	}
+	if json.Unmarshal(result.Payload, &output) != nil || !output.Complete || len(output.Tools) != 2 || output.Tools[0]["name"] != "allowed" || output.Tools[1]["name"] != "second" {
+		t.Fatalf("paginated catalog=%s", result.Payload)
+	}
+	if len(transport.requests) != 4 {
+		t.Fatalf("requests=%d", len(transport.requests))
 	}
 }
 

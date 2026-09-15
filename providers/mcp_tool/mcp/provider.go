@@ -14,25 +14,22 @@ import (
 	"time"
 
 	connector "github.com/domainry/domainry-connector-sdk"
+	"github.com/domainry/domainry-connector-sdk/mcptool"
 )
 
 const (
-	ConnectorKey           = "mcp_tool"
-	ProviderKey            = "mcp"
+	ConnectorKey           = mcptool.ConnectorKey
+	ProviderKey            = mcptool.ProviderKey
 	defaultProtocolVersion = "2025-06-18"
 	responseLimit          = int64(4 << 20)
 )
 
-type CallToolInput struct {
-	ToolName  string         `json:"tool_name"`
-	Arguments map[string]any `json:"arguments,omitempty"`
-	Approved  bool           `json:"approved,omitempty"`
-}
+type CallToolInput = mcptool.CallToolRequest
 
 var (
-	TestConnection = readOperation[struct{}]("test_connection", "2f4a1bc6298cb8d22d02956dc2c1992cc24354638153e07967015bc4d592c9f3")
-	ListTools      = readOperation[struct{}]("list_tools", "80912e3d2921f06343a653cb32559bad4b1085bb86f793599ae6da341f4df929")
-	CallTool       = connector.CallOperation[CallToolInput, map[string]any]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "call_tool", ContractSHA256: "1a88ffb95d28a14734d2c5a417da8a6626a94b64f37a0ffa5051fbe7abf5beba", Reliability: reliability(connector.EffectWrite, connector.IdempotencyNone)}
+	TestConnection = readOperation[struct{}](mcptool.TestConnectionOperationKey, mcptool.TestConnectionOperationSHA256)
+	ListTools      = readOperation[mcptool.ListToolsRequest](mcptool.ListToolsOperationKey, mcptool.ListToolsOperationSHA256)
+	CallTool       = connector.CallOperation[CallToolInput, map[string]any]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: mcptool.CallToolOperationKey, ContractSHA256: mcptool.CallToolOperationSHA256, Reliability: reliability(connector.EffectWrite, connector.IdempotencyNone)}
 )
 
 func readOperation[I any](key, hash string) connector.CallOperation[I, map[string]any] {
@@ -45,6 +42,18 @@ func reliability(effect connector.OperationEffect, idempotency connector.Idempot
 type provider struct {
 	connector.Adapter
 	transport connector.Transport
+}
+
+// MCP credentials are explicit connection fields/secrets rather than an OAuth
+// grant managed by Integration. A declared empty alternative lets the account
+// owner distinguish this from an operation that forgot to declare its scope.
+func (*provider) OAuthOperationScopes(key string) ([][]string, bool) {
+	switch key {
+	case mcptool.ListToolsOperationKey, mcptool.CallToolOperationKey:
+		return [][]string{{}}, true
+	default:
+		return nil, false
+	}
 }
 
 func New(transport connector.Transport) (connector.Adapter, error) {
@@ -147,18 +156,50 @@ func (p *provider) TestConnection(ctx context.Context, request connector.TestCon
 	return connector.TestConnectionResult{Connected: true, Details: details}, nil
 }
 
-func (p *provider) list(ctx context.Context, request connector.TypedRequest[struct{}]) (connector.TypedResult[map[string]any], error) {
+func (p *provider) list(ctx context.Context, request connector.TypedRequest[mcptool.ListToolsRequest]) (connector.TypedResult[map[string]any], error) {
 	client, _, err := p.open(ctx, request.Connection, request.Secrets)
 	if err != nil {
 		return empty(), err
 	}
 	defer client.close(ctx)
-	result, err := client.request(ctx, "tools/list", map[string]any{})
-	if err != nil {
-		return empty(), connector.RetryableError("mcp.tools_list_failed", err)
+	allowed, seen, all := stringList(request.Connection.Config["allowed_tools"]), map[string]bool{}, []any{}
+	cursor, complete := "", true
+	for page := 0; page < 8; page++ {
+		params := map[string]any{}
+		if cursor != "" {
+			params["cursor"] = cursor
+		}
+		result, err := client.request(ctx, "tools/list", params)
+		if err != nil {
+			return empty(), connector.RetryableError("mcp.tools_list_failed", err)
+		}
+		for _, item := range filterAllowedTools(result["tools"], allowed) {
+			tool, _ := item.(map[string]any)
+			name := clean(tool["name"])
+			if name == "" || seen[name] {
+				continue
+			}
+			seen[name] = true
+			all = append(all, item)
+			if len(all) == 64 {
+				complete = false
+				break
+			}
+		}
+		if !complete {
+			break
+		}
+		next := clean(result["nextCursor"])
+		if next == "" {
+			break
+		}
+		if next == cursor || page == 7 {
+			complete = false
+			break
+		}
+		cursor = next
 	}
-	result["tools"] = filterAllowedTools(result["tools"], stringList(request.Connection.Config["allowed_tools"]))
-	return connector.TypedResult[map[string]any]{Output: result, ResponseRef: "mcp:tools/list"}, nil
+	return connector.TypedResult[map[string]any]{Output: map[string]any{"tools": all, "complete": complete}, ResponseRef: "mcp:tools/list"}, nil
 }
 
 func (p *provider) call(ctx context.Context, request connector.TypedRequest[CallToolInput]) (connector.TypedResult[map[string]any], error) {

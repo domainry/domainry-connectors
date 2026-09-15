@@ -18,3 +18,7 @@ func WorkAccountProviders(transport connector.Transport) (connector.ProviderSet,
 func PublicWebProviders(transport connector.Transport) (connector.ProviderSet, error) {
 	return moduleassembly.PublicWebProviders(transport)
 }
+
+func MCPToolProviders(transport connector.Transport) (connector.ProviderSet, error) {
+	return moduleassembly.MCPToolProviders(transport)
+}
