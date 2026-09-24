@@ -11,51 +11,8 @@ import (
 	connector "github.com/domainry/domainry-connector-sdk"
 )
 
-const MaxDocumentBytes = 10 << 20
-
 var documentWriteIDPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$`)
 var documentWriteFilenamePattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9 ._-]{0,254}$`)
-
-// Writes report the upstream acknowledgement, not indexing completion. The
-// ACL commands use the host's stable RequestRef, but this does not establish
-// full content-write idempotency. Hosts still serialize document generations
-// and reconcile uncertain writes without blindly repeating uploads.
-var PutDocument = connector.CallOperation[PutDocumentInput, Output]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "put_document", ContractSHA256: "ada514ca5026f94fbe6191208dcd185567e2124d0fa04caba9d0ef8795d0f3c1", Reliability: documentWriteReliability()}
-var DeleteDocument = connector.CallOperation[DocumentInput, Output]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "delete_document", ContractSHA256: "e4bec5d6d992035b91bf019b55a609307dc56f401c89ef78709f74f57e8e8aa8", Reliability: documentDeleteReliability()}
-var DocumentStatus = connector.CallOperation[DocumentInput, DocumentStatusOutput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "document_status", ContractSHA256: "7b5608d5de92711c8069d7f0df8e41c789175584f5cd94dbe6e1e714331eb9cb", Reliability: readReliability()}
-
-type DocumentInput struct {
-	DocID string `json:"doc_id"`
-}
-
-// Content is base64 in SDK JSON and original bytes in the HTTP request. A file
-// path, remote KB, ACL, or credential is never accepted as operation input.
-type PutDocumentInput struct {
-	DocID    string `json:"doc_id"`
-	Filename string `json:"filename"`
-	Content  []byte `json:"content"`
-}
-
-type DocumentStatusOutput struct {
-	Provider    string `json:"provider"`
-	KBID        string `json:"kb_id"`
-	DocID       string `json:"doc_id"`
-	Exists      bool   `json:"exists"`                 // Present in the current permission scope, not a global existence oracle.
-	IndexStatus string `json:"index_status,omitempty"` // Upstream status, not an invented ready state.
-}
-
-func documentWriteReliability() connector.ReliabilityContract {
-	return connector.ReliabilityContract{Effect: connector.EffectWrite, Idempotency: connector.IdempotencyContract{Strategy: connector.IdempotencyNone}, Reconciliation: connector.ReconciliationNone, Compensation: connector.CompensationContract{Mode: connector.CompensationNone}}
-}
-
-// kb-search-api handler/push.go DeleteKbDocument synchronously invokes purge_doc;
-// the service contract explicitly allows repeated deletion (zero remaining
-// statistics). Keep PUT separate: its request ID only fences ACL commands.
-func documentDeleteReliability() connector.ReliabilityContract {
-	r := documentWriteReliability()
-	r.Idempotency.Strategy = connector.IdempotencyNatural
-	return r
-}
 
 func (p *provider) documentWrite(ctx context.Context, connection connector.Connection, secrets map[string]string, principal connector.Principal, method, id, filename string, content []byte, requestRef string) (connector.TypedResult[Output], error) {
 	var zero connector.TypedResult[Output]

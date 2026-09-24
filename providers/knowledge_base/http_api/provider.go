@@ -17,32 +17,7 @@ import (
 	connector "github.com/domainry/domainry-connector-sdk"
 )
 
-const (
-	ConnectorKey  = "knowledge_base"
-	ProviderKey   = "http_api"
-	responseLimit = 512 * 1024
-)
-
-var Search = connector.CallOperation[SearchInput, Output]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "search", ContractSHA256: "573e693a2b63cd71a5f0937f5d1be49124e36d312de707160a5524ec00ab6c6a", Reliability: readReliability()}
-var Fetch = connector.CallOperation[FetchInput, Output]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "fetch", ContractSHA256: "31256a5720fc482b2fd0cd0b259936a58f8bc903c712a66f567c934f42a6b80e", Reliability: readReliability()}
-
-type SearchInput struct {
-	Query         string `json:"query"`
-	TopK          int    `json:"top_k,omitempty"`
-	ResultContent string `json:"result_content,omitempty"`
-}
-type FetchInput struct {
-	DocID         string `json:"doc_id"`
-	ResultContent string `json:"result_content,omitempty"`
-}
-
-// The console documents requests, not a response schema. Preserve upstream
-// JSON and sources without guessing snippet/title/full-text field names.
-type Output struct {
-	Provider string          `json:"provider"`
-	KBID     string          `json:"kb_id"`
-	Result   json.RawMessage `json:"result"`
-}
+const responseLimit = 512 * 1024
 
 type provider struct {
 	connector.Adapter
@@ -84,10 +59,6 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 	}
 	p.Adapter, err = connector.NewProvider(schema(), search, fetch, put, remove, status, catalogTables, readTable)
 	return p, err
-}
-
-func readReliability() connector.ReliabilityContract {
-	return connector.ReliabilityContract{Effect: connector.EffectRead, Idempotency: connector.IdempotencyContract{Strategy: connector.IdempotencyNatural}, Reconciliation: connector.ReconciliationNone, Compensation: connector.CompensationContract{Mode: connector.CompensationNone}}
 }
 
 func schema() connector.ProviderSchema {

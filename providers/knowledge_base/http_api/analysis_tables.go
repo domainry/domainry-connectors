@@ -11,63 +11,6 @@ import (
 	connector "github.com/domainry/domainry-connector-sdk"
 )
 
-var CatalogAnalysisTables = connector.CallOperation[AnalysisTableCatalogInput, AnalysisTableCatalogOutput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "analysis_table_catalog", ContractSHA256: "a4cc8ab7e1c7f78a2c17995dece68922d90dfb19e6b1dc5017199074be29b266", Reliability: readReliability()}
-var ReadAnalysisTable = connector.CallOperation[AnalysisTableReadInput, AnalysisTableReadOutput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "analysis_table_read", ContractSHA256: "292b1dbe23ad36bdbaad40fb4e25af395f7f7ba4aee9630503849d428e09efa0", Reliability: readReliability()}
-
-type AnalysisTableCatalogInput struct{}
-
-type AnalysisTableColumn struct {
-	Key       string `json:"key"`
-	Name      string `json:"name"`
-	Type      string `json:"type"`
-	Unit      string `json:"unit"`
-	Precision int    `json:"precision,omitempty"`
-	Scale     int    `json:"scale,omitempty"`
-}
-
-type AnalysisTableCatalogItem struct {
-	DatasetKey        string                `json:"dataset_key"`
-	DocID             string                `json:"doc_id"`
-	TableRef          string                `json:"table_ref"`
-	Name              string                `json:"name"`
-	Sheet             string                `json:"sheet"`
-	DefinitionVersion string                `json:"definition_version"`
-	DataVersion       string                `json:"data_version"`
-	Generation        string                `json:"generation"`
-	DocVersion        int                   `json:"doc_version"`
-	RowCount          int64                 `json:"row_count"`
-	Complete          bool                  `json:"complete"`
-	Columns           []AnalysisTableColumn `json:"columns"`
-}
-
-type AnalysisTableCatalogOutput struct {
-	Provider string                     `json:"provider"`
-	KBID     string                     `json:"kb_id"`
-	Tables   []AnalysisTableCatalogItem `json:"tables"`
-}
-
-type AnalysisTableReadInput struct {
-	DocID             string   `json:"doc_id"`
-	DatasetKey        string   `json:"dataset_key"`
-	Generation        string   `json:"generation"`
-	DefinitionVersion string   `json:"definition_version"`
-	DataVersion       string   `json:"data_version"`
-	Fields            []string `json:"fields"`
-	Offset            int      `json:"offset"`
-	Limit             int      `json:"limit"`
-}
-
-type AnalysisTableReadOutput struct {
-	Provider string `json:"provider"`
-	KBID     string `json:"kb_id"`
-	AnalysisTableCatalogItem
-	Fields        []string    `json:"fields"`
-	ContentSHA256 string      `json:"content_sha256"`
-	Offset        int         `json:"offset"`
-	Rows          [][]*string `json:"rows"`
-	NextOffset    *int        `json:"next_offset"`
-}
-
 var analysisIdentifier = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]{0,127}$`)
 var analysisDigest = regexp.MustCompile(`^[0-9a-f]{64}$`)
 

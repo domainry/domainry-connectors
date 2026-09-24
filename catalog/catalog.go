@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 
+	connector "github.com/domainry/domainry-connector-sdk"
 	application "github.com/domainry/domainry-connectors/internal/application/connector"
 	"github.com/domainry/domainry-connectors/internal/domain/connector/model"
 	infrastructure "github.com/domainry/domainry-connectors/internal/infrastructure/catalog"
@@ -47,11 +48,7 @@ func Bytes() []byte { return append([]byte(nil), raw...) }
 // ConnectorDefinition is the source-owned product schema for one Connector.
 // ProviderEntry remains the executable-provider release index; this document
 // carries display, configuration, secret and operation metadata.
-type ConnectorDefinition struct {
-	Key     string
-	Name    string
-	Payload json.RawMessage
-}
+type ConnectorDefinition = connector.ConnectorDefinition
 
 // Definitions returns detached, key-ordered Connector product definitions.
 func Definitions() ([]ConnectorDefinition, error) {
