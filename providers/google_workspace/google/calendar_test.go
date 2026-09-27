@@ -44,7 +44,7 @@ func TestCalendarReadRangePaginationAllDayAndEventDetails(t *testing.T) {
 			if !strings.Contains(u.EscapedPath(), "event%2Fa") || q.Get("timeZone") != "Asia/Shanghai" {
 				t.Fatal("event identity/path not escaped", u)
 			}
-			return connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"kind":"calendar#event","id":"event/a","summary":"评审","description":"实际详情","location":"Room A","htmlLink":"https://calendar.google.com/event","status":"confirmed","start":{"dateTime":"2026-09-11T10:00:00+08:00"},"end":{"dateTime":"2026-09-11T11:00:00+08:00"}}`)}, nil
+			return connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"kind":"calendar#event","id":"event/a","summary":"评审","description":"实际详情","location":"Room A","htmlLink":"https://calendar.google.com/event","hangoutLink":"https://meet.google.com/abc-defg-hij","status":"confirmed","start":{"dateTime":"2026-09-11T10:00:00+08:00"},"end":{"dateTime":"2026-09-11T11:00:00+08:00"},"recurrence":["RRULE:FREQ=WEEKLY"],"organizer":{"id":"owner-1","email":"owner@example.test","displayName":"Owner","self":true},"attendees":[{"id":"guest-1","email":"guest@example.test","displayName":"Guest","optional":true,"responseStatus":"tentative"}]}`)}, nil
 		default:
 			if q.Get("timeMin") != "2026-03-08T00:00:00-08:00" || q.Get("timeMax") != "2026-03-09T00:00:00-07:00" || q.Get("singleEvents") != "true" || q.Get("orderBy") != "startTime" || q.Get("pageToken") != "next/opaque" || q.Has("syncToken") {
 				t.Fatal("bounded recurrence query missing", q)
@@ -72,7 +72,7 @@ func TestCalendarReadRangePaginationAllDayAndEventDetails(t *testing.T) {
 		t.Fatal(events, err)
 	}
 	detail, _, err := calendarCall(t, a, CalendarEvent, calendar.EventRequest{CalendarID: list.Items[0].ID, EventID: "event/a", TimeZone: "Asia/Shanghai"}, secrets)
-	if err != nil || detail.Description != "实际详情" || detail.Start.DateTime != "2026-09-11T10:00:00+08:00" {
+	if err != nil || detail.Description != "实际详情" || detail.Start.DateTime != "2026-09-11T10:00:00+08:00" || detail.MeetingURL != "https://meet.google.com/abc-defg-hij" || len(detail.Recurrence) != 1 || detail.Organizer == nil || !detail.Organizer.Self || len(detail.Attendees) != 1 || detail.Attendees[0].Role != "optional" || detail.Attendees[0].ResponseStatus != "tentative" {
 		t.Fatal(detail, err)
 	}
 	if len(transport.requests) != 3 {

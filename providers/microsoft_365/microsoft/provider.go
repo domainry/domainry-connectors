@@ -105,7 +105,9 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 }
 func schema() connector.ProviderSchema {
 	minimum, maximum := float64(1), float64(maximumTimeout)
-	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.3.0", ConfigFields: []connector.ConfigField{{Key: "graph_base_url", Name: "Microsoft Graph Base URL", Type: connector.ConfigFieldText, Default: json.RawMessage(`"https://graph.microsoft.com/v1.0"`)}, {Key: "token_url", Name: "OAuth Token URL", Type: connector.ConfigFieldText}, {Key: "tenant_id", Name: "Tenant ID", Type: connector.ConfigFieldText, Required: true}, {Key: "scope", Name: "OAuth Scope", Type: connector.ConfigFieldText, Default: json.RawMessage(`"https://graph.microsoft.com/.default offline_access"`)}, {Key: "timeout_seconds", Name: "Timeout Seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`30`), Validation: connector.ConfigValidation{Min: &minimum, Max: &maximum}}}, SecretFields: []connector.SecretField{secret("access_token", "Access Token", true, connector.SecretCredentialBearerToken, connector.SecretRotationOAuthRefresh), secret("refresh_token", "Refresh Token", false, connector.SecretCredentialRefreshToken, connector.SecretRotationOAuthRefresh), secret("client_id", "OAuth Client ID", false, connector.SecretCredentialIdentifier, connector.SecretRotationManual), secret("client_secret", "OAuth Client Secret", false, connector.SecretCredentialOAuthClientSecret, connector.SecretRotationManual)}}
+	historyMinimum, historyMaximum := float64(1), float64(3650)
+	reconcileMinimum, reconcileMaximum := float64(300), float64(86400)
+	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.5.0", ConfigFields: []connector.ConfigField{{Key: "graph_base_url", Name: "Microsoft Graph Base URL", Type: connector.ConfigFieldText, Default: json.RawMessage(`"https://graph.microsoft.com/v1.0"`)}, {Key: "token_url", Name: "OAuth Token URL", Type: connector.ConfigFieldText}, {Key: "tenant_id", Name: "Tenant ID", Type: connector.ConfigFieldText, Required: true}, {Key: "scope", Name: "OAuth Scope", Type: connector.ConfigFieldText, Default: json.RawMessage(`"https://graph.microsoft.com/.default offline_access"`)}, {Key: "timeout_seconds", Name: "Timeout Seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`30`), Validation: connector.ConfigValidation{Min: &minimum, Max: &maximum}}, {Key: "outlook_ingest_enabled", Name: "Outlook Mail Ingest Enabled", Type: connector.ConfigFieldBoolean, Default: json.RawMessage(`true`)}, {Key: "outlook_history_days", Name: "Outlook Mail History Days", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`90`), Validation: connector.ConfigValidation{Min: &historyMinimum, Max: &historyMaximum}}, {Key: "outlook_reconcile_seconds", Name: "Outlook Mail Reconciliation Seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`900`), Validation: connector.ConfigValidation{Min: &reconcileMinimum, Max: &reconcileMaximum}}}, SecretFields: []connector.SecretField{secret("access_token", "Access Token", true, connector.SecretCredentialBearerToken, connector.SecretRotationOAuthRefresh), secret("refresh_token", "Refresh Token", false, connector.SecretCredentialRefreshToken, connector.SecretRotationOAuthRefresh), secret("client_id", "OAuth Client ID", false, connector.SecretCredentialIdentifier, connector.SecretRotationManual), secret("client_secret", "OAuth Client Secret", false, connector.SecretCredentialOAuthClientSecret, connector.SecretRotationManual)}}
 }
 func secret(key, name string, required bool, kind connector.SecretCredentialKind, rotation connector.SecretRotationPolicy) connector.SecretField {
 	return connector.SecretField{Key: key, Name: name, Required: required, CredentialKind: kind, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: rotation, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}
@@ -151,8 +153,30 @@ func (p *provider) TestConnection(ctx context.Context, request connector.TestCon
 	if err != nil {
 		return connector.TestConnectionResult{SecretUpdates: result.SecretUpdates}, err
 	}
-	details, _ := json.Marshal(result.Output)
+	subject := strings.TrimSpace(graphString(result.Output, "id"))
+	email := strings.ToLower(strings.TrimSpace(graphString(result.Output, "mail")))
+	if email == "" {
+		email = strings.ToLower(strings.TrimSpace(graphString(result.Output, "userPrincipalName")))
+	}
+	if subject == "" || len(subject) > 1024 || !validMicrosoftAccountEmail(email) {
+		return connector.TestConnectionResult{SecretUpdates: result.SecretUpdates}, permanent("oauth_identity_invalid", "Microsoft profile lacks a stable mailbox identity")
+	}
+	details, _ := json.Marshal(map[string]any{"provider_account": map[string]any{
+		"subject": subject,
+		"routes":  []map[string]string{{"kind": "email", "value": email}},
+	}})
 	return connector.TestConnectionResult{Connected: true, Details: details, SecretUpdates: result.SecretUpdates}, nil
+}
+
+func (*provider) ProviderAccountProbeEnabled() bool { return true }
+
+func validMicrosoftAccountEmail(value string) bool {
+	return value != "" && len(value) <= 320 && strings.Count(value, "@") == 1 && value[0] != '@' && value[len(value)-1] != '@' && !strings.ContainsAny(value, " \t\r\n")
+}
+
+func graphString(values map[string]any, key string) string {
+	value, _ := values[key].(string)
+	return strings.TrimSpace(value)
 }
 func (p *provider) executeWithRefresh(ctx context.Context, connection connector.Connection, secrets map[string]string, endpoint string, query url.Values, preferences ...string) (connector.TypedResult[Response], error) {
 	return p.executeGraphWithRefresh(ctx, connection, secrets, http.MethodGet, endpoint, query, nil, "", preferences...)
@@ -192,7 +216,12 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 	if err != nil {
 		return empty(), 0, permanent("endpoint_invalid", "endpoint is invalid")
 	}
-	parsed.RawQuery = query.Encode()
+	// Microsoft delta nextLink/deltaLink values are opaque URLs. Callers pass a
+	// nil query when following one so that Graph's encoded cursor is preserved;
+	// ordinary operations still replace the endpoint query explicitly.
+	if query != nil {
+		parsed.RawQuery = query.Encode()
+	}
 	var raw []byte
 	if body != nil {
 		raw, err = json.Marshal(body)

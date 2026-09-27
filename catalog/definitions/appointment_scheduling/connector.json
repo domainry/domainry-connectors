@@ -1158,13 +1158,13 @@
         {
           "key": "calendar_id",
           "name": "Calendar ID",
-          "description": "Writable Feishu primary or shared calendar ID.",
-      "required": false,
+          "description": "Optional Feishu primary or shared calendar ID used for meeting creation.",
+          "required": false,
           "type": "text",
           "validation": {"max_length": 2048},
           "i18n": {
-            "en-US": {"name": "Calendar ID", "description": "Writable Feishu primary or shared calendar ID."},
-            "zh-CN": {"name": "日历 ID", "description": "飞书可写的主日历或共享日历 ID。"}
+            "en-US": {"name": "Calendar ID", "description": "Optional Feishu primary or shared calendar ID used for meeting creation."},
+            "zh-CN": {"name": "日历 ID", "description": "创建会议时使用的可选飞书主日历或共享日历 ID。"}
           }
         },
         {
@@ -1193,6 +1193,19 @@
           }
         },
         {
+          "key": "oauth_base_url",
+          "name": "Feishu OAuth Base URL",
+          "description": "Base URL for Feishu user authorization and OAuth v3 token requests.",
+          "required": false,
+          "type": "text",
+          "default": "https://accounts.feishu.cn",
+          "validation": {"max_length": 2048, "pattern": "^https?://[^\\s]+$"},
+          "i18n": {
+            "en-US": {"name": "Feishu OAuth Base URL", "description": "Base URL for Feishu user authorization and OAuth v3 token requests."},
+            "zh-CN": {"name": "飞书 OAuth 根地址", "description": "飞书用户授权及 OAuth v3 令牌请求的根地址。"}
+          }
+        },
+        {
           "key": "default_timezone",
           "name": "Default timezone",
           "description": "Default timezone used by meeting invitations.",
@@ -1217,27 +1230,126 @@
             "en-US": {"name": "Timeout seconds", "description": "Maximum duration of one Feishu API request."},
             "zh-CN": {"name": "超时秒数", "description": "单次飞书 API 请求的最长时间。"}
           }
+        },
+        {
+          "key": "calendar_sync_enabled",
+          "name": "Enable calendar sync",
+          "description": "Enable durable Feishu calendar history and reconciliation tasks for this account.",
+          "required": false,
+          "type": "boolean",
+          "default": false,
+          "i18n": {
+            "en-US": {"name": "Enable calendar sync", "description": "Enable durable Feishu calendar history and reconciliation tasks for this account."},
+            "zh-CN": {"name": "启用日历同步", "description": "为当前账号启用持久化的飞书日历历史回溯和对账任务。"}
+          }
+        },
+        {
+          "key": "calendar_subscription_enabled",
+          "name": "Enable event subscription",
+          "description": "Subscribe the selected calendar to Feishu event change callbacks.",
+          "required": false,
+          "type": "boolean",
+          "default": true,
+          "i18n": {
+            "en-US": {"name": "Enable event subscription", "description": "Subscribe the selected calendar to Feishu event change callbacks."},
+            "zh-CN": {"name": "启用事件订阅", "description": "订阅所选日历的飞书事件变更回调。"}
+          }
+        },
+        {
+          "key": "calendar_history_days",
+          "name": "Calendar history days",
+          "description": "Number of past days included in each bounded calendar reconciliation window.",
+          "required": false,
+          "type": "integer",
+          "default": 30,
+          "validation": {"min": 0, "max": 90},
+          "i18n": {
+            "en-US": {"name": "Calendar history days", "description": "Number of past days included in each bounded calendar reconciliation window."},
+            "zh-CN": {"name": "日历历史天数", "description": "每次有界日历对账包含的过去天数。"}
+          }
+        },
+        {
+          "key": "calendar_future_days",
+          "name": "Calendar future days",
+          "description": "Number of future days included in each bounded calendar reconciliation window.",
+          "required": false,
+          "type": "integer",
+          "default": 62,
+          "validation": {"min": 1, "max": 92},
+          "i18n": {
+            "en-US": {"name": "Calendar future days", "description": "Number of future days included in each bounded calendar reconciliation window."},
+            "zh-CN": {"name": "日历未来天数", "description": "每次有界日历对账包含的未来天数。"}
+          }
+        },
+        {
+          "key": "calendar_reconcile_seconds",
+          "name": "Calendar reconciliation interval",
+          "description": "Low-frequency reconciliation interval used to recover missed callbacks.",
+          "required": false,
+          "type": "integer",
+          "default": 900,
+          "validation": {"min": 300, "max": 86400},
+          "i18n": {
+            "en-US": {"name": "Calendar reconciliation interval", "description": "Low-frequency reconciliation interval used to recover missed callbacks."},
+            "zh-CN": {"name": "日历对账间隔", "description": "用于弥补回调遗漏的低频对账间隔（秒）。"}
+          }
         }
       ],
       "description": "Runtime Provider feishu_calendar",
       "i18n": {
-        "en-US": {"name": "Feishu Calendar Meeting", "description": "Create a Feishu event, invite attendees, and return its meeting URL."},
-        "zh-CN": {"name": "飞书日历会议", "description": "创建飞书日程、邀请参与人并返回会议链接。"}
+        "en-US": {"name": "Feishu Calendar", "description": "Authorize users, read calendars and availability, and create Feishu meetings."},
+        "zh-CN": {"name": "飞书日历", "description": "授权用户、读取日历与忙闲信息，并创建飞书会议。"}
       },
       "key": "feishu_calendar",
-      "name": "Feishu Calendar Meeting",
+      "name": "Feishu Calendar",
       "readiness": "provider_available",
       "secret_fields": [
         {
           "key": "access_token",
           "name": "User access token",
-          "description": "Feishu user access token for creating meetings as the organizer.",
+          "description": "Per-account Feishu user access token, refreshed automatically when OAuth credentials are present.",
           "required": false,
           "type": "text",
-          "config": {"credential_kind": "bearer_token", "material_format": "opaque", "rotation_policy": "manual", "expiry_policy": "optional", "test_requirement": "when_bound", "sensitive": true, "write_only": true},
+          "config": {"credential_kind": "bearer_token", "material_format": "opaque", "rotation_policy": "oauth_refresh", "expiry_policy": "optional", "test_requirement": "when_bound", "sensitive": true, "write_only": true},
           "i18n": {
-            "en-US": {"name": "User access token", "description": "Feishu user access token for creating meetings as the organizer."},
-            "zh-CN": {"name": "用户访问令牌", "description": "以组织者身份创建会议的飞书用户访问令牌。"}
+            "en-US": {"name": "User access token", "description": "Per-account Feishu user access token, refreshed automatically when OAuth credentials are present."},
+            "zh-CN": {"name": "用户访问令牌", "description": "每个连接账号独立保存的飞书用户访问令牌；存在 OAuth 凭据时自动刷新。"}
+          }
+        },
+        {
+          "key": "refresh_token",
+          "name": "User refresh token",
+          "description": "Per-account Feishu refresh token used for automatic credential rotation.",
+          "required": false,
+          "type": "text",
+          "config": {"credential_kind": "refresh_token", "material_format": "opaque", "rotation_policy": "oauth_refresh", "expiry_policy": "optional", "test_requirement": "when_bound", "sensitive": true, "write_only": true},
+          "i18n": {
+            "en-US": {"name": "User refresh token", "description": "Per-account Feishu refresh token used for automatic credential rotation."},
+            "zh-CN": {"name": "用户刷新令牌", "description": "每个连接账号独立保存、用于自动轮换凭据的飞书刷新令牌。"}
+          }
+        },
+        {
+          "key": "client_id",
+          "name": "OAuth client ID",
+          "description": "Shared Feishu OAuth application client ID reference.",
+          "required": false,
+          "type": "text",
+          "config": {"credential_kind": "identifier", "material_format": "opaque", "rotation_policy": "manual", "expiry_policy": "optional", "test_requirement": "when_bound", "sensitive": true, "write_only": true},
+          "i18n": {
+            "en-US": {"name": "OAuth client ID", "description": "Shared Feishu OAuth application client ID reference."},
+            "zh-CN": {"name": "OAuth 客户端 ID", "description": "共享的飞书 OAuth 应用客户端 ID 引用。"}
+          }
+        },
+        {
+          "key": "client_secret",
+          "name": "OAuth client secret",
+          "description": "Shared Feishu OAuth application client secret reference.",
+          "required": false,
+          "type": "text",
+          "config": {"credential_kind": "oauth_client_secret", "material_format": "opaque", "rotation_policy": "manual", "expiry_policy": "optional", "test_requirement": "when_bound", "sensitive": true, "write_only": true},
+          "i18n": {
+            "en-US": {"name": "OAuth client secret", "description": "Shared Feishu OAuth application client secret reference."},
+            "zh-CN": {"name": "OAuth 客户端密钥", "description": "共享的飞书 OAuth 应用客户端密钥引用。"}
           }
         },
         {
@@ -1251,6 +1363,30 @@
             "en-US": {"name": "App secret", "description": "Feishu custom application secret for tenant authentication."},
             "zh-CN": {"name": "应用密钥", "description": "飞书租户身份鉴权使用的自建应用密钥。"}
           }
+        },
+        {
+          "key": "encrypt_key",
+          "name": "Event encrypt key",
+          "description": "Feishu event callback encrypt key used for request signatures and payload decryption.",
+          "required": false,
+          "type": "text",
+          "config": {"credential_kind": "generic_secret", "material_format": "opaque", "rotation_policy": "manual", "expiry_policy": "optional", "test_requirement": "when_bound", "sensitive": true, "write_only": true},
+          "i18n": {
+            "en-US": {"name": "Event encrypt key", "description": "Feishu event callback encrypt key used for request signatures and payload decryption."},
+            "zh-CN": {"name": "事件加密密钥", "description": "用于请求签名校验和载荷解密的飞书事件加密密钥。"}
+          }
+        },
+        {
+          "key": "verification_token",
+          "name": "Event verification token",
+          "description": "Feishu event callback verification token.",
+          "required": false,
+          "type": "text",
+          "config": {"credential_kind": "signing_secret", "material_format": "opaque", "rotation_policy": "manual", "expiry_policy": "optional", "test_requirement": "when_bound", "sensitive": true, "write_only": true},
+          "i18n": {
+            "en-US": {"name": "Event verification token", "description": "Feishu event callback verification token."},
+            "zh-CN": {"name": "事件校验令牌", "description": "飞书事件回调使用的校验令牌。"}
+          }
         }
       ]
     }
@@ -1260,8 +1396,13 @@
     "access_token",
     "app_secret",
     "api_token",
+    "client_id",
+    "client_secret",
+    "encrypt_key",
     "oauth_client_id",
     "oauth_client_secret",
+    "refresh_token",
+    "verification_token",
     "webhook_secret"
   ],
   "source": "connectors:appointment_scheduling",

@@ -20,24 +20,12 @@ var (
 	CalendarEventUpdate  = connector.CallOperation[calendarwrite.UpdateRequest, calendarwrite.Result]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: calendarwrite.UpdateOperationKey, ContractSHA256: calendarwrite.OperationSHA256(calendarwrite.UpdateOperationKey), Reliability: writeReliability()}
 )
 
-type googleWriteAttendee struct {
-	Email            string `json:"email"`
-	Name             string `json:"displayName"`
-	Optional         bool   `json:"optional"`
-	Resource         bool   `json:"resource"`
-	AdditionalGuests int    `json:"additionalGuests"`
-	ResponseStatus   string `json:"responseStatus"`
-	Comment          string `json:"comment"`
-}
-
 type googleWriteEvent struct {
 	googleCalendarEvent
-	ETag                    string                `json:"etag"`
-	EventType               string                `json:"eventType"`
-	Recurrence              []string              `json:"recurrence"`
-	Attendees               []googleWriteAttendee `json:"attendees"`
-	AttendeesOmitted        bool                  `json:"attendeesOmitted"`
-	GuestsCanSeeOtherGuests *bool                 `json:"guestsCanSeeOtherGuests"`
+	ETag                    string `json:"etag"`
+	EventType               string `json:"eventType"`
+	AttendeesOmitted        bool   `json:"attendeesOmitted"`
+	GuestsCanSeeOtherGuests *bool  `json:"guestsCanSeeOtherGuests"`
 }
 
 func (e googleWriteEvent) snapshot(r calendarwrite.InspectRequest) (calendarwrite.Snapshot, error) {
@@ -134,7 +122,7 @@ func calendarWriteDescription(s string) string {
 	return strings.ReplaceAll(html.EscapeString(strings.ReplaceAll(s, "\r\n", "\n")), "\n", "<br>")
 }
 
-func calendarWriteAttendees(values []calendarwrite.Attendee, previous []googleWriteAttendee) ([]map[string]any, error) {
+func calendarWriteAttendees(values []calendarwrite.Attendee, previous []googleCalendarPerson) ([]map[string]any, error) {
 	out := make([]map[string]any, 0, len(values))
 	for _, a := range values {
 		item := map[string]any{"email": a.Address, "displayName": a.Name, "optional": a.Kind == "optional", "resource": a.Kind == "resource"}

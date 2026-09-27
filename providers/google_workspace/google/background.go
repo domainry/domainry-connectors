@@ -4,46 +4,46 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/base64"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
-	"math/big"
+	"mime"
 	"strconv"
 	"strings"
 	"time"
 
 	connector "github.com/domainry/domainry-connector-sdk"
+	"github.com/domainry/domainry-connectors/internal/mailcontent"
 )
 
 const (
-	gmailSyncTaskKey   = "gmail_sync"
-	gmailWatchTaskKey  = "gmail_watch"
-	gmailMaxPages      = 20
-	gmailMaxBodyBytes  = 1 << 20
-	gmailPushPublisher = "serviceAccount:gmail-api-push@system.gserviceaccount.com"
+	gmailSyncTaskKey  = "gmail_sync"
+	gmailWatchTaskKey = "gmail_watch"
+	gmailMaxPages     = 20
+	gmailMaxBodyBytes = 1 << 20
 )
 
 type gmailSyncState struct {
-	AccountEmail string `json:"account_email,omitempty"`
-	HistoryID    string `json:"history_id,omitempty"`
+	AccountEmail       string `json:"account_email,omitempty"`
+	HistoryID          string `json:"history_id,omitempty"`
+	BootstrapHistoryID string `json:"bootstrap_history_id,omitempty"`
+	BootstrapPageToken string `json:"bootstrap_page_token,omitempty"`
+	BootstrapSource    string `json:"bootstrap_source,omitempty"`
 }
 
 type gmailWatchState struct {
-	ProjectID      string `json:"project_id,omitempty"`
-	TopicID        string `json:"topic_id,omitempty"`
-	SubscriptionID string `json:"subscription_id,omitempty"`
-	ExpiresAt      string `json:"expires_at,omitempty"`
-	NextRenewAt    string `json:"next_renew_at,omitempty"`
+	TopicID     string `json:"topic_id,omitempty"`
+	ExpiresAt   string `json:"expires_at,omitempty"`
+	NextRenewAt string `json:"next_renew_at,omitempty"`
 }
 
 func (p *provider) BackgroundTasks(connection connector.Connection) []connector.BackgroundTaskDescriptor {
-	if !backgroundBool(connection.Config, "gmail_ingest_enabled", false) || connection.Status != "active" {
+	if !backgroundBool(connection.Config, "gmail_ingest_enabled", true) || connection.Status != "active" {
 		return nil
 	}
-	tasks := []connector.BackgroundTaskDescriptor{{Key: gmailSyncTaskKey, StateVersion: 1}}
-	if backgroundBool(connection.Config, "gmail_watch_enabled", true) {
-		tasks = append(tasks, connector.BackgroundTaskDescriptor{Key: gmailWatchTaskKey, StateVersion: 1})
+	tasks := []connector.BackgroundTaskDescriptor{{Key: gmailSyncTaskKey, StateVersion: 2}}
+	if backgroundBool(connection.Config, "gmail_watch_enabled", true) && backgroundConfig(connection.Config, "gmail_pubsub_project_id", "") != "" {
+		tasks = append(tasks, connector.BackgroundTaskDescriptor{Key: gmailWatchTaskKey, StateVersion: 2})
 	}
 	return tasks
 }
@@ -55,7 +55,7 @@ func (p *provider) ProcessBackground(ctx context.Context, request connector.Back
 	if request.Connection.ConnectorKey != ConnectorKey || request.Connection.ProviderKey != ProviderKey {
 		return connector.BackgroundResult{}, permanent("background.connection_mismatch", "background connection does not match Google Workspace")
 	}
-	if request.StateVersion != 1 {
+	if request.StateVersion != 2 {
 		return connector.BackgroundResult{}, permanent("background.state_version_unsupported", "unsupported Google Workspace background state version")
 	}
 	switch request.TaskKey {
@@ -69,22 +69,12 @@ func (p *provider) ProcessBackground(ctx context.Context, request connector.Back
 }
 
 func (p *provider) CleanupBackground(ctx context.Context, connection connector.Connection, secrets map[string]string, now time.Time, principal connector.Principal) (map[string]string, error) {
-	if !backgroundBool(connection.Config, "gmail_watch_enabled", true) {
+	if !backgroundBool(connection.Config, "gmail_watch_enabled", true) || backgroundConfig(connection.Config, "gmail_pubsub_project_id", "") == "" {
 		return nil, nil
 	}
-	projectID := backgroundConfig(connection.Config, "gmail_pubsub_project_id", "")
-	if projectID == "" {
-		return nil, nil
-	}
-	request := connector.BackgroundRequest{TaskKey: gmailWatchTaskKey, StateVersion: 1, Connection: connection, State: json.RawMessage(`{}`), Secrets: secrets, Now: now, Principal: principal}
+	request := connector.BackgroundRequest{TaskKey: gmailWatchTaskKey, StateVersion: 2, Connection: connection, State: json.RawMessage(`{}`), Secrets: secrets, Now: now, Principal: principal}
 	resolved, updates := cloneStrings(secrets), map[string]string{}
 	_, current, err := p.backgroundCall(ctx, request, GmailStop.Key, GmailStop.ContractSHA256, map[string]any{}, resolved)
-	mergeStrings(resolved, current)
-	mergeStrings(updates, current)
-	if err != nil && !backgroundErrorCodeIs(err, "http_status_404") {
-		return updates, err
-	}
-	_, current, err = p.backgroundCall(ctx, request, PubSubDeleteSubscription.Key, PubSubDeleteSubscription.ContractSHA256, map[string]any{"project_id": projectID, "subscription_id": backgroundConfig(connection.Config, "gmail_pubsub_subscription", managedGmailSubscription(connection.WorkspaceID, connection.Key))}, resolved)
 	mergeStrings(updates, current)
 	if err != nil && !backgroundErrorCodeIs(err, "http_status_404") {
 		return updates, err
@@ -111,11 +101,22 @@ func (p *provider) processGmailSync(ctx context.Context, request connector.Backg
 	}
 	events := []connector.BackgroundEvent{}
 	if state.HistoryID == "" {
-		if backgroundBool(request.Connection.Config, "gmail_ingest_bootstrap", false) {
+		if state.BootstrapHistoryID == "" && backgroundBool(request.Connection.Config, "gmail_ingest_bootstrap", true) {
+			state.BootstrapHistoryID, state.BootstrapSource = currentHistoryID, "bootstrap"
+		}
+		if state.BootstrapHistoryID != "" {
 			var bootstrapUpdates map[string]string
-			events, bootstrapUpdates, err = p.currentGmailMessages(ctx, request, account, secrets)
+			var nextPage string
+			events, nextPage, bootstrapUpdates, err = p.currentGmailMessagesPage(ctx, request, account, state.BootstrapPageToken, state.BootstrapSource, secrets)
 			mergeStrings(secrets, bootstrapUpdates)
 			mergeStrings(updates, bootstrapUpdates)
+			if err == nil && nextPage != "" {
+				state.AccountEmail, state.BootstrapPageToken = account, nextPage
+				raw, _ := json.Marshal(state)
+				return connector.BackgroundResult{State: raw, NextDueAt: request.Now.Add(5 * time.Second), Events: events, SecretUpdates: updates}, nil
+			}
+			currentHistoryID = state.BootstrapHistoryID
+			state.BootstrapHistoryID, state.BootstrapPageToken, state.BootstrapSource = "", "", ""
 		}
 	} else {
 		var historyUpdates map[string]string
@@ -123,9 +124,17 @@ func (p *provider) processGmailSync(ctx context.Context, request connector.Backg
 		mergeStrings(updates, historyUpdates)
 		if err != nil && backgroundErrorCodeIs(err, "http_status_404") {
 			var reconcileUpdates map[string]string
-			events, reconcileUpdates, err = p.currentGmailMessages(ctx, request, account, secrets)
+			var nextPage string
+			state.HistoryID, state.BootstrapHistoryID, state.BootstrapSource = "", backgroundString(profile, "historyId"), "reconcile"
+			events, nextPage, reconcileUpdates, err = p.currentGmailMessagesPage(ctx, request, account, "", state.BootstrapSource, secrets)
 			mergeStrings(updates, reconcileUpdates)
-			currentHistoryID = backgroundString(profile, "historyId")
+			if err == nil && nextPage != "" {
+				state.AccountEmail, state.BootstrapPageToken = account, nextPage
+				raw, _ := json.Marshal(state)
+				return connector.BackgroundResult{State: raw, NextDueAt: request.Now.Add(5 * time.Second), Events: events, SecretUpdates: updates}, nil
+			}
+			currentHistoryID = state.BootstrapHistoryID
+			state.BootstrapHistoryID, state.BootstrapPageToken, state.BootstrapSource = "", "", ""
 		}
 	}
 	if err != nil {
@@ -133,21 +142,21 @@ func (p *provider) processGmailSync(ctx context.Context, request connector.Backg
 	}
 	state.AccountEmail, state.HistoryID = account, currentHistoryID
 	raw, _ := json.Marshal(state)
-	pollSeconds := backgroundInt(request.Connection.Config, "gmail_poll_seconds", 60)
-	if pollSeconds < 5 {
-		pollSeconds = 5
+	reconcileSeconds := backgroundInt(request.Connection.Config, "gmail_reconcile_seconds", 3600)
+	if reconcileSeconds < 300 {
+		reconcileSeconds = 300
 	}
-	if pollSeconds > 3600 {
-		pollSeconds = 3600
+	if reconcileSeconds > 86400 {
+		reconcileSeconds = 86400
 	}
-	return connector.BackgroundResult{State: raw, NextDueAt: request.Now.Add(time.Duration(pollSeconds) * time.Second), Events: events, SecretUpdates: updates}, nil
+	return connector.BackgroundResult{State: raw, NextDueAt: request.Now.Add(time.Duration(reconcileSeconds) * time.Second), Events: events, SecretUpdates: updates}, nil
 }
 
 func (p *provider) gmailHistory(ctx context.Context, request connector.BackgroundRequest, account, start string, secrets map[string]string) (string, []connector.BackgroundEvent, map[string]string, error) {
 	pageToken, finalID := "", start
 	seen, events, updates := map[string]struct{}{}, []connector.BackgroundEvent{}, map[string]string{}
 	for page := 0; page < gmailMaxPages; page++ {
-		input := map[string]any{"start_history_id": start, "limit": 100, "label_id": backgroundConfig(request.Connection.Config, "gmail_ingest_label", "INBOX")}
+		input := map[string]any{"start_history_id": start, "limit": 100, "label_id": backgroundConfig(request.Connection.Config, "gmail_ingest_label", "")}
 		if pageToken != "" {
 			input["page_token"] = pageToken
 		}
@@ -168,7 +177,7 @@ func (p *provider) gmailHistory(ctx context.Context, request connector.Backgroun
 					continue
 				}
 				seen[id] = struct{}{}
-				event, eventUpdates, err := p.gmailMessageEvent(ctx, request, account, id, secrets)
+				event, eventUpdates, err := p.gmailMessageEvent(ctx, request, account, id, "incremental", secrets)
 				mergeStrings(secrets, eventUpdates)
 				mergeStrings(updates, eventUpdates)
 				if err != nil {
@@ -190,15 +199,29 @@ func (p *provider) gmailHistory(ctx context.Context, request connector.Backgroun
 	return "", nil, updates, permanent("gmail.page_limit_exceeded", "Gmail history page limit exceeded")
 }
 
-func (p *provider) currentGmailMessages(ctx context.Context, request connector.BackgroundRequest, account string, secrets map[string]string) ([]connector.BackgroundEvent, map[string]string, error) {
-	input := map[string]any{"limit": 100, "label_id": backgroundConfig(request.Connection.Config, "gmail_ingest_label", "INBOX")}
-	if query := backgroundConfig(request.Connection.Config, "gmail_ingest_query", ""); query != "" {
+func (p *provider) currentGmailMessagesPage(ctx context.Context, request connector.BackgroundRequest, account, pageToken, source string, secrets map[string]string) ([]connector.BackgroundEvent, string, map[string]string, error) {
+	input := map[string]any{"limit": 100, "label_id": backgroundConfig(request.Connection.Config, "gmail_ingest_label", "")}
+	query := backgroundConfig(request.Connection.Config, "gmail_ingest_query", "")
+	if query == "" {
+		days := backgroundInt(request.Connection.Config, "gmail_history_days", 90)
+		if days < 1 {
+			days = 1
+		}
+		if days > 3650 {
+			days = 3650
+		}
+		query = fmt.Sprintf("newer_than:%dd", days)
+	}
+	if query != "" {
 		input["query"] = query
+	}
+	if strings.TrimSpace(pageToken) != "" {
+		input["page_token"] = strings.TrimSpace(pageToken)
 	}
 	response, updates, err := p.backgroundCall(ctx, request, GmailListMessages.Key, GmailListMessages.ContractSHA256, input, secrets)
 	mergeStrings(secrets, updates)
 	if err != nil {
-		return nil, updates, err
+		return nil, "", updates, err
 	}
 	events := []connector.BackgroundEvent{}
 	for _, message := range backgroundMapSlice(response["messages"]) {
@@ -206,28 +229,28 @@ func (p *provider) currentGmailMessages(ctx context.Context, request connector.B
 		if id == "" {
 			continue
 		}
-		event, currentUpdates, err := p.gmailMessageEvent(ctx, request, account, id, secrets)
+		event, currentUpdates, err := p.gmailMessageEvent(ctx, request, account, id, source, secrets)
 		mergeStrings(secrets, currentUpdates)
 		mergeStrings(updates, currentUpdates)
 		if err != nil {
-			return nil, updates, err
+			return nil, "", updates, err
 		}
 		if event.ExternalID != "" {
 			events = append(events, event)
 		}
 	}
-	return events, updates, nil
+	return events, backgroundString(response, "nextPageToken"), updates, nil
 }
 
-func (p *provider) gmailMessageEvent(ctx context.Context, request connector.BackgroundRequest, account, messageID string, secrets map[string]string) (connector.BackgroundEvent, map[string]string, error) {
+func (p *provider) gmailMessageEvent(ctx context.Context, request connector.BackgroundRequest, account, messageID, source string, secrets map[string]string) (connector.BackgroundEvent, map[string]string, error) {
 	message, updates, err := p.backgroundCall(ctx, request, GmailGetMessage.Key, GmailGetMessage.ContractSHA256, map[string]any{"message_id": messageID, "format": "full"}, secrets)
 	if err != nil {
 		return connector.BackgroundEvent{}, updates, err
 	}
-	if !backgroundHasLabel(message, backgroundConfig(request.Connection.Config, "gmail_ingest_label", "INBOX")) {
+	if !backgroundHasLabel(message, backgroundConfig(request.Connection.Config, "gmail_ingest_label", "")) {
 		return connector.BackgroundEvent{}, updates, nil
 	}
-	payload, projectionErr := projectBackgroundGmailMessage(message, account, request.Connection.Key)
+	payload, projectionErr := projectBackgroundGmailMessage(message, account, request.Connection.Key, source)
 	eventType := "gmail.message.received"
 	if projectionErr != nil {
 		eventType = "gmail.message.malformed"
@@ -248,106 +271,35 @@ func (p *provider) processGmailWatch(ctx context.Context, request connector.Back
 	if raw := request.RelatedStates[gmailSyncTaskKey]; len(raw) != 0 {
 		_ = strictBackgroundJSON(raw, &syncState)
 	}
-	projectID := backgroundConfig(request.Connection.Config, "gmail_pubsub_project_id", state.ProjectID)
-	topicID := backgroundConfig(request.Connection.Config, "gmail_pubsub_topic", "domainry-gmail-events")
-	subscriptionID := backgroundConfig(request.Connection.Config, "gmail_pubsub_subscription", managedGmailSubscription(request.Connection.WorkspaceID, request.Connection.Key))
+	projectID := backgroundConfig(request.Connection.Config, "gmail_pubsub_project_id", "")
 	if projectID == "" {
 		return connector.BackgroundResult{}, permanent("gmail.pubsub_project_required", "Gmail Pub/Sub project is required")
 	}
+	if syncState.AccountEmail == "" {
+		raw, _ := json.Marshal(state)
+		return connector.BackgroundResult{State: raw, NextDueAt: request.Now.Add(5 * time.Minute), WakeTasks: []string{gmailSyncTaskKey}}, nil
+	}
+	topicID := gmailPushTopic(backgroundConfig(request.Connection.Config, "gmail_pubsub_topic_id", "domainry-gmail-events"))
 	secrets, updates := cloneStrings(request.Secrets), map[string]string{}
-	wake := []string{}
 	if watchRenewalDue(state, request.Now) {
-		currentUpdates, err := p.ensureGmailPubSub(ctx, request, projectID, topicID, subscriptionID, secrets)
-		mergeStrings(secrets, currentUpdates)
+		watch, currentUpdates, err := p.backgroundCall(ctx, request, GmailWatch.Key, GmailWatch.ContractSHA256, map[string]any{"topic_name": "projects/" + projectID + "/topics/" + topicID, "label_id": backgroundConfig(request.Connection.Config, "gmail_ingest_label", "")}, secrets)
 		mergeStrings(updates, currentUpdates)
 		if err != nil {
 			return connector.BackgroundResult{SecretUpdates: updates}, err
 		}
-		watch, currentUpdates, err := p.backgroundCall(ctx, request, GmailWatch.Key, GmailWatch.ContractSHA256, map[string]any{"topic_name": "projects/" + projectID + "/topics/" + topicID, "label_id": backgroundConfig(request.Connection.Config, "gmail_ingest_label", "INBOX")}, secrets)
-		mergeStrings(updates, currentUpdates)
-		if err != nil {
-			return connector.BackgroundResult{SecretUpdates: updates}, err
+		expiresAt, nextRenewAt, scheduleErr := gmailWatchSchedule(backgroundString(watch, "expiration"), request.Now, request.Connection.WorkspaceID, request.Connection.Key)
+		if scheduleErr != nil {
+			return connector.BackgroundResult{SecretUpdates: updates}, scheduleErr
 		}
-		state.ExpiresAt = expirationRFC3339(backgroundString(watch, "expiration"))
-		state.NextRenewAt = request.Now.Add(24 * time.Hour).Format(time.RFC3339)
-		if syncState.HistoryID == "" {
-			wake = append(wake, gmailSyncTaskKey)
-		}
+		state.ExpiresAt, state.NextRenewAt = expiresAt.Format(time.RFC3339), nextRenewAt.Format(time.RFC3339)
 	}
-	state.ProjectID, state.TopicID, state.SubscriptionID = projectID, topicID, subscriptionID
-	pull, currentUpdates, err := p.backgroundCall(ctx, request, PubSubPull.Key, PubSubPull.ContractSHA256, map[string]any{"project_id": projectID, "subscription_id": subscriptionID, "max_messages": 25}, secrets)
-	mergeStrings(updates, currentUpdates)
-	if err != nil {
-		return connector.BackgroundResult{SecretUpdates: updates}, err
-	}
-	events, ackIDs := []connector.BackgroundEvent{}, []string{}
-	for _, received := range backgroundMapSlice(pull["receivedMessages"]) {
-		ackID := backgroundString(received, "ackId")
-		message, _ := received["message"].(map[string]any)
-		messageID := backgroundString(message, "messageId")
-		encodedData := backgroundString(message, "data")
-		externalID := gmailPushExternalID(messageID, encodedData)
-		data, decodeErr := decodeBackgroundNotification(encodedData)
-		if decodeErr != nil || backgroundString(data, "historyId") == "" {
-			raw, _ := json.Marshal(map[string]any{"connection_key": request.Connection.Key, "failure_code": "gmail.notification_malformed"})
-			events = append(events, connector.BackgroundEvent{ExternalID: externalID, EventType: "gmail.notification.malformed", Payload: raw})
-			if ackID != "" {
-				ackIDs = append(ackIDs, ackID)
-			}
-			continue
-		}
-		email, historyID := backgroundString(data, "emailAddress"), backgroundString(data, "historyId")
-		if syncState.AccountEmail != "" && !strings.EqualFold(syncState.AccountEmail, email) {
-			raw, _ := json.Marshal(map[string]any{"connection_key": request.Connection.Key, "failure_code": "gmail.account_mismatch"})
-			events = append(events, connector.BackgroundEvent{ExternalID: externalID, EventType: "gmail.notification.account_mismatch", Payload: raw})
-			if ackID != "" {
-				ackIDs = append(ackIDs, ackID)
-			}
-			continue
-		}
-		if historyAtLeast(syncState.HistoryID, historyID) {
-			if ackID != "" {
-				ackIDs = append(ackIDs, ackID)
-			}
-		} else {
-			wake = append(wake, gmailSyncTaskKey)
-		}
-	}
-	commits := []connector.BackgroundCommit{}
-	if len(ackIDs) > 0 {
-		raw, _ := json.Marshal(map[string]any{"project_id": projectID, "subscription_id": subscriptionID, "ack_ids": ackIDs})
-		commits = append(commits, connector.BackgroundCommit{OperationKey: PubSubAcknowledge.Key, ContractSHA256: PubSubAcknowledge.ContractSHA256, Payload: raw})
+	state.TopicID = topicID
+	nextRenewAt, err := time.Parse(time.RFC3339, state.NextRenewAt)
+	if err != nil || !nextRenewAt.After(request.Now) {
+		return connector.BackgroundResult{}, permanent("gmail.watch_schedule_invalid", "Gmail watch renewal schedule is invalid")
 	}
 	raw, _ := json.Marshal(state)
-	return connector.BackgroundResult{State: raw, NextDueAt: request.Now.Add(5 * time.Second), Events: events, Commit: commits, WakeTasks: uniqueStrings(wake), SecretUpdates: updates}, nil
-}
-
-func (p *provider) ensureGmailPubSub(ctx context.Context, request connector.BackgroundRequest, projectID, topicID, subscriptionID string, secrets map[string]string) (map[string]string, error) {
-	updates := map[string]string{}
-	_, current, err := p.backgroundCall(ctx, request, PubSubEnsureTopic.Key, PubSubEnsureTopic.ContractSHA256, map[string]any{"project_id": projectID, "topic_id": topicID}, secrets)
-	mergeStrings(secrets, current)
-	mergeStrings(updates, current)
-	if err != nil && !backgroundErrorCodeIs(err, "http_status_409") {
-		return updates, err
-	}
-	policy, current, err := p.backgroundCall(ctx, request, PubSubGetTopicPolicy.Key, PubSubGetTopicPolicy.ContractSHA256, map[string]any{"project_id": projectID, "topic_id": topicID}, secrets)
-	mergeStrings(secrets, current)
-	mergeStrings(updates, current)
-	if err != nil {
-		return updates, err
-	}
-	_, current, err = p.backgroundCall(ctx, request, PubSubSetTopicPolicy.Key, PubSubSetTopicPolicy.ContractSHA256, map[string]any{"project_id": projectID, "topic_id": topicID, "policy": backgroundPolicyWithPublisher(policy, gmailPushPublisher)}, secrets)
-	mergeStrings(secrets, current)
-	mergeStrings(updates, current)
-	if err != nil {
-		return updates, err
-	}
-	_, current, err = p.backgroundCall(ctx, request, PubSubEnsureSubscription.Key, PubSubEnsureSubscription.ContractSHA256, map[string]any{"project_id": projectID, "topic_id": topicID, "subscription_id": subscriptionID, "ack_deadline_seconds": 60}, secrets)
-	mergeStrings(updates, current)
-	if err != nil && !backgroundErrorCodeIs(err, "http_status_409") {
-		return updates, err
-	}
-	return updates, nil
+	return connector.BackgroundResult{State: raw, NextDueAt: nextRenewAt, SecretUpdates: updates}, nil
 }
 
 func (p *provider) backgroundCall(ctx context.Context, request connector.BackgroundRequest, key, hash string, input map[string]any, secrets map[string]string) (map[string]any, map[string]string, error) {
@@ -470,7 +422,7 @@ func backgroundHasLabel(message map[string]any, required string) bool {
 	}
 	return false
 }
-func projectBackgroundGmailMessage(message map[string]any, account, connection string) (map[string]any, error) {
+func projectBackgroundGmailMessage(message map[string]any, account, connection, source string) (map[string]any, error) {
 	id, thread := backgroundString(message, "id"), backgroundString(message, "threadId")
 	root, ok := message["payload"].(map[string]any)
 	if id == "" || thread == "" || !ok {
@@ -480,6 +432,9 @@ func projectBackgroundGmailMessage(message map[string]any, account, connection s
 	for _, h := range backgroundMapSlice(root["headers"]) {
 		headers[strings.ToLower(backgroundString(h, "name"))] = backgroundString(h, "value")
 	}
+	if strings.TrimSpace(headers["from"]) == "" || strings.TrimSpace(headers["date"]) == "" && backgroundString(message, "internalDate") == "" {
+		return nil, fmt.Errorf("message lacks sender or timestamp")
+	}
 	body, attachments := backgroundParts(root)
 	if strings.TrimSpace(body) == "" {
 		body = backgroundString(message, "snippet")
@@ -487,24 +442,50 @@ func projectBackgroundGmailMessage(message map[string]any, account, connection s
 			body = body[:gmailMaxBodyBytes]
 		}
 	}
-	return map[string]any{"connection_key": connection, "account_email": account, "message_id": id, "thread_id": thread, "rfc_message_id": headers["message-id"], "in_reply_to": headers["in-reply-to"], "references": headers["references"], "from": headers["from"], "to": headers["to"], "cc": headers["cc"], "subject": headers["subject"], "date": headers["date"], "internal_date": backgroundString(message, "internalDate"), "label_ids": message["labelIds"], "snippet": backgroundString(message, "snippet"), "body": body, "attachments": attachments}, nil
+	return map[string]any{
+		"source": source, "connection_key": connection, "account_email": account, "message_id": id, "thread_id": thread,
+		"rfc_message_id": headers["message-id"], "in_reply_to": headers["in-reply-to"], "references": headers["references"],
+		"from": headers["from"], "to": headers["to"], "cc": headers["cc"], "subject": headers["subject"], "date": headers["date"],
+		"internal_date": backgroundString(message, "internalDate"), "label_ids": message["labelIds"], "snippet": backgroundString(message, "snippet"),
+		"body": body, "attachments": attachments, "auto_submitted": headers["auto-submitted"], "precedence": headers["precedence"],
+		"list_id": headers["list-id"], "list_unsubscribe": headers["list-unsubscribe"], "x_auto_response_suppress": headers["x-auto-response-suppress"],
+	}, nil
 }
 func backgroundParts(part map[string]any) (string, []map[string]any) {
-	text := ""
+	text, textScore := "", 0
 	attachments := []map[string]any{}
 	var walk func(map[string]any)
 	walk = func(current map[string]any) {
-		mime, filename := backgroundString(current, "mimeType"), backgroundString(current, "filename")
+		mimeType, filename := backgroundString(current, "mimeType"), backgroundString(current, "filename")
 		body, _ := current["body"].(map[string]any)
 		attachment := backgroundString(body, "attachmentId")
 		if filename != "" || attachment != "" {
-			attachments = append(attachments, map[string]any{"filename": filename, "mime_type": mime, "attachment_id": attachment, "size": body["size"]})
-		} else if text == "" && (mime == "text/plain" || mime == "text/html") {
-			if decoded, err := base64.RawURLEncoding.DecodeString(backgroundString(body, "data")); err == nil {
+			attachments = append(attachments, map[string]any{"filename": filename, "mime_type": mimeType, "attachment_id": attachment, "size": body["size"]})
+		} else if mimeType == "text/plain" || mimeType == "text/html" {
+			score := 1
+			if mimeType == "text/plain" {
+				score = 2
+			}
+			if decoded, err := base64.RawURLEncoding.DecodeString(strings.TrimRight(backgroundString(body, "data"), "=")); err == nil && score > textScore {
 				if len(decoded) > gmailMaxBodyBytes {
 					decoded = decoded[:gmailMaxBodyBytes]
 				}
-				text = strings.ReplaceAll(string(decoded), "\x00", "")
+				charset := ""
+				for _, header := range backgroundMapSlice(current["headers"]) {
+					if strings.EqualFold(backgroundString(header, "name"), "Content-Type") {
+						_, parameters, parseErr := mime.ParseMediaType(backgroundString(header, "value"))
+						if parseErr == nil {
+							charset = parameters["charset"]
+						}
+					}
+				}
+				decodedText, decodeErr := mailcontent.DecodeText(decoded, charset)
+				if decodeErr == nil && mimeType == "text/html" {
+					decodedText, decodeErr = mailcontent.HTMLText(decodedText)
+				}
+				if decodeErr == nil {
+					text, textScore = strings.ReplaceAll(decodedText, "\x00", ""), score
+				}
 			}
 		}
 		for _, child := range backgroundMapSlice(current["parts"]) {
@@ -514,17 +495,6 @@ func backgroundParts(part map[string]any) (string, []map[string]any) {
 	walk(part)
 	return text, attachments
 }
-func managedGmailSubscription(workspace, connection string) string {
-	sum := sha256.Sum256([]byte(workspace + "\x00" + connection))
-	return "domainry-gmail-" + hex.EncodeToString(sum[:])[:20]
-}
-func gmailPushExternalID(messageID, encodedData string) string {
-	if messageID != "" {
-		return "gmail-pubsub:" + messageID
-	}
-	sum := sha256.Sum256([]byte(encodedData))
-	return "gmail-pubsub:malformed:" + hex.EncodeToString(sum[:])
-}
 func watchRenewalDue(state gmailWatchState, now time.Time) bool {
 	if state.ExpiresAt == "" || state.NextRenewAt == "" {
 		return true
@@ -532,77 +502,29 @@ func watchRenewalDue(state gmailWatchState, now time.Time) bool {
 	next, err := time.Parse(time.RFC3339, state.NextRenewAt)
 	return err != nil || !next.After(now)
 }
-func expirationRFC3339(milliseconds string) string {
-	value := new(big.Int)
-	if _, ok := value.SetString(milliseconds, 10); !ok {
-		return ""
-	}
-	return time.UnixMilli(value.Int64()).UTC().Format(time.RFC3339)
+
+func gmailPushTopic(prefix string) string {
+	return strings.TrimSpace(prefix)
 }
-func historyAtLeast(current, notified string) bool {
-	left, right := new(big.Int), new(big.Int)
-	if _, ok := left.SetString(current, 10); !ok {
-		return false
-	}
-	if _, ok := right.SetString(notified, 10); !ok {
-		return false
-	}
-	return left.Cmp(right) >= 0
-}
-func decodeBackgroundNotification(encoded string) (map[string]any, error) {
-	raw, err := base64.StdEncoding.DecodeString(encoded)
+
+func gmailWatchSchedule(expirationMilliseconds string, now time.Time, workspaceID, connectionKey string) (time.Time, time.Time, error) {
+	milliseconds, err := strconv.ParseInt(strings.TrimSpace(expirationMilliseconds), 10, 64)
 	if err != nil {
-		raw, err = base64.RawStdEncoding.DecodeString(encoded)
+		return time.Time{}, time.Time{}, permanent("gmail.watch_expiration_invalid", "Gmail watch expiration is invalid")
 	}
-	if err != nil || len(raw) > 64<<10 {
-		return nil, fmt.Errorf("invalid notification")
+	expiresAt := time.UnixMilli(milliseconds).UTC()
+	if !expiresAt.After(now.Add(30 * time.Minute)) {
+		return time.Time{}, time.Time{}, permanent("gmail.watch_expiration_invalid", "Gmail watch expiration is too soon")
 	}
-	out := map[string]any{}
-	if json.Unmarshal(raw, &out) != nil {
-		return nil, fmt.Errorf("invalid notification")
+	digest := sha256.Sum256([]byte(workspaceID + "\x00" + connectionKey + "\x00" + expiresAt.Format(time.RFC3339Nano)))
+	jitterMinutes := int(digest[0])<<8 | int(digest[1])
+	jitter := time.Duration(jitterMinutes%360) * time.Minute
+	next := expiresAt.Add(-12*time.Hour - jitter)
+	minimum := now.Add(5 * time.Minute)
+	if next.Before(minimum) {
+		next = minimum
 	}
-	return out, nil
-}
-func backgroundPolicyWithPublisher(policy map[string]any, member string) map[string]any {
-	bindings := backgroundMapSlice(policy["bindings"])
-	found := false
-	for i := range bindings {
-		if backgroundString(bindings[i], "role") != "roles/pubsub.publisher" {
-			continue
-		}
-		members, _ := bindings[i]["members"].([]any)
-		for _, v := range members {
-			if v == member {
-				found = true
-			}
-		}
-		if !found {
-			bindings[i]["members"] = append(members, member)
-			found = true
-		}
-	}
-	if !found {
-		bindings = append(bindings, map[string]any{"role": "roles/pubsub.publisher", "members": []any{member}})
-	}
-	out := map[string]any{"bindings": bindings}
-	if etag := backgroundString(policy, "etag"); etag != "" {
-		out["etag"] = etag
-	}
-	if version, ok := policy["version"]; ok {
-		out["version"] = version
-	}
-	return out
-}
-func uniqueStrings(values []string) []string {
-	seen := map[string]bool{}
-	out := []string{}
-	for _, v := range values {
-		if v != "" && !seen[v] {
-			seen[v] = true
-			out = append(out, v)
-		}
-	}
-	return out
+	return expiresAt, next.UTC(), nil
 }
 func backgroundErrorCodeIs(err error, expected string) bool {
 	code, ok := connector.ProviderErrorCodeOf(err)

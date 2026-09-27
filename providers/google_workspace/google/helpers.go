@@ -98,34 +98,11 @@ func set(values url.Values, key, value string) {
 		values.Set(key, value)
 	}
 }
-func resource(project, kind, id string) (string, error) {
-	project, id = strings.TrimSpace(project), strings.TrimSpace(id)
-	if project == "" || id == "" {
-		return "", permanent("pubsub.resource_identity_required", "project and resource IDs are required")
-	}
-	return "projects/" + url.PathEscape(project) + "/" + kind + "s/" + url.PathEscape(id), nil
-}
-func topicResource(project, id string) (string, error) { return resource(project, "topic", id) }
-func subscriptionResource(project, id string) (string, error) {
-	return resource(project, "subscription", id)
-}
-func cleanIDs(values []string) []string {
-	result := make([]string, 0, len(values))
-	for _, value := range values {
-		if value = strings.TrimSpace(value); value != "" {
-			result = append(result, value)
-		}
-	}
-	return result
-}
 func apiBase(c connector.Connection) string {
 	return strings.TrimRight(configDefault(c, "api_base_url", defaultAPIBaseURL), "/")
 }
 func gmailBase(c connector.Connection) string {
 	return strings.TrimRight(configDefault(c, "gmail_base_url", defaultGmailBaseURL), "/")
-}
-func pubsubBase(c connector.Connection) string {
-	return strings.TrimRight(configDefault(c, "pubsub_base_url", defaultPubSubBaseURL), "/")
 }
 func tokenURL(c connector.Connection) string { return configDefault(c, "token_url", defaultTokenURL) }
 func config(c connector.Connection, key string) string {

@@ -86,6 +86,11 @@ func TestCalendarReadPublicBindingsPagingDSTAndDetails(t *testing.T) {
 			}
 			e := graphEvent("event/a", "2026-09-11T02:00:00.1234567", "2026-09-11T03:00:00", "free")
 			e["body"] = map[string]string{"contentType": "text", "content": "实际详情"}
+			e["isOrganizer"] = true
+			e["organizer"] = map[string]any{"emailAddress": map[string]string{"address": "owner@example.test", "name": "Owner"}}
+			e["attendees"] = []any{map[string]any{"type": "optional", "emailAddress": map[string]string{"address": "guest@example.test", "name": "Guest"}, "status": map[string]string{"response": "tentativelyAccepted"}}}
+			e["onlineMeeting"] = map[string]string{"joinUrl": "https://teams.microsoft.com/l/meetup-join/42"}
+			e["recurrence"] = map[string]any{"pattern": map[string]any{"type": "weekly", "interval": 1}, "range": map[string]any{"type": "noEnd", "startDate": "2026-09-11"}}
 			return graphResponse(e)
 		}
 	}}
@@ -117,7 +122,7 @@ func TestCalendarReadPublicBindingsPagingDSTAndDetails(t *testing.T) {
 		t.Fatal(e)
 	}
 	detail, _, err := calendarCall(t, a, CalendarEvent, calendar.EventRequest{CalendarID: "team/a", EventID: "event/a", TimeZone: "Asia/Shanghai"}, calendarTestSecrets())
-	if err != nil || detail.Description != "实际详情" || detail.Start.DateTime != "2026-09-11T10:00:00.1234567+08:00" || detail.Transparency != "transparent" {
+	if err != nil || detail.Description != "实际详情" || detail.Start.DateTime != "2026-09-11T10:00:00.1234567+08:00" || detail.Transparency != "transparent" || detail.MeetingURL != "https://teams.microsoft.com/l/meetup-join/42" || len(detail.Recurrence) != 1 || detail.Organizer == nil || !detail.Organizer.Self || len(detail.Attendees) != 1 || detail.Attendees[0].ResponseStatus != "tentative" {
 		t.Fatal(detail, err)
 	}
 }
@@ -378,7 +383,7 @@ func TestCalendarInvalidRequestsAndDetailResponses(t *testing.T) {
 	if e1 == nil || e2 == nil || e3 == nil || e4 == nil || len(transport.requests) != 0 {
 		t.Fatal("invalid request reached transport")
 	}
-	for _, tc := range []string{"wrong-id", "cancelled", "html", "missing-body", "missing-flags", "wrong-offset", "reversed"} {
+	for _, tc := range []string{"wrong-id", "html", "missing-body", "missing-flags", "wrong-offset", "reversed"} {
 		t.Run(tc, func(t *testing.T) {
 			transport.respond = func(r connector.HTTPRequest) (connector.HTTPResponse, error) {
 				e := graphEvent("event", "2026-09-11T10:00:00", "2026-09-11T11:00:00", "busy")
@@ -406,6 +411,17 @@ func TestCalendarInvalidRequestsAndDetailResponses(t *testing.T) {
 				t.Fatal("invalid detail accepted/disclosed", err)
 			}
 		})
+	}
+	transport.respond = func(r connector.HTTPRequest) (connector.HTTPResponse, error) {
+		e := graphEvent("event", "2026-09-11T10:00:00", "2026-09-11T11:00:00", "busy")
+		e["isCancelled"] = true
+		e["body"] = map[string]string{"contentType": "text", "content": "cancelled event"}
+		return graphResponse(e)
+	}
+	_, cancelledResult, err := calendarCall(t, a, CalendarEvent, calendar.EventRequest{CalendarID: "team", EventID: "event", TimeZone: "UTC"}, calendarTestSecrets())
+	var cancelled calendar.Event
+	if err != nil || json.Unmarshal(cancelledResult.Payload, &cancelled) != nil || cancelled.Status != "cancelled" {
+		t.Fatal("cancelled status was not preserved", err, string(cancelledResult.Payload))
 	}
 }
 

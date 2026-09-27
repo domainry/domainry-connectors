@@ -21,8 +21,24 @@ func (p *provider) TestConnection(ctx context.Context, r connector.TestConnectio
 	if err != nil {
 		return connector.TestConnectionResult{SecretUpdates: result.SecretUpdates}, err
 	}
-	details, _ := json.Marshal(result.Output)
+	subject := strings.TrimSpace(backgroundString(result.Output, "id"))
+	if subject == "" {
+		subject = strings.TrimSpace(backgroundString(result.Output, "sub"))
+	}
+	email := strings.ToLower(strings.TrimSpace(backgroundString(result.Output, "email")))
+	verified, _ := result.Output["verified_email"].(bool)
+	if subject == "" || len(subject) > 1024 || !verified || !validGoogleAccountEmail(email) {
+		return connector.TestConnectionResult{SecretUpdates: result.SecretUpdates}, permanent("oauth_identity_invalid", "Google user info lacks a verified account identity")
+	}
+	details, _ := json.Marshal(map[string]any{"provider_account": map[string]any{
+		"subject": subject,
+		"routes":  []map[string]string{{"kind": "email", "value": email}},
+	}})
 	return connector.TestConnectionResult{Connected: true, Details: details, SecretUpdates: result.SecretUpdates}, nil
+}
+
+func validGoogleAccountEmail(value string) bool {
+	return value != "" && len(value) <= 320 && strings.Count(value, "@") == 1 && value[0] != '@' && value[len(value)-1] != '@' && !strings.ContainsAny(value, " \t\r\n")
 }
 func (p *provider) syncCalendar(ctx context.Context, r connector.TypedRequest[SyncCalendarInput]) (connector.TypedResult[Response], error) {
 	limit, err := pageLimit(r.Input.Limit)
@@ -109,81 +125,6 @@ func (p *provider) gmailSendMessage(ctx context.Context, r connector.TypedReques
 	result, err := p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodPost, gmailBase(r.Connection)+"/gmail/v1/users/me/messages/send", nil, body, true)
 	return connector.DeliveryResult{ResponseRef: result.ResponseRef, SecretUpdates: result.SecretUpdates, ResourceHealth: result.ResourceHealth}, err
 }
-func (p *provider) pubsubEnsureTopic(ctx context.Context, r connector.TypedRequest[PubSubResourceInput]) (connector.TypedResult[Response], error) {
-	resource, err := topicResource(r.Input.ProjectID, r.Input.TopicID)
-	if err != nil {
-		return empty(), err
-	}
-	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodPut, pubsubBase(r.Connection)+"/v1/"+resource, nil, map[string]any{}, true)
-}
-func (p *provider) pubsubEnsureSubscription(ctx context.Context, r connector.TypedRequest[PubSubEnsureSubscriptionInput]) (connector.TypedResult[Response], error) {
-	subscription, err := subscriptionResource(r.Input.ProjectID, r.Input.SubscriptionID)
-	if err != nil {
-		return empty(), err
-	}
-	topic, err := topicResource(r.Input.ProjectID, r.Input.TopicID)
-	if err != nil {
-		return empty(), err
-	}
-	deadline := r.Input.AckDeadlineSeconds
-	if deadline == 0 {
-		deadline = 60
-	}
-	if deadline < 10 || deadline > 600 {
-		return empty(), permanent("pubsub.ack_deadline_invalid", "ack_deadline_seconds is invalid")
-	}
-	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodPut, pubsubBase(r.Connection)+"/v1/"+subscription, nil, map[string]any{"topic": topic, "ackDeadlineSeconds": deadline}, true)
-}
-func (p *provider) pubsubGetTopicPolicy(ctx context.Context, r connector.TypedRequest[PubSubResourceInput]) (connector.TypedResult[Response], error) {
-	resource, err := topicResource(r.Input.ProjectID, r.Input.TopicID)
-	if err != nil {
-		return empty(), err
-	}
-	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodPost, pubsubBase(r.Connection)+"/v1/"+resource+":getIamPolicy", nil, map[string]any{}, false)
-}
-func (p *provider) pubsubSetTopicPolicy(ctx context.Context, r connector.TypedRequest[PubSubSetTopicPolicyInput]) (connector.TypedResult[Response], error) {
-	resource, err := topicResource(r.Input.ProjectID, r.Input.TopicID)
-	if err != nil {
-		return empty(), err
-	}
-	if len(r.Input.Policy) == 0 {
-		return empty(), permanent("pubsub.policy_required", "policy is required")
-	}
-	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodPost, pubsubBase(r.Connection)+"/v1/"+resource+":setIamPolicy", nil, map[string]any{"policy": r.Input.Policy}, true)
-}
-func (p *provider) pubsubPull(ctx context.Context, r connector.TypedRequest[PubSubPullInput]) (connector.TypedResult[Response], error) {
-	resource, err := subscriptionResource(r.Input.ProjectID, r.Input.SubscriptionID)
-	if err != nil {
-		return empty(), err
-	}
-	max := r.Input.MaxMessages
-	if max == 0 {
-		max = 25
-	}
-	if max < 1 || max > 1000 {
-		return empty(), permanent("pubsub.max_messages_invalid", "max_messages is invalid")
-	}
-	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodPost, pubsubBase(r.Connection)+"/v1/"+resource+":pull", nil, map[string]any{"maxMessages": max}, false)
-}
-func (p *provider) pubsubAcknowledge(ctx context.Context, r connector.TypedRequest[PubSubAcknowledgeInput]) (connector.TypedResult[Response], error) {
-	resource, err := subscriptionResource(r.Input.ProjectID, r.Input.SubscriptionID)
-	if err != nil {
-		return empty(), err
-	}
-	ids := cleanIDs(r.Input.AckIDs)
-	if len(ids) == 0 {
-		return empty(), permanent("pubsub.ack_ids_required", "ack_ids are required")
-	}
-	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodPost, pubsubBase(r.Connection)+"/v1/"+resource+":acknowledge", nil, map[string]any{"ackIds": ids}, true)
-}
-func (p *provider) pubsubDeleteSubscription(ctx context.Context, r connector.TypedRequest[PubSubResourceInput]) (connector.TypedResult[Response], error) {
-	resource, err := subscriptionResource(r.Input.ProjectID, r.Input.SubscriptionID)
-	if err != nil {
-		return empty(), err
-	}
-	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodDelete, pubsubBase(r.Connection)+"/v1/"+resource, nil, nil, true)
-}
-
 func (p *provider) executeWithRefresh(ctx context.Context, connection connector.Connection, secrets map[string]string, method, endpoint string, query url.Values, body map[string]any, write bool) (connector.TypedResult[Response], error) {
 	return p.executeWithPrecondition(ctx, connection, secrets, method, endpoint, query, body, write, "")
 }

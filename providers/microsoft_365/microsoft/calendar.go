@@ -49,7 +49,7 @@ func (p *provider) calendarList(ctx context.Context, r connector.TypedRequest[ca
 	return calendarResult(s, out, nil)
 }
 
-const calendarEventFields = "id,subject,location,webLink,isCancelled,isAllDay,start,end,seriesMasterId,originalStart,originalStartTimeZone,originalEndTimeZone,showAs,changeKey,type"
+const calendarEventFields = "id,subject,location,webLink,isCancelled,isAllDay,start,end,seriesMasterId,originalStart,originalStartTimeZone,originalEndTimeZone,showAs,changeKey,type,organizer,attendees,isOrganizer,recurrence,onlineMeetingUrl,onlineMeeting"
 const calendarBusyFields = "id,isCancelled,start,end,showAs,type"
 const calendarAvailabilityPageLimit = 10
 
@@ -76,9 +76,6 @@ func (p *provider) calendarEvents(ctx context.Context, r connector.TypedRequest[
 	out = calendar.EventsPage{Items: []calendar.Event{}, NextCursor: next, Complete: next == "", TimeZone: r.Input.TimeZone}
 	seen := map[string]bool{}
 	for _, item := range items {
-		if item.Cancelled != nil && *item.Cancelled {
-			continue
-		}
 		if seen[item.ID] || item.Type == "seriesMaster" {
 			return calendarResult(s, calendar.EventsPage{}, calendarInvalidResponse("invalid calendar view event"))
 		}

@@ -19,22 +19,11 @@ var (
 	CalendarEventUpdate  = connector.CallOperation[calendarwrite.UpdateRequest, calendarwrite.Result]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: calendarwrite.UpdateOperationKey, ContractSHA256: calendarwrite.OperationSHA256(calendarwrite.UpdateOperationKey), Reliability: writeReliability()}
 )
 
-type graphWriteAttendee struct {
-	Type  string `json:"type"`
-	Email struct {
-		Address string `json:"address"`
-		Name    string `json:"name"`
-	} `json:"emailAddress"`
-	Status json.RawMessage `json:"status"`
-}
-
 type graphWriteEvent struct {
 	graphCalendarEvent
-	ETag            string                `json:"@odata.etag"`
-	Attendees       *[]graphWriteAttendee `json:"attendees"`
-	HideAttendees   *bool                 `json:"hideAttendees"`
-	IsOrganizer     *bool                 `json:"isOrganizer"`
-	IsOnlineMeeting *bool                 `json:"isOnlineMeeting"`
+	ETag            string `json:"@odata.etag"`
+	HideAttendees   *bool  `json:"hideAttendees"`
+	IsOnlineMeeting *bool  `json:"isOnlineMeeting"`
 }
 
 const calendarWriteFields = calendarEventFields + ",body,attendees,hideAttendees,isOrganizer,isOnlineMeeting"
@@ -90,13 +79,13 @@ func (p *provider) calendarEventInspect(ctx context.Context, r connector.TypedRe
 	return calendarResult(s, out, err)
 }
 
-func calendarWriteAttendees(values []calendarwrite.Attendee, previous *[]graphWriteAttendee) []map[string]any {
+func calendarWriteAttendees(values []calendarwrite.Attendee, previous *[]graphCalendarPerson) []map[string]any {
 	out := make([]map[string]any, 0, len(values))
 	for _, a := range values {
 		item := map[string]any{"type": a.Kind, "emailAddress": map[string]string{"address": a.Address, "name": a.Name}}
 		if previous != nil {
 			for _, old := range *previous {
-				if strings.EqualFold(old.Email.Address, a.Address) && len(old.Status) > 0 {
+				if strings.EqualFold(old.Email.Address, a.Address) && old.Status != nil {
 					item["status"] = old.Status
 				}
 			}

@@ -84,7 +84,27 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 	if err != nil {
 		return nil, err
 	}
-	bound, err := connector.NewProvider(schema(), create, enqueue, test)
+	calendarList, err := connector.BindCall(CalendarList, p.calendarList)
+	if err != nil {
+		return nil, err
+	}
+	calendarEvents, err := connector.BindCall(CalendarEvents, p.calendarEvents)
+	if err != nil {
+		return nil, err
+	}
+	calendarEvent, err := connector.BindCall(CalendarEvent, p.calendarEvent)
+	if err != nil {
+		return nil, err
+	}
+	calendarAvailability, err := connector.BindCall(CalendarAvailability, p.calendarAvailability)
+	if err != nil {
+		return nil, err
+	}
+	meetingContent, err := connector.BindCall(FetchMeetingContent, p.fetchMeetingContent)
+	if err != nil {
+		return nil, err
+	}
+	bound, err := connector.NewProvider(schema(), create, enqueue, test, calendarList, calendarEvents, calendarEvent, calendarAvailability, meetingContent)
 	if err != nil {
 		return nil, err
 	}
@@ -93,15 +113,54 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 }
 func schema() connector.ProviderSchema {
 	min, max := float64(1), float64(120)
-	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.0", ConfigFields: []connector.ConfigField{{Key: "calendar_id", Name: "Calendar ID", Type: connector.ConfigFieldText}, {Key: "app_id", Name: "Feishu app ID", Type: connector.ConfigFieldText}, {Key: "base_url", Name: "Feishu API base URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://open.feishu.cn"`)}, {Key: "default_timezone", Name: "Default time zone", Type: connector.ConfigFieldText, Default: json.RawMessage(`"Asia/Shanghai"`)}, {Key: "timeout_seconds", Name: "Timeout seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`30`), Validation: connector.ConfigValidation{Min: &min, Max: &max}}}, SecretFields: []connector.SecretField{{Key: "access_token", Name: "User or tenant access token", Required: false, CredentialKind: connector.SecretCredentialBearerToken, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}, {Key: "app_secret", Name: "Feishu app secret", Required: false, CredentialKind: connector.SecretCredentialOAuthClientSecret, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}}}
+	zero, historyMax, futureMax := float64(0), float64(90), float64(92)
+	reconcileMin, reconcileMax := float64(300), float64(86400)
+	secret := func(key, name string, kind connector.SecretCredentialKind, rotation connector.SecretRotationPolicy) connector.SecretField {
+		return connector.SecretField{Key: key, Name: name, CredentialKind: kind, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: rotation, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}
+	}
+	return connector.ProviderSchema{
+		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "2.3.0",
+		ConfigFields: []connector.ConfigField{
+			{Key: "calendar_id", Name: "Calendar ID", Type: connector.ConfigFieldText},
+			{Key: "app_id", Name: "Feishu app ID", Type: connector.ConfigFieldText},
+			{Key: "base_url", Name: "Feishu API base URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://open.feishu.cn"`)},
+			{Key: "oauth_base_url", Name: "Feishu OAuth base URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://accounts.feishu.cn"`)},
+			{Key: "default_timezone", Name: "Default time zone", Type: connector.ConfigFieldText, Default: json.RawMessage(`"Asia/Shanghai"`)},
+			{Key: "timeout_seconds", Name: "Timeout seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`30`), Validation: connector.ConfigValidation{Min: &min, Max: &max}},
+			{Key: "calendar_sync_enabled", Name: "Enable calendar sync", Type: connector.ConfigFieldBoolean, Default: json.RawMessage(`false`)},
+			{Key: "calendar_subscription_enabled", Name: "Enable calendar event subscription", Type: connector.ConfigFieldBoolean, Default: json.RawMessage(`true`)},
+			{Key: "calendar_history_days", Name: "Calendar history days", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`30`), Validation: connector.ConfigValidation{Min: &zero, Max: &historyMax}},
+			{Key: "calendar_future_days", Name: "Calendar future days", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`62`), Validation: connector.ConfigValidation{Min: &min, Max: &futureMax}},
+			{Key: "calendar_reconcile_seconds", Name: "Calendar reconciliation interval", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`900`), Validation: connector.ConfigValidation{Min: &reconcileMin, Max: &reconcileMax}},
+		},
+		SecretFields: []connector.SecretField{
+			secret("access_token", "User or tenant access token", connector.SecretCredentialBearerToken, connector.SecretRotationOAuthRefresh),
+			secret("refresh_token", "User refresh token", connector.SecretCredentialRefreshToken, connector.SecretRotationOAuthRefresh),
+			secret("client_id", "OAuth client ID", connector.SecretCredentialIdentifier, connector.SecretRotationManual),
+			secret("client_secret", "OAuth client secret", connector.SecretCredentialOAuthClientSecret, connector.SecretRotationManual),
+			secret("app_secret", "Feishu tenant app secret", connector.SecretCredentialOAuthClientSecret, connector.SecretRotationManual),
+			secret("encrypt_key", "Feishu event encrypt key", connector.SecretCredentialGeneric, connector.SecretRotationManual),
+			secret("verification_token", "Feishu event verification token", connector.SecretCredentialSigningSecret, connector.SecretRotationManual),
+		},
+	}
 }
 func (p *provider) ValidateConfig(connection connector.Connection) error {
-	parsed, err := url.Parse(baseURL(connection))
-	if err != nil || parsed.Host == "" || parsed.User != nil {
-		return permanent("endpoint_invalid", "valid Feishu API endpoint is required")
+	for _, endpoint := range []struct {
+		value, host string
+	}{{baseURL(connection), "open.feishu.cn"}, {oauthBaseURL(connection), "accounts.feishu.cn"}} {
+		parsed, err := url.Parse(endpoint.value)
+		if err != nil || parsed.Host == "" || parsed.User != nil || parsed.Fragment != "" || parsed.RawQuery != "" || (!(parsed.Scheme == "http" && isLoopback(parsed.Hostname())) && (parsed.Scheme != "https" || !strings.EqualFold(parsed.Hostname(), endpoint.host))) {
+			return permanent("endpoint_invalid", "official Feishu endpoints or loopback HTTP are required")
+		}
 	}
-	if !(parsed.Scheme == "http" && isLoopback(parsed.Hostname())) && (parsed.Scheme != "https" || !strings.EqualFold(parsed.Hostname(), "open.feishu.cn")) {
-		return permanent("endpoint_invalid", "official Feishu API endpoint or loopback HTTP is required")
+	historyDays := feishuConfigInt(connection.Config, "calendar_history_days", 30)
+	futureDays := feishuConfigInt(connection.Config, "calendar_future_days", 62)
+	reconcileSeconds := feishuConfigInt(connection.Config, "calendar_reconcile_seconds", 900)
+	if historyDays < 0 || historyDays > 90 || futureDays < 1 || futureDays > 92 || historyDays+futureDays > 92 {
+		return permanent("sync_window_invalid", "Feishu Calendar history and future window must total no more than 92 days")
+	}
+	if reconcileSeconds < 300 || reconcileSeconds > 86400 {
+		return permanent("reconcile_interval_invalid", "Feishu Calendar reconciliation interval must be between 300 and 86400 seconds")
 	}
 	return nil
 }
@@ -111,68 +170,86 @@ func (p *provider) createBooking(ctx context.Context, request connector.TypedReq
 	if request.Input.Attendee != nil {
 		attendees = append(attendees, *request.Input.Attendee)
 	}
-	output, ref, err := p.createMeeting(ctx, request.Connection, request.Secrets, request.RequestRef, request.Input.Start, request.Input.End, request.Input.TimeZone, request.Input.Summary, request.Input.Description, attendees)
-	return connector.TypedResult[Response]{Output: output, ResponseRef: ref}, err
+	output, ref, updates, err := p.createMeeting(ctx, request.Connection, request.Secrets, request.RequestRef, request.Input.Start, request.Input.End, request.Input.TimeZone, request.Input.Summary, request.Input.Description, attendees)
+	return connector.TypedResult[Response]{Output: output, ResponseRef: ref, SecretUpdates: updates}, err
 }
 func (p *provider) enqueueBooking(ctx context.Context, request connector.TypedRequest[EnqueueBookingInput]) (connector.DeliveryResult, error) {
 	if len(request.Input.Metadata) == 0 {
 		return connector.DeliveryResult{}, permanent("metadata_required", "metadata is required")
 	}
-	_, ref, err := p.createMeeting(ctx, request.Connection, request.Secrets, request.RequestRef, request.Input.Start, request.Input.End, request.Input.TimeZone, request.Input.Summary, request.Input.Description, request.Input.Attendees)
-	return connector.DeliveryResult{ResponseRef: ref}, err
+	_, ref, updates, err := p.createMeeting(ctx, request.Connection, request.Secrets, request.RequestRef, request.Input.Start, request.Input.End, request.Input.TimeZone, request.Input.Summary, request.Input.Description, request.Input.Attendees)
+	return connector.DeliveryResult{ResponseRef: ref, SecretUpdates: updates}, err
 }
 func (p *provider) callTestConnection(ctx context.Context, request connector.TypedRequest[struct{}]) (connector.TypedResult[Response], error) {
-	token, err := p.accessToken(ctx, request.Connection, request.Secrets)
+	session := p.newAPISession(request.Connection, request.Secrets)
+	calendarID, err := p.calendarID(ctx, session)
 	if err != nil {
-		return connector.TypedResult[Response]{}, err
+		return connector.TypedResult[Response]{SecretUpdates: cloneStringMap(session.updates)}, err
 	}
-	calendarID, err := p.calendarID(ctx, request.Connection, token)
-	if err != nil {
-		return connector.TypedResult[Response]{}, err
-	}
-	output, ref, _, err := p.execute(ctx, request.Connection, token, http.MethodGet, "/open-apis/calendar/v4/calendars/"+url.PathEscape(calendarID), nil, nil, nil, false)
-	return connector.TypedResult[Response]{Output: output, ResponseRef: ref}, err
+	return session.call(ctx, http.MethodGet, "/open-apis/calendar/v4/calendars/"+url.PathEscape(calendarID), nil, nil, false)
 }
 func (p *provider) TestConnection(ctx context.Context, request connector.TestConnectionRequest) (connector.TestConnectionResult, error) {
-	token, err := p.accessToken(ctx, request.Connection, request.Secrets)
+	session := p.newAPISession(request.Connection, request.Secrets)
+	calendarID, err := p.calendarID(ctx, session)
 	if err != nil {
-		return connector.TestConnectionResult{}, err
+		return connector.TestConnectionResult{SecretUpdates: cloneStringMap(session.updates)}, err
 	}
-	calendarID, err := p.calendarID(ctx, request.Connection, token)
+	calendarResult, err := session.call(ctx, http.MethodGet, "/open-apis/calendar/v4/calendars/"+url.PathEscape(calendarID), nil, nil, false)
 	if err != nil {
-		return connector.TestConnectionResult{}, err
+		return connector.TestConnectionResult{SecretUpdates: cloneStringMap(session.updates)}, err
 	}
-	output, ref, _, err := p.execute(ctx, request.Connection, token, http.MethodGet, "/open-apis/calendar/v4/calendars/"+url.PathEscape(calendarID), nil, nil, nil, false)
+	detail := map[string]any{"calendar": calendarResult.Output, "response_ref": calendarResult.ResponseRef}
+	if strings.TrimSpace(request.Secrets["refresh_token"]) != "" {
+		userResult, userErr := session.call(ctx, http.MethodGet, "/open-apis/authen/v1/user_info", nil, nil, false)
+		if userErr != nil {
+			return connector.TestConnectionResult{SecretUpdates: cloneStringMap(session.updates)}, userErr
+		}
+		user := nested(userResult.Output, "data")
+		openID, unionID := mapString(user, "open_id"), mapString(user, "union_id")
+		subject := unionID
+		if subject == "" {
+			subject = openID
+		}
+		if subject == "" || openID == "" {
+			return connector.TestConnectionResult{SecretUpdates: cloneStringMap(session.updates)}, permanent("provider_account_invalid", "Feishu user profile lacks a stable identity")
+		}
+		routes := []map[string]string{{"kind": "open_id", "value": openID}}
+		if unionID != "" && unionID != openID {
+			routes = append(routes, map[string]string{"kind": "union_id", "value": unionID})
+		}
+		if userID := strings.TrimSpace(mapString(user, "user_id")); userID != "" {
+			routes = append(routes, map[string]string{"kind": "user_id", "value": userID})
+		}
+		if email := strings.ToLower(strings.TrimSpace(mapString(user, "email"))); email != "" {
+			routes = append(routes, map[string]string{"kind": "email", "value": email})
+		}
+		detail["provider_account"] = map[string]any{"subject": subject, "routes": routes}
+		detail["user"] = user
+	}
+	details, err := json.Marshal(detail)
 	if err != nil {
-		return connector.TestConnectionResult{}, err
+		return connector.TestConnectionResult{SecretUpdates: cloneStringMap(session.updates)}, err
 	}
-	details, err := json.Marshal(map[string]any{"calendar": output, "response_ref": ref})
-	if err != nil {
-		return connector.TestConnectionResult{}, err
-	}
-	return connector.TestConnectionResult{Connected: true, Details: details}, nil
+	return connector.TestConnectionResult{Connected: true, Details: details, SecretUpdates: cloneStringMap(session.updates)}, nil
 }
 
-func (p *provider) createMeeting(ctx context.Context, connection connector.Connection, secrets map[string]string, requestRef, start, end, zone, summary, description string, attendees []Attendee) (Response, string, error) {
+func (p *provider) createMeeting(ctx context.Context, connection connector.Connection, secrets map[string]string, requestRef, start, end, zone, summary, description string, attendees []Attendee) (Response, string, map[string]string, error) {
 	startAt, endAt, err := validateRange(start, end)
 	if err != nil {
-		return nil, "", err
+		return nil, "", nil, err
 	}
 	normalized, err := normalizeAttendees(attendees)
 	if err != nil {
-		return nil, "", err
+		return nil, "", nil, err
 	}
 	requestRef = strings.TrimSpace(requestRef)
 	if requestRef == "" {
-		return nil, "", permanent("request_ref_required", "request_ref is required for Feishu idempotency")
+		return nil, "", nil, permanent("request_ref_required", "request_ref is required for Feishu idempotency")
 	}
-	token, err := p.accessToken(ctx, connection, secrets)
+	session := p.newAPISession(connection, secrets)
+	calendarID, err := p.calendarID(ctx, session)
 	if err != nil {
-		return nil, "", err
-	}
-	calendarID, err := p.calendarID(ctx, connection, token)
-	if err != nil {
-		return nil, "", err
+		return nil, "", cloneStringMap(session.updates), err
 	}
 	if zone = strings.TrimSpace(zone); zone == "" {
 		zone = config(connection, "default_timezone", "Asia/Shanghai")
@@ -180,32 +257,39 @@ func (p *provider) createMeeting(ctx context.Context, connection connector.Conne
 	path := "/open-apis/calendar/v4/calendars/" + url.PathEscape(calendarID) + "/events"
 	query := url.Values{"idempotency_key": {idempotencyKey(requestRef)}}
 	body := map[string]any{"summary": strings.TrimSpace(summary), "description": strings.TrimSpace(description), "need_notification": true, "attendee_ability": "can_see_others", "free_busy_status": "busy", "start_time": map[string]any{"timestamp": strconv.FormatInt(startAt.Unix(), 10), "timezone": zone}, "end_time": map[string]any{"timestamp": strconv.FormatInt(endAt.Unix(), 10), "timezone": zone}, "vchat": map[string]any{"vc_type": "vc", "allow_attendees_start": true}}
-	created, ref, _, err := p.execute(ctx, connection, token, http.MethodPost, path, query, body, nil, true)
+	createdResult, err := session.call(ctx, http.MethodPost, path, query, body, true)
+	created, ref := createdResult.Output, createdResult.ResponseRef
 	if err != nil {
-		return nil, ref, err
+		return nil, ref, cloneStringMap(session.updates), err
 	}
 	event := nested(created, "data", "event")
 	eventID := mapString(event, "event_id")
 	if eventID == "" {
-		return nil, ref, connector.UncertainError("feishu_calendar.event_response_invalid", errors.New("created event response lacks event_id"))
+		return nil, ref, cloneStringMap(session.updates), connector.UncertainError("feishu_calendar.event_response_invalid", errors.New("created event response lacks event_id"))
 	}
 	eventPath := path + "/" + url.PathEscape(eventID)
 	attendeeBody := map[string]any{"attendees": normalized, "need_notification": true}
-	if _, _, classification, attendeeErr := p.execute(ctx, connection, token, http.MethodPost, eventPath+"/attendees", nil, attendeeBody, nil, true); attendeeErr != nil {
-		return nil, "feishu_calendar:" + eventID, p.compensatedError(ctx, connection, token, eventPath, attendeeErr, classification)
+	if _, attendeeErr := session.call(ctx, http.MethodPost, eventPath+"/attendees", nil, attendeeBody, true); attendeeErr != nil {
+		classification, _ := connector.ErrorClassificationOf(attendeeErr)
+		compensated := p.compensatedError(ctx, session, eventPath, attendeeErr, classification)
+		return nil, "feishu_calendar:" + eventID, cloneStringMap(session.updates), compensated
 	}
-	current, _, classification, getErr := p.execute(ctx, connection, token, http.MethodGet, eventPath, nil, nil, nil, false)
+	currentResult, getErr := session.call(ctx, http.MethodGet, eventPath, nil, nil, false)
+	current := currentResult.Output
 	if getErr != nil {
-		return nil, "feishu_calendar:" + eventID, p.compensatedError(ctx, connection, token, eventPath, getErr, classification)
+		classification, _ := connector.ErrorClassificationOf(getErr)
+		compensated := p.compensatedError(ctx, session, eventPath, getErr, classification)
+		return nil, "feishu_calendar:" + eventID, cloneStringMap(session.updates), compensated
 	}
 	joinURL := mapString(nested(current, "data", "event", "vchat"), "meeting_url")
 	if joinURL == "" {
-		return nil, "feishu_calendar:" + eventID, p.compensatedError(ctx, connection, token, eventPath, errors.New("meeting URL is missing"), connector.ErrorPermanent)
+		compensated := p.compensatedError(ctx, session, eventPath, errors.New("meeting URL is missing"), connector.ErrorPermanent)
+		return nil, "feishu_calendar:" + eventID, cloneStringMap(session.updates), compensated
 	}
-	return Response{"event_id": eventID, "join_url": joinURL, "attendees": normalized, "provider": ProviderKey}, "feishu_calendar:" + eventID, nil
+	return Response{"event_id": eventID, "join_url": joinURL, "attendees": normalized, "provider": ProviderKey}, "feishu_calendar:" + eventID, cloneStringMap(session.updates), nil
 }
-func (p *provider) compensatedError(ctx context.Context, connection connector.Connection, token, eventPath string, cause error, classification connector.ErrorClassification) error {
-	_, _, _, deleteErr := p.execute(ctx, connection, token, http.MethodDelete, eventPath, url.Values{"need_notification": {"false"}}, nil, nil, true)
+func (p *provider) compensatedError(ctx context.Context, session *apiSession, eventPath string, cause error, classification connector.ErrorClassification) error {
+	_, deleteErr := session.call(ctx, http.MethodDelete, eventPath, url.Values{"need_notification": {"false"}}, nil, true)
 	if deleteErr != nil {
 		return connector.UncertainError("feishu_calendar.compensation_failed", fmt.Errorf("original failure: %v; compensation: %w", cause, deleteErr))
 	}
@@ -229,14 +313,15 @@ func (p *provider) accessToken(ctx context.Context, connection connector.Connect
 	}
 	return token.AccessToken, nil
 }
-func (p *provider) calendarID(ctx context.Context, connection connector.Connection, token string) (string, error) {
-	if id := config(connection, "calendar_id", ""); id != "" {
+func (p *provider) calendarID(ctx context.Context, session *apiSession) (string, error) {
+	if id := config(session.connection, "calendar_id", ""); id != "" {
 		return id, nil
 	}
-	output, _, _, err := p.execute(ctx, connection, token, http.MethodPost, "/open-apis/calendar/v4/calendars/primary", url.Values{"user_id_type": {"open_id"}}, map[string]any{}, nil, false)
+	result, err := session.call(ctx, http.MethodPost, "/open-apis/calendar/v4/calendars/primary", url.Values{"user_id_type": {"open_id"}}, map[string]any{}, false)
 	if err != nil {
 		return "", err
 	}
+	output := result.Output
 	data := nested(output, "data")
 	items, _ := data["calendars"].([]any)
 	for _, item := range items {

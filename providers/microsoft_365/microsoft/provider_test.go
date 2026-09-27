@@ -93,6 +93,35 @@ func TestValidationAndReadFailures(t *testing.T) {
 		t.Fatalf("classification=%q err=%v", classification, err)
 	}
 }
+
+func TestConnectionPublishesMicrosoftProviderAccountRoute(t *testing.T) {
+	transport := &recordingTransport{respond: func(connector.HTTPRequest) (connector.HTTPResponse, error) {
+		return connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"id":"microsoft-subject-a","mail":"Person@Example.Test","userPrincipalName":"ignored@example.test"}`)}, nil
+	}}
+	adapter, err := New(transport)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := adapter.(connector.ConnectionTester).TestConnection(t.Context(), connector.TestConnectionRequest{
+		Connection: validConnection(), Secrets: map[string]string{"access_token": "token"},
+	})
+	if err != nil || !result.Connected {
+		t.Fatalf("result=%+v err=%v", result, err)
+	}
+	var details struct {
+		ProviderAccount struct {
+			Subject string `json:"subject"`
+			Routes  []struct {
+				Kind  string `json:"kind"`
+				Value string `json:"value"`
+			} `json:"routes"`
+		} `json:"provider_account"`
+	}
+	if err = json.Unmarshal(result.Details, &details); err != nil || details.ProviderAccount.Subject != "microsoft-subject-a" || len(details.ProviderAccount.Routes) != 1 || details.ProviderAccount.Routes[0].Kind != "email" || details.ProviderAccount.Routes[0].Value != "person@example.test" {
+		t.Fatalf("details=%s err=%v", result.Details, err)
+	}
+}
+
 func validConnection() connector.Connection {
 	return connector.Connection{Config: map[string]any{"tenant_id": "tenant", "graph_base_url": "http://127.0.0.1:8080/v1.0", "token_url": "http://127.0.0.1:8080/tenant/oauth2/v2.0/token", "scope": defaultScope, "timeout_seconds": 30}}
 }

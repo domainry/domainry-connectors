@@ -4,11 +4,7 @@ package feishucollaboration
 
 import (
 	"context"
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/hmac"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -17,7 +13,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 
 	connector "github.com/domainry/domainry-connector-sdk"
 	internalfeishu "github.com/domainry/domainry-connectors/internal/feishu"
@@ -233,109 +228,15 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 }
 
 func (p *provider) VerifyWebhook(ctx context.Context, request connector.VerifyWebhookRequest) (connector.VerifiedWebhook, error) {
-	if err := ctx.Err(); err != nil {
-		return connector.VerifiedWebhook{}, err
-	}
-	body := request.Body
-	encryptKey := strings.TrimSpace(request.Secrets["encrypt_key"])
-	verificationToken := strings.TrimSpace(request.Secrets["verification_token"])
-	security := &connector.WebhookSecurityEvidence{}
-	if encryptKey != "" {
-		if err := verifySignature(request, encryptKey); err != nil {
-			return connector.VerifiedWebhook{}, err
-		}
-		var envelope struct {
-			Encrypt string `json:"encrypt"`
-		}
-		if json.Unmarshal(body, &envelope) != nil || strings.TrimSpace(envelope.Encrypt) == "" {
-			return connector.VerifiedWebhook{}, permanent("webhook_payload_invalid", "encrypted Feishu webhook payload is invalid")
-		}
-		var err error
-		body, err = decryptEvent(envelope.Encrypt, encryptKey)
-		if err != nil {
-			return connector.VerifiedWebhook{}, err
-		}
-		security.SignatureVerified = true
-	}
-	var payload Response
-	if json.Unmarshal(body, &payload) != nil {
-		return connector.VerifiedWebhook{}, permanent("webhook_payload_invalid", "Feishu webhook payload is invalid JSON")
-	}
-	if encryptKey == "" && verificationToken == "" {
-		return connector.VerifiedWebhook{}, permanent("webhook_verification_required", "Feishu webhook verification is not configured")
-	}
-	if verificationToken != "" && !hmac.Equal([]byte(verificationToken), []byte(payloadToken(payload))) {
-		return connector.VerifiedWebhook{}, permanent("webhook_token_invalid", "Feishu webhook token does not match")
-	}
-	if verificationToken != "" {
-		security.SignatureVerified = true
-	}
-	if mapString(payload, "type") == "url_verification" {
-		challenge := mapString(payload, "challenge")
-		if challenge == "" {
-			return connector.VerifiedWebhook{}, permanent("webhook_challenge_invalid", "Feishu webhook challenge is missing")
-		}
-		return connector.VerifiedWebhook{EventType: "url_verification", ExternalID: "challenge:" + challenge, Payload: append(json.RawMessage(nil), body...), Challenge: challenge, Security: security}, nil
-	}
-	header, _ := payload["header"].(map[string]any)
-	event, _ := payload["event"].(map[string]any)
-	eventID, eventType := mapString(header, "event_id"), mapString(header, "event_type")
-	if eventID == "" || eventType == "" {
-		return connector.VerifiedWebhook{}, permanent("webhook_identity_missing", "Feishu webhook event identity is missing")
-	}
-	verified := connector.VerifiedWebhook{EventType: eventType, ExternalID: eventID, Payload: append(json.RawMessage(nil), body...), Security: security}
-	if sender, ok := event["sender"].(map[string]any); ok {
-		if ids, ok := sender["sender_id"].(map[string]any); ok {
-			if subject := mapString(ids, "open_id"); subject != "" {
-				verified.ExternalIdentity = &connector.WebhookExternalIdentity{Subject: subject, SubjectType: "feishu_user", Name: mapString(sender, "sender_type")}
-			}
-		}
-	}
-	return verified, nil
+	return internalfeishu.VerifyWebhook(ctx, request, "feishu")
 }
 
 func verifySignature(request connector.VerifyWebhookRequest, encryptKey string) error {
-	timestamp, nonce, signature := headerValue(request.Headers, "X-Lark-Request-Timestamp"), headerValue(request.Headers, "X-Lark-Request-Nonce"), headerValue(request.Headers, "X-Lark-Signature")
-	parsed, err := strconv.ParseInt(timestamp, 10, 64)
-	if err != nil || nonce == "" || signature == "" {
-		return permanent("webhook_signature_invalid", "Feishu webhook signature headers are invalid")
-	}
-	now := request.ReceivedAt
-	if now.IsZero() {
-		now = time.Now().UTC()
-	}
-	if delta := now.Unix() - parsed; delta > 300 || delta < -300 {
-		return permanent("webhook_timestamp_invalid", "Feishu webhook timestamp is outside tolerance")
-	}
-	sum := sha256.Sum256(append([]byte(timestamp+nonce+encryptKey), request.Body...))
-	if !hmac.Equal([]byte(hex.EncodeToString(sum[:])), []byte(strings.ToLower(signature))) {
-		return permanent("webhook_signature_invalid", "Feishu webhook signature does not match")
-	}
-	return nil
+	return internalfeishu.VerifyWebhookSignature(request, encryptKey, "feishu")
 }
 
 func decryptEvent(encoded, encryptKey string) ([]byte, error) {
-	raw, err := base64.StdEncoding.DecodeString(encoded)
-	if err != nil || len(raw) < 2*aes.BlockSize || len(raw)%aes.BlockSize != 0 {
-		return nil, permanent("webhook_decrypt_failed", "Feishu webhook ciphertext is invalid")
-	}
-	key := sha256.Sum256([]byte(encryptKey))
-	block, err := aes.NewCipher(key[:])
-	if err != nil {
-		return nil, permanent("webhook_decrypt_failed", "Feishu webhook key is invalid")
-	}
-	plain := make([]byte, len(raw)-aes.BlockSize)
-	cipher.NewCBCDecrypter(block, raw[:aes.BlockSize]).CryptBlocks(plain, raw[aes.BlockSize:])
-	padding := int(plain[len(plain)-1])
-	if padding < 1 || padding > aes.BlockSize || padding > len(plain) {
-		return nil, permanent("webhook_decrypt_failed", "Feishu webhook padding is invalid")
-	}
-	for _, value := range plain[len(plain)-padding:] {
-		if int(value) != padding {
-			return nil, permanent("webhook_decrypt_failed", "Feishu webhook padding is invalid")
-		}
-	}
-	return plain[:len(plain)-padding], nil
+	return internalfeishu.DecryptWebhookEvent(encoded, encryptKey, "feishu")
 }
 
 func apiBase(connection connector.Connection) string {
@@ -392,21 +293,6 @@ func requestUUID(value string) string {
 	}
 	sum := sha256.Sum256([]byte(value))
 	return hex.EncodeToString(sum[:])[:32]
-}
-func payloadToken(payload map[string]any) string {
-	if value := mapString(payload, "token"); value != "" {
-		return value
-	}
-	header, _ := payload["header"].(map[string]any)
-	return mapString(header, "token")
-}
-func headerValue(headers map[string][]string, key string) string {
-	for candidate, values := range headers {
-		if strings.EqualFold(strings.TrimSpace(candidate), key) && len(values) > 0 {
-			return strings.TrimSpace(values[0])
-		}
-	}
-	return ""
 }
 func isLoopback(host string) bool {
 	host = strings.ToLower(strings.TrimSpace(host))

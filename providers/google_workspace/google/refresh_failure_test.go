@@ -68,7 +68,7 @@ func TestBackgroundRetainsRotationWhenLaterRequestFails(t *testing.T) {
 	connection := validConnection()
 	connection.Key, connection.WorkspaceID, connection.ConnectorKey, connection.ProviderKey, connection.Status = "gmail", "workspace", ConnectorKey, ProviderKey, "active"
 	connection.Config["gmail_ingest_enabled"] = true
-	result, err := adapter.(connector.BackgroundProcessor).ProcessBackground(t.Context(), connector.BackgroundRequest{TaskKey: gmailSyncTaskKey, StateVersion: 1, Connection: connection, State: json.RawMessage(`{"account_email":"person@example.test","history_id":"10"}`), Secrets: map[string]string{"access_token": "stale-access", "refresh_token": "stale-refresh", "client_id": "synthetic-client"}, Now: time.Date(2026, 9, 11, 0, 0, 0, 0, time.UTC), Principal: connector.Principal{IsAuthenticated: true, WorkspaceID: "workspace"}})
+	result, err := adapter.(connector.BackgroundProcessor).ProcessBackground(t.Context(), connector.BackgroundRequest{TaskKey: gmailSyncTaskKey, StateVersion: 2, Connection: connection, State: json.RawMessage(`{"account_email":"person@example.test","history_id":"10"}`), Secrets: map[string]string{"access_token": "stale-access", "refresh_token": "stale-refresh", "client_id": "synthetic-client"}, Now: time.Date(2026, 9, 11, 0, 0, 0, 0, time.UTC), Principal: connector.Principal{IsAuthenticated: true, WorkspaceID: "workspace"}})
 	classification, ok := connector.ErrorClassificationOf(err)
 	if !ok || classification != connector.ErrorRetryable || len(transport.requests) != 4 {
 		t.Fatal("background failure was lost or retried", err, len(transport.requests))

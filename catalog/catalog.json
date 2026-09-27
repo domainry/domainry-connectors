@@ -453,29 +453,50 @@
     {
       "connector_key": "appointment_scheduling",
       "provider_key": "feishu_calendar",
-      "provider_revision": "1.0.0",
+      "provider_revision": "2.2.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/appointment_scheduling/feishu_calendar",
       "package_name": "feishucalendar",
       "constructor": "New",
-      "descriptor_sha256": "d5dc130615c9962af617fed3ec5dbc807ef2ca758805dece4ee9ab20a6504b31",
+      "descriptor_sha256": "1bd45fd7783bb11495a1e7f563180a2d1a5de521f3f754a02d5dcced5dfac8a3",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "appointment_scheduling_feishu_calendar_deterministic_v1",
         "mode": "deterministic",
-        "manifest_sha256": "681ac6aeedd97bda81d75d85ce4f38e831ee55206f288929e1ef006890bfaef9",
+        "manifest_sha256": "4e07307791c95a759ade2566a7a89af24201f470223690613bea8e473707fbeb",
         "suites": [
           "adapter_contract",
           "error_classification",
           "network_failure_semantics",
           "request_translation",
           "response_normalization",
-          "secret_non_disclosure"
+          "secret_non_disclosure",
+          "webhook_signature_and_normalization"
         ],
         "test_command": "go test ./providers/appointment_scheduling/feishu_calendar",
         "isolated_profile": "appointment_scheduling_feishu_calendar_isolated_v1",
         "isolated_command": "go test ./providers/appointment_scheduling/feishu_calendar"
       },
       "operations": [
+        {
+          "key": "calendar_availability",
+          "mode": "call",
+          "contract_sha256": "b2898c99b398aefdcb5e20054597c63899dcb0bfd944f2797b965a78dbac5680"
+        },
+        {
+          "key": "calendar_event",
+          "mode": "call",
+          "contract_sha256": "9b8a2967d9cb672fd6ce55df2f9461422bfe598bc5a5252d70ff20c8facd8148"
+        },
+        {
+          "key": "calendar_events",
+          "mode": "call",
+          "contract_sha256": "71afa667b79a19dd9bd608bc7dd7f0fbc2831bf2109add8b42d19b46ebb1106c"
+        },
+        {
+          "key": "calendar_list",
+          "mode": "call",
+          "contract_sha256": "acc56035800355f71e0763716b492103b8d9f4237fee858779390e7614a6c5e0"
+        },
         {
           "key": "create_booking",
           "mode": "call",
@@ -2446,11 +2467,11 @@
     {
       "connector_key": "google_workspace",
       "provider_key": "google",
-      "provider_revision": "1.3.0",
+      "provider_revision": "1.6.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/google_workspace/google",
       "package_name": "google",
       "constructor": "New",
-      "descriptor_sha256": "9872f3f20814a33bf4002e07375bb594e6682d08c7e6169914e03c846aaa516f",
+      "descriptor_sha256": "103bc68d8ad6ed10c8986a56807c4e0cf356b7e3722dcc028dd26cc6bbc986f5",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "google_workspace_google_deterministic_v1",
@@ -2479,37 +2500,37 @@
         {
           "key": "calendar_availability",
           "mode": "call",
-          "contract_sha256": "5a7c7afc967fbb5ec27323d47728b66e1f32357969366db8a00b8731f1b93013"
+          "contract_sha256": "b2898c99b398aefdcb5e20054597c63899dcb0bfd944f2797b965a78dbac5680"
         },
         {
           "key": "calendar_event",
           "mode": "call",
-          "contract_sha256": "7f8cc71141600ec42d4c1f32975a4bdc231bd3ad8b802dbfcd0c4626595aa2b0"
+          "contract_sha256": "9b8a2967d9cb672fd6ce55df2f9461422bfe598bc5a5252d70ff20c8facd8148"
         },
         {
           "key": "calendar_event_create",
           "mode": "call",
-          "contract_sha256": "c4ce975e8194b9c2bb55c1bbe59ac28757125abc39b7afdfe642a39aae39dcc9"
+          "contract_sha256": "d405120e5bdeba01931e3e9dbebc02c4b64a3ca7666fd6824b9e1cc837277009"
         },
         {
           "key": "calendar_event_inspect",
           "mode": "call",
-          "contract_sha256": "88e0c7794f9f9e111b8e03629cf73c5cdf3f7dd7fbca11ecc5d09914a93c9aec"
+          "contract_sha256": "dccff793ab5bebabc9cbe34c952c6e69d43c52b9e775c481b384e43762eabfe9"
         },
         {
           "key": "calendar_event_update",
           "mode": "call",
-          "contract_sha256": "1c8515a32de5a9874549b5628008365ea8913fe937340e543029828d2e50c42d"
+          "contract_sha256": "84001a4c6f18abdb62327635d72b85b20a25e30f40f566870c7ff5347c64099c"
         },
         {
           "key": "calendar_events",
           "mode": "call",
-          "contract_sha256": "9f0e6e40b6bc664b0d21d1581cbe0897aaf87be532428b679ab6473e17d585eb"
+          "contract_sha256": "71afa667b79a19dd9bd608bc7dd7f0fbc2831bf2109add8b42d19b46ebb1106c"
         },
         {
           "key": "calendar_list",
           "mode": "call",
-          "contract_sha256": "30741361ad9b26653d6ed4422169bacc7dd81227a658d44e32c02dab176eda62"
+          "contract_sha256": "acc56035800355f71e0763716b492103b8d9f4237fee858779390e7614a6c5e0"
         },
         {
           "key": "gmail_get_message",
@@ -2565,41 +2586,6 @@
           "key": "mail_send",
           "mode": "call",
           "contract_sha256": "27f290e180d111a97a202e01372ecffd2f4ab6480369728ca6aa85d502c92895"
-        },
-        {
-          "key": "pubsub_acknowledge",
-          "mode": "call",
-          "contract_sha256": "bc3fcb26ff6a343ed9b80209d039bb4b8c06288f8cc9fcfe11f3ee31fb0c9bfd"
-        },
-        {
-          "key": "pubsub_delete_subscription",
-          "mode": "call",
-          "contract_sha256": "55bd9833c49c013c0859bf924214fae535c675f2f668f4fcd529ce0c2d4deaa1"
-        },
-        {
-          "key": "pubsub_ensure_subscription",
-          "mode": "call",
-          "contract_sha256": "a27eaa2ee1147c0a2f875e75490650754f62225e467db833bbe764469e43f69d"
-        },
-        {
-          "key": "pubsub_ensure_topic",
-          "mode": "call",
-          "contract_sha256": "eb5762e09843dba2872b999b4a0fc8565e43c8bcf456c035e7729f8bf788d213"
-        },
-        {
-          "key": "pubsub_get_topic_policy",
-          "mode": "call",
-          "contract_sha256": "ba762cbb3149c394b412928911be1f36213296fa81b3507681a2bb69475a3651"
-        },
-        {
-          "key": "pubsub_pull",
-          "mode": "call",
-          "contract_sha256": "5f0be78aa9e49fc990b4200de0c7fe9331c6ae9dc0c170a93f658286bce56ccf"
-        },
-        {
-          "key": "pubsub_set_topic_policy",
-          "mode": "call",
-          "contract_sha256": "5b857ff9a6e6d73a87abc3256d46329c33fd883f4a41ab9b7b0098a0e6d16c2f"
         },
         {
           "key": "sync_calendar",
@@ -3816,11 +3802,11 @@
     {
       "connector_key": "microsoft_365",
       "provider_key": "microsoft",
-      "provider_revision": "1.3.0",
+      "provider_revision": "1.5.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/microsoft_365/microsoft",
       "package_name": "microsoft",
       "constructor": "New",
-      "descriptor_sha256": "32216acd3ad392d9b0712c7d45e2a5b9fa2a77678ed5d298caf8484c5cf5ce8a",
+      "descriptor_sha256": "6aa470fd75548210c5114261e28946466325552c3411afb930a6920f2ad58b71",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "microsoft_365_microsoft_deterministic_v1",
@@ -3850,37 +3836,37 @@
         {
           "key": "calendar_availability",
           "mode": "call",
-          "contract_sha256": "5a7c7afc967fbb5ec27323d47728b66e1f32357969366db8a00b8731f1b93013"
+          "contract_sha256": "b2898c99b398aefdcb5e20054597c63899dcb0bfd944f2797b965a78dbac5680"
         },
         {
           "key": "calendar_event",
           "mode": "call",
-          "contract_sha256": "7f8cc71141600ec42d4c1f32975a4bdc231bd3ad8b802dbfcd0c4626595aa2b0"
+          "contract_sha256": "9b8a2967d9cb672fd6ce55df2f9461422bfe598bc5a5252d70ff20c8facd8148"
         },
         {
           "key": "calendar_event_create",
           "mode": "call",
-          "contract_sha256": "c4ce975e8194b9c2bb55c1bbe59ac28757125abc39b7afdfe642a39aae39dcc9"
+          "contract_sha256": "d405120e5bdeba01931e3e9dbebc02c4b64a3ca7666fd6824b9e1cc837277009"
         },
         {
           "key": "calendar_event_inspect",
           "mode": "call",
-          "contract_sha256": "88e0c7794f9f9e111b8e03629cf73c5cdf3f7dd7fbca11ecc5d09914a93c9aec"
+          "contract_sha256": "dccff793ab5bebabc9cbe34c952c6e69d43c52b9e775c481b384e43762eabfe9"
         },
         {
           "key": "calendar_event_update",
           "mode": "call",
-          "contract_sha256": "1c8515a32de5a9874549b5628008365ea8913fe937340e543029828d2e50c42d"
+          "contract_sha256": "84001a4c6f18abdb62327635d72b85b20a25e30f40f566870c7ff5347c64099c"
         },
         {
           "key": "calendar_events",
           "mode": "call",
-          "contract_sha256": "9f0e6e40b6bc664b0d21d1581cbe0897aaf87be532428b679ab6473e17d585eb"
+          "contract_sha256": "71afa667b79a19dd9bd608bc7dd7f0fbc2831bf2109add8b42d19b46ebb1106c"
         },
         {
           "key": "calendar_list",
           "mode": "call",
-          "contract_sha256": "30741361ad9b26653d6ed4422169bacc7dd81227a658d44e32c02dab176eda62"
+          "contract_sha256": "acc56035800355f71e0763716b492103b8d9f4237fee858779390e7614a6c5e0"
         },
         {
           "key": "mail_list",

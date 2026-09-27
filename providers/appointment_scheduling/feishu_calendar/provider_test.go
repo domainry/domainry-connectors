@@ -43,7 +43,7 @@ func TestDescriptorModesIdentityAndEndpointBoundary(t *testing.T) {
 		t.Fatal(err)
 	}
 	descriptor := adapter.Descriptor()
-	if descriptor.ConnectorKey != ConnectorKey || descriptor.ProviderKey != ProviderKey || len(descriptor.Operations) != 3 || len(descriptor.SecretFields) != 2 {
+	if descriptor.ConnectorKey != ConnectorKey || descriptor.ProviderKey != ProviderKey || descriptor.ProviderRevision != "2.3.0" || len(descriptor.Operations) != 8 || len(descriptor.SecretFields) != 7 {
 		t.Fatalf("descriptor=%+v", descriptor)
 	}
 	modes := map[string]connector.OperationMode{}
@@ -52,6 +52,11 @@ func TestDescriptorModesIdentityAndEndpointBoundary(t *testing.T) {
 	}
 	if modes["create_booking"] != connector.ModeCall || modes["enqueue_booking"] != connector.ModeEnqueue {
 		t.Fatalf("modes=%v", modes)
+	}
+	for _, key := range []string{"calendar_list", "calendar_events", "calendar_event", "calendar_availability", "fetch_meeting_content"} {
+		if modes[key] != connector.ModeCall {
+			t.Fatalf("calendar read mode %s=%q", key, modes[key])
+		}
 	}
 	validator := adapter.(connector.ConfigValidator)
 	for _, endpoint := range []string{"https://open.feishu.cn", "http://localhost:8080"} {

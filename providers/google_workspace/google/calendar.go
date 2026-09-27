@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	connector "github.com/domainry/domainry-connector-sdk"
@@ -88,22 +89,87 @@ func (m googleCalendarMoment) moment() calendar.Moment {
 }
 
 type googleCalendarEvent struct {
-	Kind          string                `json:"kind"`
-	ID            string                `json:"id"`
-	Summary       string                `json:"summary"`
-	Description   string                `json:"description"`
-	Location      string                `json:"location"`
-	URL           string                `json:"htmlLink"`
-	Status        string                `json:"status"`
-	Start         googleCalendarMoment  `json:"start"`
-	End           googleCalendarMoment  `json:"end"`
-	SeriesID      string                `json:"recurringEventId"`
-	OriginalStart *googleCalendarMoment `json:"originalStartTime"`
-	Transparency  string                `json:"transparency"`
+	Kind          string                 `json:"kind"`
+	ID            string                 `json:"id"`
+	Summary       string                 `json:"summary"`
+	Description   string                 `json:"description"`
+	Location      string                 `json:"location"`
+	URL           string                 `json:"htmlLink"`
+	Status        string                 `json:"status"`
+	Start         googleCalendarMoment   `json:"start"`
+	End           googleCalendarMoment   `json:"end"`
+	SeriesID      string                 `json:"recurringEventId"`
+	OriginalStart *googleCalendarMoment  `json:"originalStartTime"`
+	Transparency  string                 `json:"transparency"`
+	Recurrence    []string               `json:"recurrence"`
+	Organizer     *googleCalendarPerson  `json:"organizer"`
+	Attendees     []googleCalendarPerson `json:"attendees"`
+	HangoutLink   string                 `json:"hangoutLink"`
+	Conference    struct {
+		EntryPoints []struct {
+			Type string `json:"entryPointType"`
+			URI  string `json:"uri"`
+		} `json:"entryPoints"`
+	} `json:"conferenceData"`
+}
+
+type googleCalendarPerson struct {
+	ID               string `json:"id"`
+	Email            string `json:"email"`
+	Name             string `json:"displayName"`
+	Self             bool   `json:"self"`
+	Organizer        bool   `json:"organizer"`
+	Optional         bool   `json:"optional"`
+	Resource         bool   `json:"resource"`
+	ResponseStatus   string `json:"responseStatus"`
+	AdditionalGuests int    `json:"additionalGuests"`
+	Comment          string `json:"comment"`
+}
+
+func googleParticipant(value googleCalendarPerson, organizer bool) calendar.Participant {
+	role := "required"
+	switch {
+	case organizer || value.Organizer:
+		role = "organizer"
+	case value.Resource:
+		role = "resource"
+	case value.Optional:
+		role = "optional"
+	}
+	status := ""
+	switch value.ResponseStatus {
+	case "needsAction":
+		status = "needs_action"
+	case "accepted", "tentative", "declined", "delegated":
+		status = value.ResponseStatus
+	case "":
+	default:
+		status = "unknown"
+	}
+	return calendar.Participant{ID: value.ID, Email: value.Email, DisplayName: value.Name, Role: role, ResponseStatus: status, Self: value.Self}
+}
+
+func (e googleCalendarEvent) meetingURL() string {
+	if strings.TrimSpace(e.HangoutLink) != "" {
+		return e.HangoutLink
+	}
+	for _, entry := range e.Conference.EntryPoints {
+		if entry.Type == "video" && strings.TrimSpace(entry.URI) != "" {
+			return entry.URI
+		}
+	}
+	return ""
 }
 
 func (e googleCalendarEvent) event(calendarID string) (calendar.Event, error) {
-	out := calendar.Event{ID: e.ID, CalendarID: calendarID, Title: e.Summary, Description: e.Description, Location: e.Location, URL: e.URL, Status: e.Status, Start: e.Start.moment(), End: e.End.moment(), SeriesID: e.SeriesID, Transparency: e.Transparency}
+	out := calendar.Event{ID: e.ID, CalendarID: calendarID, Title: e.Summary, Description: e.Description, Location: e.Location, URL: e.URL, MeetingURL: e.meetingURL(), Status: e.Status, Start: e.Start.moment(), End: e.End.moment(), SeriesID: e.SeriesID, Recurrence: append([]string(nil), e.Recurrence...), Transparency: e.Transparency}
+	if e.Organizer != nil {
+		organizer := googleParticipant(*e.Organizer, true)
+		out.Organizer = &organizer
+	}
+	for _, attendee := range e.Attendees {
+		out.Attendees = append(out.Attendees, googleParticipant(attendee, false))
+	}
 	if e.OriginalStart != nil {
 		m := e.OriginalStart.moment()
 		out.OriginalStart = &m
@@ -132,7 +198,7 @@ func (p *provider) calendarEvents(ctx context.Context, r connector.TypedRequest[
 	if err := r.Input.Validate(); err != nil {
 		return providerResult(connector.TypedResult[Response]{}, out, permanent("calendar.invalid_request", err.Error()))
 	}
-	q := url.Values{"timeMin": {r.Input.Window.Start}, "timeMax": {r.Input.Window.End}, "timeZone": {r.Input.TimeZone}, "singleEvents": {"true"}, "orderBy": {"startTime"}, "showDeleted": {"false"}, "maxResults": {strconv.Itoa((calendar.PageRequest{Limit: r.Input.Limit}).PageSize())}, "fields": {"kind,timeZone,nextPageToken,items(id,summary,location,htmlLink,status,start,end,recurringEventId,originalStartTime,transparency)"}}
+	q := url.Values{"timeMin": {r.Input.Window.Start}, "timeMax": {r.Input.Window.End}, "timeZone": {r.Input.TimeZone}, "singleEvents": {"true"}, "orderBy": {"startTime"}, "showDeleted": {"false"}, "maxResults": {strconv.Itoa((calendar.PageRequest{Limit: r.Input.Limit}).PageSize())}, "fields": {"kind,timeZone,nextPageToken,items(id,summary,description,location,htmlLink,hangoutLink,conferenceData(entryPoints(entryPointType,uri)),status,start,end,recurringEventId,originalStartTime,recurrence,organizer,attendees,transparency)"}}
 	set(q, "pageToken", r.Input.Cursor)
 	raw, err := p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodGet, apiBase(r.Connection)+"/calendar/v3/calendars/"+url.PathEscape(r.Input.CalendarID)+"/events", q, nil, false)
 	if err != nil {
@@ -152,9 +218,6 @@ func (p *provider) calendarEvents(ctx context.Context, r connector.TypedRequest[
 	}
 	out = calendar.EventsPage{Items: []calendar.Event{}, NextCursor: body.Next, Complete: body.Next == "", TimeZone: body.TimeZone}
 	for _, item := range body.Items {
-		if item.Status == "cancelled" {
-			continue
-		}
 		event, err := item.event(r.Input.CalendarID)
 		if err != nil {
 			return providerResult(raw, calendar.EventsPage{}, err)
@@ -179,9 +242,6 @@ func (p *provider) calendarEvent(ctx context.Context, r connector.TypedRequest[c
 	}
 	if body.Kind != "calendar#event" || body.ID != r.Input.EventID {
 		return providerResult(raw, out, permanent("calendar.invalid_response", "event identity mismatch"))
-	}
-	if body.Status == "cancelled" {
-		return providerResult(raw, out, permanent("calendar.event_cancelled", "calendar event is cancelled"))
 	}
 	out, err = body.event(r.Input.CalendarID)
 	return providerResult(raw, out, err)

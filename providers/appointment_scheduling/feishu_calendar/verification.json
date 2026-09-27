@@ -9,7 +9,8 @@
     "network_failure_semantics",
     "request_translation",
     "response_normalization",
-    "secret_non_disclosure"
+    "secret_non_disclosure",
+    "webhook_signature_and_normalization"
   ],
   "test_command": "go test ./providers/appointment_scheduling/feishu_calendar",
   "isolated_profile": "appointment_scheduling_feishu_calendar_isolated_v1",

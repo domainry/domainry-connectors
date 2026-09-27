@@ -41,7 +41,7 @@ func accountWriteCall[I, O any](t *testing.T, a connector.Adapter, op connector.
 	return out, r, err
 }
 func writeEvent(id, version string) googleWriteEvent {
-	return googleWriteEvent{googleCalendarEvent: googleCalendarEvent{Kind: "calendar#event", ID: id, Summary: "Original", Status: "confirmed", Start: googleCalendarMoment{DateTime: "2026-09-12T09:00:00+08:00", TimeZone: "Asia/Shanghai"}, End: googleCalendarMoment{DateTime: "2026-09-12T10:00:00+08:00", TimeZone: "Asia/Shanghai"}}, ETag: version, EventType: "default", Attendees: []googleWriteAttendee{{Email: "guest@example.test", ResponseStatus: "accepted", Comment: "Keep RSVP"}}}
+	return googleWriteEvent{googleCalendarEvent: googleCalendarEvent{Kind: "calendar#event", ID: id, Summary: "Original", Status: "confirmed", Start: googleCalendarMoment{DateTime: "2026-09-12T09:00:00+08:00", TimeZone: "Asia/Shanghai"}, End: googleCalendarMoment{DateTime: "2026-09-12T10:00:00+08:00", TimeZone: "Asia/Shanghai"}, Attendees: []googleCalendarPerson{{Email: "guest@example.test", ResponseStatus: "accepted", Comment: "Keep RSVP"}}}, ETag: version, EventType: "default"}
 }
 func writeDraft() calendarwrite.CreateRequest {
 	return calendarwrite.CreateRequest{CalendarID: "team/calendar", Notifications: calendarwrite.NotifyAttendees, Event: calendarwrite.Draft{Title: "确认日程", Description: "<b>纯文本</b>\n第二行", Start: calendar.Moment{Date: "2026-09-12", TimeZone: "Asia/Shanghai"}, End: calendar.Moment{Date: "2026-09-14", TimeZone: "Asia/Shanghai"}, Attendees: []calendarwrite.Attendee{{Address: "guest@example.test", Kind: "required"}, {Address: "room@example.test", Kind: "resource"}}}}
@@ -136,7 +136,7 @@ func TestAccountWriteCalendarInspectRejectsIncompleteTargets(t *testing.T) {
 		{"no-etag", func(e *googleWriteEvent) { e.ETag = "" }},
 		{"wrong-target", func(e *googleWriteEvent) { e.ID = "other" }},
 		{"special-event", func(e *googleWriteEvent) { e.EventType = "outOfOffice" }},
-		{"too-many", func(e *googleWriteEvent) { e.Attendees = make([]googleWriteAttendee, 101) }},
+		{"too-many", func(e *googleWriteEvent) { e.Attendees = make([]googleCalendarPerson, 101) }},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			e := writeEvent("one", `"v1"`)

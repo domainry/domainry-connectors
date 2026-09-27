@@ -31,6 +31,21 @@ type graphMailMessage struct {
 		Type    string  `json:"contentType"`
 		Content *string `json:"content"`
 	} `json:"body"`
+	BodyPreview            *string `json:"bodyPreview"`
+	InternetMessageHeaders []struct {
+		Name  string `json:"name"`
+		Value string `json:"value"`
+	} `json:"internetMessageHeaders"`
+	Attachments []struct {
+		ID          string `json:"id"`
+		Name        string `json:"name"`
+		ContentType string `json:"contentType"`
+		Size        int64  `json:"size"`
+		IsInline    bool   `json:"isInline"`
+	} `json:"attachments"`
+	Removed *struct {
+		Reason string `json:"reason"`
+	} `json:"@removed"`
 }
 
 func (m graphMailMessage) summary() (mail.Summary, error) {

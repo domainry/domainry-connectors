@@ -197,7 +197,16 @@
   "provider": "microsoft",
   "providers": [
     {
-      "config_fields": [],
+      "config_fields": [
+        {"key":"graph_base_url","name":"Microsoft Graph base URL","description":"Microsoft Graph API base URL used by this connection.","type":"text","required":false,"default":"https://graph.microsoft.com/v1.0","validation":{"max_length":2048},"i18n":{"en-US":{"name":"Microsoft Graph base URL","description":"Microsoft Graph API base URL used by this connection."},"zh-CN":{"name":"Microsoft Graph 基础地址","description":"此连接使用的 Microsoft Graph API 基础地址。"}}},
+        {"key":"token_url","name":"OAuth token URL","description":"Optional Microsoft OAuth token endpoint override.","type":"text","required":false,"validation":{"max_length":2048},"i18n":{"en-US":{"name":"OAuth token URL","description":"Optional Microsoft OAuth token endpoint override."},"zh-CN":{"name":"OAuth 令牌地址","description":"可选的 Microsoft OAuth 令牌端点覆盖地址。"}}},
+        {"key":"tenant_id","name":"Tenant ID","description":"Microsoft Entra tenant used for OAuth token exchange.","type":"text","required":true,"validation":{"max_length":255},"i18n":{"en-US":{"name":"Tenant ID","description":"Microsoft Entra tenant used for OAuth token exchange."},"zh-CN":{"name":"租户 ID","description":"用于 OAuth 令牌交换的 Microsoft Entra 租户。"}}},
+        {"key":"scope","name":"OAuth scope","description":"Space-separated Microsoft OAuth scopes requested by this connection.","type":"text","required":false,"default":"https://graph.microsoft.com/.default offline_access","validation":{"max_length":4096},"i18n":{"en-US":{"name":"OAuth scope","description":"Space-separated Microsoft OAuth scopes requested by this connection."},"zh-CN":{"name":"OAuth 权限范围","description":"此连接申请的以空格分隔的 Microsoft OAuth 权限范围。"}}},
+        {"key":"timeout_seconds","name":"Timeout seconds","description":"Maximum duration for one Microsoft Graph request.","type":"integer","required":false,"default":30,"validation":{"min":1,"max":300},"i18n":{"en-US":{"name":"Timeout seconds","description":"Maximum duration for one Microsoft Graph request."},"zh-CN":{"name":"超时秒数","description":"单次 Microsoft Graph 请求的最长执行时间。"}}},
+        {"key":"outlook_ingest_enabled","name":"Outlook mail ingest enabled","description":"Automatically synchronize Outlook inbox and sent messages for this connection.","type":"boolean","required":false,"default":true,"i18n":{"en-US":{"name":"Outlook mail ingest enabled","description":"Automatically synchronize Outlook inbox and sent messages for this connection."},"zh-CN":{"name":"启用 Outlook 邮件同步","description":"为此连接自动同步 Outlook 收件箱和已发送邮件。"}}},
+        {"key":"outlook_history_days","name":"Outlook history days","description":"Historical Outlook lookback window used during initial synchronization.","type":"integer","required":false,"default":90,"validation":{"min":1,"max":3650},"i18n":{"en-US":{"name":"Outlook history days","description":"Historical Outlook lookback window used during initial synchronization."},"zh-CN":{"name":"Outlook 历史天数","description":"首次同步 Outlook 邮件时回溯的天数。"}}},
+        {"key":"outlook_reconcile_seconds","name":"Outlook reconciliation seconds","description":"Interval between durable Microsoft Graph delta reconciliation runs.","type":"integer","required":false,"default":900,"validation":{"min":300,"max":86400},"i18n":{"en-US":{"name":"Outlook reconciliation seconds","description":"Interval between durable Microsoft Graph delta reconciliation runs."},"zh-CN":{"name":"Outlook 对账秒数","description":"Microsoft Graph 增量对账任务之间的间隔。"}}}
+      ],
       "description": "Runtime Provider microsoft",
       "i18n": {
         "en-US": {
@@ -335,6 +344,7 @@
     "connection_test",
     "operations",
     "provider_catalog",
+    "typed_config",
     "typed_secrets"
   ]
 }

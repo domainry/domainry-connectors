@@ -1,7 +1,9 @@
 package microsoft
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"net/url"
 	"strings"
@@ -58,6 +60,63 @@ type graphCalendarEvent struct {
 		Type    string `json:"contentType"`
 		Content string `json:"content"`
 	} `json:"body"`
+	Organizer        *graphCalendarPerson   `json:"organizer"`
+	Attendees        *[]graphCalendarPerson `json:"attendees"`
+	IsOrganizer      *bool                  `json:"isOrganizer"`
+	Recurrence       json.RawMessage        `json:"recurrence"`
+	OnlineMeetingURL string                 `json:"onlineMeetingUrl"`
+	OnlineMeeting    *struct {
+		JoinURL string `json:"joinUrl"`
+	} `json:"onlineMeeting"`
+}
+
+type graphCalendarPerson struct {
+	Type  string `json:"type"`
+	Email struct {
+		Address string `json:"address"`
+		Name    string `json:"name"`
+	} `json:"emailAddress"`
+	Status *struct {
+		Response string `json:"response"`
+	} `json:"status"`
+}
+
+func graphParticipant(value graphCalendarPerson, organizer, self bool) calendar.Participant {
+	role := strings.ToLower(value.Type)
+	if organizer {
+		role = "organizer"
+	}
+	if role == "" {
+		role = "required"
+	}
+	status := ""
+	if value.Status != nil {
+		switch value.Status.Response {
+		case "none", "notResponded":
+			status = "needs_action"
+		case "tentativelyAccepted":
+			status = "tentative"
+		case "accepted", "declined":
+			status = value.Status.Response
+		case "organizer":
+			status = "accepted"
+		case "":
+		default:
+			status = "unknown"
+		}
+	}
+	return calendar.Participant{Email: strings.ToLower(strings.TrimSpace(value.Email.Address)), DisplayName: value.Email.Name, Role: role, ResponseStatus: status, Self: self}
+}
+
+func graphRecurrence(raw json.RawMessage) ([]string, error) {
+	if len(raw) == 0 || bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		return nil, nil
+	}
+	var compact bytes.Buffer
+	if err := json.Compact(&compact, raw); err != nil || compact.Len() > 8192 {
+		return nil, calendarInvalidResponse("invalid calendar recurrence")
+	}
+	return []string{compact.String()}, nil
 }
 
 func calendarTransparency(showAs string) string {
@@ -118,11 +177,32 @@ func (s *calendarSession) event(ctx context.Context, item graphCalendarEvent, ca
 	if !calendar.ValidID(item.ID) || item.AllDay == nil || item.Cancelled == nil {
 		return calendar.Event{}, calendarInvalidResponse("calendar event identity or flags missing")
 	}
+	status := "confirmed"
 	if *item.Cancelled {
-		return calendar.Event{}, permanent("calendar.event_cancelled", "calendar event is cancelled")
+		status = "cancelled"
 	}
 	out := calendar.Event{ID: item.ID, CalendarID: calendarID, Title: item.Title, Location: item.Location.Name, URL: item.URL,
-		Status: "confirmed", SeriesID: item.SeriesID, Transparency: calendarTransparency(item.ShowAs)}
+		Status: status, SeriesID: item.SeriesID, Transparency: calendarTransparency(item.ShowAs)}
+	if item.OnlineMeeting != nil {
+		out.MeetingURL = item.OnlineMeeting.JoinURL
+	}
+	if out.MeetingURL == "" {
+		out.MeetingURL = item.OnlineMeetingURL
+	}
+	recurrence, recurrenceErr := graphRecurrence(item.Recurrence)
+	if recurrenceErr != nil {
+		return calendar.Event{}, recurrenceErr
+	}
+	out.Recurrence = recurrence
+	if item.Organizer != nil {
+		organizer := graphParticipant(*item.Organizer, true, item.IsOrganizer != nil && *item.IsOrganizer)
+		out.Organizer = &organizer
+	}
+	if item.Attendees != nil {
+		for _, attendee := range *item.Attendees {
+			out.Attendees = append(out.Attendees, graphParticipant(attendee, false, false))
+		}
+	}
 	if detail {
 		if item.Body == nil || !strings.EqualFold(item.Body.Type, "text") {
 			return calendar.Event{}, calendarInvalidResponse("calendar event text body is unavailable")
