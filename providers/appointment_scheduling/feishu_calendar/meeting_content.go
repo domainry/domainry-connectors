@@ -218,11 +218,13 @@ func selectMeetingBrief(meetings []feishuMeetingBrief, calendarEventID string, s
 		delta   time.Duration
 	}
 	candidates := make([]candidate, 0, len(meetings))
+	validMeetings := make([]feishuMeetingBrief, 0, len(meetings))
 	for _, meeting := range meetings {
 		meeting.ID = strings.TrimSpace(meeting.ID)
 		if meeting.ID == "" {
 			continue
 		}
+		validMeetings = append(validMeetings, meeting)
 		candidateStart, err := parseUnixSeconds(meeting.StartTime)
 		if err != nil {
 			continue
@@ -232,6 +234,21 @@ func selectMeetingBrief(meetings []feishuMeetingBrief, calendarEventID string, s
 			delta = -delta
 		}
 		candidates = append(candidates, candidate{meeting: meeting, exact: calendarEventID != "" && strings.TrimSpace(meeting.CalendarEventID) == calendarEventID, delta: delta})
+	}
+	// Feishu's production list_by_no response currently contains only id,
+	// meeting_no and topic. The bounded query still identifies a sole meeting;
+	// do not discard that valid result merely because optional time fields are
+	// absent. Multiple metadata-free results remain ambiguous and fail closed.
+	if len(validMeetings) == 1 && len(candidates) == 0 {
+		return validMeetings[0], true
+	}
+	if len(validMeetings) > 1 && len(candidates) != len(validMeetings) {
+		for _, value := range candidates {
+			if value.exact {
+				return value.meeting, true
+			}
+		}
+		return feishuMeetingBrief{}, false
 	}
 	sort.SliceStable(candidates, func(left, right int) bool {
 		if candidates[left].exact != candidates[right].exact {

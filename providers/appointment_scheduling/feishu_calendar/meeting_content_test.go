@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	connector "github.com/domainry/domainry-connector-sdk"
 )
@@ -75,6 +76,16 @@ func TestFetchMeetingContentReturnsPendingBeforeMeetingExists(t *testing.T) {
 	var output FetchMeetingContentOutput
 	if err != nil || json.Unmarshal(result.Payload, &output) != nil || output.Status != "pending" || output.RecordingStatus != "pending" || output.Transcript != "" {
 		t.Fatalf("output=%+v payload=%s err=%v", output, result.Payload, err)
+	}
+}
+
+func TestSelectMeetingBriefAcceptsSingleProductionResponseWithoutOptionalMetadata(t *testing.T) {
+	meeting, found := selectMeetingBrief([]feishuMeetingBrief{{ID: "7688991762186341583", MeetingNo: "380732185"}}, "event-42", time.Date(2026, 9, 24, 7, 0, 0, 0, time.UTC))
+	if !found || meeting.ID != "7688991762186341583" {
+		t.Fatalf("meeting=%+v found=%t", meeting, found)
+	}
+	if _, found = selectMeetingBrief([]feishuMeetingBrief{{ID: "meeting-a"}, {ID: "meeting-b"}}, "event-42", time.Now().UTC()); found {
+		t.Fatal("ambiguous metadata-free meetings were selected")
 	}
 }
 
