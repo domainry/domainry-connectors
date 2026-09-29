@@ -373,17 +373,21 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 	ref := "http:" + strconv.Itoa(response.StatusCode)
 	output := Response{}
 	validJSON := len(response.Body) == 0 || json.Unmarshal(response.Body, &output) == nil
+	if internalfeishu.IsRateLimitedResponse(response.StatusCode, response.Body) {
+		return output, ref, connector.ErrorRetryable, internalfeishu.RateLimitError("feishu_calendar")
+	}
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		cause := fmt.Errorf("provider returned HTTP %d", response.StatusCode)
 		code := "feishu_calendar.http_" + strconv.Itoa(response.StatusCode)
-		if response.StatusCode == http.StatusTooManyRequests {
-			return output, ref, connector.ErrorRetryable, connector.RetryableError(code, cause)
-		}
 		if response.StatusCode == http.StatusRequestTimeout || response.StatusCode >= 500 {
 			if write {
 				return output, ref, connector.ErrorUncertain, connector.UncertainError(code, cause)
 			}
 			return output, ref, connector.ErrorRetryable, connector.RetryableError(code, cause)
+		}
+		if providerCode := intValue(output, "code"); validJSON && providerCode != 0 {
+			code = "feishu_calendar.provider_code_" + strconv.Itoa(providerCode)
+			cause = fmt.Errorf("provider returned code %d", providerCode)
 		}
 		return output, ref, connector.ErrorPermanent, connector.PermanentError(code, cause)
 	}

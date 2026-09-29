@@ -13,7 +13,7 @@ func (p *provider) AuthorizationURL(request connector.OAuthAuthorizationRequest)
 	if request.Connection.ConnectorKey != ConnectorKey || request.Connection.ProviderKey != ProviderKey {
 		return "", errors.New("Google OAuth provider mismatch")
 	}
-	return oauth2.AuthorizationURL("https://accounts.google.com/o/oauth2/v2/auth", request, url.Values{"access_type": {"offline"}, "prompt": {"consent"}, "include_granted_scopes": {"true"}})
+	return oauth2.AuthorizationURL("https://accounts.google.com/o/oauth2/v2/auth", request, url.Values{"access_type": {"offline"}, "prompt": {"consent"}})
 }
 func (p *provider) ExchangeAuthorizationCode(ctx context.Context, request connector.OAuthCodeExchangeRequest) (connector.OAuthTokens, error) {
 	if request.Connection.ConnectorKey != ConnectorKey || request.Connection.ProviderKey != ProviderKey {

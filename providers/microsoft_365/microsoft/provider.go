@@ -14,6 +14,7 @@ import (
 
 	connector "github.com/domainry/domainry-connector-sdk"
 	"github.com/domainry/domainry-connectors/internal/oauth2"
+	"github.com/domainry/domainry-connectors/mailattachment"
 )
 
 const (
@@ -33,11 +34,15 @@ type SyncInput struct {
 type Response map[string]any
 
 var (
-	SyncCalendar         = readOperation("sync_calendar", "6810952a3c33307bd1ccbc77db25e8bca1414438f617dd1802e13612903fb18e")
-	SyncContacts         = readOperation("sync_contacts", "5d65856b321e10b13702e0b6026ab5ed98ef1489a51b643ccb22c5147c279f7f")
-	SyncOneDriveFileRefs = readOperation("sync_onedrive_file_refs", "6559e67f2b17f63138e83fe87f743dbf40f3ac62bbaa1e5e5fb4d7cb24581528")
-	SyncOutlookMail      = readOperation("sync_outlook_mail", "eb7187b4d91d9ef0cf586eb1a2a5158536fd04c31030df469097e81616dd7f92")
-	TestConnection       = connector.CallOperation[struct{}, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "test_connection", ContractSHA256: "7aaec32fcb96ac020946ade5744e637b848ed7d16e5277bc1055fae8574c45d2", Reliability: readReliability()}
+	SyncCalendar           = readOperation("sync_calendar", "6810952a3c33307bd1ccbc77db25e8bca1414438f617dd1802e13612903fb18e")
+	SyncContacts           = readOperation("sync_contacts", "5d65856b321e10b13702e0b6026ab5ed98ef1489a51b643ccb22c5147c279f7f")
+	SyncOneDriveFileRefs   = readOperation("sync_onedrive_file_refs", "6559e67f2b17f63138e83fe87f743dbf40f3ac62bbaa1e5e5fb4d7cb24581528")
+	SyncOutlookMail        = readOperation("sync_outlook_mail", "eb7187b4d91d9ef0cf586eb1a2a5158536fd04c31030df469097e81616dd7f92")
+	TestConnection         = connector.CallOperation[struct{}, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "test_connection", ContractSHA256: "7aaec32fcb96ac020946ade5744e637b848ed7d16e5277bc1055fae8574c45d2", Reliability: readReliability()}
+	MailAttachmentDownload = connector.CallOperation[mailattachment.DownloadRequest, mailattachment.DownloadResult]{
+		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: mailattachment.DownloadOperationKey,
+		ContractSHA256: mailattachment.OperationSHA256(mailattachment.DownloadOperationKey), Reliability: readReliability(),
+	}
 )
 
 func readOperation(key, hash string) connector.CallOperation[SyncInput, Response] {
@@ -82,6 +87,9 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 		func() (connector.BoundOperation, error) { return connector.BindCall(MailList, p.mailList) },
 		func() (connector.BoundOperation, error) { return connector.BindCall(MailSearch, p.mailSearch) },
 		func() (connector.BoundOperation, error) { return connector.BindCall(MailRead, p.mailRead) },
+		func() (connector.BoundOperation, error) {
+			return connector.BindCall(MailAttachmentDownload, p.mailAttachmentDownload)
+		},
 		func() (connector.BoundOperation, error) { return connector.BindCall(CalendarEvents, p.calendarEvents) },
 		func() (connector.BoundOperation, error) { return connector.BindCall(CalendarEvent, p.calendarEvent) },
 		func() (connector.BoundOperation, error) {
@@ -179,17 +187,21 @@ func graphString(values map[string]any, key string) string {
 	return strings.TrimSpace(value)
 }
 func (p *provider) executeWithRefresh(ctx context.Context, connection connector.Connection, secrets map[string]string, endpoint string, query url.Values, preferences ...string) (connector.TypedResult[Response], error) {
-	return p.executeGraphWithRefresh(ctx, connection, secrets, http.MethodGet, endpoint, query, nil, "", preferences...)
+	return p.executeGraphWithRefreshLimit(ctx, connection, secrets, http.MethodGet, endpoint, query, nil, "", responseLimit, preferences...)
 }
 
 // Existing read operations retain GET semantics. Mutations supply only native
 // provider-owned method/body/ETag, never caller-selected headers or destinations.
 func (p *provider) executeGraphWithRefresh(ctx context.Context, connection connector.Connection, secrets map[string]string, method, endpoint string, query url.Values, body map[string]any, version string, preferences ...string) (connector.TypedResult[Response], error) {
+	return p.executeGraphWithRefreshLimit(ctx, connection, secrets, method, endpoint, query, body, version, responseLimit, preferences...)
+}
+
+func (p *provider) executeGraphWithRefreshLimit(ctx context.Context, connection connector.Connection, secrets map[string]string, method, endpoint string, query url.Values, body map[string]any, version string, limit int64, preferences ...string) (connector.TypedResult[Response], error) {
 	token := strings.TrimSpace(secrets["access_token"])
 	if token == "" {
 		return empty(), permanent("access_token_required", "resolved access token is required")
 	}
-	result, status, err := p.execute(ctx, connection, method, endpoint, query, body, version, token, preferences...)
+	result, status, err := p.execute(ctx, connection, method, endpoint, query, body, version, token, limit, preferences...)
 	if status != http.StatusUnauthorized {
 		return result, err
 	}
@@ -201,14 +213,14 @@ func (p *provider) executeGraphWithRefresh(ctx context.Context, connection conne
 	if refreshErr != nil {
 		return connector.TypedResult[Response]{ResponseRef: "oauth:refresh_failed"}, refreshErr
 	}
-	result, _, err = p.execute(ctx, connection, method, endpoint, query, body, version, updated.AccessToken, preferences...)
+	result, _, err = p.execute(ctx, connection, method, endpoint, query, body, version, updated.AccessToken, limit, preferences...)
 	result.SecretUpdates = map[string]string{"access_token": updated.AccessToken}
 	if updated.RefreshToken != "" {
 		result.SecretUpdates["refresh_token"] = updated.RefreshToken
 	}
 	return result, err
 }
-func (p *provider) execute(ctx context.Context, connection connector.Connection, method, endpoint string, query url.Values, body map[string]any, version, token string, preferences ...string) (connector.TypedResult[Response], int, error) {
+func (p *provider) execute(ctx context.Context, connection connector.Connection, method, endpoint string, query url.Values, body map[string]any, version, token string, limit int64, preferences ...string) (connector.TypedResult[Response], int, error) {
 	if err := p.ValidateConfig(connection); err != nil {
 		return empty(), 0, err
 	}
@@ -240,7 +252,7 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 		headers["Prefer"] = []string{strings.Join(preferences, ", ")}
 	}
 	write := method != http.MethodGet
-	response, transportErr := p.transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: method, URL: parsed.String(), Headers: headers, SecretHeaders: map[string][]string{"Authorization": {"Bearer " + token}}, Body: raw, MaxResponseBytes: responseLimit})
+	response, transportErr := p.transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: method, URL: parsed.String(), Headers: headers, SecretHeaders: map[string][]string{"Authorization": {"Bearer " + token}}, Body: raw, MaxResponseBytes: limit})
 	if transportErr != nil {
 		return empty(), 0, graphTransportFailure(write, "microsoft.network_error", transportErr)
 	}

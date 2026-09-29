@@ -84,7 +84,7 @@ func TestMeetingContentOAuthScopesCoverCalendarMeetingRecordingAndMinutes(t *tes
 		t.Fatal(err)
 	}
 	scopes, declared := connector.ResolveOAuthOperationScopes(adapter, FetchMeetingContent.Key)
-	if !declared || len(scopes) != 4 {
+	if !declared || len(scopes) != 2 {
 		t.Fatalf("scopes=%v declared=%v", scopes, declared)
 	}
 	for _, alternative := range scopes {

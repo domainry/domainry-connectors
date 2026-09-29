@@ -5,6 +5,7 @@ import (
 	"github.com/domainry/domainry-connector-sdk/calendarwrite"
 	mail "github.com/domainry/domainry-connector-sdk/mail"
 	"github.com/domainry/domainry-connector-sdk/mailwrite"
+	"github.com/domainry/domainry-connectors/mailattachment"
 )
 
 // Each read contract declares only grants sufficient for its selected content.
@@ -15,7 +16,7 @@ func (*provider) OAuthOperationScopes(key string) ([][]string, bool) {
 	switch key {
 	case mail.ListOperationKey:
 		return [][]string{{"https://www.googleapis.com/auth/gmail.metadata"}, {"https://www.googleapis.com/auth/gmail.readonly"}, {"https://www.googleapis.com/auth/gmail.modify"}, {"https://mail.google.com/"}}, true
-	case mail.SearchOperationKey, mail.ReadOperationKey:
+	case mail.SearchOperationKey, mail.ReadOperationKey, mailattachment.DownloadOperationKey:
 		return [][]string{{"https://www.googleapis.com/auth/gmail.readonly"}, {"https://www.googleapis.com/auth/gmail.modify"}, {"https://mail.google.com/"}}, true
 	case calendar.ListOperationKey:
 		scopes = []string{"calendar.readonly", "calendar", "calendar.calendarlist", "calendar.calendarlist.readonly"}

@@ -126,18 +126,26 @@ func (p *provider) gmailSendMessage(ctx context.Context, r connector.TypedReques
 	return connector.DeliveryResult{ResponseRef: result.ResponseRef, SecretUpdates: result.SecretUpdates, ResourceHealth: result.ResourceHealth}, err
 }
 func (p *provider) executeWithRefresh(ctx context.Context, connection connector.Connection, secrets map[string]string, method, endpoint string, query url.Values, body map[string]any, write bool) (connector.TypedResult[Response], error) {
-	return p.executeWithPrecondition(ctx, connection, secrets, method, endpoint, query, body, write, "")
+	return p.executeWithPreconditionLimit(ctx, connection, secrets, method, endpoint, query, body, write, "", responseLimit)
+}
+
+func (p *provider) executeReadWithLimit(ctx context.Context, connection connector.Connection, secrets map[string]string, endpoint string, query url.Values, limit int64) (connector.TypedResult[Response], error) {
+	return p.executeWithPreconditionLimit(ctx, connection, secrets, http.MethodGet, endpoint, query, nil, false, "", limit)
 }
 
 // Only a provider-selected, already validated ETag enters the conditional
 // request. A 401 refresh preserves the same body and precondition; a 412 never
 // refreshes the event version or retries the mutation.
 func (p *provider) executeWithPrecondition(ctx context.Context, connection connector.Connection, secrets map[string]string, method, endpoint string, query url.Values, body map[string]any, write bool, version string) (connector.TypedResult[Response], error) {
+	return p.executeWithPreconditionLimit(ctx, connection, secrets, method, endpoint, query, body, write, version, responseLimit)
+}
+
+func (p *provider) executeWithPreconditionLimit(ctx context.Context, connection connector.Connection, secrets map[string]string, method, endpoint string, query url.Values, body map[string]any, write bool, version string, limit int64) (connector.TypedResult[Response], error) {
 	token := strings.TrimSpace(secrets["access_token"])
 	if token == "" {
 		return empty(), permanent("access_token_required", "resolved access token is required")
 	}
-	result, status, err := p.execute(ctx, connection, method, endpoint, query, body, token, write, version)
+	result, status, err := p.execute(ctx, connection, method, endpoint, query, body, token, write, version, limit)
 	if status != http.StatusUnauthorized {
 		return result, err
 	}
@@ -149,14 +157,14 @@ func (p *provider) executeWithPrecondition(ctx context.Context, connection conne
 	if refreshErr != nil {
 		return connector.TypedResult[Response]{ResponseRef: "oauth:refresh_failed"}, refreshErr
 	}
-	result, _, err = p.execute(ctx, connection, method, endpoint, query, body, updated.AccessToken, write, version)
+	result, _, err = p.execute(ctx, connection, method, endpoint, query, body, updated.AccessToken, write, version, limit)
 	result.SecretUpdates = map[string]string{"access_token": updated.AccessToken}
 	if updated.RefreshToken != "" {
 		result.SecretUpdates["refresh_token"] = updated.RefreshToken
 	}
 	return result, err
 }
-func (p *provider) execute(ctx context.Context, connection connector.Connection, method, endpoint string, query url.Values, body map[string]any, token string, write bool, version string) (connector.TypedResult[Response], int, error) {
+func (p *provider) execute(ctx context.Context, connection connector.Connection, method, endpoint string, query url.Values, body map[string]any, token string, write bool, version string, limit int64) (connector.TypedResult[Response], int, error) {
 	if err := p.ValidateConfig(connection); err != nil {
 		return empty(), 0, err
 	}
@@ -179,7 +187,7 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 	if body != nil {
 		headers["Content-Type"] = []string{"application/json"}
 	}
-	response, transportErr := p.transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: method, URL: parsed.String(), Headers: headers, SecretHeaders: map[string][]string{"Authorization": {"Bearer " + token}}, Body: raw, MaxResponseBytes: responseLimit})
+	response, transportErr := p.transport.RoundTripHTTP(ctx, connector.HTTPRequest{Method: method, URL: parsed.String(), Headers: headers, SecretHeaders: map[string][]string{"Authorization": {"Bearer " + token}}, Body: raw, MaxResponseBytes: limit})
 	if transportErr != nil {
 		return empty(), 0, transportFailure(write, "network_error", transportErr)
 	}
@@ -191,6 +199,11 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 		code := "google.http_" + strconv.Itoa(status)
 		if status == http.StatusUnauthorized {
 			return connector.TypedResult[Response]{Output: payload, ResponseRef: ref}, status, connector.PermanentError(code, cause)
+		}
+		if status == http.StatusForbidden {
+			if suffix, retryable := retryableGoogleForbiddenReason(payload); retryable {
+				return connector.TypedResult[Response]{Output: payload, ResponseRef: ref}, status, connector.RetryableError(code+"."+suffix, cause)
+			}
 		}
 		if status == http.StatusTooManyRequests {
 			return connector.TypedResult[Response]{Output: payload, ResponseRef: ref}, status, connector.RetryableError(code, cause)
@@ -207,4 +220,17 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 		ref = "gmail:" + id
 	}
 	return connector.TypedResult[Response]{Output: payload, ResponseRef: ref}, status, nil
+}
+
+func retryableGoogleForbiddenReason(payload Response) (string, bool) {
+	errorPayload, _ := payload["error"].(map[string]any)
+	for _, item := range backgroundMapSlice(errorPayload["errors"]) {
+		switch backgroundString(item, "reason") {
+		case "rateLimitExceeded":
+			return "rate_limit_exceeded", true
+		case "userRateLimitExceeded":
+			return "user_rate_limit_exceeded", true
+		}
+	}
+	return "", false
 }

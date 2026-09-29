@@ -17,10 +17,12 @@ import (
 )
 
 const (
-	gmailSyncTaskKey  = "gmail_sync"
-	gmailWatchTaskKey = "gmail_watch"
-	gmailMaxPages     = 20
-	gmailMaxBodyBytes = 1 << 20
+	gmailSyncTaskKey                        = "gmail_sync"
+	gmailWatchTaskKey                       = "gmail_watch"
+	gmailMaxPages                           = 20
+	gmailMaxBodyBytes                       = 1 << 20
+	gmailHistoryMessagesAddedObservationKey = "google.gmail.history.messages_added"
+	gmailHistoryCursorExpiredObservationKey = "google.gmail.history.cursor_expired"
 )
 
 type gmailSyncState struct {
@@ -76,7 +78,7 @@ func (p *provider) CleanupBackground(ctx context.Context, connection connector.C
 	resolved, updates := cloneStrings(secrets), map[string]string{}
 	_, current, err := p.backgroundCall(ctx, request, GmailStop.Key, GmailStop.ContractSHA256, map[string]any{}, resolved)
 	mergeStrings(updates, current)
-	if err != nil && !backgroundErrorCodeIs(err, "http_status_404") {
+	if err != nil && !backgroundErrorCodeIs(err, "google.http_404") {
 		return updates, err
 	}
 	return updates, nil
@@ -91,6 +93,7 @@ func (p *provider) processGmailSync(ctx context.Context, request connector.Backg
 	}
 	secrets := cloneStrings(request.Secrets)
 	profile, updates, err := p.backgroundCall(ctx, request, GmailGetProfile.Key, GmailGetProfile.ContractSHA256, map[string]any{}, secrets)
+	updates = cloneStrings(updates)
 	mergeStrings(secrets, updates)
 	if err != nil {
 		return connector.BackgroundResult{SecretUpdates: updates}, err
@@ -100,6 +103,7 @@ func (p *provider) processGmailSync(ctx context.Context, request connector.Backg
 		return connector.BackgroundResult{}, permanent("gmail.profile_invalid", "Gmail profile lacks emailAddress or historyId")
 	}
 	events := []connector.BackgroundEvent{}
+	observations := []connector.BackgroundObservation{}
 	if state.HistoryID == "" {
 		if state.BootstrapHistoryID == "" && backgroundBool(request.Connection.Config, "gmail_ingest_bootstrap", true) {
 			state.BootstrapHistoryID, state.BootstrapSource = currentHistoryID, "bootstrap"
@@ -120,9 +124,16 @@ func (p *provider) processGmailSync(ctx context.Context, request connector.Backg
 		}
 	} else {
 		var historyUpdates map[string]string
-		currentHistoryID, events, historyUpdates, err = p.gmailHistory(ctx, request, account, state.HistoryID, secrets)
+		var historyMessagesAdded int64
+		currentHistoryID, events, historyMessagesAdded, historyUpdates, err = p.gmailHistory(ctx, request, account, state.HistoryID, secrets)
 		mergeStrings(updates, historyUpdates)
-		if err != nil && backgroundErrorCodeIs(err, "http_status_404") {
+		if err == nil && historyMessagesAdded > 0 && gmailPushMonitoringEnabled(request.Connection) {
+			observations = append(observations, connector.BackgroundObservation{Key: gmailHistoryMessagesAddedObservationKey, Value: historyMessagesAdded})
+		}
+		if err != nil && backgroundErrorCodeIs(err, "google.http_404") {
+			if gmailPushMonitoringEnabled(request.Connection) {
+				observations = append(observations, connector.BackgroundObservation{Key: gmailHistoryCursorExpiredObservationKey, Value: 1})
+			}
 			var reconcileUpdates map[string]string
 			var nextPage string
 			state.HistoryID, state.BootstrapHistoryID, state.BootstrapSource = "", backgroundString(profile, "historyId"), "reconcile"
@@ -131,7 +142,7 @@ func (p *provider) processGmailSync(ctx context.Context, request connector.Backg
 			if err == nil && nextPage != "" {
 				state.AccountEmail, state.BootstrapPageToken = account, nextPage
 				raw, _ := json.Marshal(state)
-				return connector.BackgroundResult{State: raw, NextDueAt: request.Now.Add(5 * time.Second), Events: events, SecretUpdates: updates}, nil
+				return connector.BackgroundResult{State: raw, NextDueAt: request.Now.Add(5 * time.Second), Events: events, Observations: observations, SecretUpdates: updates}, nil
 			}
 			currentHistoryID = state.BootstrapHistoryID
 			state.BootstrapHistoryID, state.BootstrapPageToken, state.BootstrapSource = "", "", ""
@@ -149,10 +160,14 @@ func (p *provider) processGmailSync(ctx context.Context, request connector.Backg
 	if reconcileSeconds > 86400 {
 		reconcileSeconds = 86400
 	}
-	return connector.BackgroundResult{State: raw, NextDueAt: request.Now.Add(time.Duration(reconcileSeconds) * time.Second), Events: events, SecretUpdates: updates}, nil
+	return connector.BackgroundResult{State: raw, NextDueAt: request.Now.Add(time.Duration(reconcileSeconds) * time.Second), Events: events, Observations: observations, SecretUpdates: updates}, nil
 }
 
-func (p *provider) gmailHistory(ctx context.Context, request connector.BackgroundRequest, account, start string, secrets map[string]string) (string, []connector.BackgroundEvent, map[string]string, error) {
+func gmailPushMonitoringEnabled(connection connector.Connection) bool {
+	return backgroundBool(connection.Config, "gmail_watch_enabled", true) && backgroundConfig(connection.Config, "gmail_pubsub_project_id", "") != ""
+}
+
+func (p *provider) gmailHistory(ctx context.Context, request connector.BackgroundRequest, account, start string, secrets map[string]string) (string, []connector.BackgroundEvent, int64, map[string]string, error) {
 	pageToken, finalID := "", start
 	seen, events, updates := map[string]struct{}{}, []connector.BackgroundEvent{}, map[string]string{}
 	for page := 0; page < gmailMaxPages; page++ {
@@ -164,7 +179,7 @@ func (p *provider) gmailHistory(ctx context.Context, request connector.Backgroun
 		mergeStrings(secrets, currentUpdates)
 		mergeStrings(updates, currentUpdates)
 		if err != nil {
-			return "", nil, updates, err
+			return "", nil, 0, updates, err
 		}
 		for _, history := range backgroundMapSlice(response["history"]) {
 			for _, added := range backgroundMapSlice(history["messagesAdded"]) {
@@ -181,7 +196,7 @@ func (p *provider) gmailHistory(ctx context.Context, request connector.Backgroun
 				mergeStrings(secrets, eventUpdates)
 				mergeStrings(updates, eventUpdates)
 				if err != nil {
-					return "", nil, updates, err
+					return "", nil, 0, updates, err
 				}
 				if event.ExternalID != "" {
 					events = append(events, event)
@@ -193,10 +208,10 @@ func (p *provider) gmailHistory(ctx context.Context, request connector.Backgroun
 		}
 		pageToken = backgroundString(response, "nextPageToken")
 		if pageToken == "" {
-			return finalID, events, updates, nil
+			return finalID, events, int64(len(seen)), updates, nil
 		}
 	}
-	return "", nil, updates, permanent("gmail.page_limit_exceeded", "Gmail history page limit exceeded")
+	return "", nil, 0, updates, permanent("gmail.page_limit_exceeded", "Gmail history page limit exceeded")
 }
 
 func (p *provider) currentGmailMessagesPage(ctx context.Context, request connector.BackgroundRequest, account, pageToken, source string, secrets map[string]string) ([]connector.BackgroundEvent, string, map[string]string, error) {
@@ -219,6 +234,7 @@ func (p *provider) currentGmailMessagesPage(ctx context.Context, request connect
 		input["page_token"] = strings.TrimSpace(pageToken)
 	}
 	response, updates, err := p.backgroundCall(ctx, request, GmailListMessages.Key, GmailListMessages.ContractSHA256, input, secrets)
+	updates = cloneStrings(updates)
 	mergeStrings(secrets, updates)
 	if err != nil {
 		return nil, "", updates, err

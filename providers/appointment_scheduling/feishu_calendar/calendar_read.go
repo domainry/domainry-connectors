@@ -82,6 +82,18 @@ type feishuTimeInfo struct {
 	TimeZone  string `json:"timezone"`
 }
 
+type feishuAttendee struct {
+	Type            string `json:"type"`
+	AttendeeID      string `json:"attendee_id"`
+	UserID          string `json:"user_id"`
+	ThirdPartyEmail string `json:"third_party_email"`
+	DisplayName     string `json:"display_name"`
+	RSVPStatus      string `json:"rsvp_status"`
+	IsOptional      bool   `json:"is_optional"`
+	IsOrganizer     bool   `json:"is_organizer"`
+	IsExternal      bool   `json:"is_external"`
+}
+
 type feishuEvent struct {
 	ID                  string          `json:"event_id"`
 	OrganizerCalendarID string          `json:"organizer_calendar_id"`
@@ -107,17 +119,7 @@ type feishuEvent struct {
 		UserID      string `json:"user_id"`
 		DisplayName string `json:"display_name"`
 	} `json:"event_organizer"`
-	Attendees []struct {
-		Type            string `json:"type"`
-		AttendeeID      string `json:"attendee_id"`
-		UserID          string `json:"user_id"`
-		ThirdPartyEmail string `json:"third_party_email"`
-		DisplayName     string `json:"display_name"`
-		RSVPStatus      string `json:"rsvp_status"`
-		IsOptional      bool   `json:"is_optional"`
-		IsOrganizer     bool   `json:"is_organizer"`
-		IsExternal      bool   `json:"is_external"`
-	} `json:"attendees"`
+	Attendees []feishuAttendee `json:"attendees"`
 }
 
 func feishuResponseStatus(value string) string {
@@ -159,6 +161,21 @@ func decodeFeishuEvent(value any) (feishuEvent, error) {
 		err = json.Unmarshal(raw, &event)
 	}
 	return event, err
+}
+
+func decodeFeishuAttendees(value any) ([]feishuAttendee, error) {
+	raw, err := json.Marshal(value)
+	if err != nil {
+		return nil, err
+	}
+	var attendees []feishuAttendee
+	if err = json.Unmarshal(raw, &attendees); err != nil {
+		return nil, err
+	}
+	if attendees == nil {
+		attendees = []feishuAttendee{}
+	}
+	return attendees, nil
 }
 
 func (value feishuEvent) normalized(calendarID, fallbackZone string) (calendar.Event, error) {
@@ -301,31 +318,35 @@ func (p *provider) calendarEvents(ctx context.Context, request connector.TypedRe
 	if err := request.Input.Validate(); err != nil {
 		return readResult(connector.TypedResult[Response]{}, output, permanent("calendar.invalid_request", err.Error()))
 	}
+	start, end, err := request.Input.Window.Instants()
+	if err != nil {
+		return readResult(connector.TypedResult[Response]{}, output, permanent("calendar.invalid_request", err.Error()))
+	}
 	pageSize := (calendar.PageRequest{Limit: request.Input.Limit}).PageSize()
 	providerPageSize := pageSize
 	if providerPageSize < 10 {
 		providerPageSize = 10
 	}
-	query := url.Values{"page_size": {strconv.Itoa(providerPageSize)}, "user_id_type": {"open_id"}, "need_attendee": {"true"}, "max_attendee_num": {"1000"}}
+	query := url.Values{"page_size": {strconv.Itoa(providerPageSize)}, "user_id_type": {"open_id"}}
 	if request.Input.Cursor != "" {
 		query.Set("page_token", request.Input.Cursor)
+	} else {
+		query.Set("start_time", strconv.FormatInt(start.Unix(), 10))
+		query.Set("end_time", strconv.FormatInt(end.Unix(), 10))
 	}
-	body := map[string]any{"filter": map[string]any{
-		"start_time": map[string]string{"date_time": request.Input.Window.Start, "timezone": request.Input.TimeZone},
-		"end_time":   map[string]string{"date_time": request.Input.Window.End, "timezone": request.Input.TimeZone},
-	}}
 	session := p.newAPISession(request.Connection, request.Secrets)
-	raw, err := session.call(ctx, http.MethodPost, "/open-apis/calendar/v4/calendars/"+url.PathEscape(request.Input.CalendarID)+"/events/search", query, body, false)
+	raw, err := session.call(ctx, http.MethodGet, "/open-apis/calendar/v4/calendars/"+url.PathEscape(request.Input.CalendarID)+"/events", query, nil, false)
 	if err != nil {
 		return readResult(raw, output, err)
 	}
 	data := nested(raw.Output, "data")
 	events, decodeErr := decodeFeishuEvents(data["items"])
+	hasMore, hasMoreOK := data["has_more"].(bool)
 	next := mapString(data, "page_token")
-	if decodeErr != nil || len(events) > providerPageSize || len(next) > 8192 {
+	if decodeErr != nil || !hasMoreOK || len(events) > providerPageSize || len(next) > 8192 || hasMore && next == "" || !hasMore && next != "" {
 		return readResult(raw, output, permanent("calendar.invalid_response", "invalid Feishu event page"))
 	}
-	output = calendar.EventsPage{Items: []calendar.Event{}, NextCursor: next, Complete: next == "", TimeZone: request.Input.TimeZone}
+	output = calendar.EventsPage{Items: []calendar.Event{}, NextCursor: next, Complete: !hasMore, TimeZone: request.Input.TimeZone}
 	for _, event := range events {
 		normalized, normalizeErr := event.normalized(request.Input.CalendarID, request.Input.TimeZone)
 		if normalizeErr != nil {
@@ -341,7 +362,7 @@ func (p *provider) calendarEvent(ctx context.Context, request connector.TypedReq
 	if err := request.Input.Validate(); err != nil {
 		return readResult(connector.TypedResult[Response]{}, output, permanent("calendar.invalid_request", err.Error()))
 	}
-	query := url.Values{"need_attendee": {"true"}, "max_attendee_num": {"1000"}, "user_id_type": {"open_id"}}
+	query := url.Values{"user_id_type": {"open_id"}}
 	session := p.newAPISession(request.Connection, request.Secrets)
 	raw, err := session.call(ctx, http.MethodGet, "/open-apis/calendar/v4/calendars/"+url.PathEscape(request.Input.CalendarID)+"/events/"+url.PathEscape(request.Input.EventID), query, nil, false)
 	if err != nil {
@@ -351,8 +372,43 @@ func (p *provider) calendarEvent(ctx context.Context, request connector.TypedReq
 	if decodeErr != nil || event.ID != request.Input.EventID {
 		return readResult(raw, output, permanent("calendar.invalid_response", "Feishu event identity is invalid"))
 	}
+	event.Attendees, err = p.calendarEventAttendees(ctx, session, request.Input.CalendarID, request.Input.EventID)
+	if err != nil {
+		raw.SecretUpdates = cloneStringMap(session.updates)
+		return readResult(raw, output, err)
+	}
 	output, err = event.normalized(request.Input.CalendarID, request.Input.TimeZone)
+	raw.SecretUpdates = cloneStringMap(session.updates)
 	return readResult(raw, output, err)
+}
+
+func (p *provider) calendarEventAttendees(ctx context.Context, session *apiSession, calendarID, eventID string) ([]feishuAttendee, error) {
+	const pageSize = 100
+	attendees := make([]feishuAttendee, 0)
+	pageToken := ""
+	for page := 0; page < calendar.MaximumParticipants/pageSize; page++ {
+		query := url.Values{"page_size": {strconv.Itoa(pageSize)}, "user_id_type": {"open_id"}}
+		if pageToken != "" {
+			query.Set("page_token", pageToken)
+		}
+		raw, err := session.call(ctx, http.MethodGet, "/open-apis/calendar/v4/calendars/"+url.PathEscape(calendarID)+"/events/"+url.PathEscape(eventID)+"/attendees", query, nil, false)
+		if err != nil {
+			return nil, err
+		}
+		data := nested(raw.Output, "data")
+		items, decodeErr := decodeFeishuAttendees(data["items"])
+		hasMore, hasMoreOK := data["has_more"].(bool)
+		next := mapString(data, "page_token")
+		if decodeErr != nil || !hasMoreOK || len(items) > pageSize || len(next) > 8192 || hasMore && (next == "" || next == pageToken) || !hasMore && next != "" || len(attendees)+len(items) > calendar.MaximumParticipants {
+			return nil, permanent("calendar.invalid_response", "invalid Feishu event attendee page")
+		}
+		attendees = append(attendees, items...)
+		if !hasMore {
+			return attendees, nil
+		}
+		pageToken = next
+	}
+	return nil, permanent("calendar.invalid_response", "Feishu event exceeds the supported participant limit")
 }
 
 func (p *provider) calendarAvailability(ctx context.Context, request connector.TypedRequest[calendar.AvailabilityRequest]) (connector.TypedResult[calendar.Availability], error) {

@@ -27,7 +27,7 @@ func TestDedicatedIdentityUsesSharedKernelWithoutChangingContract(t *testing.T) 
 		t.Fatal(err)
 	}
 	descriptor := adapter.Descriptor()
-	if descriptor.ConnectorKey != ConnectorKey || descriptor.ProviderKey != ProviderKey || len(descriptor.Operations) != 2 {
+	if descriptor.ConnectorKey != ConnectorKey || descriptor.ProviderKey != ProviderKey || len(descriptor.Operations) != 3 {
 		t.Fatalf("descriptor=%+v", descriptor)
 	}
 	for _, operation := range descriptor.Operations {
@@ -35,6 +35,10 @@ func TestDedicatedIdentityUsesSharedKernelWithoutChangingContract(t *testing.T) 
 		case SendMessage.Key:
 			if operation.ContractSHA256 != SendMessage.ContractSHA256 || operation.Mode != connector.ModeEnqueue {
 				t.Fatalf("send operation=%+v", operation)
+			}
+		case SendMessageDirect.Key:
+			if operation.ContractSHA256 != SendMessageDirect.ContractSHA256 || operation.Mode != connector.ModeCall {
+				t.Fatalf("direct send operation=%+v", operation)
 			}
 		case TestConnection.Key:
 			if operation.ContractSHA256 != TestConnection.ContractSHA256 || operation.Mode != connector.ModeCall {

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	connector "github.com/domainry/domainry-connector-sdk"
+	"github.com/domainry/domainry-connectors/mailattachment"
 )
 
 const (
@@ -68,16 +69,20 @@ type GmailSendMessageInput struct {
 }
 
 var (
-	GmailGetMessage   = readOp[GmailGetMessageInput]("gmail_get_message", "fd63131ba3621a277bad6d12cae583c3b7dbb8d6160efb9ff9ecc497bf199bbc")
-	GmailGetProfile   = readOp[struct{}]("gmail_get_profile", "d7a362cc7bc11aaa5eb1d7e84e45ddff284a177eeb295238fb11070f6c9dec26")
-	GmailListMessages = readOp[GmailListMessagesInput]("gmail_list_messages", "f696580b2823fe0924ece61a97fb667bfe9127c6ee7bc39d159757ab81df2d92")
-	GmailSendMessage  = connector.EnqueueOperation[GmailSendMessageInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "gmail_send_message", ContractSHA256: "9f76169c0993f9abc01a70f4a27b0e04e49a2ab318bd23a6ee3cbe8c9b2ff649", Reliability: writeReliability()}
-	GmailStop         = writeOp[struct{}]("gmail_stop", "c4503fac2720b68a86dfe33a4e6f4e82fa2d00e67968af62e55d2f5a93f7df38")
-	GmailWatch        = writeOp[GmailWatchInput]("gmail_watch", "45250915092fe46cc248ff760cb8456526cc4733f32813008d35a3fb6e0f746d")
-	SyncCalendar      = readOp[SyncCalendarInput]("sync_calendar", "99bf434b3985bb7b3257936be1be59af60caebcf287ecf06ef8daaacb047989a")
-	SyncDriveFileRefs = readOp[SyncDriveFileRefsInput]("sync_drive_file_refs", "2101dde3285ca7a4e53983bd2c9bb5ed52792c3fb556103585658f4cbb7f93bc")
-	SyncEmailHistory  = readOp[SyncEmailHistoryInput]("sync_email_history", "44e4ad5abfa1a37448d571030b9cb5a0e550ce3012f0baccf69084ab345bbfa1")
-	TestConnection    = readOp[struct{}]("test_connection", "b5024bf0fdfcd11b45b9f7a7bfe304582c76ba5a1119246a7e66184035d43371")
+	GmailGetMessage        = readOp[GmailGetMessageInput]("gmail_get_message", "fd63131ba3621a277bad6d12cae583c3b7dbb8d6160efb9ff9ecc497bf199bbc")
+	GmailGetProfile        = readOp[struct{}]("gmail_get_profile", "d7a362cc7bc11aaa5eb1d7e84e45ddff284a177eeb295238fb11070f6c9dec26")
+	GmailListMessages      = readOp[GmailListMessagesInput]("gmail_list_messages", "f696580b2823fe0924ece61a97fb667bfe9127c6ee7bc39d159757ab81df2d92")
+	GmailSendMessage       = connector.EnqueueOperation[GmailSendMessageInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "gmail_send_message", ContractSHA256: "9f76169c0993f9abc01a70f4a27b0e04e49a2ab318bd23a6ee3cbe8c9b2ff649", Reliability: writeReliability()}
+	GmailStop              = writeOp[struct{}]("gmail_stop", "c4503fac2720b68a86dfe33a4e6f4e82fa2d00e67968af62e55d2f5a93f7df38")
+	GmailWatch             = writeOp[GmailWatchInput]("gmail_watch", "45250915092fe46cc248ff760cb8456526cc4733f32813008d35a3fb6e0f746d")
+	SyncCalendar           = readOp[SyncCalendarInput]("sync_calendar", "99bf434b3985bb7b3257936be1be59af60caebcf287ecf06ef8daaacb047989a")
+	SyncDriveFileRefs      = readOp[SyncDriveFileRefsInput]("sync_drive_file_refs", "2101dde3285ca7a4e53983bd2c9bb5ed52792c3fb556103585658f4cbb7f93bc")
+	SyncEmailHistory       = readOp[SyncEmailHistoryInput]("sync_email_history", "44e4ad5abfa1a37448d571030b9cb5a0e550ce3012f0baccf69084ab345bbfa1")
+	TestConnection         = readOp[struct{}]("test_connection", "b5024bf0fdfcd11b45b9f7a7bfe304582c76ba5a1119246a7e66184035d43371")
+	MailAttachmentDownload = connector.CallOperation[mailattachment.DownloadRequest, mailattachment.DownloadResult]{
+		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: mailattachment.DownloadOperationKey,
+		ContractSHA256: mailattachment.OperationSHA256(mailattachment.DownloadOperationKey), Reliability: readReliability(),
+	}
 )
 
 func readOp[I any](key, hash string) connector.CallOperation[I, Response] {
@@ -118,6 +123,9 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 		return connector.BindEnqueueDelivery(GmailSendMessage, p.gmailSendMessage)
 	}, func() (connector.BoundOperation, error) { return connector.BindCall(GmailStop, p.gmailStop) }, func() (connector.BoundOperation, error) { return connector.BindCall(GmailWatch, p.gmailWatch) }, func() (connector.BoundOperation, error) { return connector.BindCall(SyncCalendar, p.syncCalendar) }, func() (connector.BoundOperation, error) { return connector.BindCall(SyncDriveFileRefs, p.syncDrive) }, func() (connector.BoundOperation, error) { return connector.BindCall(SyncEmailHistory, p.syncEmail) }, func() (connector.BoundOperation, error) { return connector.BindCall(TestConnection, p.test) }}
 	bindings = append(bindings,
+		func() (connector.BoundOperation, error) {
+			return connector.BindCall(MailAttachmentDownload, p.mailAttachmentDownload)
+		},
 		func() (connector.BoundOperation, error) {
 			return connector.BindCall(CalendarEventInspect, p.calendarEventInspect)
 		},

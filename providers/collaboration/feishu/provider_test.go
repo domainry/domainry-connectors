@@ -86,7 +86,11 @@ func TestTenantTokenAndMessageSecretsStayRuntimeOnly(t *testing.T) {
 	if err != nil || !strings.Contains(string(result.Payload), `"connected":true`) {
 		t.Fatalf("test=%+v err=%v", result, err)
 	}
-	delivery, err := adapter.Call(t.Context(), call(SendMessage.Key, SendMessage.ContractSHA256, connector.ModeEnqueue, true, SendMessageInput{Recipient: "ou-user", Message: "Approved"}, "request-1"))
+	delivery, err := adapter.Call(t.Context(), call(SendMessage.Key, SendMessage.ContractSHA256, connector.ModeEnqueue, true, map[string]any{
+		"recipient": "ou-user", "message": "Approved", "template_key": "crm.task.reminder_due.feishu", "template_version": 1,
+		"template_locale": "zh-CN", "template_content_hash": "content-hash", "variables_hash": "variables-hash",
+		"notification_channel": "collaboration", "notification_provider": "feishu", "notification_metadata": map[string]any{"event_id": "event-1"},
+	}, "request-1"))
 	if err != nil || delivery.ResponseRef != "feishu:message-1" {
 		t.Fatalf("delivery=%+v err=%v", delivery, err)
 	}
@@ -116,14 +120,16 @@ func TestMessageFailureClassificationAndProviderPayload(t *testing.T) {
 		message      connector.HTTPResponse
 		transportErr error
 		want         connector.ErrorClassification
+		wantCode     string
 	}{
-		{"network", connector.HTTPResponse{}, errors.New("reset"), connector.ErrorUncertain},
-		{"server", connector.HTTPResponse{StatusCode: 502}, nil, connector.ErrorUncertain},
-		{"rate", connector.HTTPResponse{StatusCode: 429}, nil, connector.ErrorRetryable},
-		{"reject", connector.HTTPResponse{StatusCode: 400}, nil, connector.ErrorPermanent},
-		{"provider reject", connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"code":230002}`)}, nil, connector.ErrorPermanent},
-		{"invalid", connector.HTTPResponse{StatusCode: 200, Body: []byte(`{`)}, nil, connector.ErrorUncertain},
-		{"missing id", connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"code":0,"data":{}}`)}, nil, connector.ErrorUncertain},
+		{"network", connector.HTTPResponse{}, errors.New("reset"), connector.ErrorUncertain, ""},
+		{"server", connector.HTTPResponse{StatusCode: 502}, nil, connector.ErrorUncertain, ""},
+		{"rate", connector.HTTPResponse{StatusCode: 429}, nil, connector.ErrorRetryable, "feishu.rate_limit_exceeded"},
+		{"legacy rate", connector.HTTPResponse{StatusCode: 400, Body: []byte(`{"code":99991400}`)}, nil, connector.ErrorRetryable, "feishu.rate_limit_exceeded"},
+		{"reject", connector.HTTPResponse{StatusCode: 400}, nil, connector.ErrorPermanent, ""},
+		{"provider reject", connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"code":230002}`)}, nil, connector.ErrorPermanent, ""},
+		{"invalid", connector.HTTPResponse{StatusCode: 200, Body: []byte(`{`)}, nil, connector.ErrorUncertain, ""},
+		{"missing id", connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"code":0,"data":{}}`)}, nil, connector.ErrorUncertain, ""},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			transport := &recordingTransport{responses: []connector.HTTPResponse{{StatusCode: 200, Body: []byte(`{"code":0,"tenant_access_token":"token"}`)}, test.message}, errors: []error{nil, test.transportErr}}
@@ -132,6 +138,11 @@ func TestMessageFailureClassificationAndProviderPayload(t *testing.T) {
 			classification, ok := connector.ErrorClassificationOf(err)
 			if !ok || classification != test.want {
 				t.Fatalf("err=%v classification=%q want=%q", err, classification, test.want)
+			}
+			if test.wantCode != "" {
+				if code, ok := connector.ProviderErrorCodeOf(err); !ok || code != test.wantCode {
+					t.Fatalf("code=%q ok=%v want=%q", code, ok, test.wantCode)
+				}
 			}
 		})
 	}

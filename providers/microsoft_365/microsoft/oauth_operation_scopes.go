@@ -5,6 +5,7 @@ import (
 	"github.com/domainry/domainry-connector-sdk/calendarwrite"
 	mail "github.com/domainry/domainry-connector-sdk/mail"
 	"github.com/domainry/domainry-connector-sdk/mailwrite"
+	"github.com/domainry/domainry-connectors/mailattachment"
 )
 
 // Basic grants enable only operations that return metadata. Search and content
@@ -14,7 +15,7 @@ func (*provider) OAuthOperationScopes(key string) ([][]string, bool) {
 	switch key {
 	case mail.ListOperationKey:
 		scopes = []string{"Mail.ReadBasic", "Mail.ReadBasic.Shared", "Mail.Read", "Mail.ReadWrite", "Mail.Read.Shared", "Mail.ReadWrite.Shared"}
-	case mail.SearchOperationKey, mail.ReadOperationKey:
+	case mail.SearchOperationKey, mail.ReadOperationKey, mailattachment.DownloadOperationKey:
 		scopes = []string{"Mail.Read", "Mail.ReadWrite", "Mail.Read.Shared", "Mail.ReadWrite.Shared"}
 	case calendar.ListOperationKey, calendar.EventsOperationKey, calendar.AvailabilityOperationKey:
 		scopes = append(scopes, "Calendars.ReadBasic")

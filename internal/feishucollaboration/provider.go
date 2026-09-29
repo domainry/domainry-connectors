@@ -13,8 +13,10 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	connector "github.com/domainry/domainry-connector-sdk"
+	"github.com/domainry/domainry-connector-sdk/collaborationwrite"
 	internalfeishu "github.com/domainry/domainry-connectors/internal/feishu"
 	"github.com/domainry/domainry-connectors/internal/notificationmessage"
 )
@@ -25,14 +27,16 @@ const (
 )
 
 type Identity struct {
-	ConnectorKey       string
-	ProviderKey        string
-	ProviderName       string
-	SendContractSHA256 string
-	TestContractSHA256 string
+	ConnectorKey             string
+	ProviderKey              string
+	ProviderName             string
+	SendContractSHA256       string
+	DirectSendContractSHA256 string
+	TestContractSHA256       string
 }
 
 type SendMessageInput struct {
+	notificationmessage.DeliveryEnvelope
 	Recipient           string         `json:"recipient"`
 	Message             string         `json:"message"`
 	Text                string         `json:"text,omitempty"`
@@ -72,12 +76,47 @@ func New(transport connector.Transport, identity Identity) (connector.Adapter, e
 	if err != nil {
 		return nil, err
 	}
-	bound, err := connector.NewProvider(schema(identity), send, test)
+	operations := []connector.BoundOperation{send, test}
+	if strings.TrimSpace(identity.DirectSendContractSHA256) != "" {
+		directSendOperation := connector.CallOperation[collaborationwrite.SendRequest, collaborationwrite.Result]{ConnectorKey: identity.ConnectorKey, ProviderKey: identity.ProviderKey, Key: collaborationwrite.SendOperationKey, ContractSHA256: identity.DirectSendContractSHA256, Reliability: writeReliability()}
+		directSend, bindErr := connector.BindCall(directSendOperation, p.sendMessageDirect)
+		if bindErr != nil {
+			return nil, bindErr
+		}
+		operations = append(operations, directSend)
+	}
+	bound, err := connector.NewProvider(schema(identity), operations...)
 	if err != nil {
 		return nil, err
 	}
 	p.Adapter = bound
 	return p, nil
+}
+
+func (p *provider) sendMessageDirect(ctx context.Context, request connector.TypedRequest[collaborationwrite.SendRequest]) (connector.TypedResult[collaborationwrite.Result], error) {
+	if err := request.Input.Validate(); err != nil {
+		return connector.TypedResult[collaborationwrite.Result]{}, permanent("message_fields_invalid", err.Error())
+	}
+	delivery, err := p.sendMessage(ctx, connector.TypedRequest[SendMessageInput]{
+		Connection: request.Connection, Secrets: request.Secrets, RequestRef: request.RequestRef,
+		Input: SendMessageInput{Recipient: request.Input.Recipient, Message: request.Input.Text},
+	})
+	if err != nil {
+		return connector.TypedResult[collaborationwrite.Result]{ResponseRef: delivery.ResponseRef, SecretUpdates: delivery.SecretUpdates}, err
+	}
+	messageID := strings.TrimPrefix(strings.TrimSpace(delivery.ResponseRef), "feishu:")
+	result := collaborationwrite.Result{RequestRef: request.RequestRef, Status: "accepted", MessageID: messageID, AcceptedAt: time.Now().UTC().Format(time.RFC3339Nano), Delivery: "unknown"}
+	if err = result.Validate(request.RequestRef); err != nil {
+		return connector.TypedResult[collaborationwrite.Result]{ResponseRef: delivery.ResponseRef, SecretUpdates: delivery.SecretUpdates}, connector.UncertainError("feishu.message_receipt_invalid", err)
+	}
+	return connector.TypedResult[collaborationwrite.Result]{Output: result, ResponseRef: delivery.ResponseRef, SecretUpdates: delivery.SecretUpdates}, nil
+}
+
+func (*provider) OAuthOperationScopes(operationKey string) ([][]string, bool) {
+	if operationKey == collaborationwrite.SendOperationKey {
+		return [][]string{{}}, true
+	}
+	return nil, false
 }
 
 func schema(identity Identity) connector.ProviderSchema {
@@ -201,12 +240,12 @@ func (p *provider) execute(ctx context.Context, connection connector.Connection,
 	ref := "http:" + strconv.Itoa(response.StatusCode)
 	payload := Response{}
 	valid := len(response.Body) == 0 || json.Unmarshal(response.Body, &payload) == nil
+	if internalfeishu.IsRateLimitedResponse(response.StatusCode, response.Body) {
+		return payload, ref, internalfeishu.RateLimitError("feishu")
+	}
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		cause := fmt.Errorf("provider returned HTTP %d", response.StatusCode)
 		code := "feishu.http_" + strconv.Itoa(response.StatusCode)
-		if response.StatusCode == http.StatusTooManyRequests {
-			return payload, ref, connector.RetryableError(code, cause)
-		}
 		if response.StatusCode == http.StatusRequestTimeout || response.StatusCode >= 500 {
 			if write {
 				return payload, ref, connector.UncertainError(code, cause)
@@ -305,3 +344,4 @@ func permanent(code, message string) error {
 var _ connector.ConfigValidator = (*provider)(nil)
 var _ connector.ConnectionTester = (*provider)(nil)
 var _ connector.WebhookVerifier = (*provider)(nil)
+var _ connector.OAuthOperationScopeProvider = (*provider)(nil)

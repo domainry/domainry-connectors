@@ -40,12 +40,17 @@ func TestFetchTenantTokenClassifiesFailures(t *testing.T) {
 		name      string
 		transport *recordingTransport
 		want      connector.ErrorClassification
-	}{{"network", &recordingTransport{err: errors.New("reset")}, connector.ErrorRetryable}, {"rate limit", &recordingTransport{response: connector.HTTPResponse{StatusCode: 429}}, connector.ErrorRetryable}, {"server", &recordingTransport{response: connector.HTTPResponse{StatusCode: 502}}, connector.ErrorRetryable}, {"rejected", &recordingTransport{response: connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"code":10003,"msg":"invalid"}`)}}, connector.ErrorPermanent}, {"bad response", &recordingTransport{response: connector.HTTPResponse{StatusCode: 200, Body: []byte(`{`)}}, connector.ErrorPermanent}} {
+	}{{"network", &recordingTransport{err: errors.New("reset")}, connector.ErrorRetryable}, {"rate limit", &recordingTransport{response: connector.HTTPResponse{StatusCode: 429}}, connector.ErrorRetryable}, {"legacy rate limit", &recordingTransport{response: connector.HTTPResponse{StatusCode: 400, Body: []byte(`{"code":99991400}`)}}, connector.ErrorRetryable}, {"server", &recordingTransport{response: connector.HTTPResponse{StatusCode: 502}}, connector.ErrorRetryable}, {"rejected", &recordingTransport{response: connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"code":10003,"msg":"invalid"}`)}}, connector.ErrorPermanent}, {"bad response", &recordingTransport{response: connector.HTTPResponse{StatusCode: 200, Body: []byte(`{`)}}, connector.ErrorPermanent}} {
 		t.Run(test.name, func(t *testing.T) {
 			_, err := FetchTenantToken(t.Context(), test.transport, TenantTokenRequest{Endpoint: "http://localhost/token", AppID: "app", AppSecret: "secret"})
 			class, ok := connector.ErrorClassificationOf(err)
 			if !ok || class != test.want {
 				t.Fatalf("err=%v class=%q want=%q", err, class, test.want)
+			}
+			if strings.Contains(test.name, "rate limit") {
+				if code, ok := connector.ProviderErrorCodeOf(err); !ok || code != "feishu.rate_limit_exceeded" {
+					t.Fatalf("rate-limit code=%q ok=%v", code, ok)
+				}
 			}
 		})
 	}

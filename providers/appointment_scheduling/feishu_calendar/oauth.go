@@ -11,12 +11,13 @@ import (
 	"strings"
 
 	connector "github.com/domainry/domainry-connector-sdk"
+	internalfeishu "github.com/domainry/domainry-connectors/internal/feishu"
 	"github.com/domainry/domainry-connectors/internal/oauth2"
 )
 
 const (
 	defaultOAuthBaseURL = "https://accounts.feishu.cn"
-	oauthTokenPath      = "/oauth/v3/token"
+	oauthTokenPath      = "/open-apis/authen/v2/oauth/token"
 )
 
 func (p *provider) AuthorizationURL(request connector.OAuthAuthorizationRequest) (string, error) {
@@ -102,10 +103,10 @@ func (p *provider) exchangeOAuthToken(ctx context.Context, connection connector.
 		ErrorDescription string      `json:"error_description"`
 	}
 	decoded := json.Unmarshal(response.Body, &payload) == nil
+	if internalfeishu.IsRateLimitedResponse(response.StatusCode, response.Body) {
+		return connector.OAuthTokens{}, internalfeishu.RateLimitError("feishu_calendar.oauth")
+	}
 	if response.StatusCode < 200 || response.StatusCode >= 300 || !decoded || payload.Code != 0 || payload.Error != "" {
-		if response.StatusCode == http.StatusTooManyRequests {
-			return connector.OAuthTokens{}, connector.RetryableError("feishu_calendar.oauth.rate_limited", errors.New("Feishu OAuth token endpoint is rate limited"))
-		}
 		if response.StatusCode == http.StatusBadRequest || response.StatusCode == http.StatusUnauthorized || response.StatusCode == http.StatusForbidden || (decoded && (payload.Code != 0 || payload.Error != "")) {
 			return connector.OAuthTokens{}, connector.PermanentError("feishu_calendar.oauth.token_rejected", errors.New("Feishu OAuth token request was rejected"))
 		}
@@ -117,17 +118,19 @@ func (p *provider) exchangeOAuthToken(ctx context.Context, connection connector.
 	}
 	expires := int64(0)
 	if payload.ExpiresIn != "" {
-		expires, err = payload.ExpiresIn.Int64()
-		if err != nil || expires <= 0 || expires > 31536000 {
+		parsedExpires, parseErr := payload.ExpiresIn.Int64()
+		if parseErr != nil || parsedExpires <= 0 || parsedExpires > 31536000 {
 			return unknown()
 		}
+		expires = parsedExpires
 	}
 	scopes := requestedScopes
 	if strings.TrimSpace(payload.Scope) != "" {
-		scopes, err = normalizeOAuthScopes(strings.Fields(payload.Scope))
-		if err != nil {
+		parsedScopes, scopeErr := normalizeOAuthScopes(strings.Fields(payload.Scope))
+		if scopeErr != nil {
 			return unknown()
 		}
+		scopes = parsedScopes
 	}
 	return connector.OAuthTokens{
 		AccessToken: accessToken, RefreshToken: strings.TrimSpace(payload.RefreshToken), TokenType: "Bearer",
@@ -197,7 +200,7 @@ func feishuAccessTokenRejected(err error) bool {
 			return true
 		}
 	}
-	return false
+	return code == "feishu_calendar.provider_code_99991677"
 }
 
 func normalizeOAuthScopes(scopes []string) ([]string, error) {
@@ -242,7 +245,7 @@ func oauthBaseURL(connection connector.Connection) string {
 }
 
 func oauthTokenURL(connection connector.Connection) string {
-	return oauthBaseURL(connection) + oauthTokenPath
+	return baseURL(connection) + oauthTokenPath
 }
 
 func cloneStringMap(input map[string]string) map[string]string {
@@ -274,15 +277,13 @@ func (*provider) OAuthOperationScopes(operationKey string) ([][]string, bool) {
 }
 
 func calendarReadScopeAlternatives() [][]string {
-	return [][]string{{"calendar:calendar:readonly"}, {"calendar:calendar"}}
+	return [][]string{{"calendar:calendar:readonly"}}
 }
 
 func meetingContentScopeAlternatives() [][]string {
 	return [][]string{
 		{"calendar:calendar:readonly", "minutes:minutes:readonly", "vc:meeting:readonly", "vc:record:readonly"},
-		{"calendar:calendar", "minutes:minutes:readonly", "vc:meeting:readonly", "vc:record:readonly"},
 		{"calendar:calendar:readonly", "minutes:minutes.basic:read", "minutes:minutes.transcript:export", "vc:meeting:readonly", "vc:record:readonly"},
-		{"calendar:calendar", "minutes:minutes.basic:read", "minutes:minutes.transcript:export", "vc:meeting:readonly", "vc:record:readonly"},
 	}
 }
 

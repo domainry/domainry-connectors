@@ -28,12 +28,21 @@ func backgroundConnection() connector.Connection {
 }
 
 func TestCalendarBackgroundHistoryDeltaSubscriptionAndCleanup(t *testing.T) {
-	first := `{"code":0,"data":{"items":[{"event_id":"meeting-42","summary":"Discovery","description":"Customer needs","start_time":{"date_time":"2026-09-26T09:00:00+08:00","timezone":"Asia/Shanghai"},"end_time":{"date_time":"2026-09-26T10:00:00+08:00","timezone":"Asia/Shanghai"},"status":"confirmed","free_busy_status":"busy","attendees":[{"user_id":"ou_customer","display_name":"Customer","rsvp_status":"accept"}],"vchat":{"meeting_url":"https://vc.feishu.cn/j/42"}}]}}`
+	first := `{"code":0,"data":{"has_more":false,"items":[{"event_id":"meeting-42","summary":"Discovery","description":"Customer needs","start_time":{"date_time":"2026-09-26T09:00:00+08:00","timezone":"Asia/Shanghai"},"end_time":{"date_time":"2026-09-26T10:00:00+08:00","timezone":"Asia/Shanghai"},"status":"confirmed","free_busy_status":"busy","attendees":[{"user_id":"ou_customer","display_name":"Customer","rsvp_status":"accept"}],"vchat":{"meeting_url":"https://vc.feishu.cn/j/42"}}]}}`
 	updated := strings.Replace(first, `"summary":"Discovery"`, `"summary":"Discovery updated"`, 1)
+	firstDetail := `{"code":0,"data":{"event":{"event_id":"meeting-42","summary":"Discovery","description":"Customer needs","start_time":{"date_time":"2026-09-26T09:00:00+08:00","timezone":"Asia/Shanghai"},"end_time":{"date_time":"2026-09-26T10:00:00+08:00","timezone":"Asia/Shanghai"},"status":"confirmed","free_busy_status":"busy","vchat":{"meeting_url":"https://vc.feishu.cn/j/42"}}}}`
+	updatedDetail := strings.Replace(firstDetail, `"summary":"Discovery"`, `"summary":"Discovery updated"`, 1)
+	attendees := `{"code":0,"data":{"has_more":false,"items":[{"user_id":"ou_customer","display_name":"Customer","rsvp_status":"accept"}]}}`
 	transport := &recordingTransport{responses: []connector.HTTPResponse{
 		{StatusCode: 200, Body: []byte(first)},
+		{StatusCode: 200, Body: []byte(firstDetail)},
+		{StatusCode: 200, Body: []byte(attendees)},
 		{StatusCode: 200, Body: []byte(first)},
+		{StatusCode: 200, Body: []byte(firstDetail)},
+		{StatusCode: 200, Body: []byte(attendees)},
 		{StatusCode: 200, Body: []byte(updated)},
+		{StatusCode: 200, Body: []byte(updatedDetail)},
+		{StatusCode: 200, Body: []byte(attendees)},
 		{StatusCode: 200, Body: []byte(`{"code":0}`)},
 		{StatusCode: 200, Body: []byte(`{"code":0}`)},
 	}}
@@ -57,7 +66,7 @@ func TestCalendarBackgroundHistoryDeltaSubscriptionAndCleanup(t *testing.T) {
 	if err != nil || len(result.Events) != 1 || result.Events[0].EventType != "feishu.calendar.event.discovered" || result.NextDueAt != now.Add(900*time.Second) {
 		t.Fatalf("initial result=%+v err=%v", result, err)
 	}
-	if !strings.Contains(string(result.Events[0].Payload), `"meeting_url":"https://vc.feishu.cn/j/42"`) || !strings.Contains(string(result.Events[0].Payload), `"content_hash"`) {
+	if !strings.Contains(string(result.Events[0].Payload), `"meeting_url":"https://vc.feishu.cn/j/42"`) || !strings.Contains(string(result.Events[0].Payload), `"content_hash"`) || !strings.Contains(string(result.Events[0].Payload), `"ou_customer"`) {
 		t.Fatalf("initial event=%s", result.Events[0].Payload)
 	}
 	request.State, request.Now = result.State, now.Add(15*time.Minute)
@@ -75,11 +84,50 @@ func TestCalendarBackgroundHistoryDeltaSubscriptionAndCleanup(t *testing.T) {
 		State: json.RawMessage(`{}`), Secrets: map[string]string{"access_token": "token"}, Now: now,
 		Principal: connector.Principal{IsAuthenticated: true, WorkspaceID: connection.WorkspaceID},
 	})
-	if err != nil || subscription.NextDueAt != now.Add(24*time.Hour) || !strings.Contains(string(subscription.State), `"subscribed":true`) || !strings.Contains(transport.requests[3].URL, "/events/subscription") {
-		t.Fatalf("subscription=%+v request=%+v err=%v", subscription, transport.requests[3], err)
+	if err != nil || subscription.NextDueAt != now.Add(24*time.Hour) || !strings.Contains(string(subscription.State), `"subscribed":true`) || !strings.Contains(transport.requests[9].URL, "/events/subscription") {
+		t.Fatalf("subscription=%+v request=%+v err=%v", subscription, transport.requests[9], err)
 	}
-	if _, err = adapter.(connector.BackgroundCleanupProcessor).CleanupBackground(t.Context(), connection, map[string]string{"access_token": "token"}, now, connector.Principal{}); err != nil || !strings.Contains(transport.requests[4].URL, "/events/unsubscription") {
-		t.Fatalf("cleanup request=%+v err=%v", transport.requests[4], err)
+	if _, err = adapter.(connector.BackgroundCleanupProcessor).CleanupBackground(t.Context(), connection, map[string]string{"access_token": "token"}, now, connector.Principal{}); err != nil || !strings.Contains(transport.requests[10].URL, "/events/unsubscription") {
+		t.Fatalf("cleanup request=%+v err=%v", transport.requests[10], err)
+	}
+}
+
+func TestCalendarBackgroundTreatsDeletedDetailAsCancelled(t *testing.T) {
+	listed := `{"code":0,"data":{"has_more":false,"items":[{"event_id":"meeting-deleted","summary":"Cancelled meeting","start_time":{"date_time":"2026-09-26T09:00:00+08:00","timezone":"Asia/Shanghai"},"end_time":{"date_time":"2026-09-26T10:00:00+08:00","timezone":"Asia/Shanghai"},"status":"confirmed","free_busy_status":"busy"}]}}`
+	transport := &recordingTransport{responses: []connector.HTTPResponse{
+		{StatusCode: 200, Body: []byte(listed)},
+		{StatusCode: 400, Body: []byte(`{"code":193003,"msg":"event is deleted"}`)},
+	}}
+	adapter, err := New(transport)
+	if err != nil {
+		t.Fatal(err)
+	}
+	connection := backgroundConnection()
+	result, err := adapter.(connector.BackgroundProcessor).ProcessBackground(t.Context(), connector.BackgroundRequest{
+		TaskKey: feishuCalendarSyncTaskKey, StateVersion: feishuCalendarStateVersion, Connection: connection,
+		State: json.RawMessage(`{}`), Secrets: map[string]string{"access_token": "token"}, Now: time.Date(2026, 9, 26, 0, 0, 0, 0, time.UTC),
+		Principal: connector.Principal{IsAuthenticated: true, WorkspaceID: connection.WorkspaceID},
+	})
+	if err != nil || len(result.Events) != 1 || result.Events[0].EventType != "feishu.calendar.event.cancelled" || !strings.Contains(string(result.Events[0].Payload), `"status":"cancelled"`) {
+		t.Fatalf("result=%+v err=%v", result, err)
+	}
+}
+
+func TestCalendarBackgroundDoesNotFetchDetailForListedCancellation(t *testing.T) {
+	listed := `{"code":0,"data":{"has_more":false,"items":[{"event_id":"meeting-cancelled","summary":"Cancelled meeting","start_time":{"date_time":"2026-09-26T09:00:00+08:00","timezone":"Asia/Shanghai"},"end_time":{"date_time":"2026-09-26T10:00:00+08:00","timezone":"Asia/Shanghai"},"status":"cancelled","free_busy_status":"busy"}]}}`
+	transport := &recordingTransport{responses: []connector.HTTPResponse{{StatusCode: 200, Body: []byte(listed)}}}
+	adapter, err := New(transport)
+	if err != nil {
+		t.Fatal(err)
+	}
+	connection := backgroundConnection()
+	result, err := adapter.(connector.BackgroundProcessor).ProcessBackground(t.Context(), connector.BackgroundRequest{
+		TaskKey: feishuCalendarSyncTaskKey, StateVersion: feishuCalendarStateVersion, Connection: connection,
+		State: json.RawMessage(`{}`), Secrets: map[string]string{"access_token": "token"}, Now: time.Date(2026, 9, 26, 0, 0, 0, 0, time.UTC),
+		Principal: connector.Principal{IsAuthenticated: true, WorkspaceID: connection.WorkspaceID},
+	})
+	if err != nil || len(result.Events) != 1 || result.Events[0].EventType != "feishu.calendar.event.cancelled" || len(transport.requests) != 1 {
+		t.Fatalf("result=%+v requests=%d err=%v", result, len(transport.requests), err)
 	}
 }
 

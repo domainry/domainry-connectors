@@ -47,10 +47,13 @@ func FetchTenantToken(ctx context.Context, transport connector.Transport, reques
 	if err != nil {
 		return TenantToken{}, connector.RetryableError(prefix+".token_network_error", err)
 	}
+	if IsRateLimitedResponse(response.StatusCode, response.Body) {
+		return TenantToken{}, RateLimitError(prefix)
+	}
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		cause := fmt.Errorf("Feishu token endpoint returned HTTP %d", response.StatusCode)
 		code := prefix + ".token_http_" + strconv.Itoa(response.StatusCode)
-		if response.StatusCode == http.StatusTooManyRequests || response.StatusCode >= 500 {
+		if response.StatusCode >= 500 {
 			return TenantToken{}, connector.RetryableError(code, cause)
 		}
 		return TenantToken{}, connector.PermanentError(code, cause)

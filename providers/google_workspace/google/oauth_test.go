@@ -42,7 +42,7 @@ func TestOAuthAuthorizationCodeUsesRegistryAndPrivateHostTransport(t *testing.T)
 		t.Fatal(err)
 	}
 	parsed, _ := url.Parse(raw)
-	if parsed.Host != "accounts.google.com" || parsed.Query().Get("code_challenge_method") != "S256" || parsed.Query().Get("state") != request.State {
+	if parsed.Host != "accounts.google.com" || parsed.Query().Get("code_challenge_method") != "S256" || parsed.Query().Get("state") != request.State || parsed.Query().Has("include_granted_scopes") {
 		t.Fatal("authorization URL mismatch")
 	}
 	if len(transport.requests) != 0 {

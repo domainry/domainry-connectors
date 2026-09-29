@@ -11,6 +11,23 @@ import (
 
 const SchemaVersion = 1
 
+// DeliveryEnvelope carries Notification-owned observability and fallback facts
+// that accompany a Provider's operation input. Providers accept these fields
+// under strict Connector decoding, but never copy them into provider requests.
+type DeliveryEnvelope struct {
+	TemplateKey              string         `json:"template_key,omitempty"`
+	TemplateVersion          int            `json:"template_version,omitempty"`
+	TemplateLocale           string         `json:"template_locale,omitempty"`
+	TemplateContentHash      string         `json:"template_content_hash,omitempty"`
+	VariablesHash            string         `json:"variables_hash,omitempty"`
+	NotificationChannel      string         `json:"notification_channel,omitempty"`
+	NotificationProvider     string         `json:"notification_provider,omitempty"`
+	NotificationMetadata     map[string]any `json:"notification_metadata,omitempty"`
+	NotificationDeliverAfter string         `json:"notification_deliver_after,omitempty"`
+	NotificationFallbackPlan []any          `json:"notification_fallback_plan,omitempty"`
+	NotificationFallbackHop  int            `json:"notification_fallback_hop,omitempty"`
+}
+
 // Content is an immutable rendering snapshot. Connectors may translate it to
 // their provider's native wire shape without loading mutable notification data.
 type Content struct {

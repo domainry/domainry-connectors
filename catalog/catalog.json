@@ -2,8 +2,8 @@
   "contract_version": "domainry-official-connector-catalog-v2",
   "sdk": {
     "version": "v0.1.0-dev.19",
-    "contract_version": "connector-contract-v16",
-    "contract_sha256": "664cb625e96fed3fcfd88c6b25e0087c63aa18e22dd2c960ab9d858b85941fee"
+    "contract_version": "connector-contract-v18",
+    "contract_sha256": "fee4768c9d7216ebbb4453f987f8e360805843c9c11eba1602c7df5dd5332a9f"
   },
   "providers": [
     {
@@ -453,11 +453,11 @@
     {
       "connector_key": "appointment_scheduling",
       "provider_key": "feishu_calendar",
-      "provider_revision": "2.2.0",
+      "provider_revision": "2.3.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/appointment_scheduling/feishu_calendar",
       "package_name": "feishucalendar",
       "constructor": "New",
-      "descriptor_sha256": "1bd45fd7783bb11495a1e7f563180a2d1a5de521f3f754a02d5dcced5dfac8a3",
+      "descriptor_sha256": "84c4c11796ee375f2d3873f0a7311a8cae6d778e650dc6d6e1e1e6498d98b03d",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "appointment_scheduling_feishu_calendar_deterministic_v1",
@@ -506,6 +506,11 @@
           "key": "enqueue_booking",
           "mode": "enqueue",
           "contract_sha256": "425b4b8fdc9a5865424285463c073951321d757d50dfbf1dc01b6f05eb507146"
+        },
+        {
+          "key": "fetch_meeting_content",
+          "mode": "call",
+          "contract_sha256": "574d2b2142e2bb2438d348f111ae843ed07e7de7f6a6b0cfc7852fb0b39bf33d"
         },
         {
           "key": "test_connection",
@@ -2471,7 +2476,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/google_workspace/google",
       "package_name": "google",
       "constructor": "New",
-      "descriptor_sha256": "103bc68d8ad6ed10c8986a56807c4e0cf356b7e3722dcc028dd26cc6bbc986f5",
+      "descriptor_sha256": "b532b2ce47e0652e3064fdf8f3f7e4bef25e428e4eb946d3d71df6e9d1898b64",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "google_workspace_google_deterministic_v1",
@@ -2561,6 +2566,11 @@
           "key": "gmail_watch",
           "mode": "call",
           "contract_sha256": "45250915092fe46cc248ff760cb8456526cc4733f32813008d35a3fb6e0f746d"
+        },
+        {
+          "key": "mail_attachment_download",
+          "mode": "call",
+          "contract_sha256": "755744993fedd955d673dcdd583a0dcdaedcc96bad78199e36e5638957ab8820"
         },
         {
           "key": "mail_list",
@@ -3806,7 +3816,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/microsoft_365/microsoft",
       "package_name": "microsoft",
       "constructor": "New",
-      "descriptor_sha256": "6aa470fd75548210c5114261e28946466325552c3411afb930a6920f2ad58b71",
+      "descriptor_sha256": "af21bf0b2b51631a8afab595e822a44eecae88145a3dcb334b781a3165096418",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "microsoft_365_microsoft_deterministic_v1",
@@ -3867,6 +3877,11 @@
           "key": "calendar_list",
           "mode": "call",
           "contract_sha256": "acc56035800355f71e0763716b492103b8d9f4237fee858779390e7614a6c5e0"
+        },
+        {
+          "key": "mail_attachment_download",
+          "mode": "call",
+          "contract_sha256": "755744993fedd955d673dcdd583a0dcdaedcc96bad78199e36e5638957ab8820"
         },
         {
           "key": "mail_list",

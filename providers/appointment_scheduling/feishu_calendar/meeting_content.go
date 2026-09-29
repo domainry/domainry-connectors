@@ -18,6 +18,7 @@ import (
 	"unicode/utf8"
 
 	connector "github.com/domainry/domainry-connector-sdk"
+	internalfeishu "github.com/domainry/domainry-connectors/internal/feishu"
 )
 
 // Integration's personal-account read boundary retains at most a 4 MiB JSON
@@ -284,13 +285,16 @@ func (p *provider) executeDownload(ctx context.Context, connection connector.Con
 	ref := "http:" + strconv.Itoa(response.StatusCode)
 	providerOutput := Response{}
 	hasProviderError := len(bytes.TrimSpace(response.Body)) > 0 && bytes.HasPrefix(bytes.TrimSpace(response.Body), []byte("{")) && json.Unmarshal(response.Body, &providerOutput) == nil && intValue(providerOutput, "code") != 0
+	if internalfeishu.IsRateLimitedResponse(response.StatusCode, response.Body) {
+		return nil, ref, internalfeishu.RateLimitError("feishu_calendar")
+	}
 	if response.StatusCode < 200 || response.StatusCode >= 300 || hasProviderError {
 		code := "feishu_calendar.http_" + strconv.Itoa(response.StatusCode)
 		if hasProviderError {
 			code = "feishu_calendar.provider_code_" + strconv.Itoa(intValue(providerOutput, "code"))
 		}
 		cause := fmt.Errorf("provider rejected transcript download with HTTP %d", response.StatusCode)
-		if response.StatusCode == http.StatusTooManyRequests || response.StatusCode == http.StatusRequestTimeout || response.StatusCode >= 500 {
+		if response.StatusCode == http.StatusRequestTimeout || response.StatusCode >= 500 {
 			return nil, ref, connector.RetryableError(code, cause)
 		}
 		return nil, ref, connector.PermanentError(code, cause)

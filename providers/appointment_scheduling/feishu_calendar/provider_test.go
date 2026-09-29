@@ -124,6 +124,7 @@ func TestInputValidationAndCreateAmbiguity(t *testing.T) {
 	}{
 		{"network", &recordingTransport{errors: []error{errors.New("reset")}}, connector.ErrorUncertain},
 		{"server", &recordingTransport{responses: []connector.HTTPResponse{{StatusCode: http.StatusBadGateway}}}, connector.ErrorUncertain},
+		{"legacy rate limit", &recordingTransport{responses: []connector.HTTPResponse{{StatusCode: http.StatusBadRequest, Body: []byte(`{"code":99991400}`)}}}, connector.ErrorRetryable},
 		{"missing identity", &recordingTransport{responses: []connector.HTTPResponse{{StatusCode: 200, Body: []byte(`{"code":0,"data":{"event":{}}}`)}}}, connector.ErrorUncertain},
 	} {
 		t.Run(test.name, func(t *testing.T) {
@@ -134,6 +135,15 @@ func TestInputValidationAndCreateAmbiguity(t *testing.T) {
 				t.Fatalf("err=%v class=%q want=%q", err, class, test.want)
 			}
 		})
+	}
+}
+
+func TestProviderFourHundredPreservesProviderCode(t *testing.T) {
+	adapter, _ := New(&recordingTransport{responses: []connector.HTTPResponse{{StatusCode: http.StatusBadRequest, Body: []byte(`{"code":190002,"msg":"invalid parameters in request"}`)}}})
+	err := createWithDirectToken(t, adapter)
+	code, ok := connector.ProviderErrorCodeOf(err)
+	if !ok || code != "feishu_calendar.provider_code_190002" {
+		t.Fatalf("err=%v code=%q", err, code)
 	}
 }
 

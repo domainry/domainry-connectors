@@ -115,7 +115,22 @@ func (p *provider) processCalendarSync(ctx context.Context, request connector.Ba
 		return connector.BackgroundResult{SecretUpdates: updates}, err
 	}
 	events := make([]connector.BackgroundEvent, 0, len(page.Items))
-	for _, event := range page.Items {
+	for _, listedEvent := range page.Items {
+		event := listedEvent
+		if !strings.EqualFold(listedEvent.Status, "cancelled") {
+			detailEvent, detailUpdates, detailErr := p.backgroundCalendarEvent(ctx, request, calendar.EventRequest{CalendarID: calendarID, EventID: listedEvent.ID, TimeZone: input.TimeZone}, secrets)
+			mergeSecretUpdates(secrets, detailUpdates)
+			mergeSecretUpdates(updates, detailUpdates)
+			if detailErr != nil {
+				code, deleted := connector.ProviderErrorCodeOf(detailErr)
+				if !deleted || code != "feishu_calendar.provider_code_193003" {
+					return connector.BackgroundResult{SecretUpdates: updates}, detailErr
+				}
+				event.Status = "cancelled"
+			} else {
+				event = detailEvent
+			}
+		}
 		rawEvent, marshalErr := json.Marshal(event)
 		if marshalErr != nil {
 			return connector.BackgroundResult{SecretUpdates: updates}, permanent("background.event_invalid", "Feishu Calendar event cannot be normalized")
@@ -163,6 +178,19 @@ func (p *provider) processCalendarSync(ctx context.Context, request connector.Ba
 	}
 	rawState, _ := json.Marshal(state)
 	return connector.BackgroundResult{State: rawState, NextDueAt: nextDueAt, Events: events, SecretUpdates: updates}, nil
+}
+
+func (p *provider) backgroundCalendarEvent(ctx context.Context, request connector.BackgroundRequest, input calendar.EventRequest, secrets map[string]string) (calendar.Event, map[string]string, error) {
+	payload, _ := json.Marshal(input)
+	result, err := p.Adapter.Call(ctx, connector.CallRequest{
+		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, OperationKey: CalendarEvent.Key, ContractSHA256: CalendarEvent.ContractSHA256,
+		Mode: connector.ModeCall, Connection: request.Connection, Payload: payload, Secrets: cloneStringMap(secrets), Principal: request.Principal,
+	})
+	var event calendar.Event
+	if err == nil && json.Unmarshal(result.Payload, &event) != nil {
+		err = permanent("background.response_invalid", "Feishu Calendar event detail is invalid")
+	}
+	return event, result.SecretUpdates, err
 }
 
 func (p *provider) backgroundCalendarEvents(ctx context.Context, request connector.BackgroundRequest, input calendar.EventsRequest, secrets map[string]string) (calendar.EventsPage, map[string]string, error) {

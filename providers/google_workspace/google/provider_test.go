@@ -104,6 +104,35 @@ func TestRefreshAndFailureClassification(t *testing.T) {
 	}
 }
 
+func TestGoogleForbiddenRateLimitsAreRetryable(t *testing.T) {
+	tests := []struct {
+		name           string
+		reason         string
+		classification connector.ErrorClassification
+		code           string
+	}{
+		{name: "project rate limit", reason: "rateLimitExceeded", classification: connector.ErrorRetryable, code: "google.http_403.rate_limit_exceeded"},
+		{name: "user rate limit", reason: "userRateLimitExceeded", classification: connector.ErrorRetryable, code: "google.http_403.user_rate_limit_exceeded"},
+		{name: "domain policy", reason: "domainPolicy", classification: connector.ErrorPermanent, code: "google.http_403"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			transport := &recordingTransport{respond: func(connector.HTTPRequest) (connector.HTTPResponse, error) {
+				body, _ := json.Marshal(map[string]any{"error": map[string]any{"errors": []map[string]string{{"reason": test.reason}}}})
+				return connector.HTTPResponse{StatusCode: 403, Body: body}, nil
+			}}
+			adapter, _ := New(transport)
+			payload, _ := json.Marshal(struct{}{})
+			_, err := adapter.Call(t.Context(), connector.CallRequest{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, OperationKey: TestConnection.Key, ContractSHA256: TestConnection.ContractSHA256, Mode: connector.ModeCall, Connection: validConnection(), Secrets: map[string]string{"access_token": "token"}, Payload: payload})
+			classification, classified := connector.ErrorClassificationOf(err)
+			code, coded := connector.ProviderErrorCodeOf(err)
+			if !classified || classification != test.classification || !coded || code != test.code {
+				t.Fatalf("classification=%q code=%q err=%v", classification, code, err)
+			}
+		})
+	}
+}
+
 func TestConnectionPublishesVerifiedProviderAccountRoute(t *testing.T) {
 	transport := &recordingTransport{respond: func(connector.HTTPRequest) (connector.HTTPResponse, error) {
 		return connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"id":"google-subject-1","email":"Person@Example.Test","verified_email":true}`)}, nil
@@ -144,6 +173,14 @@ func validConnection() connector.Connection {
 	return connector.Connection{Config: map[string]any{"api_base_url": "http://127.0.0.1:8080", "gmail_base_url": "http://127.0.0.1:8080", "token_url": "http://127.0.0.1:8080/token", "timeout_seconds": 30}}
 }
 
+func TestBackgroundSecretUpdatesRemainWritableWhenAdapterReturnsNil(t *testing.T) {
+	updates := cloneStrings(nil)
+	mergeStrings(updates, map[string]string{"access_token": "refreshed"})
+	if updates["access_token"] != "refreshed" {
+		t.Fatalf("updates=%#v", updates)
+	}
+}
+
 func TestGmailBackgroundSyncOwnsCursorAndProjectsEvents(t *testing.T) {
 	transport := &recordingTransport{respond: func(request connector.HTTPRequest) (connector.HTTPResponse, error) {
 		switch {
@@ -169,8 +206,38 @@ func TestGmailBackgroundSyncOwnsCursorAndProjectsEvents(t *testing.T) {
 	if len(tasks) != 1 || tasks[0].Key != gmailSyncTaskKey {
 		t.Fatalf("tasks=%#v", tasks)
 	}
+	connection.Config["gmail_pubsub_project_id"] = "project-a"
 	result, err := processor.ProcessBackground(t.Context(), connector.BackgroundRequest{TaskKey: gmailSyncTaskKey, StateVersion: 2, Connection: connection, State: json.RawMessage(`{"account_email":"person@example.test","history_id":"10"}`), Secrets: map[string]string{"access_token": "token"}, Now: time.Date(2026, 8, 24, 0, 0, 0, 0, time.UTC), Principal: connector.Principal{IsAuthenticated: true, WorkspaceID: "workspace"}})
-	if err != nil || result.Validate() != nil || len(result.Events) != 1 || result.Events[0].EventType != "gmail.message.received" || !strings.Contains(string(result.State), `"history_id":"12"`) || !result.NextDueAt.Equal(time.Date(2026, 8, 24, 1, 0, 0, 0, time.UTC)) {
+	if err != nil || result.Validate() != nil || len(result.Events) != 1 || result.Events[0].EventType != "gmail.message.received" || len(result.Observations) != 1 || result.Observations[0].Key != gmailHistoryMessagesAddedObservationKey || result.Observations[0].Value != 1 || !strings.Contains(string(result.State), `"history_id":"12"`) || !result.NextDueAt.Equal(time.Date(2026, 8, 24, 1, 0, 0, 0, time.UTC)) {
+		t.Fatalf("result=%+v err=%v validation=%v", result, err, result.Validate())
+	}
+}
+
+func TestGmailBackgroundSyncReportsExpiredHistoryCursor(t *testing.T) {
+	transport := &recordingTransport{respond: func(request connector.HTTPRequest) (connector.HTTPResponse, error) {
+		switch {
+		case strings.HasSuffix(request.URL, "/gmail/v1/users/me/profile"):
+			return connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"emailAddress":"person@example.test","historyId":"20"}`)}, nil
+		case strings.Contains(request.URL, "/gmail/v1/users/me/history"):
+			return connector.HTTPResponse{StatusCode: 404, Body: []byte(`{"error":{"message":"history expired"}}`)}, nil
+		case strings.Contains(request.URL, "/gmail/v1/users/me/messages?"):
+			return connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"messages":[]}`)}, nil
+		default:
+			return connector.HTTPResponse{StatusCode: 500, Body: []byte(`{}`)}, nil
+		}
+	}}
+	adapter, err := New(transport)
+	if err != nil {
+		t.Fatal(err)
+	}
+	connection := validConnection()
+	connection.Key, connection.WorkspaceID, connection.ConnectorKey, connection.ProviderKey, connection.Status = "gmail", "workspace", ConnectorKey, ProviderKey, "active"
+	connection.Config["gmail_ingest_enabled"], connection.Config["gmail_pubsub_project_id"] = true, "project-a"
+	result, err := adapter.(connector.BackgroundProcessor).ProcessBackground(t.Context(), connector.BackgroundRequest{
+		TaskKey: gmailSyncTaskKey, StateVersion: 2, Connection: connection, State: json.RawMessage(`{"account_email":"person@example.test","history_id":"10"}`),
+		Secrets: map[string]string{"access_token": "token"}, Now: time.Date(2026, 9, 29, 0, 0, 0, 0, time.UTC), Principal: connector.Principal{IsAuthenticated: true, WorkspaceID: "workspace"},
+	})
+	if err != nil || result.Validate() != nil || len(result.Observations) != 1 || result.Observations[0].Key != gmailHistoryCursorExpiredObservationKey || result.Observations[0].Value != 1 || !strings.Contains(string(result.State), `"history_id":"20"`) {
 		t.Fatalf("result=%+v err=%v validation=%v", result, err, result.Validate())
 	}
 }
