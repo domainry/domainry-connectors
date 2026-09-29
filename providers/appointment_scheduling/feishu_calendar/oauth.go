@@ -282,8 +282,7 @@ func calendarReadScopeAlternatives() [][]string {
 
 func meetingContentScopeAlternatives() [][]string {
 	return [][]string{
-		{"calendar:calendar:readonly", "minutes:minutes:readonly", "vc:meeting:readonly", "vc:record:readonly"},
-		{"calendar:calendar:readonly", "minutes:minutes.basic:read", "minutes:minutes.transcript:export", "vc:meeting:readonly", "vc:record:readonly"},
+		{"calendar:calendar:readonly", "minutes:minutes.basic:read", "minutes:minutes.transcript:export", "vc:meeting.meetingid:read", "vc:record:readonly"},
 	}
 }
 

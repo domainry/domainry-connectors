@@ -84,15 +84,19 @@ func TestMeetingContentOAuthScopesCoverCalendarMeetingRecordingAndMinutes(t *tes
 		t.Fatal(err)
 	}
 	scopes, declared := connector.ResolveOAuthOperationScopes(adapter, FetchMeetingContent.Key)
-	if !declared || len(scopes) != 2 {
+	if !declared || len(scopes) != 1 {
 		t.Fatalf("scopes=%v declared=%v", scopes, declared)
 	}
-	for _, alternative := range scopes {
-		joined := " " + strings.Join(alternative, " ") + " "
-		for _, required := range []string{" vc:meeting:readonly ", " vc:record:readonly "} {
-			if !strings.Contains(joined, required) {
-				t.Fatalf("alternative %v lacks %s", alternative, required)
-			}
+	joined := " " + strings.Join(scopes[0], " ") + " "
+	for _, required := range []string{
+		" calendar:calendar:readonly ",
+		" minutes:minutes.basic:read ",
+		" minutes:minutes.transcript:export ",
+		" vc:meeting.meetingid:read ",
+		" vc:record:readonly ",
+	} {
+		if !strings.Contains(joined, required) {
+			t.Fatalf("scope set %v lacks %s", scopes[0], required)
 		}
 	}
 }
