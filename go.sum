@@ -6,6 +6,8 @@ github.com/domainry/domainry-connector-sdk v0.1.4 h1:Pvo4VM1yfdtVT9k6YRuUmyO7/Tf
 github.com/domainry/domainry-connector-sdk v0.1.4/go.mod h1:y3YMg09XmWCuxyIeYb1d4xC4AkFmqGWbrm+OaumeyY8=
 github.com/domainry/domainry-connector-sdk v0.1.5 h1:deTWF3Ah20KPg3sfSmDp0mJwAEsfaIdyIDGKvPGHCeE=
 github.com/domainry/domainry-connector-sdk v0.1.5/go.mod h1:y3YMg09XmWCuxyIeYb1d4xC4AkFmqGWbrm+OaumeyY8=
+github.com/domainry/domainry-connector-sdk v0.1.6 h1:ugzTXW4NvC2DOHRo477Tt2P1dY33URu6klQ/8v5Al9I=
+github.com/domainry/domainry-connector-sdk v0.1.6/go.mod h1:y3YMg09XmWCuxyIeYb1d4xC4AkFmqGWbrm+OaumeyY8=
 github.com/go-sql-driver/mysql v1.10.0 h1:Q+1LV8DkHJvSYAdR83XzuhDaTykuDx0l6fkXxoWCWfw=
 github.com/go-sql-driver/mysql v1.10.0/go.mod h1:M+cqaI7+xxXGG9swrdeUIoPG3Y3KCkF0pZej+SK+nWk=
 github.com/golang-jwt/jwt/v5 v5.2.1/go.mod h1:pqrtFR0X4osieyHYxtmOUWsAWrfe1Q5UVIyoH402zdk=
