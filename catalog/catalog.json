@@ -2342,7 +2342,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/feishu_collaboration/feishu",
       "package_name": "feishu",
       "constructor": "New",
-      "descriptor_sha256": "a682432a8926053f14130e01f9dc1c2658a840eafc4157f5bd852a13b841c8d7",
+      "descriptor_sha256": "cfe8a4d6c1e0f98ed6d04758fa2cdc342005846b26b20da25e8a69a34e7f01e2",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "feishu_collaboration_feishu_deterministic_v1",
@@ -2361,6 +2361,11 @@
         "isolated_command": "go test ./providers/feishu_collaboration/feishu"
       },
       "operations": [
+        {
+          "key": "collaboration_message_send",
+          "mode": "call",
+          "contract_sha256": "0c1bf68731c64453e96030ddc1070d5542f871360a47aa65436d8516f45cfc1f"
+        },
         {
           "key": "send_message",
           "mode": "enqueue",
@@ -4311,16 +4316,16 @@
     {
       "connector_key": "payment",
       "provider_key": "wechat_pay",
-      "provider_revision": "1.0.0",
+      "provider_revision": "1.1.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/payment/wechat_pay",
       "package_name": "wechatpay",
       "constructor": "New",
-      "descriptor_sha256": "c1275ad87e8efe3c2dd4bcd72b1f53c45848f5c942b594ffe4b82d2a871314cf",
+      "descriptor_sha256": "e50f9e6963e90ba8689b80705455d8193aff97c13937cbc5c6adcff189152072",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "payment_wechat_pay_deterministic_v1",
         "mode": "deterministic",
-        "manifest_sha256": "808901b240a2d5b8f632a5d402fa0c4d20626acbc3130ff2c8916e635d49b38b",
+        "manifest_sha256": "d0dfcfca8777dc509f2bb60ada5d52c38212917e6066f7a349f23a9d5598b28f",
         "suites": [
           "adapter_contract",
           "error_classification",
@@ -4340,7 +4345,11 @@
           "WECHAT_PAY_APP_ID",
           "WECHAT_PAY_MERCHANT_ID",
           "WECHAT_PAY_MERCHANT_SERIAL_NO",
-          "WECHAT_PAY_MERCHANT_PRIVATE_KEY"
+          "WECHAT_PAY_MERCHANT_PRIVATE_KEY",
+          "WECHAT_PAY_PLATFORM_PUBLIC_KEY",
+          "WECHAT_PAY_API_V3_KEY",
+          "WECHAT_PAY_PAYER_OPENID",
+          "WECHAT_PAY_NOTIFY_URL"
         ]
       },
       "operations": [
@@ -4348,6 +4357,16 @@
           "key": "close_payment_order",
           "mode": "enqueue",
           "contract_sha256": "f14e0fcb52024a8c9e892092cedc6507e82dd96e88042665a070f5060f2625de"
+        },
+        {
+          "key": "close_payment_order_now",
+          "mode": "call",
+          "contract_sha256": "5887e159b5958cbd2aa29ecf218c8ab13e64e87b48fe834071b9c8913035c0f2"
+        },
+        {
+          "key": "create_jsapi_payment_order",
+          "mode": "call",
+          "contract_sha256": "bf6750880ad1a3578aa42ec75cfb46ff575c1ae1e63c5f13010868707d5d67c6"
         },
         {
           "key": "create_native_payment_order",

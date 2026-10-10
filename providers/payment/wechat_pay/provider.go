@@ -27,6 +27,14 @@ type CreateNativePaymentOrderInput struct {
 	ExpiresAt       string `json:"expires_at,omitempty"`
 	Currency        string `json:"currency,omitempty"`
 }
+type CreateJSAPIPaymentOrderInput struct {
+	MerchantOrderNo string `json:"merchant_order_no"`
+	AmountMinor     int64  `json:"amount_minor"`
+	Subject         string `json:"subject"`
+	PayerOpenID     string `json:"payer_openid"`
+	ExpiresAt       string `json:"expires_at,omitempty"`
+	Currency        string `json:"currency,omitempty"`
+}
 type PaymentOrderInput struct {
 	MerchantOrderNo string `json:"merchant_order_no"`
 }
@@ -44,6 +52,8 @@ type QueryPaymentRefundInput struct {
 
 var (
 	ClosePaymentOrder        = connector.EnqueueOperation[PaymentOrderInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "close_payment_order", ContractSHA256: "f14e0fcb52024a8c9e892092cedc6507e82dd96e88042665a070f5060f2625de", Reliability: writeReliability()}
+	ClosePaymentOrderNow     = connector.CallOperation[PaymentOrderInput, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "close_payment_order_now", ContractSHA256: "5887e159b5958cbd2aa29ecf218c8ab13e64e87b48fe834071b9c8913035c0f2", Reliability: writeCallReliability()}
+	CreateJSAPIPaymentOrder  = connector.CallOperation[CreateJSAPIPaymentOrderInput, Response]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "create_jsapi_payment_order", ContractSHA256: "bf6750880ad1a3578aa42ec75cfb46ff575c1ae1e63c5f13010868707d5d67c6", Reliability: writeCallReliability()}
 	CreateNativePaymentOrder = connector.EnqueueOperation[CreateNativePaymentOrderInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "create_native_payment_order", ContractSHA256: "daec256080e3012b8ce9fa55860490afc15816beb97804a4b178142bceb985b1", Reliability: writeReliability()}
 	CreatePaymentRefund      = connector.EnqueueOperation[CreatePaymentRefundInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "create_payment_refund", ContractSHA256: "c996f9ba7ff9dd650043d08dba82d8b3f771ce1d24553837623ac061801a2ece", Reliability: writeReliability()}
 	QueryPaymentOrder        = readOp[PaymentOrderInput]("query_payment_order", "014e6b5d4a4abd51ddd078d287e30f26fdc99a1fb28830cfa1b3a3391b17586d")
@@ -60,6 +70,9 @@ func readReliability() connector.ReliabilityContract {
 func writeReliability() connector.ReliabilityContract {
 	return connector.ReliabilityContract{Effect: connector.EffectWrite, Idempotency: connector.IdempotencyContract{Strategy: connector.IdempotencyNone}, Reconciliation: connector.ReconciliationNone, Compensation: connector.CompensationContract{Mode: connector.CompensationNone}}
 }
+func writeCallReliability() connector.ReliabilityContract {
+	return connector.ReliabilityContract{Effect: connector.EffectWrite, Idempotency: connector.IdempotencyContract{Strategy: connector.IdempotencyNatural}, Reconciliation: connector.ReconciliationNone, Compensation: connector.CompensationContract{Mode: connector.CompensationNone}}
+}
 
 type provider struct {
 	connector.Adapter
@@ -75,6 +88,10 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 	p := &provider{transport: transport, now: time.Now, nonce: rand.Read}
 	bindings := []func() (connector.BoundOperation, error){func() (connector.BoundOperation, error) {
 		return connector.BindEnqueueDelivery(ClosePaymentOrder, p.closePayment)
+	}, func() (connector.BoundOperation, error) {
+		return connector.BindCall(ClosePaymentOrderNow, p.closePaymentNow)
+	}, func() (connector.BoundOperation, error) {
+		return connector.BindCall(CreateJSAPIPaymentOrder, p.createJSAPIPayment)
 	}, func() (connector.BoundOperation, error) {
 		return connector.BindEnqueueDelivery(CreateNativePaymentOrder, p.createPayment)
 	}, func() (connector.BoundOperation, error) {
@@ -97,7 +114,7 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 }
 func schema() connector.ProviderSchema {
 	min, max := float64(1), float64(maximumTimeout)
-	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.0.0", ConfigFields: []connector.ConfigField{{Key: "base_url", Name: "WeChat Pay API base URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://api.mch.weixin.qq.com"`)}, {Key: "app_id", Name: "App ID", Type: connector.ConfigFieldText, Required: true}, {Key: "merchant_id", Name: "Merchant ID", Type: connector.ConfigFieldText, Required: true}, {Key: "merchant_serial_no", Name: "Merchant certificate serial number", Type: connector.ConfigFieldText, Required: true}, {Key: "notify_url", Name: "Payment notification URL", Type: connector.ConfigFieldText, Required: true}, {Key: "refund_notify_url", Name: "Refund notification URL", Type: connector.ConfigFieldText}, {Key: "currency", Name: "Default currency", Type: connector.ConfigFieldText, Default: json.RawMessage(`"CNY"`)}, {Key: "webhook_tolerance_seconds", Name: "Webhook tolerance seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`300`)}, {Key: "timeout_seconds", Name: "Timeout seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`15`), Validation: connector.ConfigValidation{Min: &min, Max: &max}}}, SecretFields: []connector.SecretField{{Key: "merchant_private_key", Name: "Merchant RSA private key", Required: true, CredentialKind: connector.SecretCredentialPrivateKey, MaterialFormat: connector.SecretMaterialPEM, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}, {Key: "platform_public_key", Name: "WeChat Pay platform public key or certificate", Required: true, CredentialKind: connector.SecretCredentialCertificate, MaterialFormat: connector.SecretMaterialPEMOrReference, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}, {Key: "api_v3_key", Name: "WeChat Pay API v3 key", Required: true, CredentialKind: connector.SecretCredentialSigningSecret, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}}}
+	return connector.ProviderSchema{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.1.0", ConfigFields: []connector.ConfigField{{Key: "base_url", Name: "WeChat Pay API base URL", Type: connector.ConfigFieldText, Required: true, Default: json.RawMessage(`"https://api.mch.weixin.qq.com"`)}, {Key: "app_id", Name: "App ID", Type: connector.ConfigFieldText, Required: true}, {Key: "merchant_id", Name: "Merchant ID", Type: connector.ConfigFieldText, Required: true}, {Key: "merchant_serial_no", Name: "Merchant certificate serial number", Type: connector.ConfigFieldText, Required: true}, {Key: "notify_url", Name: "Payment notification URL", Type: connector.ConfigFieldText, Required: true}, {Key: "refund_notify_url", Name: "Refund notification URL", Type: connector.ConfigFieldText}, {Key: "currency", Name: "Default currency", Type: connector.ConfigFieldText, Default: json.RawMessage(`"CNY"`)}, {Key: "webhook_tolerance_seconds", Name: "Webhook tolerance seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`300`)}, {Key: "timeout_seconds", Name: "Timeout seconds", Type: connector.ConfigFieldInteger, Default: json.RawMessage(`15`), Validation: connector.ConfigValidation{Min: &min, Max: &max}}}, SecretFields: []connector.SecretField{{Key: "merchant_private_key", Name: "Merchant RSA private key", Required: true, CredentialKind: connector.SecretCredentialPrivateKey, MaterialFormat: connector.SecretMaterialPEM, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}, {Key: "platform_public_key", Name: "WeChat Pay platform public key or certificate", Required: true, CredentialKind: connector.SecretCredentialCertificate, MaterialFormat: connector.SecretMaterialPEMOrReference, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}, {Key: "api_v3_key", Name: "WeChat Pay API v3 key", Required: true, CredentialKind: connector.SecretCredentialSigningSecret, MaterialFormat: connector.SecretMaterialOpaque, RotationPolicy: connector.SecretRotationManual, ExpiryPolicy: connector.SecretExpiryOptional, TestRequirement: connector.SecretTestWhenBound}}}
 }
 func (p *provider) ValidateConfig(c connector.Connection) error {
 	parsed, err := url.Parse(configDefault(c, "base_url", defaultBaseURL))

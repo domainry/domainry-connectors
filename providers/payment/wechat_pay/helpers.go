@@ -31,11 +31,14 @@ func normalize(operation, order, refund string, response map[string]any) Respons
 	if value := mapString(response, "code_url"); value != "" {
 		result["code_url"] = value
 	}
+	if value := mapString(response, "prepay_id"); value != "" {
+		result["prepay_id"] = value
+	}
 	status := firstString(response, "trade_state", "status")
-	if status == "" && operation == "create_native_payment_order" {
+	if status == "" && (operation == "create_native_payment_order" || operation == "create_jsapi_payment_order") {
 		status = "NOTPAY"
 	}
-	if status == "" && operation == "close_payment_order" {
+	if status == "" && (operation == "close_payment_order" || operation == "close_payment_order_now") {
 		status = "CLOSED"
 	}
 	if status != "" {

@@ -17,6 +17,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func (p *provider) createPayment(ctx context.Context, r connector.TypedRequest[CreateNativePaymentOrderInput]) (connector.DeliveryResult, error) {
@@ -31,12 +32,59 @@ func (p *provider) createPayment(ctx context.Context, r connector.TypedRequest[C
 	}
 	return p.deliver(ctx, r.Connection, r.Secrets, "create_native_payment_order", i.MerchantOrderNo, "", http.MethodPost, "/v3/pay/transactions/native", body, true)
 }
+func (p *provider) createJSAPIPayment(ctx context.Context, r connector.TypedRequest[CreateJSAPIPaymentOrderInput]) (connector.TypedResult[Response], error) {
+	i := r.Input
+	if strings.TrimSpace(i.MerchantOrderNo) == "" || strings.TrimSpace(i.Subject) == "" || strings.TrimSpace(i.PayerOpenID) == "" || i.AmountMinor <= 0 {
+		return empty(), permanent("jsapi_payment_fields_required", "merchant_order_no, subject, payer_openid and positive amount are required")
+	}
+	body := map[string]any{
+		"appid": config(r.Connection, "app_id"), "mchid": config(r.Connection, "merchant_id"),
+		"description": i.Subject, "out_trade_no": i.MerchantOrderNo,
+		"notify_url": config(r.Connection, "notify_url"),
+		"amount":     map[string]any{"total": i.AmountMinor, "currency": currency(r.Connection, i.Currency)},
+		"payer":      map[string]any{"openid": strings.TrimSpace(i.PayerOpenID)},
+	}
+	if i.ExpiresAt != "" {
+		body["time_expire"] = i.ExpiresAt
+	}
+	result, err := p.execute(ctx, r.Connection, r.Secrets, "create_jsapi_payment_order", i.MerchantOrderNo, "", http.MethodPost, "/v3/pay/transactions/jsapi", body, true)
+	if err != nil {
+		return result, err
+	}
+	prepayID := mapString(result.Output, "prepay_id")
+	if prepayID == "" {
+		return empty(), transportFailure(true, "prepay_id_missing", errors.New("WeChat Pay response is missing prepay_id"))
+	}
+	timestamp := strconv.FormatInt(p.now().UTC().Unix(), 10)
+	nonce, err := p.randomNonce()
+	if err != nil {
+		return empty(), permanent("nonce_failed", "nonce generation failed")
+	}
+	packageValue := "prepay_id=" + prepayID
+	signature, err := signRSA(strings.Join([]string{config(r.Connection, "app_id"), timestamp, nonce, packageValue, ""}, "\n"), r.Secrets["merchant_private_key"])
+	if err != nil {
+		return empty(), permanent("private_key_invalid", "merchant private key is invalid")
+	}
+	result.Output["time_stamp"] = timestamp
+	result.Output["nonce_str"] = nonce
+	result.Output["package"] = packageValue
+	result.Output["sign_type"] = "RSA"
+	result.Output["pay_sign"] = signature
+	return result, nil
+}
 func (p *provider) closePayment(ctx context.Context, r connector.TypedRequest[PaymentOrderInput]) (connector.DeliveryResult, error) {
 	id := strings.TrimSpace(r.Input.MerchantOrderNo)
 	if id == "" {
 		return connector.DeliveryResult{}, permanent("merchant_order_no_required", "merchant_order_no is required")
 	}
 	return p.deliver(ctx, r.Connection, r.Secrets, "close_payment_order", id, "", http.MethodPost, "/v3/pay/transactions/out-trade-no/"+url.PathEscape(id)+"/close", map[string]any{"mchid": config(r.Connection, "merchant_id")}, true)
+}
+func (p *provider) closePaymentNow(ctx context.Context, r connector.TypedRequest[PaymentOrderInput]) (connector.TypedResult[Response], error) {
+	id := strings.TrimSpace(r.Input.MerchantOrderNo)
+	if id == "" {
+		return empty(), permanent("merchant_order_no_required", "merchant_order_no is required")
+	}
+	return p.execute(ctx, r.Connection, r.Secrets, "close_payment_order_now", id, "", http.MethodPost, "/v3/pay/transactions/out-trade-no/"+url.PathEscape(id)+"/close", map[string]any{"mchid": config(r.Connection, "merchant_id")}, true)
 }
 func (p *provider) createRefund(ctx context.Context, r connector.TypedRequest[CreatePaymentRefundInput]) (connector.DeliveryResult, error) {
 	i := r.Input
@@ -54,7 +102,11 @@ func (p *provider) queryPayment(ctx context.Context, r connector.TypedRequest[Pa
 	if id == "" {
 		return empty(), permanent("merchant_order_no_required", "merchant_order_no is required")
 	}
-	return p.execute(ctx, r.Connection, r.Secrets, "query_payment_order", id, "", http.MethodGet, "/v3/pay/transactions/out-trade-no/"+url.PathEscape(id)+"?mchid="+url.QueryEscape(config(r.Connection, "merchant_id")), nil, false)
+	result, err := p.execute(ctx, r.Connection, r.Secrets, "query_payment_order", id, "", http.MethodGet, "/v3/pay/transactions/out-trade-no/"+url.PathEscape(id)+"?mchid="+url.QueryEscape(config(r.Connection, "merchant_id")), nil, false)
+	if code, ok := connector.ProviderErrorCodeOf(err); ok && strings.Contains(strings.ToUpper(code), "ORDER_NOT_EXIST") {
+		return connector.TypedResult[Response]{Output: Response{"merchant_order_no": id, "status": "not_exist"}, ResponseRef: result.ResponseRef}, nil
+	}
+	return result, err
 }
 func (p *provider) queryRefund(ctx context.Context, r connector.TypedRequest[QueryPaymentRefundInput]) (connector.TypedResult[Response], error) {
 	id := strings.TrimSpace(r.Input.MerchantRefundNo)
@@ -98,12 +150,15 @@ func (p *provider) execute(ctx context.Context, c connector.Connection, secrets 
 	if err != nil {
 		return empty(), permanent("private_key_invalid", "merchant private key is invalid")
 	}
+	platformKey, err := parsePublicKey([]byte(secrets["platform_public_key"]))
+	if err != nil {
+		return empty(), permanent("platform_key_invalid", "platform key is invalid")
+	}
 	timestamp := strconv.FormatInt(p.now().UTC().Unix(), 10)
-	nonceBytes := make([]byte, 18)
-	if _, err := p.nonce(nonceBytes); err != nil {
+	nonce, err := p.randomNonce()
+	if err != nil {
 		return empty(), permanent("nonce_failed", "nonce generation failed")
 	}
-	nonce := base64.RawURLEncoding.EncodeToString(nonceBytes)
 	message := method + "\n" + path + "\n" + timestamp + "\n" + nonce + "\n" + string(body) + "\n"
 	digest := sha256.Sum256([]byte(message))
 	signature, err := rsa.SignPKCS1v15(rand.Reader, key, crypto.SHA256, digest[:])
@@ -119,11 +174,14 @@ func (p *provider) execute(ctx context.Context, c connector.Connection, secrets 
 	if transportErr != nil {
 		return empty(), transportFailure(write, "network_error", transportErr)
 	}
+	if err := verifyHTTPResponse(response, platformKey, p.now().UTC(), time.Duration(integer(c.Config["webhook_tolerance_seconds"], 300))*time.Second); err != nil {
+		return empty(), transportFailure(write, "response_signature_invalid", err)
+	}
 	ref := "http:" + strconv.Itoa(response.StatusCode)
 	responseBody := Response{}
 	valid := len(response.Body) == 0 || json.Unmarshal(response.Body, &responseBody) == nil
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
-		code := mapString(responseBody, "code")
+		code := providerErrorSuffix(mapString(responseBody, "code"))
 		if code == "" {
 			code = "http_" + strconv.Itoa(response.StatusCode)
 		}
@@ -147,6 +205,62 @@ func (p *provider) execute(ctx context.Context, c connector.Connection, secrets 
 		ref = "wechat_pay:" + refund
 	}
 	return connector.TypedResult[Response]{Output: normalize(operation, order, refund, responseBody), ResponseRef: ref}, nil
+}
+
+func providerErrorSuffix(value string) string {
+	value = strings.ToLower(strings.TrimSpace(value))
+	var result strings.Builder
+	for _, current := range value {
+		switch {
+		case current >= 'a' && current <= 'z', current >= '0' && current <= '9', current == '_':
+			result.WriteRune(current)
+		default:
+			result.WriteByte('_')
+		}
+	}
+	return strings.Trim(result.String(), "_")
+}
+
+func verifyHTTPResponse(response connector.HTTPResponse, key *rsa.PublicKey, receivedAt time.Time, tolerance time.Duration) error {
+	timestamp := header(response.Headers, "Wechatpay-Timestamp")
+	nonce := header(response.Headers, "Wechatpay-Nonce")
+	signatureText := header(response.Headers, "Wechatpay-Signature")
+	serial := header(response.Headers, "Wechatpay-Serial")
+	seconds, err := strconv.ParseInt(timestamp, 10, 64)
+	if err != nil || nonce == "" || signatureText == "" || serial == "" {
+		return errors.New("WeChat Pay response signature headers are invalid")
+	}
+	if tolerance <= 0 || receivedAt.Sub(time.Unix(seconds, 0)).Abs() > tolerance {
+		return errors.New("WeChat Pay response timestamp is outside tolerance")
+	}
+	signature, err := base64.StdEncoding.DecodeString(signatureText)
+	if err != nil {
+		return errors.New("WeChat Pay response signature is invalid")
+	}
+	digest := sha256.Sum256([]byte(timestamp + "\n" + nonce + "\n" + string(response.Body) + "\n"))
+	if rsa.VerifyPKCS1v15(key, crypto.SHA256, digest[:], signature) != nil {
+		return errors.New("WeChat Pay response signature does not match")
+	}
+	return nil
+}
+func (p *provider) randomNonce() (string, error) {
+	nonceBytes := make([]byte, 18)
+	if _, err := p.nonce(nonceBytes); err != nil {
+		return "", err
+	}
+	return base64.RawURLEncoding.EncodeToString(nonceBytes), nil
+}
+func signRSA(message, privateKey string) (string, error) {
+	key, err := parsePrivateKey([]byte(privateKey))
+	if err != nil {
+		return "", err
+	}
+	digest := sha256.Sum256([]byte(message))
+	signature, err := rsa.SignPKCS1v15(rand.Reader, key, crypto.SHA256, digest[:])
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(signature), nil
 }
 func parsePrivateKey(value []byte) (*rsa.PrivateKey, error) {
 	block, _ := pem.Decode(value)
