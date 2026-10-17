@@ -2,11 +2,9 @@ module github.com/domainry/domainry-connectors
 
 go 1.26.0
 
-replace github.com/domainry/domainry-connector-sdk => ../domainry-connector-sdk
-
 require (
 	github.com/SherClockHolmes/webpush-go v1.4.0
-	github.com/domainry/domainry-connector-sdk v0.1.7
+	github.com/domainry/domainry-connector-sdk v0.1.8
 	github.com/go-sql-driver/mysql v1.10.0
 	golang.org/x/net v0.58.0
 )
