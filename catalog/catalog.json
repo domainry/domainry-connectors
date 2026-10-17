@@ -2,8 +2,8 @@
   "contract_version": "domainry-official-connector-catalog-v2",
   "sdk": {
     "version": "v0.1.0-dev.19",
-    "contract_version": "connector-contract-v18",
-    "contract_sha256": "fee4768c9d7216ebbb4453f987f8e360805843c9c11eba1602c7df5dd5332a9f"
+    "contract_version": "connector-contract-v19",
+    "contract_sha256": "176f60ef8281c9c261ebb25d4bda7f08551cdc9b43ce7ffa41e2afd30046b6b5"
   },
   "providers": [
     {
@@ -2379,6 +2379,70 @@
       ]
     },
     {
+      "connector_key": "feishu_mail",
+      "provider_key": "feishu",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/feishu_mail/feishu",
+      "package_name": "feishu",
+      "constructor": "New",
+      "descriptor_sha256": "12ec7473ab9d56f4a09e94e8110971b0a3893136b432c095065509931fddcfd9",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "feishu_mail_feishu_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "766547ac142b047e9de45394e34d5b47c053e37803b9bd981addb34a7f95749d",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure",
+          "webhook_signature_and_normalization"
+        ],
+        "test_command": "go test ./providers/feishu_mail/feishu",
+        "isolated_profile": "feishu_mail_feishu_isolated_v1",
+        "isolated_command": "go test ./providers/feishu_mail/feishu"
+      },
+      "operations": [
+        {
+          "key": "mail_attachment_download",
+          "mode": "call",
+          "contract_sha256": "755744993fedd955d673dcdd583a0dcdaedcc96bad78199e36e5638957ab8820"
+        },
+        {
+          "key": "mail_list",
+          "mode": "call",
+          "contract_sha256": "146c9c8f132adaeaf69c76bb0bcea428cf629784ad31c721d577a54993dfabdc"
+        },
+        {
+          "key": "mail_read",
+          "mode": "call",
+          "contract_sha256": "c7882ae44629779aae98412523b31d5655d1a64b301abf18def34a7ed17dad59"
+        },
+        {
+          "key": "mail_reply",
+          "mode": "call",
+          "contract_sha256": "c8d37b476f383b1796dc1fb0d02eadf6bd96a03ad4c62e80a80f77b6c22a5878"
+        },
+        {
+          "key": "mail_search",
+          "mode": "call",
+          "contract_sha256": "190a3f13ee9b3f2369e477607537641570a9de7afd95510d278b71e691a5a971"
+        },
+        {
+          "key": "mail_send",
+          "mode": "call",
+          "contract_sha256": "6014df03db1cb762c9fd805bcdb24f8013f132be543f9912c59725a904b0ab0f"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "9edf1791ea327a92b41ac8e6eb4e1d55ee1db59b12a2110e0428b73060bc4810"
+        }
+      ]
+    },
+    {
       "connector_key": "file_storage",
       "provider_key": "local",
       "provider_revision": "1.0.0",
@@ -2481,7 +2545,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/google_workspace/google",
       "package_name": "google",
       "constructor": "New",
-      "descriptor_sha256": "b532b2ce47e0652e3064fdf8f3f7e4bef25e428e4eb946d3d71df6e9d1898b64",
+      "descriptor_sha256": "641a8db0cd97e3c80d86062553e417cd8c5ae049e1b960c86b36293cc1051a7c",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "google_workspace_google_deterministic_v1",
@@ -2580,27 +2644,27 @@
         {
           "key": "mail_list",
           "mode": "call",
-          "contract_sha256": "a67a8c1553a2b8457dd54dd3d574994f05e8177ccae2b34a78239affa3fd3004"
+          "contract_sha256": "146c9c8f132adaeaf69c76bb0bcea428cf629784ad31c721d577a54993dfabdc"
         },
         {
           "key": "mail_read",
           "mode": "call",
-          "contract_sha256": "e98aba01bcab28ef70dd6dd5cac5c45a64e2d6d31899dc2e3105bb7a63f57a23"
+          "contract_sha256": "c7882ae44629779aae98412523b31d5655d1a64b301abf18def34a7ed17dad59"
         },
         {
           "key": "mail_reply",
           "mode": "call",
-          "contract_sha256": "ca1227cbb9b9f854bcae93ded73bc12845bbc8b6714581b73f0f6aab0f4b4da1"
+          "contract_sha256": "c8d37b476f383b1796dc1fb0d02eadf6bd96a03ad4c62e80a80f77b6c22a5878"
         },
         {
           "key": "mail_search",
           "mode": "call",
-          "contract_sha256": "ca712330f5266cceb7fb4f46bbcca13f836e22c60bcc70d3fe95845e5818575f"
+          "contract_sha256": "190a3f13ee9b3f2369e477607537641570a9de7afd95510d278b71e691a5a971"
         },
         {
           "key": "mail_send",
           "mode": "call",
-          "contract_sha256": "27f290e180d111a97a202e01372ecffd2f4ab6480369728ca6aa85d502c92895"
+          "contract_sha256": "6014df03db1cb762c9fd805bcdb24f8013f132be543f9912c59725a904b0ab0f"
         },
         {
           "key": "sync_calendar",
@@ -3821,7 +3885,7 @@
       "import_path": "github.com/domainry/domainry-connectors/providers/microsoft_365/microsoft",
       "package_name": "microsoft",
       "constructor": "New",
-      "descriptor_sha256": "af21bf0b2b51631a8afab595e822a44eecae88145a3dcb334b781a3165096418",
+      "descriptor_sha256": "3302a67a8e099e23037be058da6837904f7b0613c9809b3f39c4c1aa04461f65",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "microsoft_365_microsoft_deterministic_v1",
@@ -3891,27 +3955,27 @@
         {
           "key": "mail_list",
           "mode": "call",
-          "contract_sha256": "a67a8c1553a2b8457dd54dd3d574994f05e8177ccae2b34a78239affa3fd3004"
+          "contract_sha256": "146c9c8f132adaeaf69c76bb0bcea428cf629784ad31c721d577a54993dfabdc"
         },
         {
           "key": "mail_read",
           "mode": "call",
-          "contract_sha256": "e98aba01bcab28ef70dd6dd5cac5c45a64e2d6d31899dc2e3105bb7a63f57a23"
+          "contract_sha256": "c7882ae44629779aae98412523b31d5655d1a64b301abf18def34a7ed17dad59"
         },
         {
           "key": "mail_reply",
           "mode": "call",
-          "contract_sha256": "ca1227cbb9b9f854bcae93ded73bc12845bbc8b6714581b73f0f6aab0f4b4da1"
+          "contract_sha256": "c8d37b476f383b1796dc1fb0d02eadf6bd96a03ad4c62e80a80f77b6c22a5878"
         },
         {
           "key": "mail_search",
           "mode": "call",
-          "contract_sha256": "ca712330f5266cceb7fb4f46bbcca13f836e22c60bcc70d3fe95845e5818575f"
+          "contract_sha256": "190a3f13ee9b3f2369e477607537641570a9de7afd95510d278b71e691a5a971"
         },
         {
           "key": "mail_send",
           "mode": "call",
-          "contract_sha256": "27f290e180d111a97a202e01372ecffd2f4ab6480369728ca6aa85d502c92895"
+          "contract_sha256": "6014df03db1cb762c9fd805bcdb24f8013f132be543f9912c59725a904b0ab0f"
         },
         {
           "key": "sync_calendar",
