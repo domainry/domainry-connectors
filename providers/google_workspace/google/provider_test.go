@@ -7,6 +7,7 @@ import (
 	"errors"
 	connector "github.com/domainry/domainry-connector-sdk"
 	"github.com/domainry/domainry-connector-sdk/contracttest"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -211,6 +212,45 @@ func TestGmailBackgroundSyncOwnsCursorAndProjectsEvents(t *testing.T) {
 	if err != nil || result.Validate() != nil || len(result.Events) != 1 || result.Events[0].EventType != "gmail.message.received" || len(result.Observations) != 1 || result.Observations[0].Key != gmailHistoryMessagesAddedObservationKey || result.Observations[0].Value != 1 || !strings.Contains(string(result.State), `"history_id":"12"`) || !result.NextDueAt.Equal(time.Date(2026, 8, 24, 1, 0, 0, 0, time.UTC)) {
 		t.Fatalf("result=%+v err=%v validation=%v", result, err, result.Validate())
 	}
+	if len(transport.requests) != 2 || !strings.Contains(transport.requests[0].URL, "/history?") || !strings.Contains(transport.requests[1].URL, "/messages/m1?") {
+		t.Fatalf("warm increments must only fetch history and the new message, requests=%d", len(transport.requests))
+	}
+	if !strings.Contains(transport.requests[0].URL, "historyTypes=labelAdded") || !strings.Contains(transport.requests[0].URL, "historyTypes=messageAdded") {
+		t.Fatalf("history query must include added messages and visible mailbox label transitions: %s", transport.requests[0].URL)
+	}
+}
+
+func TestGmailBackgroundSyncProjectsSentLabelTransition(t *testing.T) {
+	transport := &recordingTransport{respond: func(request connector.HTTPRequest) (connector.HTTPResponse, error) {
+		switch {
+		case strings.Contains(request.URL, "/gmail/v1/users/me/history"):
+			return connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"historyId":"12","history":[{"labelsAdded":[{"message":{"id":"missing-draft"},"labelIds":["SENT"]},{"message":{"id":"sent-1"},"labelIds":["SENT"]},{"message":{"id":"starred-1"},"labelIds":["STARRED"]}]}]}`)}, nil
+		case strings.Contains(request.URL, "/gmail/v1/users/me/messages/sent-1"):
+			return connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"id":"sent-1","threadId":"thread-1","internalDate":"1787529600000","labelIds":["SENT"],"payload":{"mimeType":"text/plain","headers":[{"name":"From","value":"person@example.test"},{"name":"To","value":"buyer@example.test"},{"name":"Subject","value":"proposal"}],"body":{"size":4,"data":"Ym9keQ"}}}`)}, nil
+		case strings.Contains(request.URL, "/gmail/v1/users/me/messages/missing-draft"):
+			return connector.HTTPResponse{StatusCode: 404, Body: []byte(`{"error":{"message":"not found"}}`)}, nil
+		default:
+			return connector.HTTPResponse{StatusCode: 500, Body: []byte(`{}`)}, nil
+		}
+	}}
+	adapter, err := New(transport)
+	if err != nil {
+		t.Fatal(err)
+	}
+	connection := validConnection()
+	connection.Key, connection.WorkspaceID, connection.ConnectorKey, connection.ProviderKey, connection.Status = "gmail", "workspace", ConnectorKey, ProviderKey, "active"
+	result, err := adapter.(connector.BackgroundProcessor).ProcessBackground(t.Context(), connector.BackgroundRequest{
+		TaskKey: gmailSyncTaskKey, StateVersion: 2, Connection: connection,
+		State:   json.RawMessage(`{"account_email":"person@example.test","history_id":"10"}`),
+		Secrets: map[string]string{"access_token": "token"}, Now: time.Date(2026, 8, 24, 0, 0, 0, 0, time.UTC),
+		Principal: connector.Principal{IsAuthenticated: true, WorkspaceID: "workspace"},
+	})
+	if err != nil || result.Validate() != nil || len(result.Events) != 1 || result.Events[0].ExternalID != "gmail:gmail:message:sent-1" {
+		t.Fatalf("result=%+v err=%v validation=%v", result, err, result.Validate())
+	}
+	if len(transport.requests) != 3 || slices.ContainsFunc(transport.requests, func(request connector.HTTPRequest) bool { return strings.Contains(request.URL, "starred-1") }) {
+		t.Fatalf("only SENT/INBOX label transitions should fetch messages, requests=%+v", transport.requests)
+	}
 }
 
 func TestGmailBackgroundSyncReportsExpiredHistoryCursor(t *testing.T) {
@@ -221,6 +261,9 @@ func TestGmailBackgroundSyncReportsExpiredHistoryCursor(t *testing.T) {
 		case strings.Contains(request.URL, "/gmail/v1/users/me/history"):
 			return connector.HTTPResponse{StatusCode: 404, Body: []byte(`{"error":{"message":"history expired"}}`)}, nil
 		case strings.Contains(request.URL, "/gmail/v1/users/me/messages?"):
+			if !strings.Contains(request.URL, "maxResults=20") {
+				t.Fatal("bootstrap page must leave headroom in the Google per-user quota")
+			}
 			return connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"messages":[]}`)}, nil
 		default:
 			return connector.HTTPResponse{StatusCode: 500, Body: []byte(`{}`)}, nil
@@ -239,6 +282,9 @@ func TestGmailBackgroundSyncReportsExpiredHistoryCursor(t *testing.T) {
 	})
 	if err != nil || result.Validate() != nil || len(result.Observations) != 1 || result.Observations[0].Key != gmailHistoryCursorExpiredObservationKey || result.Observations[0].Value != 1 || !strings.Contains(string(result.State), `"history_id":"20"`) {
 		t.Fatalf("result=%+v err=%v validation=%v", result, err, result.Validate())
+	}
+	if len(transport.requests) != 3 || !strings.Contains(transport.requests[0].URL, "/history?") || !strings.HasSuffix(transport.requests[1].URL, "/profile") || !strings.Contains(transport.requests[2].URL, "/messages?") {
+		t.Fatal("expired history must fetch a new profile baseline before rebuilding")
 	}
 }
 
@@ -279,6 +325,9 @@ func TestGmailBootstrapTraversesHistoricalPagesBeforeAdvancingHistoryCursor(t *t
 		t.Fatalf("first=%+v err=%v", first, err)
 	}
 	var firstPayload map[string]any
+	if first.NextDueAt.Before(request.Now.Add(15 * time.Second)) {
+		t.Fatal("bootstrap pages must not immediately exhaust the per-minute quota")
+	}
 	if err = json.Unmarshal(first.Events[0].Payload, &firstPayload); err != nil || firstPayload["source"] != "bootstrap" {
 		t.Fatalf("first payload=%s err=%v", first.Events[0].Payload, err)
 	}
@@ -286,6 +335,9 @@ func TestGmailBootstrapTraversesHistoricalPagesBeforeAdvancingHistoryCursor(t *t
 	second, err := adapter.(connector.BackgroundProcessor).ProcessBackground(t.Context(), request)
 	if err != nil || len(second.Events) != 1 || !strings.Contains(string(second.State), `"history_id":"20"`) || strings.Contains(string(second.State), "bootstrap_page_token") {
 		t.Fatalf("second=%+v err=%v", second, err)
+	}
+	if !second.NextDueAt.Equal(request.Now) {
+		t.Fatal("a finished backfill must immediately catch up changes after its baseline")
 	}
 }
 
@@ -317,24 +369,24 @@ func TestGmailWatchUsesOneSharedTopicWithoutPullingSubscription(t *testing.T) {
 	connection.Config["gmail_pubsub_topic_id"] = "domainry-gmail-events"
 	result, err := adapter.(connector.BackgroundProcessor).ProcessBackground(t.Context(), connector.BackgroundRequest{
 		TaskKey: gmailWatchTaskKey, StateVersion: 2, Connection: connection, State: json.RawMessage(`{}`),
-		RelatedStates: map[string]json.RawMessage{gmailSyncTaskKey: json.RawMessage(`{"account_email":"person@example.test","history_id":"41"}`)},
-		Secrets:       map[string]string{"access_token": "token"}, Now: now, Principal: connector.Principal{IsAuthenticated: true, WorkspaceID: "workspace"},
+		Secrets: map[string]string{"access_token": "token"}, Now: now, Principal: connector.Principal{IsAuthenticated: true, WorkspaceID: "workspace"},
 	})
 	if err != nil || result.Validate() != nil || len(transport.requests) != 1 {
 		t.Fatalf("result=%+v requests=%d err=%v", result, len(transport.requests), err)
 	}
 	var requestBody struct {
-		TopicName string `json:"topicName"`
+		TopicName string   `json:"topicName"`
+		LabelIDs  []string `json:"labelIds"`
 	}
 	if err = json.Unmarshal(transport.requests[0].Body, &requestBody); err != nil {
 		t.Fatal(err)
 	}
 	topic := gmailPushTopic("domainry-gmail-events")
-	if requestBody.TopicName != "projects/project-a/topics/"+topic || !result.NextDueAt.Before(expires.Add(-12*time.Hour)) || result.NextDueAt.Before(expires.Add(-18*time.Hour)) {
+	if requestBody.TopicName != "projects/project-a/topics/"+topic || !slices.Equal(requestBody.LabelIDs, []string{"INBOX", "SENT"}) || !result.NextDueAt.Before(expires.Add(-12*time.Hour)) || result.NextDueAt.Before(expires.Add(-18*time.Hour)) {
 		t.Fatalf("topic=%q due=%s expiry=%s", requestBody.TopicName, result.NextDueAt, expires)
 	}
 	var state gmailWatchState
-	if err = json.Unmarshal(result.State, &state); err != nil || state.TopicID != topic {
+	if err = json.Unmarshal(result.State, &state); err != nil || state.TopicID != topic || state.LabelScope != "INBOX,SENT" {
 		t.Fatalf("state=%s err=%v", result.State, err)
 	}
 

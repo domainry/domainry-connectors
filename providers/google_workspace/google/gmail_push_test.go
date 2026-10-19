@@ -85,6 +85,72 @@ func TestGmailPushRefreshesJWKSOnceForUnknownKey(t *testing.T) {
 	}
 }
 
+func TestGmailPushAcceptsCurrentPubSubDualFieldShapeButRejectsConflicts(t *testing.T) {
+	now := time.Date(2026, 10, 18, 10, 0, 0, 0, time.UTC)
+	key := mustPushKey(t)
+	transport := &recordingTransport{respond: func(connector.HTTPRequest) (connector.HTTPResponse, error) {
+		return connector.HTTPResponse{StatusCode: 200, Body: pushJWKS(t, "current", &key.PublicKey)}, nil
+	}}
+	adapter, _ := New(transport)
+	verifier := adapter.(connector.WebhookVerifier)
+	request := pushWebhookRequest(t, now, pushJWT(t, key, "current", now, "https://crm.example/hooks/google", "pubsub@example.test"), "message-wire")
+	var body map[string]any
+	if err := json.Unmarshal(request.Body, &body); err != nil {
+		t.Fatal(err)
+	}
+	message := body["message"].(map[string]any)
+	message["message_id"], message["publish_time"] = message["messageId"], message["publishTime"]
+	request.Body, _ = json.Marshal(body)
+	if _, err := verifier.VerifyWebhook(t.Context(), request); err != nil {
+		t.Fatalf("current Pub/Sub wire shape rejected: %v", err)
+	}
+	message["message_id"] = "different-message"
+	request.Body, _ = json.Marshal(body)
+	if _, err := verifier.VerifyWebhook(t.Context(), request); err == nil {
+		t.Fatal("conflicting message identities accepted")
+	}
+	message["message_id"], message["publish_time"] = message["messageId"], "different-time"
+	request.Body, _ = json.Marshal(body)
+	if _, err := verifier.VerifyWebhook(t.Context(), request); err == nil {
+		t.Fatal("conflicting publication times accepted")
+	}
+	message["publish_time"], message["unexpected_field"] = message["publishTime"], "not allowed"
+	request.Body, _ = json.Marshal(body)
+	if _, err := verifier.VerifyWebhook(t.Context(), request); err == nil {
+		t.Fatal("unknown Pub/Sub fields were accepted")
+	}
+}
+
+func TestGmailPushPreservesNumericHistoryCursorWithoutFloatRounding(t *testing.T) {
+	now := time.Date(2026, 10, 18, 10, 0, 0, 0, time.UTC)
+	key := mustPushKey(t)
+	transport := &recordingTransport{respond: func(connector.HTTPRequest) (connector.HTTPResponse, error) {
+		return connector.HTTPResponse{StatusCode: 200, Body: pushJWKS(t, "current", &key.PublicKey)}, nil
+	}}
+	adapter, _ := New(transport)
+	request := pushWebhookRequest(t, now, pushJWT(t, key, "current", now, "https://crm.example/hooks/google", "pubsub@example.test"), "numeric-history")
+	var body map[string]any
+	if err := json.Unmarshal(request.Body, &body); err != nil {
+		t.Fatal(err)
+	}
+	message := body["message"].(map[string]any)
+	for _, value := range []string{`9007199254740993`, `"9007199254740993"`} {
+		message["data"] = base64.StdEncoding.EncodeToString([]byte(`{"emailAddress":"person@example.test","historyId":` + value + `}`))
+		request.Body, _ = json.Marshal(body)
+		verified, err := adapter.(connector.WebhookVerifier).VerifyWebhook(t.Context(), request)
+		if err != nil || !strings.Contains(string(verified.Payload), `"history_id":"9007199254740993"`) {
+			t.Fatalf("numeric cursor was rejected or rounded: %s, %v", verified.Payload, err)
+		}
+	}
+	for _, value := range []string{`-1`, `1.5`, `1e9`, `"not-a-cursor"`} {
+		message["data"] = base64.StdEncoding.EncodeToString([]byte(`{"emailAddress":"person@example.test","historyId":` + value + `}`))
+		request.Body, _ = json.Marshal(body)
+		if _, err := adapter.(connector.WebhookVerifier).VerifyWebhook(t.Context(), request); err == nil {
+			t.Fatalf("invalid cursor %s was accepted", value)
+		}
+	}
+}
+
 func pushWebhookRequest(t *testing.T, now time.Time, token, messageID string) connector.VerifyWebhookRequest {
 	t.Helper()
 	notification, _ := json.Marshal(map[string]string{"emailAddress": " Person@Example.Test ", "historyId": "42"})

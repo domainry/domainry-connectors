@@ -73,7 +73,14 @@ func (p *provider) syncEmail(ctx context.Context, r connector.TypedRequest[SyncE
 	if err != nil {
 		return empty(), err
 	}
-	query := url.Values{"maxResults": {strconv.Itoa(limit)}, "startHistoryId": {r.Input.StartHistoryID}, "historyTypes": {"messageAdded"}}
+	query := url.Values{
+		"maxResults":     {strconv.Itoa(limit)},
+		"startHistoryId": {r.Input.StartHistoryID},
+		// A message sent from an existing Gmail draft can surface as a SENT label
+		// transition without another messageAdded record. Request both change
+		// types; the background projector keeps only INBOX/SENT label changes.
+		"historyTypes": {"messageAdded", "labelAdded"},
+	}
 	set(query, "pageToken", r.Input.PageToken)
 	set(query, "labelId", r.Input.LabelID)
 	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodGet, gmailBase(r.Connection)+"/gmail/v1/users/me/history", query, nil, false)
@@ -108,11 +115,11 @@ func (p *provider) gmailWatch(ctx context.Context, r connector.TypedRequest[Gmai
 	if topic == "" {
 		return empty(), permanent("gmail.topic_name_required", "topic_name is required")
 	}
-	label := strings.TrimSpace(r.Input.LabelID)
-	if label == "" {
-		label = "INBOX"
+	labels := []string{"INBOX", "SENT"}
+	if label := strings.TrimSpace(r.Input.LabelID); label != "" {
+		labels = []string{label}
 	}
-	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodPost, gmailBase(r.Connection)+"/gmail/v1/users/me/watch", nil, map[string]any{"topicName": topic, "labelIds": []string{label}, "labelFilterBehavior": "INCLUDE"}, true)
+	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodPost, gmailBase(r.Connection)+"/gmail/v1/users/me/watch", nil, map[string]any{"topicName": topic, "labelIds": labels, "labelFilterBehavior": "INCLUDE"}, true)
 }
 func (p *provider) gmailStop(ctx context.Context, r connector.TypedRequest[struct{}]) (connector.TypedResult[Response], error) {
 	return p.executeWithRefresh(ctx, r.Connection, r.Secrets, http.MethodPost, gmailBase(r.Connection)+"/gmail/v1/users/me/stop", nil, map[string]any{}, true)

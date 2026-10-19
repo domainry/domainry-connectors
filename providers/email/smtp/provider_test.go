@@ -1,9 +1,11 @@
 package smtp
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
+	"net/mail"
 	"strings"
 	"testing"
 
@@ -74,6 +76,58 @@ func TestUsernameRequiresResolvedPassword(t *testing.T) {
 	_, err := adapter.Call(t.Context(), connector.CallRequest{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, OperationKey: SendEmail.Key, ContractSHA256: SendEmail.ContractSHA256, Mode: connector.ModeEnqueue, Connection: validConnection(), Payload: payload, Delivery: true})
 	if err == nil {
 		t.Fatal("expected missing password to fail")
+	}
+}
+
+func TestSecurityMailUsesSynchronousCallAndSafeErrors(t *testing.T) {
+	transport := &recordingTransport{result: connector.SMTPResult{Connected: true, Accepted: true}}
+	adapter, err := New(transport)
+	if err != nil {
+		t.Fatal(err)
+	}
+	payload, _ := json.Marshal(SendEmailInput{To: []string{"recipient@example.test"}, Subject: "Reset password", Text: "private-code-123456"})
+	request := connector.CallRequest{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, OperationKey: SendSecurityEmail.Key, ContractSHA256: SendSecurityEmail.ContractSHA256, Mode: connector.ModeCall, Connection: validConnection(), Secrets: map[string]string{"password": "private-app-password"}, Payload: payload, RequestRef: "security-1"}
+	result, err := adapter.Call(t.Context(), request)
+	if err != nil || !strings.HasPrefix(result.ResponseRef, "smtp:") || transport.request.ProbeOnly {
+		t.Fatal("synchronous security delivery did not confirm acceptance", err)
+	}
+	serialized, _ := json.Marshal(result)
+	if strings.Contains(string(serialized), "private-") {
+		t.Fatal("private code or password leaked into acceptance result")
+	}
+	transport.err = errors.New("private-code-123456 private-app-password")
+	_, err = adapter.Call(t.Context(), request)
+	if err == nil || strings.Contains(err.Error(), "private-") {
+		t.Fatal("SMTP error exposed private credentials or message content")
+	}
+	transport.err = nil
+	payload, _ = json.Marshal(SendEmailInput{To: []string{"one@example.test", "two@example.test"}, Subject: "Reset", Text: "code"})
+	request.Payload = payload
+	if _, err := adapter.Call(t.Context(), request); err == nil {
+		t.Fatal("security mail unexpectedly supports multiple recipients")
+	}
+}
+
+func TestSenderDisplayNameDoesNotChangeAuthenticatedEnvelope(t *testing.T) {
+	transport := &recordingTransport{result: connector.SMTPResult{Connected: true, Accepted: true}}
+	adapter, err := New(transport)
+	if err != nil {
+		t.Fatal(err)
+	}
+	connection := validConnection()
+	connection.Config["from_name"] = "no-replay@aurora.ai"
+	payload, _ := json.Marshal(SendEmailInput{To: []string{"recipient@example.test"}, Subject: "Recovery", Text: "private code"})
+	_, err = adapter.Call(t.Context(), connector.CallRequest{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, OperationKey: SendSecurityEmail.Key, ContractSHA256: SendSecurityEmail.ContractSHA256, Mode: connector.ModeCall, Connection: connection, Secrets: map[string]string{"password": "test-password"}, Payload: payload, RequestRef: "display-test"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	message, err := mail.ReadMessage(bytes.NewReader(transport.request.Message))
+	if err != nil {
+		t.Fatal(err)
+	}
+	from, err := mail.ParseAddress(message.Header.Get("From"))
+	if err != nil || from.Name != "no-replay@aurora.ai" || from.Address != "sender@example.test" || transport.request.EnvelopeFrom != "sender@example.test" {
+		t.Fatal("display name changed the real sender or envelope", err)
 	}
 }
 

@@ -32,6 +32,9 @@ type SendEmailInput struct {
 	Subject string   `json:"subject"`
 	Text    string   `json:"text,omitempty"`
 }
+type SendSecurityEmailOutput struct {
+	Accepted bool `json:"accepted"`
+}
 type SendFileEmailInput struct {
 	To                    []string `json:"to"`
 	Subject               string   `json:"subject,omitempty"`
@@ -43,9 +46,12 @@ type SendFileEmailInput struct {
 }
 
 var (
-	SendEmail      = connector.EnqueueOperation[SendEmailInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "send_email", ContractSHA256: "87d29625473521b5201c0110d40191aa1086fcfb75395f250b4173abbcbb274b", Reliability: writeReliability()}
-	SendFileEmail  = connector.EnqueueOperation[SendFileEmailInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "send_file_email", ContractSHA256: "3c91521147ec9c087a6c04612ba0ecd63a30248f3afa6691850437f0ad154483", Reliability: writeReliability()}
-	TestConnection = connector.CallOperation[struct{}, map[string]any]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "test_connection", ContractSHA256: "6f25b4a2fc713dbb566f56a7a1ae5121ea5a3740710f4cdf3618da0492c6eb34", Reliability: readReliability()}
+	// Security mail is synchronous: callers retain only a masked receipt, never
+	// a durable queue payload containing a password-reset code or setup link.
+	SendSecurityEmail = connector.CallOperation[SendEmailInput, SendSecurityEmailOutput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "send_security_email", ContractSHA256: "97fbfcd3b591779331108798cbaeaedfe4959c4bfb433521c523e85f40db41b0", Reliability: writeReliability()}
+	SendEmail         = connector.EnqueueOperation[SendEmailInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "send_email", ContractSHA256: "87d29625473521b5201c0110d40191aa1086fcfb75395f250b4173abbcbb274b", Reliability: writeReliability()}
+	SendFileEmail     = connector.EnqueueOperation[SendFileEmailInput]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "send_file_email", ContractSHA256: "3c91521147ec9c087a6c04612ba0ecd63a30248f3afa6691850437f0ad154483", Reliability: writeReliability()}
+	TestConnection    = connector.CallOperation[struct{}, map[string]any]{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, Key: "test_connection", ContractSHA256: "6f25b4a2fc713dbb566f56a7a1ae5121ea5a3740710f4cdf3618da0492c6eb34", Reliability: readReliability()}
 )
 
 func readReliability() connector.ReliabilityContract {
@@ -81,7 +87,11 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 	if err != nil {
 		return nil, err
 	}
-	bound, err := connector.NewProvider(schema(), send, sendFile, test)
+	security, err := connector.BindCall(SendSecurityEmail, p.sendSecurity)
+	if err != nil {
+		return nil, err
+	}
+	bound, err := connector.NewProvider(schema(), send, sendFile, test, security)
 	if err != nil {
 		return nil, err
 	}
@@ -124,13 +134,28 @@ func (p *provider) ValidateConfig(connection connector.Connection) error {
 	}
 	return nil
 }
+func (p *provider) sendSecurity(ctx context.Context, r connector.TypedRequest[SendEmailInput]) (connector.TypedResult[SendSecurityEmailOutput], error) {
+	var empty connector.TypedResult[SendSecurityEmailOutput]
+	if err := p.ValidateConfig(r.Connection); err != nil {
+		return empty, err
+	}
+	if len(r.Input.To) != 1 || strings.TrimSpace(r.Input.Subject) == "" || len(r.Input.Subject) > 256 || strings.ContainsAny(r.Input.Subject, "\r\n") || len(r.Input.Text) == 0 || len(r.Input.Text) > 16384 {
+		return empty, permanent("security_message_invalid", "credential mail requires one recipient and a bounded subject and body")
+	}
+	result, err := p.send(ctx, r)
+	if err != nil {
+		// SMTP errors may echo private message content. Do not persist it.
+		return empty, connector.UncertainError("smtp.security_delivery_unconfirmed", errors.New("SMTP did not confirm credential email acceptance"))
+	}
+	return connector.TypedResult[SendSecurityEmailOutput]{Output: SendSecurityEmailOutput{Accepted: true}, ResponseRef: result.ResponseRef}, nil
+}
 func (p *provider) send(ctx context.Context, r connector.TypedRequest[SendEmailInput]) (connector.DeliveryResult, error) {
 	from, recipients, err := addresses(r.Connection, r.Input.To)
 	if err != nil {
 		return connector.DeliveryResult{}, err
 	}
 	messageID := messageID(r.RequestRef)
-	message := textMessage(from, recipients, r.Input.Subject, r.Input.Text, "", messageID)
+	message := textMessage(displayFrom(r.Connection, from), recipients, r.Input.Subject, r.Input.Text, "", messageID)
 	return p.deliver(ctx, r.Connection, r.Secrets, from, recipients, message, messageID)
 }
 func (p *provider) sendFile(ctx context.Context, r connector.TypedRequest[SendFileEmailInput]) (connector.DeliveryResult, error) {
@@ -143,7 +168,7 @@ func (p *provider) sendFile(ctx context.Context, r connector.TypedRequest[SendFi
 		return connector.DeliveryResult{}, permanent("attachment_unavailable", "runtime attachment is unavailable")
 	}
 	id := messageID(r.RequestRef)
-	message := fileMessage(from, recipients, r.Input.Subject, r.Input.Text, id, r.Input.AttachmentFilename, r.Input.AttachmentContentType, content)
+	message := fileMessage(displayFrom(r.Connection, from), recipients, r.Input.Subject, r.Input.Text, id, r.Input.AttachmentFilename, r.Input.AttachmentContentType, content)
 	return p.deliver(ctx, r.Connection, r.Secrets, from, recipients, message, id)
 }
 func (p *provider) deliver(ctx context.Context, connection connector.Connection, secrets map[string]string, from string, recipients []string, message []byte, id string) (connector.DeliveryResult, error) {
@@ -243,6 +268,10 @@ func fileMessage(from string, to []string, subject, text, id, filename, contentT
 	}
 	_ = writer.Close()
 	return []byte(headers(from, to, subject, id) + "Content-Type: multipart/mixed; boundary=\"" + writer.Boundary() + "\"\r\n\r\n" + body.String())
+}
+func displayFrom(connection connector.Connection, address string) string {
+	name := strings.ReplaceAll(strings.ReplaceAll(config(connection, "from_name"), "\r", ""), "\n", "")
+	return (&mail.Address{Name: name, Address: address}).String()
 }
 func headers(from string, to []string, subject, id string) string {
 	subject = strings.ReplaceAll(strings.ReplaceAll(subject, "\r", ""), "\n", "")

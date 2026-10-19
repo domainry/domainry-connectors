@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"math/big"
 	"net/http"
 	"net/url"
@@ -20,7 +21,22 @@ import (
 
 const defaultGoogleJWKSURL = "https://www.googleapis.com/oauth2/v3/certs"
 
-func (p *provider) VerifyWebhook(ctx context.Context, request connector.VerifyWebhookRequest) (connector.VerifiedWebhook, error) {
+func (p *provider) VerifyWebhook(ctx context.Context, request connector.VerifyWebhookRequest) (verified connector.VerifiedWebhook, err error) {
+	started := time.Now()
+	defer func() {
+		slog.InfoContext(ctx, "Google push verification completed", "started_at_ms", started.UnixMilli(), "duration_ms", time.Since(started).Milliseconds(), "success", err == nil)
+		if code, ok := connector.ProviderErrorCodeOf(err); ok {
+			p.pushMu.Lock()
+			report := code != p.pushErrorCode || time.Since(p.pushErrorAt) >= time.Minute
+			if report {
+				p.pushErrorCode, p.pushErrorAt = code, time.Now()
+			}
+			p.pushMu.Unlock()
+			if report {
+				slog.WarnContext(ctx, "Google push verification rejected", "code", code)
+			}
+		}
+	}()
 	if request.Connection.ConnectorKey != ConnectorKey || request.Connection.ProviderKey != ProviderKey {
 		return connector.VerifiedWebhook{}, permanent("gmail.push_provider_mismatch", "Gmail push provider mismatch")
 	}
@@ -51,16 +67,20 @@ func (p *provider) VerifyWebhook(ctx context.Context, request connector.VerifyWe
 	}
 	var push struct {
 		Message struct {
-			Data        string            `json:"data"`
-			MessageID   string            `json:"messageId"`
-			PublishTime string            `json:"publishTime"`
-			OrderingKey string            `json:"orderingKey,omitempty"`
-			Attributes  map[string]string `json:"attributes,omitempty"`
+			Data        string `json:"data"`
+			MessageID   string `json:"messageId"`
+			PublishTime string `json:"publishTime"`
+			// Current Pub/Sub deliveries include both JSON spellings. Accept
+			// that exact wire shape, but reject conflicting identities/times.
+			MessageIDSnake   string            `json:"message_id,omitempty"`
+			PublishTimeSnake string            `json:"publish_time,omitempty"`
+			OrderingKey      string            `json:"orderingKey,omitempty"`
+			Attributes       map[string]string `json:"attributes,omitempty"`
 		} `json:"message"`
 		Subscription    string `json:"subscription"`
 		DeliveryAttempt int    `json:"deliveryAttempt,omitempty"`
 	}
-	if err = strictBackgroundJSON(request.Body, &push); err != nil || strings.TrimSpace(push.Message.MessageID) == "" || len(push.Message.MessageID) > 1024 || !matchesGoogleSubscription(push.Subscription, subscription) {
+	if err = strictBackgroundJSON(request.Body, &push); err != nil || strings.TrimSpace(push.Message.MessageID) == "" || len(push.Message.MessageID) > 1024 || !matchesGoogleSubscription(push.Subscription, subscription) || push.Message.MessageIDSnake != "" && push.Message.MessageIDSnake != push.Message.MessageID || push.Message.PublishTimeSnake != "" && push.Message.PublishTimeSnake != push.Message.PublishTime {
 		return connector.VerifiedWebhook{}, permanent("gmail.push_envelope_invalid", "Gmail Pub/Sub push envelope is invalid")
 	}
 	data, err := base64.StdEncoding.DecodeString(push.Message.Data)
@@ -68,15 +88,16 @@ func (p *provider) VerifyWebhook(ctx context.Context, request connector.VerifyWe
 		data, err = base64.RawStdEncoding.DecodeString(push.Message.Data)
 	}
 	var notification struct {
-		EmailAddress string `json:"emailAddress"`
-		HistoryID    string `json:"historyId"`
+		EmailAddress string      `json:"emailAddress"`
+		HistoryID    json.Number `json:"historyId"`
 	}
 	if err != nil || strictBackgroundJSON(data, &notification) != nil {
 		return connector.VerifiedWebhook{}, permanent("gmail.push_data_invalid", "Gmail push notification is invalid")
 	}
 	email := strings.ToLower(strings.TrimSpace(notification.EmailAddress))
-	historyID := strings.TrimSpace(notification.HistoryID)
-	if !validGoogleAccountEmail(email) || historyID == "" {
+	historyID := strings.TrimSpace(notification.HistoryID.String())
+	_, historyErr := strconv.ParseUint(historyID, 10, 64)
+	if !validGoogleAccountEmail(email) || historyID == "" || historyErr != nil {
 		return connector.VerifiedWebhook{}, permanent("gmail.push_data_invalid", "Gmail push notification account or history is invalid")
 	}
 	payload, _ := json.Marshal(map[string]any{
