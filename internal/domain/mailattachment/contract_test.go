@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/domainry/domainry-connectors/mailattachment"
+	"github.com/domainry/domainry-connectors/internal/domain/mailattachment"
 )
 
 func TestContractIdentity(t *testing.T) {

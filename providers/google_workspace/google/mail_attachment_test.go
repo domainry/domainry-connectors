@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	connector "github.com/domainry/domainry-connector-sdk"
-	"github.com/domainry/domainry-connectors/mailattachment"
+	"github.com/domainry/domainry-connectors/internal/domain/mailattachment"
 )
 
 func TestMailAttachmentDownloadUsesExactProviderIdentifiersAndBoundedResponse(t *testing.T) {
