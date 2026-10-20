@@ -4,8 +4,8 @@ import (
 	calendar "github.com/domainry/domainry-connector-sdk/calendar"
 	"github.com/domainry/domainry-connector-sdk/calendarwrite"
 	mail "github.com/domainry/domainry-connector-sdk/mail"
+	"github.com/domainry/domainry-connector-sdk/mailattachment"
 	"github.com/domainry/domainry-connector-sdk/mailwrite"
-	"github.com/domainry/domainry-connectors/internal/domain/mailattachment"
 )
 
 // Basic grants enable only operations that return metadata. Search and content

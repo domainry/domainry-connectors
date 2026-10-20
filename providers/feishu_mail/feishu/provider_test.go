@@ -15,8 +15,8 @@ import (
 	connector "github.com/domainry/domainry-connector-sdk"
 	"github.com/domainry/domainry-connector-sdk/contracttest"
 	"github.com/domainry/domainry-connector-sdk/mail"
+	"github.com/domainry/domainry-connector-sdk/mailattachment"
 	"github.com/domainry/domainry-connector-sdk/mailwrite"
-	"github.com/domainry/domainry-connectors/internal/domain/mailattachment"
 )
 
 type recordingTransport struct {

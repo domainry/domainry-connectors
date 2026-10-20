@@ -7,7 +7,7 @@ import (
 	"net/url"
 
 	connector "github.com/domainry/domainry-connector-sdk"
-	"github.com/domainry/domainry-connectors/internal/domain/mailattachment"
+	"github.com/domainry/domainry-connector-sdk/mailattachment"
 )
 
 type graphFileAttachment struct {

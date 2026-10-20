@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	connector "github.com/domainry/domainry-connector-sdk"
-	"github.com/domainry/domainry-connectors/internal/domain/mailattachment"
+	"github.com/domainry/domainry-connector-sdk/mailattachment"
 )
 
 func (p *provider) mailAttachmentDownload(ctx context.Context, request connector.TypedRequest[mailattachment.DownloadRequest]) (connector.TypedResult[mailattachment.DownloadResult], error) {
