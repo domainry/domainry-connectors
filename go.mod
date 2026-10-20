@@ -10,6 +10,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.60.3
 	github.com/aws/smithy-go v1.28.1
 	github.com/domainry/domainry-connector-sdk v0.1.10
+	github.com/domainry/domainry-foundation v0.2.6
 	github.com/go-sql-driver/mysql v1.10.0
 	golang.org/x/net v0.58.0
 )
@@ -26,7 +27,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.38.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.43.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.51.1 // indirect
-	github.com/domainry/domainry-foundation v0.2.5 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
 	golang.org/x/crypto v0.55.0 // indirect
 	golang.org/x/text v0.41.0 // indirect

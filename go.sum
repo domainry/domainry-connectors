@@ -32,12 +32,10 @@ github.com/aws/aws-sdk-go-v2/service/sts v1.51.1 h1:0HOqZXRvMytH6bFHVIc0oJX07sZj
 github.com/aws/aws-sdk-go-v2/service/sts v1.51.1/go.mod h1:26zA0GhDrLo+yiLI2yXWxqB1PdsShfLikoI7GOEgugM=
 github.com/aws/smithy-go v1.28.1 h1:R/nXH00c8qcfCzQVELtRw+eLQWtzv+VAIEFJ1/xxXlQ=
 github.com/aws/smithy-go v1.28.1/go.mod h1:YE2RhdIuDbA5E5bTdciG9KrW3+TiEONeUWCqxX9i1Fc=
-github.com/domainry/domainry-connector-sdk v0.1.9 h1:duXLn4bl39l8Lp7yRXeLsuDUFoCg7loA2XpMaUfmmZw=
-github.com/domainry/domainry-connector-sdk v0.1.9/go.mod h1:y3YMg09XmWCuxyIeYb1d4xC4AkFmqGWbrm+OaumeyY8=
 github.com/domainry/domainry-connector-sdk v0.1.10 h1:Kw3Tl4YI9lo41a1t34ZY2YvSoMn2xdEYt1uYR2vwB/E=
 github.com/domainry/domainry-connector-sdk v0.1.10/go.mod h1:/qZelyQbcPLjDHLVF42EMtBtwDa5UyZ14E3IdHTzDtE=
-github.com/domainry/domainry-foundation v0.2.5 h1:3FQwbJzuaxXJosZL+r5KXDnmpNyhZyXb/zqBZzQR+GY=
-github.com/domainry/domainry-foundation v0.2.5/go.mod h1:nCw272N/NTkHfJNWvAGL8vZybUtOpgw3ZyCIshRSqF4=
+github.com/domainry/domainry-foundation v0.2.6 h1:mmsetHOhRXL0GSN3JSMP7p5o3IOlnrG3dLEPEY6d75E=
+github.com/domainry/domainry-foundation v0.2.6/go.mod h1:nCw272N/NTkHfJNWvAGL8vZybUtOpgw3ZyCIshRSqF4=
 github.com/go-sql-driver/mysql v1.10.0 h1:Q+1LV8DkHJvSYAdR83XzuhDaTykuDx0l6fkXxoWCWfw=
 github.com/go-sql-driver/mysql v1.10.0/go.mod h1:M+cqaI7+xxXGG9swrdeUIoPG3Y3KCkF0pZej+SK+nWk=
 github.com/golang-jwt/jwt/v5 v5.2.1/go.mod h1:pqrtFR0X4osieyHYxtmOUWsAWrfe1Q5UVIyoH402zdk=
