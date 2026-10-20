@@ -1,9 +1,14 @@
 package httpapi
 
 import (
+	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"strings"
@@ -21,11 +26,29 @@ type recordingTransport struct {
 }
 
 func (r *recordingTransport) RoundTripHTTP(_ context.Context, request connector.HTTPRequest) (connector.HTTPResponse, error) {
+	if request.Content != nil {
+		content, err := io.ReadAll(request.Content)
+		if err != nil {
+			return connector.HTTPResponse{}, err
+		}
+		request.Body = content
+	}
 	r.requests = append(r.requests, request)
 	return r.response, r.err
 }
 func (*recordingTransport) ExecuteSQL(context.Context, connector.SQLRequest) (connector.SQLResult, error) {
 	return connector.SQLResult{}, errors.New("unexpected SQL")
+}
+
+func putRequest(docID, filename string, content []byte) connector.CallRequest {
+	digest := sha256.Sum256(content)
+	sha := hex.EncodeToString(digest[:])
+	r := request(PutDocument.Descriptor(), PutDocumentInput{DocID: docID, Filename: filename, Bytes: int64(len(content)), SHA256: sha})
+	r.Content = bytes.NewReader(content)
+	r.ContentLength = int64(len(content))
+	r.ContentSHA256 = sha
+	r.ContentType = "application/octet-stream"
+	return r
 }
 
 func request(op connector.OperationDescriptor, input any) connector.CallRequest {
@@ -75,7 +98,7 @@ func TestContractAndCatalogIdentity(t *testing.T) {
 			if descriptor.Key == operation.Key {
 				found = true
 				if descriptor.ContractSHA256 != hash || string(descriptor.Reliability.Effect) != operation.SideEffect {
-					t.Fatal("catalog/Provider operation mismatch")
+					t.Fatalf("catalog/Provider operation mismatch: key=%s descriptor=%s catalog=%s effect=%s want_effect=%s", operation.Key, descriptor.ContractSHA256, hash, descriptor.Reliability.Effect, operation.SideEffect)
 				}
 			}
 		}
@@ -182,6 +205,49 @@ func TestRejectScopePermissionInjectionAndInvalidConfiguration(t *testing.T) {
 	}
 	if len(transport.requests) != 0 {
 		t.Fatal("rejected request reached transport")
+	}
+}
+
+func TestQueryPermissionConfigurationUsesMeasuredServiceBoundaries(t *testing.T) {
+	ids := make([]string, queryPermissionMaximumIDs)
+	for index := range ids {
+		ids[index] = fmt.Sprintf("%04d", index)
+	}
+	connection := request(Search.Descriptor(), SearchInput{Query: "q"}).Connection
+	connection.Config["permission_ids_by_user"] = map[string][]string{"user": ids}
+	got, err := permissions(connection, "user")
+	if err != nil || len(got) != queryPermissionMaximumIDs {
+		t.Fatalf("exact measured count boundary rejected: count=%d err=%v", len(got), err)
+	}
+	connection.Config["permission_ids_by_user"] = map[string][]string{"user": append(ids, "extra")}
+	if _, err = permissions(connection, "user"); err == nil {
+		t.Fatal("count above measured service boundary was accepted")
+	}
+
+	ids = nil
+	remaining := queryPermissionMaximumBytes - 1
+	for remaining > 131 {
+		ids = append(ids, fmt.Sprintf("%04d", len(ids))+strings.Repeat("x", 124))
+		remaining -= 131
+	}
+	ids = append(ids, strings.Repeat("z", remaining-3))
+	if queryPermissionJSONBytes(ids) != queryPermissionMaximumBytes {
+		t.Fatal("invalid exact byte-boundary fixture")
+	}
+	connection.Config["permission_ids_by_user"] = map[string][]string{"user": ids}
+	if _, err = permissions(connection, "user"); err != nil {
+		t.Fatalf("exact measured byte boundary rejected: %v", err)
+	}
+	ids[len(ids)-1] += "z"
+	connection.Config["permission_ids_by_user"] = map[string][]string{"user": ids}
+	if _, err = permissions(connection, "user"); err == nil {
+		t.Fatal("byte count above measured service boundary was accepted")
+	}
+
+	for _, invalid := range []string{"", " leading", "trailing\u00a0", "line\nbreak", "control\x1f", strings.Repeat("中", 43)} {
+		if validQueryPermissionID(invalid) {
+			t.Fatalf("service-invalid permission ID accepted: %q", invalid)
+		}
 	}
 }
 

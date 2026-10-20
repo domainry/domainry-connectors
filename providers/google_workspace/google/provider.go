@@ -100,14 +100,12 @@ func writeReliability() connector.ReliabilityContract {
 
 type provider struct {
 	connector.Adapter
-	transport     connector.Transport
-	now           func() time.Time
-	pushMu        sync.Mutex
-	pushErrorAt   time.Time
-	pushErrorCode string
-	pushKeys      map[string]*rsa.PublicKey
-	pushJWKS      string
-	pushExpiry    time.Time
+	transport  connector.Transport
+	now        func() time.Time
+	pushMu     sync.Mutex
+	pushKeys   map[string]*rsa.PublicKey
+	pushJWKS   string
+	pushExpiry time.Time
 }
 
 func New(transport connector.Transport) (connector.Adapter, error) {

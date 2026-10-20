@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | `search` | `SearchInput{Query, TopK, ResultContent}` | `POST /v1/kb/search` |
 | `fetch` | `FetchInput{DocID, ResultContent}` | `POST /v1/kb/fetch` |
-| `put_document` | `PutDocumentInput{DocID, Filename, Content}` | `POST /v1/kb/kbs/{kb_id}/documents?doc_id=…&filename=…` |
+| `put_document` | `PutDocumentInput{DocID, Filename, Bytes, SHA256}` + 内容流 | `POST /v1/kb/kbs/{kb_id}/documents?doc_id=…&filename=…` |
 | `document_status` | `DocumentInput{DocID}` | `POST /v1/kb/fetch`，关闭内容与 live |
 | `delete_document` | `DocumentInput{DocID}` | `DELETE /v1/kb/kbs/{kb_id}/documents?doc_id=…` |
 
@@ -20,7 +20,18 @@ search / fetch 统一使用 `ResultContent`，由 Provider 转换为各自的上
 
 输出 `Output{Provider, KBID, Result}` 中 `Result` 为完整上游 JSON。控制台没有展示响应字段契约，因此不猜测字段名；已存在的内容、来源、额外字段及大整数都保留。错误状态、无效 JSON、标量结果和超大响应不会作为成功结果返回。
 
-put 的 `Content` 在 SDK JSON 中为 Base64，在实际 HTTP 中发送原始二进制与 `application/octet-stream`；按已读上游源码限制为 10 MiB。文件名只接受 ASCII 字母、数字、空格、点、下划线和连字符，以字母或数字开头，最多 255 字节，拒绝路径；文档写入 ID 同样以 ASCII 字母或数字开头，只含字母、数字、点、下划线和连字符，最多 128 字节。库 ID 固定来自 Connection，文档 ID 和文件名通过 URL 编码进入查询参数。put / delete 保留上游受理 JSON，不把 HTTP 成功解释成索引就绪或全部片段已清理。
+put 的正文不进入 JSON，而是以带长度和 SHA-256 身份的 `application/octet-stream` 原始内容流发送。当前 `/v1/kb/kbs/{kb_id}/documents` 上游入口在 `kb-search-api/handler/push.go` 明确限制为 10 MiB；这是 HTTP 入口限制，不是 Builder 的统一格式限制。文件名只接受 ASCII 字母、数字、空格、点、下划线和连字符，以字母或数字开头，最多 255 字节，拒绝路径；文档写入 ID 同样以 ASCII 字母或数字开头，只含字母、数字、点、下划线和连字符，最多 128 字节。库 ID 固定来自 Connection，文档 ID 和文件名通过 URL 编码进入查询参数。put / delete 保留上游受理 JSON，不把 HTTP 成功解释成索引就绪或全部片段已清理。
+
+Connector 不把 Builder 的不同预算压成一个“格式大小上限”。当前契约分别暴露：
+
+| Builder 路径 | 当前预算 | 含义 |
+| --- | ---: | --- |
+| 音频、视频 | 20 MiB | Builder 的整文件 inline 处理上限 |
+| 图片、Office/PDF/XLSX 内嵌媒体、音视频资产 | 20 MiB | 单个衍生资产的落库预算；不是容器文档上限 |
+| 图片 | 8 MiB | 单图语义增强预算；超出后跳过增强 |
+| XLSX/CSV/JSON/JSONL | 16 MiB | 完整结构化分析产物预算；不是源文件上限 |
+
+PDF、Office、文本、网页和代码路由当前没有在 Builder 代码中声明整文件字节上限。实际通过本 Connector 直传索引时，所有格式仍受上游 10 MiB HTTP 入口约束；要让音视频真正使用 Builder 的 20 MiB 整文件能力，必须先改变该上游入口协议，单改 Connector 校验会造成“本地放行、上游必拒绝”。
 
 `document_status` 返回 `DocumentStatusOutput{Provider, KBID, DocID, Exists, IndexStatus}`。读取实际 `/data/status`，保留 `PENDING`、`CHUNKED`、`INDEXED` 或未知状态，不带正文。只有明确的业务 `1004` 转为当前权限范围内 `Exists=false`；权限拒绝、网络故障、未知响应不能当成不存在。上游可能把无权限文档隐藏为不存在，因此该值单独不能证明全局删除。
 

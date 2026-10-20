@@ -8,7 +8,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"math/big"
 	"net/http"
 	"net/url"
@@ -22,21 +21,6 @@ import (
 const defaultGoogleJWKSURL = "https://www.googleapis.com/oauth2/v3/certs"
 
 func (p *provider) VerifyWebhook(ctx context.Context, request connector.VerifyWebhookRequest) (verified connector.VerifiedWebhook, err error) {
-	started := time.Now()
-	defer func() {
-		slog.InfoContext(ctx, "Google push verification completed", "started_at_ms", started.UnixMilli(), "duration_ms", time.Since(started).Milliseconds(), "success", err == nil)
-		if code, ok := connector.ProviderErrorCodeOf(err); ok {
-			p.pushMu.Lock()
-			report := code != p.pushErrorCode || time.Since(p.pushErrorAt) >= time.Minute
-			if report {
-				p.pushErrorCode, p.pushErrorAt = code, time.Now()
-			}
-			p.pushMu.Unlock()
-			if report {
-				slog.WarnContext(ctx, "Google push verification rejected", "code", code)
-			}
-		}
-	}()
 	if request.Connection.ConnectorKey != ConnectorKey || request.Connection.ProviderKey != ProviderKey {
 		return connector.VerifiedWebhook{}, permanent("gmail.push_provider_mismatch", "Gmail push provider mismatch")
 	}

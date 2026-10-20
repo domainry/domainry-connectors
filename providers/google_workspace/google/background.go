@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log/slog"
 	"mime"
 	"strconv"
 	"strings"
@@ -61,12 +60,6 @@ func (p *provider) BackgroundTasks(connection connector.Connection) []connector.
 }
 
 func (p *provider) ProcessBackground(ctx context.Context, request connector.BackgroundRequest) (result connector.BackgroundResult, err error) {
-	started := time.Now()
-	defer func() {
-		if request.TaskKey == gmailSyncTaskKey {
-			slog.InfoContext(ctx, "Google Gmail sync completed", "run_id", request.Principal.RequestID, "started_at_ms", started.UnixMilli(), "duration_ms", time.Since(started).Milliseconds(), "events", len(result.Events), "success", err == nil)
-		}
-	}()
 	if err := request.Validate(); err != nil {
 		return connector.BackgroundResult{}, err
 	}
@@ -398,13 +391,7 @@ func gmailWatchLabelScope(connection connector.Connection) string {
 
 func (p *provider) backgroundCall(ctx context.Context, request connector.BackgroundRequest, key, hash string, input map[string]any, secrets map[string]string) (map[string]any, map[string]string, error) {
 	payload, _ := json.Marshal(input)
-	started := time.Now()
 	result, err := p.Adapter.Call(ctx, connector.CallRequest{ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, OperationKey: key, ContractSHA256: hash, Mode: connector.ModeCall, Connection: request.Connection, Payload: payload, Secrets: cloneStrings(secrets), Principal: request.Principal})
-	// Only operation identity and timing: never URLs, cursors, payloads, mailbox
-	// addresses, credentials, provider response bodies or raw errors.
-	if request.TaskKey == gmailSyncTaskKey {
-		slog.InfoContext(ctx, "Google Gmail background call completed", "run_id", request.Principal.RequestID, "operation", key, "started_at_ms", started.UnixMilli(), "duration_ms", time.Since(started).Milliseconds(), "success", err == nil)
-	}
 	if err != nil {
 		return nil, result.SecretUpdates, err
 	}

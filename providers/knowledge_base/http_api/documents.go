@@ -3,6 +3,7 @@ package httpapi
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -14,7 +15,7 @@ import (
 var documentWriteIDPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$`)
 var documentWriteFilenamePattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9 ._-]{0,254}$`)
 
-func (p *provider) documentWrite(ctx context.Context, connection connector.Connection, secrets map[string]string, principal connector.Principal, method, id, filename string, content []byte, requestRef string) (connector.TypedResult[Output], error) {
+func (p *provider) documentWrite(ctx context.Context, connection connector.Connection, secrets map[string]string, principal connector.Principal, method, id, filename string, content io.Reader, contentLength int64, contentSHA256, requestRef string) (connector.TypedResult[Output], error) {
 	var zero connector.TypedResult[Output]
 	if !principal.IsAuthenticated || !validText(principal.UserID, 255) || connection.WorkspaceID == "" || principal.WorkspaceID != connection.WorkspaceID {
 		return zero, permanent("access_denied")
@@ -33,7 +34,8 @@ func (p *provider) documentWrite(ctx context.Context, connection connector.Conne
 	query := url.Values{"doc_id": {id}}
 	var headers map[string][]string
 	if method == http.MethodPost {
-		if !documentWriteFilenamePattern.MatchString(filename) || strings.TrimSpace(filename) != filename || len(content) < 1 || len(content) > MaxDocumentBytes {
+		maximum := MaximumInlineDocumentBytesForFilename(filename)
+		if !documentWriteFilenamePattern.MatchString(filename) || strings.TrimSpace(filename) != filename || content == nil || contentLength < 1 || maximum < 1 || contentLength > maximum || !connector.ValidSHA256(contentSHA256) {
 			return zero, permanent("request_invalid")
 		}
 		query.Set("filename", filename)
@@ -42,15 +44,21 @@ func (p *provider) documentWrite(ctx context.Context, connection connector.Conne
 			return zero, err
 		}
 	}
-	return p.exchangeHeaders(ctx, method, base+"/v1/kb/kbs/"+url.PathEscape(kb)+"/documents?"+query.Encode(), "application/octet-stream", content, token, kb, headers)
+	if method == http.MethodPost {
+		return p.exchangeContentHeaders(ctx, method, base+"/v1/kb/kbs/"+url.PathEscape(kb)+"/documents?"+query.Encode(), "application/octet-stream", content, contentLength, contentSHA256, token, kb, headers)
+	}
+	return p.exchangeHeaders(ctx, method, base+"/v1/kb/kbs/"+url.PathEscape(kb)+"/documents?"+query.Encode(), "application/octet-stream", nil, token, kb, headers)
 }
 
 func (p *provider) putDocument(ctx context.Context, r connector.TypedRequest[PutDocumentInput]) (connector.TypedResult[Output], error) {
-	return p.documentWrite(ctx, r.Connection, r.Secrets, r.Principal, http.MethodPost, r.Input.DocID, r.Input.Filename, r.Input.Content, r.RequestRef)
+	if r.Input.Bytes != r.ContentLength || r.Input.SHA256 != r.ContentSHA256 || r.ContentType != "application/octet-stream" {
+		return connector.TypedResult[Output]{}, permanent("request_invalid")
+	}
+	return p.documentWrite(ctx, r.Connection, r.Secrets, r.Principal, http.MethodPost, r.Input.DocID, r.Input.Filename, r.Content, r.ContentLength, r.ContentSHA256, r.RequestRef)
 }
 
 func (p *provider) deleteDocument(ctx context.Context, r connector.TypedRequest[DocumentInput]) (connector.TypedResult[Output], error) {
-	return p.documentWrite(ctx, r.Connection, r.Secrets, r.Principal, http.MethodDelete, r.Input.DocID, "", nil, "")
+	return p.documentWrite(ctx, r.Connection, r.Secrets, r.Principal, http.MethodDelete, r.Input.DocID, "", nil, 0, "", "")
 }
 
 func (p *provider) documentStatus(ctx context.Context, r connector.TypedRequest[DocumentInput]) (connector.TypedResult[DocumentStatusOutput], error) {

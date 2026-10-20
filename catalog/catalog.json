@@ -1,9 +1,9 @@
 {
   "contract_version": "domainry-official-connector-catalog-v2",
   "sdk": {
-    "version": "v0.1.0-dev.19",
-    "contract_version": "connector-contract-v19",
-    "contract_sha256": "176f60ef8281c9c261ebb25d4bda7f08551cdc9b43ce7ffa41e2afd30046b6b5"
+    "version": "v0.1.0-dev.20",
+    "contract_version": "connector-contract-v20",
+    "contract_sha256": "2d8732a45c4ce7bd07413aeadab79dd1b39115846e8f2485f1feca4801427f8b"
   },
   "providers": [
     {
@@ -3234,11 +3234,11 @@
     {
       "connector_key": "knowledge_base",
       "provider_key": "http_api",
-      "provider_revision": "1.4.0",
+      "provider_revision": "1.5.0",
       "import_path": "github.com/domainry/domainry-connectors/providers/knowledge_base/http_api",
       "package_name": "httpapi",
       "constructor": "New",
-      "descriptor_sha256": "084d22b573de58fd50f7ddad73156a35bc05aec9f9b5582c7c358623dd66f1ff",
+      "descriptor_sha256": "6b2347005cb4cc3940294aac8499bf78ccc14b41555eda4c1531ba2d6e7b32b7",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "knowledge_base_http_api_deterministic_v1",
@@ -3285,12 +3285,12 @@
         {
           "key": "put_document",
           "mode": "call",
-          "contract_sha256": "ada514ca5026f94fbe6191208dcd185567e2124d0fa04caba9d0ef8795d0f3c1"
+          "contract_sha256": "f6f49d46f100ed2a9685de45e3046a47dc91e1760eb1f779858126abe9c6d772"
         },
         {
           "key": "search",
           "mode": "call",
-          "contract_sha256": "573e693a2b63cd71a5f0937f5d1be49124e36d312de707160a5524ec00ab6c6a"
+          "contract_sha256": "634b756d886ac5bb29d4bcd38c767f9765a41d75f5bfa1a14f1e139d626c09d7"
         }
       ]
     },

@@ -6,18 +6,26 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 	"unicode/utf8"
 
 	connector "github.com/domainry/domainry-connector-sdk"
 )
 
 const responseLimit = 512 * 1024
+
+const (
+	queryPermissionMaximumIDs   = 4096
+	queryPermissionMaximumBytes = 131072
+)
 
 type provider struct {
 	connector.Adapter
@@ -63,7 +71,7 @@ func New(transport connector.Transport) (connector.Adapter, error) {
 
 func schema() connector.ProviderSchema {
 	return connector.ProviderSchema{
-		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.4.0",
+		ConnectorKey: ConnectorKey, ProviderKey: ProviderKey, ProviderRevision: "1.5.0",
 		ConfigFields: []connector.ConfigField{
 			{Key: "base_url", Name: "API origin", Type: connector.ConfigFieldText, Required: true, Validation: connector.ConfigValidation{MaxLength: 2048}},
 			{Key: "team_id", Name: "Knowledge service team ID", Type: connector.ConfigFieldText, Required: true, Validation: connector.ConfigValidation{MaxLength: 256}},
@@ -133,7 +141,7 @@ func permissions(connection connector.Connection, userID string) ([]string, erro
 		return nil, nil
 	}
 	raw, err := json.Marshal(value)
-	if err != nil || len(raw) > 65536 {
+	if err != nil || len(raw) > 1<<20 {
 		return nil, permanent("access_denied")
 	}
 	var mapping map[string][]string
@@ -141,16 +149,43 @@ func permissions(connection connector.Connection, userID string) ([]string, erro
 		return nil, permanent("access_denied")
 	}
 	for user, ids := range mapping {
-		if !validText(user, 255) || len(ids) > 100 {
+		ids = slices.Clone(ids)
+		slices.Sort(ids)
+		ids = slices.Compact(ids)
+		if !validText(user, 255) || len(ids) > queryPermissionMaximumIDs || queryPermissionJSONBytes(ids) > queryPermissionMaximumBytes {
 			return nil, permanent("access_denied")
 		}
 		for _, id := range ids {
-			if !validText(id, 256) {
+			if !validQueryPermissionID(id) {
 				return nil, permanent("access_denied")
 			}
 		}
+		mapping[user] = ids
 	}
 	return mapping[userID], nil
+}
+
+func validQueryPermissionID(id string) bool {
+	if id == "" || len(id) > 128 || !utf8.ValidString(id) || strings.TrimFunc(id, func(r rune) bool { return unicode.IsSpace(r) || r >= 0x1c && r <= 0x1f }) != id {
+		return false
+	}
+	for _, r := range id {
+		if r <= 0x1f || r == 0x7f {
+			return false
+		}
+	}
+	return true
+}
+
+func queryPermissionJSONBytes(ids []string) int {
+	bytes := 2
+	for index, id := range ids {
+		if index > 0 {
+			bytes++
+		}
+		bytes += len(strconv.QuoteToASCII(id))
+	}
+	return bytes
 }
 
 func (p *provider) search(ctx context.Context, r connector.TypedRequest[SearchInput]) (connector.TypedResult[Output], error) {
@@ -165,10 +200,45 @@ func (p *provider) search(ctx context.Context, r connector.TypedRequest[SearchIn
 		return connector.TypedResult[Output]{}, permanent("request_invalid")
 	}
 	body := map[string]any{"query": r.Input.Query, "top_k": topK}
+	if r.Input.Mode != "" {
+		if r.Input.Mode != "hybrid" && r.Input.Mode != "dense" && r.Input.Mode != "sparse" {
+			return connector.TypedResult[Output]{}, permanent("request_invalid")
+		}
+		body["mode"] = r.Input.Mode
+	}
+	if r.Input.Rerank != nil {
+		body["rerank"] = *r.Input.Rerank
+	}
+	if len(r.Input.RecordKinds) > 0 {
+		if len(r.Input.RecordKinds) > 32 {
+			return connector.TypedResult[Output]{}, permanent("request_invalid")
+		}
+		seen := make(map[string]bool, len(r.Input.RecordKinds))
+		for _, kind := range r.Input.RecordKinds {
+			if !validRecordKind(kind) || seen[kind] {
+				return connector.TypedResult[Output]{}, permanent("request_invalid")
+			}
+			seen[kind] = true
+		}
+		body["record_kinds"] = r.Input.RecordKinds
+	}
 	if r.Input.ResultContent == "metadata" {
 		body["result_content"] = "metadata"
 	}
 	return p.request(ctx, r.Connection, r.Secrets, r.Principal, "/v1/kb/search", r.Input.ResultContent, body)
+}
+
+func validRecordKind(value string) bool {
+	if !validText(value, 128) {
+		return false
+	}
+	for _, r := range value {
+		if r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z' || r >= '0' && r <= '9' || strings.ContainsRune("_-#@./:", r) {
+			continue
+		}
+		return false
+	}
+	return true
 }
 
 func (p *provider) fetch(ctx context.Context, r connector.TypedRequest[FetchInput]) (connector.TypedResult[Output], error) {
@@ -219,8 +289,16 @@ func (p *provider) exchange(ctx context.Context, method, target, contentType str
 }
 
 func (p *provider) exchangeHeaders(ctx context.Context, method, target, contentType string, body []byte, token, kb string, extra map[string][]string) (connector.TypedResult[Output], error) {
+	return p.exchangeRequest(ctx, method, target, contentType, connector.HTTPRequest{Body: body}, token, kb, extra, 30*time.Second)
+}
+
+func (p *provider) exchangeContentHeaders(ctx context.Context, method, target, contentType string, content io.Reader, contentLength int64, contentSHA256, token, kb string, extra map[string][]string) (connector.TypedResult[Output], error) {
+	return p.exchangeRequest(ctx, method, target, contentType, connector.HTTPRequest{Content: content, ContentLength: contentLength, ContentSHA256: contentSHA256}, token, kb, extra, 30*time.Minute)
+}
+
+func (p *provider) exchangeRequest(ctx context.Context, method, target, contentType string, request connector.HTTPRequest, token, kb string, extra map[string][]string, timeout time.Duration) (connector.TypedResult[Output], error) {
 	var result connector.TypedResult[Output]
-	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 	if ctx.Err() != nil {
 		return result, ctx.Err()
@@ -229,11 +307,10 @@ func (p *provider) exchangeHeaders(ctx context.Context, method, target, contentT
 	for name, values := range extra {
 		headers[name] = append([]string(nil), values...)
 	}
-	response, err := p.transport.RoundTripHTTP(ctx, connector.HTTPRequest{
-		Method: method, URL: target, Body: body, MaxResponseBytes: responseLimit,
-		Headers:       headers,
-		SecretHeaders: map[string][]string{"Authorization": {"Bearer " + token}},
-	})
+	request.Method, request.URL, request.MaxResponseBytes, request.Timeout = method, target, responseLimit, timeout
+	request.Headers = headers
+	request.SecretHeaders = map[string][]string{"Authorization": {"Bearer " + token}}
+	response, err := p.transport.RoundTripHTTP(ctx, request)
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
 			return result, context.Canceled

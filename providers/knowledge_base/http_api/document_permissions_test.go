@@ -28,14 +28,18 @@ func TestPrivateDocumentWriteUsesTrustedACLAndStableCommand(t *testing.T) {
 		{"JSON configuration", true, []any{"z", "a", "z"}, `["a","z"]`},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			r := request(PutDocument.Descriptor(), PutDocumentInput{DocID: "doc-1", Filename: "report.md", Content: []byte("document")})
-			r.RequestRef = "stable-command-1"
-			if tc.configured {
-				r.Connection.Config["document_permission_ids"] = tc.ids
+			makeRequest := func() connector.CallRequest {
+				r := putRequest("doc-1", "report.md", []byte("document"))
+				r.RequestRef = "stable-command-1"
+				if tc.configured {
+					r.Connection.Config["document_permission_ids"] = tc.ids
+				}
+				// Untrusted headers do not supply or override document ACLs.
+				r.Headers = map[string]string{"X-KB-Permission-Ids": "[]", "X-KB-Request-ID": "forged"}
+				return r
 			}
-			// Untrusted headers do not supply or override document ACLs.
-			r.Headers = map[string]string{"X-KB-Permission-Ids": "[]", "X-KB-Request-ID": "forged"}
 			for range 2 {
+				r := makeRequest()
 				if _, err := a.Call(t.Context(), r); err != nil {
 					t.Fatal(err)
 				}
@@ -64,7 +68,7 @@ func TestPrivateDocumentWriteUsesTrustedACLAndStableCommand(t *testing.T) {
 					}
 				}
 			}
-			r = request(DeleteDocument.Descriptor(), DocumentInput{DocID: "doc-1"})
+			r := request(DeleteDocument.Descriptor(), DocumentInput{DocID: "doc-1"})
 			r.Connection.Config["document_permission_ids"] = []string{"private"}
 			if _, err := a.Call(t.Context(), r); err != nil {
 				t.Fatal(err)
@@ -93,7 +97,7 @@ func TestDocumentACLRejectsInvalidPolicyAndCommandsBeforeIO(t *testing.T) {
 	}
 	invalid := []any{nil, []string(nil), []any(nil), "[]", []any{1}, []string{""}, []string{" a"}, []string{"a "}, []string{"a\n"}, []string{"a\x7f"}, []string{string([]byte{0xff})}, []string{strings.Repeat("界", 43)}, tooMany, tooLarge}
 	for _, ids := range invalid {
-		r := request(PutDocument.Descriptor(), PutDocumentInput{DocID: "doc", Filename: "a.txt", Content: []byte("a")})
+		r := putRequest("doc", "a.txt", []byte("a"))
 		r.RequestRef = "stable"
 		r.Connection.Config["document_permission_ids"] = ids
 		if a.(connector.ConfigValidator).ValidateConfig(r.Connection) == nil {
@@ -104,20 +108,28 @@ func TestDocumentACLRejectsInvalidPolicyAndCommandsBeforeIO(t *testing.T) {
 		}
 	}
 	for _, id := range []string{"", " bad", "bad ", "bad\r\n", "bad\x7f", strings.Repeat("a", 513), string([]byte{0xff})} {
-		r := request(PutDocument.Descriptor(), PutDocumentInput{DocID: "doc", Filename: "a.txt", Content: []byte("a")})
+		r := putRequest("doc", "a.txt", []byte("a"))
 		r.RequestRef = id
 		r.Connection.Config["document_permission_ids"] = []string{"private"}
 		if _, err := a.Call(t.Context(), r); err == nil {
 			t.Fatal("invalid request ID accepted")
 		}
 	}
-	for _, in := range []PutDocumentInput{
-		{DocID: "doc/other", Filename: "a.txt", Content: []byte("a")},
-		{DocID: strings.Repeat("a", 129), Filename: "a.txt", Content: []byte("a")},
-		{DocID: "doc", Filename: "中文.txt", Content: []byte("a")},
-		{DocID: "doc", Filename: "a.txt", Content: make([]byte, 10<<20+1)},
+	for _, mutate := range []func(*connector.CallRequest){
+		func(r *connector.CallRequest) {
+			r.Payload = []byte(`{"doc_id":"doc/other","filename":"a.txt","bytes":1,"sha256":"` + r.ContentSHA256 + `"}`)
+		},
+		func(r *connector.CallRequest) {
+			r.Payload = []byte(`{"doc_id":"` + strings.Repeat("a", 129) + `","filename":"a.txt","bytes":1,"sha256":"` + r.ContentSHA256 + `"}`)
+		},
+		func(r *connector.CallRequest) {
+			r.Payload = []byte(`{"doc_id":"doc","filename":"中文.txt","bytes":1,"sha256":"` + r.ContentSHA256 + `"}`)
+		},
+		func(r *connector.CallRequest) { r.ContentLength = MaximumInlineDocumentBytes + 1 },
 	} {
-		if _, err := a.Call(t.Context(), request(PutDocument.Descriptor(), in)); err == nil {
+		r := putRequest("doc", "a.txt", []byte("a"))
+		mutate(&r)
+		if _, err := a.Call(t.Context(), r); err == nil {
 			t.Fatal("upstream contract violation accepted")
 		}
 	}

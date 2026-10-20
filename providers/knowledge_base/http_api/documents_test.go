@@ -21,11 +21,13 @@ func TestDocumentWritesUseOriginalBytesAndValidatedScope(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, op := range []connector.OperationDescriptor{PutDocument.Descriptor(), DeleteDocument.Descriptor()} {
-		var input any = DocumentInput{DocID: "doc.safe-1"}
+		var call connector.CallRequest
 		if op.Key == "put_document" {
-			input = PutDocumentInput{DocID: "doc.safe-1", Filename: "expenses 2026.pdf", Content: body}
+			call = putRequest("doc.safe-1", "expenses 2026.pdf", body)
+		} else {
+			call = request(op, DocumentInput{DocID: "doc.safe-1"})
 		}
-		out, err := a.Call(t.Context(), request(op, input))
+		out, err := a.Call(t.Context(), call)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -121,7 +123,6 @@ func TestDocumentWritesRejectInvalidInputBeforeTransport(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	valid := PutDocumentInput{DocID: "doc", Filename: "test.md", Content: []byte("test")}
 	for _, mutate := range []func(*connector.CallRequest){
 		func(r *connector.CallRequest) { r.Principal.WorkspaceID = "other" },
 		func(r *connector.CallRequest) { r.Principal.IsAuthenticated = false },
@@ -129,23 +130,24 @@ func TestDocumentWritesRejectInvalidInputBeforeTransport(t *testing.T) {
 		func(r *connector.CallRequest) { r.Connection.Config["kb_id"] = "../foreign" },
 		func(r *connector.CallRequest) { r.Connection.Config["kb_id"] = ".." },
 		func(r *connector.CallRequest) {
-			r.Payload = []byte(`{"doc_id":"d","filename":"f","content":"Zg==","permission_ids":["public"]}`)
+			r.Payload = []byte(`{"doc_id":"d","filename":"f","bytes":4,"sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","permission_ids":["public"]}`)
 		},
 		func(r *connector.CallRequest) {
-			r.Payload = []byte(`{"doc_id":"d","filename":"f","content":"Zg==","kb_id":"foreign"}`)
+			r.Payload = []byte(`{"doc_id":"d","filename":"f","bytes":4,"sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","kb_id":"foreign"}`)
 		},
 		func(r *connector.CallRequest) {
-			r.Payload = []byte(`{"doc_id":"d","filename":"../f","content":"Zg=="}`)
+			r.Payload = []byte(`{"doc_id":"d","filename":"../f","bytes":4,"sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}`)
 		},
 		func(r *connector.CallRequest) {
-			r.Payload = []byte(`{"doc_id":"d","filename":"f","content":"not-base64"}`)
+			r.ContentSHA256 = "not-a-sha"
 		},
-		func(r *connector.CallRequest) { r.Payload = []byte(`{"doc_id":"d","filename":"f","content":""}`) },
+		func(r *connector.CallRequest) { r.Content = nil },
 		func(r *connector.CallRequest) {
-			r.Payload, _ = json.Marshal(PutDocumentInput{DocID: "d", Filename: "f", Content: make([]byte, MaxDocumentBytes+1)})
+			r.ContentLength = MaximumInlineDocumentBytes + 1
+			r.Payload, _ = json.Marshal(PutDocumentInput{DocID: "d", Filename: "f", Bytes: r.ContentLength, SHA256: r.ContentSHA256})
 		},
 	} {
-		r := request(PutDocument.Descriptor(), valid)
+		r := putRequest("doc", "test.md", []byte("test"))
 		mutate(&r)
 		if _, err = a.Call(t.Context(), r); err == nil {
 			t.Fatal("invalid document request accepted")
@@ -153,14 +155,14 @@ func TestDocumentWritesRejectInvalidInputBeforeTransport(t *testing.T) {
 	}
 	ctx, cancel := context.WithCancel(t.Context())
 	cancel()
-	if _, err = a.Call(ctx, request(PutDocument.Descriptor(), valid)); !errors.Is(err, context.Canceled) {
+	if _, err = a.Call(ctx, putRequest("doc", "test.md", []byte("test"))); !errors.Is(err, context.Canceled) {
 		t.Fatal("cancel ignored", err)
 	}
 	if len(tr.requests) != 0 {
 		t.Fatal("rejected write reached transport")
 	}
 	tr.err = errors.New("secret network uncertainty")
-	_, err = a.Call(t.Context(), request(PutDocument.Descriptor(), valid))
+	_, err = a.Call(t.Context(), putRequest("doc", "test.md", []byte("test")))
 	if code, _ := connector.ProviderErrorCodeOf(err); code != "knowledge_api.network" || strings.Contains(err.Error(), "secret") {
 		t.Fatal("uncertain write misreported", err)
 	}

@@ -4,7 +4,25 @@ import contract "github.com/domainry/domainry-connector-sdk/providers/knowledge_
 
 const ConnectorKey = contract.ConnectorKey
 const ProviderKey = contract.ProviderKey
-const MaxDocumentBytes = contract.MaxDocumentBytes
+const MaximumInlineDocumentBytes = contract.MaximumInlineDocumentBytes
+
+type DocumentFormatCapability = contract.DocumentFormatCapability
+
+func DocumentFormatCapabilities() []DocumentFormatCapability {
+	return contract.DocumentFormatCapabilities()
+}
+
+func DocumentFormat(filename string) (DocumentFormatCapability, bool) {
+	return contract.DocumentFormat(filename)
+}
+
+func MaximumInlineDocumentBytesForFilename(filename string) int64 {
+	return contract.MaximumInlineDocumentBytesForFilename(filename)
+}
+
+func BuilderWholeFileMaximumBytesForFilename(filename string) int64 {
+	return contract.BuilderWholeFileMaximumBytesForFilename(filename)
+}
 
 type SearchInput = contract.SearchInput
 type FetchInput = contract.FetchInput
