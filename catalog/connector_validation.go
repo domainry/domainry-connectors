@@ -168,7 +168,7 @@ func validateConnectorFields(kind string, fields []FieldSchema, secret bool) err
 			if !stringInSet(strings.TrimSpace(fmt.Sprint(field.Config["credential_kind"])), "api_key", "basic_auth_password", "bearer_token", "certificate", "connection_string", "database_password", "generic_secret", "identifier", "oauth_client_secret", "private_key", "refresh_token", "service_account", "signing_secret") {
 				return fmt.Errorf("%s field %q requires a supported credential kind", kind, field.Key)
 			}
-			if !stringInSet(strings.TrimSpace(fmt.Sprint(field.Config["material_format"])), "opaque", "text", "json_object", "pem_or_opaque", "pem_or_reference", "uri_or_dsn") {
+			if !stringInSet(strings.TrimSpace(fmt.Sprint(field.Config["material_format"])), "opaque", "text", "json_object", "pem", "pem_or_opaque", "pem_or_reference", "uri_or_dsn") {
 				return fmt.Errorf("%s field %q requires a supported material format", kind, field.Key)
 			}
 			if !stringInSet(strings.TrimSpace(fmt.Sprint(field.Config["rotation_policy"])), "manual", "oauth_refresh") || !stringInSet(strings.TrimSpace(fmt.Sprint(field.Config["expiry_policy"])), "none", "optional") || !stringInSet(strings.TrimSpace(fmt.Sprint(field.Config["test_requirement"])), "optional", "when_bound") {

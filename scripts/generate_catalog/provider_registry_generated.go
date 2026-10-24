@@ -85,6 +85,8 @@ import (
 	marketplace_etsy "github.com/domainry/domainry-connectors/providers/marketplace/etsy"
 	mcp_tool_mcp "github.com/domainry/domainry-connectors/providers/mcp_tool/mcp"
 	microsoft_365_microsoft "github.com/domainry/domainry-connectors/providers/microsoft_365/microsoft"
+	notification_apns "github.com/domainry/domainry-connectors/providers/notification/apns"
+	notification_fcm "github.com/domainry/domainry-connectors/providers/notification/fcm"
 	notification_web_push "github.com/domainry/domainry-connectors/providers/notification/web_push"
 	observability_compliance_prometheus "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus"
 	openai_openai "github.com/domainry/domainry-connectors/providers/openai/openai"
@@ -190,6 +192,8 @@ func providerSpecifications() []providerSpec {
 		{importPath: "github.com/domainry/domainry-connectors/providers/marketplace/etsy", packageName: "etsy", constructor: providerConstructor(marketplace_etsy.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/mcp_tool/mcp", packageName: "mcp", constructor: providerConstructor(mcp_tool_mcp.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/microsoft_365/microsoft", packageName: "microsoft", constructor: providerConstructor(microsoft_365_microsoft.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/notification/apns", packageName: "apns", constructor: providerConstructor(notification_apns.New)},
+		{importPath: "github.com/domainry/domainry-connectors/providers/notification/fcm", packageName: "fcm", constructor: providerConstructor(notification_fcm.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/notification/web_push", packageName: "webpush", constructor: providerConstructor(notification_web_push.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/observability_compliance/prometheus", packageName: "prometheus", constructor: providerConstructor(observability_compliance_prometheus.New)},
 		{importPath: "github.com/domainry/domainry-connectors/providers/openai/openai", packageName: "openai", constructor: providerConstructor(openai_openai.New)},

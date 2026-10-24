@@ -1771,7 +1771,7 @@
         "contract_version": "domainry-provider-verification-v1",
         "profile": "email_ses_deterministic_v1",
         "mode": "deterministic",
-        "manifest_sha256": "e2b8236cb2b6fba2e9c9d7de454db0de39d31ae29570b97a61fda4c9b23f9481",
+        "manifest_sha256": "78433f0e30c7502df8d5bb61811963ed8d636ce2759543e36e798717708c6c7c",
         "suites": [
           "adapter_contract",
           "error_classification",
@@ -4039,6 +4039,82 @@
           "key": "test_connection",
           "mode": "call",
           "contract_sha256": "7aaec32fcb96ac020946ade5744e637b848ed7d16e5277bc1055fae8574c45d2"
+        }
+      ]
+    },
+    {
+      "connector_key": "notification",
+      "provider_key": "apns",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/notification/apns",
+      "package_name": "apns",
+      "constructor": "New",
+      "descriptor_sha256": "c5c66a90f8215d9b962ea22b74945146826b157d85eeb45f799ed8dea47c5410",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "notification_apns_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "2cbef9b8a11aea8f97aab0b03ad21af6c6f0b4c2037af4f3793e3cf28b188357",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/notification/apns",
+        "isolated_profile": "notification_apns_isolated_v1",
+        "isolated_command": "go test ./providers/notification/apns"
+      },
+      "operations": [
+        {
+          "key": "send_native",
+          "mode": "enqueue",
+          "contract_sha256": "fb466c3fbaf24a445ed5784d33a0b15050141ff6885b699e581cdfe1aed855d4"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "d66a0f8d3be976ecbc3125daa0c3aea1231c4858104fe87ebbdd5907dd9ced5f"
+        }
+      ]
+    },
+    {
+      "connector_key": "notification",
+      "provider_key": "fcm",
+      "provider_revision": "1.0.0",
+      "import_path": "github.com/domainry/domainry-connectors/providers/notification/fcm",
+      "package_name": "fcm",
+      "constructor": "New",
+      "descriptor_sha256": "7c39906019a1c0f041afafcb6a09bbbea0090847013ea8d54be5c9cfdf9ece7b",
+      "verification": {
+        "contract_version": "domainry-provider-verification-v1",
+        "profile": "notification_fcm_deterministic_v1",
+        "mode": "deterministic",
+        "manifest_sha256": "b284554fab6104dc7ffea6ae9e3c6340065e115189d9fda20a6f8df6b0c8d369",
+        "suites": [
+          "adapter_contract",
+          "error_classification",
+          "network_failure_semantics",
+          "request_translation",
+          "response_normalization",
+          "secret_non_disclosure"
+        ],
+        "test_command": "go test ./providers/notification/fcm",
+        "isolated_profile": "notification_fcm_isolated_v1",
+        "isolated_command": "go test ./providers/notification/fcm"
+      },
+      "operations": [
+        {
+          "key": "send_native",
+          "mode": "enqueue",
+          "contract_sha256": "fb466c3fbaf24a445ed5784d33a0b15050141ff6885b699e581cdfe1aed855d4"
+        },
+        {
+          "key": "test_connection",
+          "mode": "call",
+          "contract_sha256": "d66a0f8d3be976ecbc3125daa0c3aea1231c4858104fe87ebbdd5907dd9ced5f"
         }
       ]
     },

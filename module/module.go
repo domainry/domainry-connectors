@@ -22,3 +22,7 @@ func PublicWebProviders(transport connector.Transport) (connector.ProviderSet, e
 func MCPToolProviders(transport connector.Transport) (connector.ProviderSet, error) {
 	return moduleassembly.MCPToolProviders(transport)
 }
+
+func NotificationProviders(transport connector.Transport) (connector.ProviderSet, error) {
+	return moduleassembly.NotificationProviders(transport)
+}
