@@ -1771,7 +1771,7 @@
         "contract_version": "domainry-provider-verification-v1",
         "profile": "email_ses_deterministic_v1",
         "mode": "deterministic",
-        "manifest_sha256": "78433f0e30c7502df8d5bb61811963ed8d636ce2759543e36e798717708c6c7c",
+        "manifest_sha256": "e2b8236cb2b6fba2e9c9d7de454db0de39d31ae29570b97a61fda4c9b23f9481",
         "suites": [
           "adapter_contract",
           "error_classification",
@@ -4045,11 +4045,11 @@
     {
       "connector_key": "notification",
       "provider_key": "apns",
-      "provider_revision": "1.0.0",
+      "provider_revision": "1.0.1",
       "import_path": "github.com/domainry/domainry-connectors/providers/notification/apns",
       "package_name": "apns",
       "constructor": "New",
-      "descriptor_sha256": "c5c66a90f8215d9b962ea22b74945146826b157d85eeb45f799ed8dea47c5410",
+      "descriptor_sha256": "d7f8730d8396f253ef0ed1b111f542765d74c8abd57b3054560bb76bdb246406",
       "verification": {
         "contract_version": "domainry-provider-verification-v1",
         "profile": "notification_apns_deterministic_v1",
