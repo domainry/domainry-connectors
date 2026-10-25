@@ -9,8 +9,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.20.6
 	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.60.3
 	github.com/aws/smithy-go v1.28.1
-	github.com/domainry/domainry-connector-sdk v0.1.17
-	github.com/domainry/domainry-foundation v0.2.17
+	github.com/domainry/domainry-connector-sdk v0.1.18
+	github.com/domainry/domainry-foundation v0.2.18
 	github.com/go-sql-driver/mysql v1.10.0
 	golang.org/x/net v0.58.0
 )
