@@ -61,6 +61,72 @@ func TestDocumentWritesUseOriginalBytesAndValidatedScope(t *testing.T) {
 	}
 }
 
+func TestPutDocumentForwardsTrustedKnowledgePageSource(t *testing.T) {
+	tr := &recordingTransport{response: connector.HTTPResponse{StatusCode: 202, Body: []byte(`{"err_code":0,"data":{"status":"PENDING"}}`)}}
+	a, err := New(tr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := putRequest("doc.safe-1", "page.md", []byte("page body"))
+	var input PutDocumentInput
+	if err = json.Unmarshal(r.Payload, &input); err != nil {
+		t.Fatal(err)
+	}
+	input.Source = &PutDocumentSource{
+		Provider: "verdent_knowledge", Title: "发布流程", PageID: "kpage-safe-1",
+		PageVersion: 3, LibraryKind: "shared", ContentType: "document",
+	}
+	r.Payload, _ = json.Marshal(input)
+	if _, err = a.Call(t.Context(), r); err != nil {
+		t.Fatal(err)
+	}
+	query := tr.requests[0].URL
+	u, err := url.Parse(query)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{
+		"source": "verdent_knowledge", "title": "发布流程", "page_id": "kpage-safe-1",
+		"page_version": "3", "library_kind": "shared", "content_type": "document",
+	}
+	for key, value := range want {
+		if got := u.Query().Get(key); got != value {
+			t.Fatalf("%s=%q want %q", key, got, value)
+		}
+	}
+
+	input.Source.PageVersion = 0
+	r.Payload, _ = json.Marshal(input)
+	if _, err = a.Call(t.Context(), r); err == nil || len(tr.requests) != 1 {
+		t.Fatal("invalid page source reached transport")
+	}
+}
+
+func TestPutDocumentForwardsTrustedKnowledgeFileSourceWithoutPageMetadata(t *testing.T) {
+	tr := &recordingTransport{response: connector.HTTPResponse{StatusCode: 202, Body: []byte(`{"err_code":0,"data":{"status":"PENDING"}}`)}}
+	a, err := New(tr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := putRequest("doc.safe-1", "notes.txt", []byte("knowledge file"))
+	var input PutDocumentInput
+	if err = json.Unmarshal(r.Payload, &input); err != nil {
+		t.Fatal(err)
+	}
+	input.Source = &PutDocumentSource{Provider: "verdent_knowledge"}
+	r.Payload, _ = json.Marshal(input)
+	if _, err = a.Call(t.Context(), r); err != nil {
+		t.Fatal(err)
+	}
+	u, err := url.Parse(tr.requests[0].URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if u.Query().Get("source") != "verdent_knowledge" || u.Query().Has("page_id") || len(u.Query()) != 3 {
+		t.Fatalf("unexpected managed file query: %v", u.Query())
+	}
+}
+
 func TestDocumentStatusPreservesStateAndHidesMetadataContent(t *testing.T) {
 	for _, state := range []string{"PENDING", "CHUNKED", "INDEXED", "FUTURE_STATE"} {
 		tr := &recordingTransport{response: connector.HTTPResponse{StatusCode: 200, Body: []byte(`{"err_code":0,"data":{"doc_id":"doc","status":"` + state + `","chunks":[{"content":"PRIVATE-BODY"}]}}`)}}

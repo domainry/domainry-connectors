@@ -3285,7 +3285,7 @@
         {
           "key": "put_document",
           "mode": "call",
-          "contract_sha256": "f6f49d46f100ed2a9685de45e3046a47dc91e1760eb1f779858126abe9c6d772"
+          "contract_sha256": "8d8b126611fd6fde68999d9225cc696251311df7f6a1a8e0fb27575fbdf77af7"
         },
         {
           "key": "search",

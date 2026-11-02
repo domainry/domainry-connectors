@@ -585,6 +585,23 @@
               "description": "流式原文件的标准小写 SHA-256。"
             }
           }
+        },
+        {
+          "key": "source",
+          "type": "json",
+          "required": false,
+          "name": "Trusted source metadata",
+          "description": "Host-owned product source metadata for stable user-facing references; never accepted from an untrusted caller.",
+          "i18n": {
+            "en-US": {
+              "name": "Trusted source metadata",
+              "description": "Host-owned product source metadata for stable user-facing references; never accepted from an untrusted caller."
+            },
+            "zh-CN": {
+              "name": "可信来源元数据",
+              "description": "由宿主提供的产品来源元数据，用于稳定的用户可见引用；不接受不可信调用方直接声明。"
+            }
+          }
         }
       ],
       "output": [
