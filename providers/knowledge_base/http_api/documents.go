@@ -25,21 +25,43 @@ func validDocumentSource(source *PutDocumentSource) bool {
 	if source.Provider != "verdent_knowledge" {
 		return false
 	}
+	if !documentWriteIDPattern.MatchString(source.SourceID) {
+		return false
+	}
 	// A Verdent Knowledge file belongs to the managed source even when it is
 	// not a page projection. Page metadata is therefore optional as one atomic
 	// group: either no page fields are present, or every page field is valid.
-	if source.Title == "" && source.PageID == "" && source.PageVersion == 0 && source.LibraryKind == "" && source.ContentType == "" {
+	if source.Title == "" && source.PageID == "" && source.PageVersion == 0 && source.LibraryKind == "" && source.ContentType == "" && len(source.PathSegments) == 0 {
 		return true
 	}
 	if !documentWriteIDPattern.MatchString(source.PageID) ||
 		source.PageVersion < 1 || source.LibraryKind != "personal" && source.LibraryKind != "shared" ||
-		!validText(source.ContentType, 64) || !utf8.ValidString(source.Title) || len(source.Title) > 512 ||
+		!validText(source.ContentType, 64) || source.Title == "" || !utf8.ValidString(source.Title) || len(source.Title) > 512 ||
 		strings.TrimSpace(source.Title) != source.Title {
 		return false
 	}
-	return !strings.ContainsFunc(source.Title, func(value rune) bool {
+	if strings.ContainsFunc(source.Title, func(value rune) bool {
 		return unicode.IsControl(value) || value == unicode.ReplacementChar
-	})
+	}) || len(source.PathSegments) == 0 || len(source.PathSegments) > 64 {
+		return false
+	}
+	seen := make(map[string]struct{}, len(source.PathSegments))
+	for index, segment := range source.PathSegments {
+		if !documentWriteIDPattern.MatchString(segment.ID) || segment.Title == "" || len(segment.Title) > 512 ||
+			!utf8.ValidString(segment.Title) || strings.TrimSpace(segment.Title) != segment.Title ||
+			strings.ContainsFunc(segment.Title, func(value rune) bool { return unicode.IsControl(value) || value == unicode.ReplacementChar }) {
+			return false
+		}
+		if _, exists := seen[segment.ID]; exists {
+			return false
+		}
+		seen[segment.ID] = struct{}{}
+		last := index == len(source.PathSegments)-1
+		if last && (segment.Kind != "document" || segment.ID != source.PageID || segment.Title != source.Title) || !last && segment.Kind != "folder" {
+			return false
+		}
+	}
+	return true
 }
 
 func (p *provider) documentWrite(ctx context.Context, connection connector.Connection, secrets map[string]string, principal connector.Principal, method, id, filename string, source *PutDocumentSource, content io.Reader, contentLength int64, contentSHA256, requestRef string) (connector.TypedResult[Output], error) {
@@ -68,12 +90,18 @@ func (p *provider) documentWrite(ctx context.Context, connection connector.Conne
 		query.Set("filename", filename)
 		if source != nil {
 			query.Set("source", source.Provider)
+			query.Set("source_id", source.SourceID)
 			if source.PageID != "" {
 				query.Set("title", source.Title)
 				query.Set("page_id", source.PageID)
 				query.Set("page_version", strconv.FormatInt(source.PageVersion, 10))
 				query.Set("library_kind", source.LibraryKind)
 				query.Set("content_type", source.ContentType)
+				pathSegments, marshalErr := json.Marshal(source.PathSegments)
+				if marshalErr != nil {
+					return zero, permanent("request_invalid")
+				}
+				query.Set("path_segments", string(pathSegments))
 			}
 		}
 		headers, err = documentPermissionHeaders(connection, requestRef)

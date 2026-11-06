@@ -73,8 +73,12 @@ func TestPutDocumentForwardsTrustedKnowledgePageSource(t *testing.T) {
 		t.Fatal(err)
 	}
 	input.Source = &PutDocumentSource{
-		Provider: "verdent_knowledge", Title: "发布流程", PageID: "kpage-safe-1",
+		Provider: "verdent_knowledge", SourceID: "verdent-main", Title: "发布流程", PageID: "kpage-safe-1",
 		PageVersion: 3, LibraryKind: "shared", ContentType: "document",
+		PathSegments: []PutDocumentPathSegment{
+			{ID: "kpage-parent-1", Title: "研发空间", Kind: "folder"},
+			{ID: "kpage-safe-1", Title: "发布流程", Kind: "document"},
+		},
 	}
 	r.Payload, _ = json.Marshal(input)
 	if _, err = a.Call(t.Context(), r); err != nil {
@@ -86,13 +90,17 @@ func TestPutDocumentForwardsTrustedKnowledgePageSource(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := map[string]string{
-		"source": "verdent_knowledge", "title": "发布流程", "page_id": "kpage-safe-1",
+		"source": "verdent_knowledge", "source_id": "verdent-main", "title": "发布流程", "page_id": "kpage-safe-1",
 		"page_version": "3", "library_kind": "shared", "content_type": "document",
 	}
 	for key, value := range want {
 		if got := u.Query().Get(key); got != value {
 			t.Fatalf("%s=%q want %q", key, got, value)
 		}
+	}
+	var segments []PutDocumentPathSegment
+	if err = json.Unmarshal([]byte(u.Query().Get("path_segments")), &segments); err != nil || len(segments) != 2 || segments[0].ID != "kpage-parent-1" || segments[1].ID != "kpage-safe-1" {
+		t.Fatalf("path_segments=%q segments=%+v err=%v", u.Query().Get("path_segments"), segments, err)
 	}
 
 	input.Source.PageVersion = 0
@@ -113,7 +121,7 @@ func TestPutDocumentForwardsTrustedKnowledgeFileSourceWithoutPageMetadata(t *tes
 	if err = json.Unmarshal(r.Payload, &input); err != nil {
 		t.Fatal(err)
 	}
-	input.Source = &PutDocumentSource{Provider: "verdent_knowledge"}
+	input.Source = &PutDocumentSource{Provider: "verdent_knowledge", SourceID: "verdent-main"}
 	r.Payload, _ = json.Marshal(input)
 	if _, err = a.Call(t.Context(), r); err != nil {
 		t.Fatal(err)
@@ -122,7 +130,7 @@ func TestPutDocumentForwardsTrustedKnowledgeFileSourceWithoutPageMetadata(t *tes
 	if err != nil {
 		t.Fatal(err)
 	}
-	if u.Query().Get("source") != "verdent_knowledge" || u.Query().Has("page_id") || len(u.Query()) != 3 {
+	if u.Query().Get("source") != "verdent_knowledge" || u.Query().Get("source_id") != "verdent-main" || u.Query().Has("page_id") || len(u.Query()) != 4 {
 		t.Fatalf("unexpected managed file query: %v", u.Query())
 	}
 }

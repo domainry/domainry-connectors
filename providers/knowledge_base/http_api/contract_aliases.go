@@ -28,6 +28,7 @@ type SearchInput = contract.SearchInput
 type FetchInput = contract.FetchInput
 type Output = contract.Output
 type DocumentInput = contract.DocumentInput
+type PutDocumentPathSegment = contract.PutDocumentPathSegment
 type PutDocumentSource = contract.PutDocumentSource
 type PutDocumentInput = contract.PutDocumentInput
 type DocumentStatusOutput = contract.DocumentStatusOutput
